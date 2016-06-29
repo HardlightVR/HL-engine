@@ -110,6 +110,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="enumser.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Serial.cpp" />
+    <ClCompile Include="SerialAdapter.cpp" />
+    <ClCompile Include="StdAfx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ByteQueue.h" />
+    <ClInclude Include="enumser.h" />
+    <ClInclude Include="ICommunicationAdapter.h" />
+    <ClInclude Include="Serial.h" />
+    <ClInclude Include="SerialAdapter.h" />
+    <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
