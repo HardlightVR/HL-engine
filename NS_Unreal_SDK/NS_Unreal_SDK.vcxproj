@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="ByteQueue.h" />
     <ClInclude Include="enumser.h" />
+    <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />
     <ClInclude Include="Instruction.h" />

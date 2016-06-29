@@ -1,6 +1,6 @@
 #include "InstructionBuilder.h"
 #include <iostream>
-
+#include "HexUtils.h"
 
 InstructionBuilder::InstructionBuilder()
 {
@@ -78,6 +78,13 @@ Packet InstructionBuilder::Build() {
 
 
 bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t> dict, Json::Value json) {
+	std::size_t numKeys = json.size();
+	for (std::size_t i = 0; i < numKeys; ++i) {
+		uint8_t value[1];
+		HexStringToInt(&json[i].asString().c_str()[2], value);
+		Json::Value whatever = json[i];
+		int x = 13;
+	}
 	return false;
 }
 

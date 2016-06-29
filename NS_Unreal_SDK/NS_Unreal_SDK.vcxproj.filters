@@ -89,5 +89,8 @@
     <ClInclude Include="IJsonSerializable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HexUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
