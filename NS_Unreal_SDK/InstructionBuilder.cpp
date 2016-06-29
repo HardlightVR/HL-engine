@@ -1,5 +1,5 @@
 #include "InstructionBuilder.h"
-
+#include <iostream>
 
 
 InstructionBuilder::InstructionBuilder()
@@ -9,6 +9,9 @@ InstructionBuilder::InstructionBuilder()
 		paramDict[param] = std::unordered_map<string, uint8_t>();
 	}
 
+}
+static std::string EnumToString(int s) {
+	return "hi";
 }
 
 
@@ -59,7 +62,7 @@ Packet InstructionBuilder::Build() {
 	packet[3] = packetLength;
 
 	const std::size_t numParams = this->parameters.size();
-	for (int i = 0; i < numParams; i++) {
+	for (std::size_t i = 0; i < numParams; i++) {
 		std::string paramKey = desired.parameters[i];
 		std::string userParamVal = this->parameters[paramKey];
 		auto paramKeyToByteId = this->paramDict[paramKey];
@@ -73,6 +76,18 @@ Packet InstructionBuilder::Build() {
 	return Packet(packet, packetLength);
 }
 
-static std::string EnumToString(int s) {
-	return "hi";
+
+bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t> dict, Json::Value json) {
+	return false;
 }
+
+bool InstructionBuilder::LoadInstructions(Json::Value json) {
+	std::size_t numInstructions = json.size();
+	for (std::size_t i = 0; i < numInstructions; ++i) {
+		Instruction inst;
+		inst.Deserialize(json[i]);
+		instructions[inst.Name] = inst;
+	}
+	return false;
+}
+

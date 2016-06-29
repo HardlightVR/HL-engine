@@ -2,7 +2,7 @@
 
 #include "StdAfx.h"
 #include "ICommunicationAdapter.h"
-
+#include "InstructionBuilder.h"
 class SuitHardwareInterface
 {
 public:
@@ -13,6 +13,6 @@ public:
 private:
 	std::shared_ptr<ICommunicationAdapter> adapter;
 	void execute(uint8_t* packet, std::size_t length);
-
+	InstructionBuilder builder;
 };
 

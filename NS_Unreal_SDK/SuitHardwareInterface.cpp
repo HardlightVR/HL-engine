@@ -1,9 +1,18 @@
 #include "SuitHardwareInterface.h"
+#include <fstream>
 
-
+#include <iostream>
 
 SuitHardwareInterface::SuitHardwareInterface()
 {
+	Json::Value root;
+	std::ifstream instruction_json("Instructions.json", std::ifstream::binary);
+	
+	instruction_json >> root;
+
+		this->builder.LoadInstructions(root);
+	
+	
 }
 
 
