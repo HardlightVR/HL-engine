@@ -111,18 +111,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="enumser.cpp" />
+    <ClCompile Include="Instruction.cpp" />
+    <ClCompile Include="InstructionBuilder.cpp" />
+    <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Serial.cpp" />
     <ClCompile Include="SerialAdapter.cpp" />
     <ClCompile Include="StdAfx.cpp" />
+    <ClCompile Include="SuitHardwareInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ByteQueue.h" />
     <ClInclude Include="enumser.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
+    <ClInclude Include="Instruction.h" />
+    <ClInclude Include="InstructionBuilder.h" />
+    <ClInclude Include="json\json-forwards.h" />
+    <ClInclude Include="json\json.h" />
     <ClInclude Include="Serial.h" />
     <ClInclude Include="SerialAdapter.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="SuitHardwareInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -66,9 +66,11 @@ void SerialAdapter::Disconnect() {
 
 }
 
-void SerialAdapter::Write(char stuff[]) {
+void SerialAdapter::Write(uint8_t* stuff, std::size_t length) {
 	if (this->port && this->port->IsConnected()) {
-		if (!port->WriteData(stuff, sizeof(stuff))) {
+		char *chars = reinterpret_cast<char*>(stuff);
+
+		if (!port->WriteData(chars, length)) {
 			std::cout << "Stuff failed to write\n";
 		}
 	} 

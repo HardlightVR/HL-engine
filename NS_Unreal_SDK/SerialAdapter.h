@@ -12,7 +12,7 @@ public:
 	~SerialAdapter();
 	virtual bool Connect();
 	virtual void Disconnect();
-	virtual void Write(char bytes[]);
+	virtual void Write(uint8_t bytes[], std::size_t length);
 	virtual void Read();
 	bool Connect(std::string name);
 	ByteQueue suitDataStream;

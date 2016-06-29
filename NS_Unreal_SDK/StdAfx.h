@@ -56,6 +56,7 @@
 //Pull in STL support
 #include <vector>
 #include <string>
+#include <memory>
 #endif
 
 //Out of the box lets exclude support for CEnumerateSerial::UsingComDB on the Windows SDK 7.1 or earlier since msports.h
