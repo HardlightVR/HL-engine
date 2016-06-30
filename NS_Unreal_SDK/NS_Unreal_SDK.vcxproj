@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="enumser.cpp" />
+    <ClCompile Include="EnumTranslator.cpp" />
     <ClCompile Include="HexUtils.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="ByteQueue.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
+    <ClInclude Include="EnumTranslator.h" />
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />

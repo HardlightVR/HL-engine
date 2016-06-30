@@ -74,10 +74,10 @@ void SuitHardwareInterface::PlayEffectContinuous(std::string location, std::stri
 }
 
 
-void SuitHardwareInterface::HaltEffect(std::string location)
+void SuitHardwareInterface::HaltEffect(Location location)
 {
 	if (builder.UseInstruction("HALT_SINGLE")
-		.WithParam("zone", location)
+		.WithParam("zone", translator.toString(location))
 		.Verify())
 	{
 		this->execute(builder.Build());

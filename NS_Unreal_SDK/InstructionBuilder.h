@@ -12,7 +12,6 @@ public:
 	InstructionBuilder();
 	~InstructionBuilder();
 	InstructionBuilder& UseInstruction(string name);
-	InstructionBuilder& WithParam(string key, int val);
 	InstructionBuilder& WithParam(std::string key, std::string val);
 	bool Verify();
 	Packet Build();

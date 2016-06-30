@@ -1,5 +1,6 @@
 #pragma once
 
+
 enum Side
 {
 	/// <summary>
@@ -23,6 +24,7 @@ enum Side
 	/// </summary>
 	NotSpecified
 };
+
 enum Location
 {
 	/// <summary>

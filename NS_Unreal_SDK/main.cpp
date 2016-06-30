@@ -6,6 +6,7 @@
 
 
 #include "SerialAdapter.h"
+#include "Enums.h"
 int main() {
 	
 
@@ -15,6 +16,8 @@ int main() {
 	adapter->Connect();
 
 	suit.SetAdapter(adapter);
-
+	suit.PlayEffectContinuous("Chest_Left", "Strong_Click_100");
+	Sleep(5000);
+	suit.HaltEffect(Location::Chest_Left);
 	
 }

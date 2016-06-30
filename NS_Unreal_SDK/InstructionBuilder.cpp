@@ -1,7 +1,7 @@
 #include "InstructionBuilder.h"
 #include <iostream>
 #include "HexUtils.h"
-
+#include <fstream>
 InstructionBuilder::InstructionBuilder()
 {
 	std::string validParams[4] = { "zone", "effect", "data", "register" };
@@ -26,10 +26,7 @@ InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
 	return *this;
 }
 
-InstructionBuilder& InstructionBuilder::WithParam(std::string key, int val) {
-	this->parameters[key] = EnumToString(val);
-	return *this;
-}
+
 
 
 InstructionBuilder& InstructionBuilder::WithParam(std::string key, std::string val) {
@@ -101,13 +98,19 @@ Packet InstructionBuilder::Build() {
 
 bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t>& dict, Json::Value json) {
 	auto names = json.getMemberNames();
+	std::ofstream myfile;
+	myfile.open("keyval_" + names[0] + ".txt");
+
 	for (std::string key : names) {
 		std::string val = json.get(key, "0x00").asString();
 		const char* hexChars = &val.c_str()[2];
 		uint8_t hex[1]{ 0 };
 		HexStringToInt(hexChars, hex);
 		dict[key] = hex[0];
+		myfile <<  "(Effect::" + key + ", \""+ key + "\")\n";
 	}
+	
+
 	
 	return false;
 }
