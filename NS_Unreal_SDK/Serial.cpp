@@ -63,7 +63,6 @@ Serial::Serial(char *portName)
 				this->connected = true;
 				//Flush any remaining characters in the buffers 
 				PurgeComm(this->hSerial, PURGE_RXCLEAR | PURGE_TXCLEAR);
-				//We wait 2s as the arduino board will be reseting
 				Sleep(ARDUINO_WAIT_TIME);
 			}
 		}

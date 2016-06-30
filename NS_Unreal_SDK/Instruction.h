@@ -7,12 +7,11 @@ class Instruction : public IJsonSerializable
 public:
 	Instruction();
 	~Instruction();
-	std::vector<std::string> parameters;
 	uint8_t ByteId;
 	std::string Name;
 	std::string Purpose;
 	std::vector<std::string> Parameters;
-	virtual void Serialize(Json::Value& root);
-	virtual void Deserialize(Json::Value& root);
+	virtual void Serialize(const Json::Value& root);
+	virtual void Deserialize(const Json::Value& root);
 };
 

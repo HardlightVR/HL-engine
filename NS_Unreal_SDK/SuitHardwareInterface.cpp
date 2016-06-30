@@ -5,14 +5,20 @@
 
 SuitHardwareInterface::SuitHardwareInterface()
 {
-	Json::Value root;
+	Json::Value inst_root;
 	std::ifstream instruction_json("Instructions.json", std::ifstream::binary);
+	instruction_json >> inst_root;
+	this->builder.LoadInstructions(inst_root);
 	
-	instruction_json >> root;
-
-		this->builder.LoadInstructions(root);
+	Json::Value zone_root;
+	std::ifstream zone_json("Zones.json", std::ifstream::binary);
+	zone_json >> zone_root;
+	this->builder.LoadZones(zone_root);
 	
-	
+	Json::Value effect_root;
+	std::ifstream effect_json("Effects.json", std::ifstream::binary);
+	effect_json >> effect_root;
+	this->builder.LoadEffects(effect_root);
 }
 
 
@@ -24,12 +30,72 @@ void SuitHardwareInterface::SetAdapter(std::shared_ptr<ICommunicationAdapter> ad
 	this->adapter = adapter;
 }
 
-void SuitHardwareInterface::PlayEffect() {
+void SuitHardwareInterface::PlayEffect(std::string location, std::string effect) {
 
-	uint8_t packet[9] = { 0x24, 0x02, 0x13, 0x09, 0x15, 0x01, 0xFF, 0xFF, 0x0A };
-	this->execute(packet, 9);
+	if (builder.UseInstruction("PLAY_EFFECT")
+		.WithParam("zone", location)
+		.WithParam("effect", effect)
+		.Verify())
+	{
+		this->execute(builder.Build());
+	}
+	else
+	{
+		std::cout << "Failed to build instruction " << builder.GetDebugString();
+	}
 }
 
-void SuitHardwareInterface::execute(uint8_t* packet, std::size_t length) {
-	this->adapter->Write(packet, length);
+void SuitHardwareInterface::PlayEffectContinuous(std::string location, std::string effect)
+{
+	if (builder.UseInstruction("PLAY_CONTINUOUS")
+		.WithParam("effect", effect)
+		.WithParam("zone", location)
+		.Verify())
+	{
+		this->execute(builder.Build());
+	}
+	else
+	{
+		std::cout << "Failed to build instruction " << builder.GetDebugString();
+	}
+}
+
+ void SuitHardwareInterface::PingSuit()
+{
+	if (builder.UseInstruction("STATUS_PING").Verify())
+	{
+		this->execute(builder.Build());
+	}
+	else
+	{
+		std::cout << "Failed to build instruction " << builder.GetDebugString();
+	}
+
+}
+
+
+void SuitHardwareInterface::HaltEffect(std::string location)
+{
+	if (builder.UseInstruction("HALT_SINGLE")
+		.WithParam("zone", location)
+		.Verify())
+	{
+		this->execute(builder.Build());
+	}
+	else
+	{
+		std::cout << "Failed to build instruction " << builder.GetDebugString();
+	}
+
+}
+
+void SuitHardwareInterface::HaltAllEffects()
+{
+	//must reimplement
+}
+
+
+
+void SuitHardwareInterface::execute(Packet packet) {
+	this->adapter->Write(packet.Data, packet.Length);
 }

@@ -15,6 +15,6 @@ int main() {
 	adapter->Connect();
 
 	suit.SetAdapter(adapter);
-	std::cin.get();
-	suit.PlayEffect();
+
+	
 }

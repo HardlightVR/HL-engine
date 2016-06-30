@@ -20,14 +20,20 @@ InstructionBuilder::~InstructionBuilder()
 }
 
 
-InstructionBuilder InstructionBuilder::UseInstruction(std::string name) {
+InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
 	this->parameters.clear();
 	this->instruction = name;
 	return *this;
 }
 
-InstructionBuilder InstructionBuilder::WithParam(std::string key, int val) {
+InstructionBuilder& InstructionBuilder::WithParam(std::string key, int val) {
 	this->parameters[key] = EnumToString(val);
+	return *this;
+}
+
+
+InstructionBuilder& InstructionBuilder::WithParam(std::string key, std::string val) {
+	this->parameters[key] = val;
 	return *this;
 }
 
@@ -37,7 +43,7 @@ bool InstructionBuilder::Verify() {
 	}
 
 	Instruction desired = instructions[this->instruction];
-	for (std::string param : desired.parameters) {
+	for (std::string param : desired.Parameters) {
 		if (parameters.find(param) == parameters.end()) {
 			return false;
 		}
@@ -50,10 +56,26 @@ bool InstructionBuilder::Verify() {
 	return true;
 }
 
+
+std::string InstructionBuilder::GetDebugString() {
+	std::string description = this->instruction + ": ";
+	int index = 0;
+	for (auto param : this->parameters)
+	{
+		index++;
+		description += param.first + " = " + param.second;
+		if (index < this->parameters.size())
+		{
+			description += ", ";
+		}
+	}
+	return description;
+}
 Packet InstructionBuilder::Build() {
 	Instruction desired = instructions[this->instruction];
 	const int packetLength = 7 + this->parameters.size();
 	uint8_t* packet = new uint8_t[packetLength];
+	std::fill(packet, packet + packetLength, 0);
 	packet[0] = 0x24;
 	packet[1] = 0x02;
 	assert(desired.ByteId <= 255);
@@ -63,7 +85,7 @@ Packet InstructionBuilder::Build() {
 
 	const std::size_t numParams = this->parameters.size();
 	for (std::size_t i = 0; i < numParams; i++) {
-		std::string paramKey = desired.parameters[i];
+		std::string paramKey = desired.Parameters[i];
 		std::string userParamVal = this->parameters[paramKey];
 		auto paramKeyToByteId = this->paramDict[paramKey];
 		uint8_t id = paramKeyToByteId[userParamVal];
@@ -77,18 +99,28 @@ Packet InstructionBuilder::Build() {
 }
 
 
-bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t> dict, Json::Value json) {
-	std::size_t numKeys = json.size();
-	for (std::size_t i = 0; i < numKeys; ++i) {
-		uint8_t value[1];
-		HexStringToInt(&json[i].asString().c_str()[2], value);
-		Json::Value whatever = json[i];
-		int x = 13;
+bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t>& dict, Json::Value json) {
+	auto names = json.getMemberNames();
+	for (std::string key : names) {
+		std::string val = json.get(key, "0x00").asString();
+		const char* hexChars = &val.c_str()[2];
+		uint8_t hex[1]{ 0 };
+		HexStringToInt(hexChars, hex);
+		dict[key] = hex[0];
 	}
+	
 	return false;
 }
 
-bool InstructionBuilder::LoadInstructions(Json::Value json) {
+bool InstructionBuilder::LoadEffects(const Json::Value& json) {
+	return LoadKeyValue(this->paramDict["effect"], json);
+}
+
+bool InstructionBuilder::LoadZones(const Json::Value& json) {
+	return LoadKeyValue(this->paramDict["zone"], json);
+}
+
+bool InstructionBuilder::LoadInstructions(const Json::Value& json) {
 	std::size_t numInstructions = json.size();
 	for (std::size_t i = 0; i < numInstructions; ++i) {
 		Instruction inst;

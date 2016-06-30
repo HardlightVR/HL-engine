@@ -11,5 +11,4 @@ Packet::Packet(uint8_t* raw, std::size_t length)
 
 Packet::~Packet()
 {
-	free(this->Data);
 }
