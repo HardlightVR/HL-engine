@@ -30,7 +30,7 @@ void SuitHardwareInterface::SetAdapter(std::shared_ptr<ICommunicationAdapter> ad
 	this->adapter = adapter;
 }
 
-void SuitHardwareInterface::PlayEffect(std::string location, std::string effect) {
+void SuitHardwareInterface::PlayEffect(Location location, Effect effect) {
 
 	if (builder.UseInstruction("PLAY_EFFECT")
 		.WithParam("zone", location)
@@ -45,7 +45,7 @@ void SuitHardwareInterface::PlayEffect(std::string location, std::string effect)
 	}
 }
 
-void SuitHardwareInterface::PlayEffectContinuous(std::string location, std::string effect)
+void SuitHardwareInterface::PlayEffectContinuous(Location location, Effect effect)
 {
 	if (builder.UseInstruction("PLAY_CONTINUOUS")
 		.WithParam("effect", effect)

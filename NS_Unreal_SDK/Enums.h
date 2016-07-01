@@ -1,7 +1,7 @@
 #pragma once
 
 
-enum Side
+enum class Side
 {
 	/// <summary>
 	/// Left side
@@ -25,7 +25,7 @@ enum Side
 	NotSpecified
 };
 
-enum Location
+enum class Location
 {
 	/// <summary>
 	/// Right lower abdominal feedback zone
@@ -97,7 +97,7 @@ enum Location
 	Error
 };
 
-enum Effect
+enum class Effect
 {
 	Strong_Click_100 = 0,
 	Strong_Click_60,
@@ -166,7 +166,7 @@ enum Effect
 	Pulsing_Sharp_60,
 
 	Transition_Click_100,
-	fTransition_Click_80,
+	Transition_Click_80,
 	Transition_Click_60,
 	Transition_Click_40,
 	Transition_Click_20,
@@ -190,7 +190,7 @@ enum Effect
 
 };
 
-enum Duration
+enum class Duration
 {
 	OneShot = 0,
 	Infinite = -1,

@@ -10,9 +10,9 @@ public:
 	SuitHardwareInterface();
 	~SuitHardwareInterface();
 	void SetAdapter(std::shared_ptr<ICommunicationAdapter> adapter);
-	void PlayEffect(std::string location, std::string effect);
+	void PlayEffect(Location location, Effect effect);
 	void HaltEffect(Location location);
-	void PlayEffectContinuous(std::string location, std::string effect);
+	void PlayEffectContinuous(Location location, Effect effect);
 	void HaltAllEffects();
 	void PingSuit();
 private:

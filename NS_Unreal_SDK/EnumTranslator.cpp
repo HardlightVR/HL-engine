@@ -120,7 +120,7 @@ void EnumTranslator::init_effects() {
 		(Effect::Transition_Hum_80, "Transition_Hum_80")
 
 		(Effect::Triple_Click, "Triple_Click")
-		(Effect::fTransition_Click_80, "fTransition_Click_80");
+		(Effect::Transition_Click_80, "Transition_Click_80");
 
 
 }
