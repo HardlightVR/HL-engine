@@ -69,6 +69,12 @@
     <ClCompile Include="HapticDirectoryTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HapticCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HapticArgs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Serial.h">
@@ -132,6 +138,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HapticDirectoryTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HapticCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HapticArgs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

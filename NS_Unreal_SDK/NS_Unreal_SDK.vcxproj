@@ -126,6 +126,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HapticArgs.cpp" />
+    <ClCompile Include="HapticCache.cpp" />
     <ClCompile Include="HapticDirectoryTools.cpp" />
     <ClCompile Include="enumser.cpp" />
     <ClCompile Include="EnumTranslator.cpp" />
@@ -147,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ByteQueue.h" />
+    <ClInclude Include="HapticArgs.h" />
+    <ClInclude Include="HapticCache.h" />
     <ClInclude Include="HapticDirectoryTools.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
