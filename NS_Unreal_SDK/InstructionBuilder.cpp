@@ -6,7 +6,7 @@ InstructionBuilder::InstructionBuilder()
 {
 	std::string validParams[4] = { "zone", "effect", "data", "register" };
 	for (std::string param : validParams) {
-		paramDict[param] = std::unordered_map<string, uint8_t>();
+		_paramDict[param] = std::unordered_map<string, uint8_t>();
 	}
 
 }
@@ -21,8 +21,8 @@ InstructionBuilder::~InstructionBuilder()
 
 
 InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
-	this->parameters.clear();
-	this->instruction = name;
+	this->_parameters.clear();
+	this->_instruction = name;
 	return *this;
 }
 
@@ -30,22 +30,22 @@ InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
 
 
 InstructionBuilder& InstructionBuilder::WithParam(std::string key, std::string val) {
-	this->parameters[key] = val;
+	this->_parameters[key] = val;
 	return *this;
 }
 
 bool InstructionBuilder::Verify() {
-	if (instructions.find(this->instruction) == instructions.end()) {
+	if (_instructions.find(this->_instruction) == _instructions.end()) {
 		return false;
 	}
 
-	Instruction desired = instructions[this->instruction];
+	Instruction desired = _instructions[this->_instruction];
 	for (std::string param : desired.Parameters) {
-		if (parameters.find(param) == parameters.end()) {
+		if (_parameters.find(param) == _parameters.end()) {
 			return false;
 		}
-		auto dict = this->paramDict[param];
-		if (dict.find(parameters[param]) == dict.end()) {
+		auto dict = this->_paramDict[param];
+		if (dict.find(_parameters[param]) == dict.end()) {
 			return false;
 		}
 
@@ -55,13 +55,13 @@ bool InstructionBuilder::Verify() {
 
 
 std::string InstructionBuilder::GetDebugString() {
-	std::string description = this->instruction + ": ";
+	std::string description = this->_instruction + ": ";
 	int index = 0;
-	for (auto param : this->parameters)
+	for (auto param : this->_parameters)
 	{
 		index++;
 		description += param.first + " = " + param.second;
-		if (index < this->parameters.size())
+		if (index < this->_parameters.size())
 		{
 			description += ", ";
 		}
@@ -69,8 +69,8 @@ std::string InstructionBuilder::GetDebugString() {
 	return description;
 }
 Packet InstructionBuilder::Build() {
-	Instruction desired = instructions[this->instruction];
-	const int packetLength = 7 + this->parameters.size();
+	Instruction desired = _instructions[this->_instruction];
+	const int packetLength = 7 + this->_parameters.size();
 	uint8_t* packet = new uint8_t[packetLength];
 	std::fill(packet, packet + packetLength, 0);
 	packet[0] = 0x24;
@@ -80,11 +80,11 @@ Packet InstructionBuilder::Build() {
 	assert(packetLength <= 255);
 	packet[3] = packetLength;
 
-	const std::size_t numParams = this->parameters.size();
+	const std::size_t numParams = this->_parameters.size();
 	for (std::size_t i = 0; i < numParams; i++) {
 		std::string paramKey = desired.Parameters[i];
-		std::string userParamVal = this->parameters[paramKey];
-		auto paramKeyToByteId = this->paramDict[paramKey];
+		std::string userParamVal = this->_parameters[paramKey];
+		auto paramKeyToByteId = this->_paramDict[paramKey];
 		uint8_t id = paramKeyToByteId[userParamVal];
 		packet[i + 4] = id;
 	}
@@ -116,11 +116,11 @@ bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t>& dict,
 }
 
 bool InstructionBuilder::LoadEffects(const Json::Value& json) {
-	return LoadKeyValue(this->paramDict["effect"], json);
+	return LoadKeyValue(this->_paramDict["effect"], json);
 }
 
 bool InstructionBuilder::LoadZones(const Json::Value& json) {
-	return LoadKeyValue(this->paramDict["zone"], json);
+	return LoadKeyValue(this->_paramDict["zone"], json);
 }
 
 bool InstructionBuilder::LoadInstructions(const Json::Value& json) {
@@ -128,7 +128,7 @@ bool InstructionBuilder::LoadInstructions(const Json::Value& json) {
 	for (std::size_t i = 0; i < numInstructions; ++i) {
 		Instruction inst;
 		inst.Deserialize(json[i]);
-		instructions[inst.Name] = inst;
+		_instructions[inst.Name] = inst;
 	}
 	return false;
 }

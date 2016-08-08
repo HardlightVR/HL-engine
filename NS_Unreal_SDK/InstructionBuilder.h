@@ -21,11 +21,11 @@ public:
 	std::string GetDebugString();
 
 private:
-	std::unordered_map<string, Instruction> instructions;
-	std::string instruction;
+	std::unordered_map<string, Instruction> _instructions;
+	std::string _instruction;
 
-	std::unordered_map<string, string> parameters;
-	std::unordered_map<string, std::unordered_map<string, uint8_t>> paramDict;
+	std::unordered_map<string, string> _parameters;
+	std::unordered_map<string, std::unordered_map<string, uint8_t>> _paramDict;
 	bool LoadKeyValue(std::unordered_map<string, uint8_t>& dict, Json::Value json);
 };
 

@@ -2,6 +2,7 @@
 #include "StdAfx.h"
 #include <vector>
 #include "IJsonSerializable.h"
+
 class Instruction : public IJsonSerializable
 {
 public:

@@ -18,7 +18,7 @@ public:
 private:
 	std::shared_ptr<ICommunicationAdapter> adapter;
 	void execute(Packet packet);
-	EnumTranslator translator;
+	EnumTranslator _translator;
 	InstructionBuilder builder;
 };
 

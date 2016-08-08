@@ -39,14 +39,14 @@ void Synchronizer::TryReadPacket()
 	}
 }
 
-Synchronizer::Synchronizer(std::shared_ptr<ByteQueue> dataStream, std::shared_ptr<PacketDispatcher> dispatcher): 
-	dispatcher(dispatcher), 
+Synchronizer::Synchronizer(std::shared_ptr<ByteQueue> dataStream, std::shared_ptr<PacketDispatcher> dispatcher) :
+	dispatcher(dispatcher),
 	dataStream(dataStream),
 	packetLength(16),
 	packetDelimiter('$'),
 	syncState(Synchronizer::State::SearchingForSync),
 	badSyncCounter(0),
-	packetFooter({0x0D, 0x0A})
+	packetFooter{ 0x0D, 0x0A, }
 {
 }
 
@@ -64,7 +64,7 @@ void Synchronizer::searchForSync()
 
 	uint8_t* possiblePacket = dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
-		this->SyncState = Synchronizer::State::ConfirmingSync;
+		this->syncState = Synchronizer::State::ConfirmingSync;
 		return;
 	}
 

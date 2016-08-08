@@ -74,14 +74,24 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -90,10 +100,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -103,13 +116,17 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
+      <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HapticDirectoryTools.cpp" />
     <ClCompile Include="enumser.cpp" />
     <ClCompile Include="EnumTranslator.cpp" />
     <ClCompile Include="HexUtils.cpp" />
@@ -119,13 +136,18 @@
     <ClCompile Include="JsonSerializer.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="PacketDispatcher.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Serial.cpp" />
     <ClCompile Include="SerialAdapter.cpp" />
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="SuitHardwareInterface.cpp" />
+    <ClCompile Include="SuitPacket.cpp" />
+    <ClCompile Include="Synchronizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ByteQueue.h" />
+    <ClInclude Include="HapticDirectoryTools.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
     <ClInclude Include="EnumTranslator.h" />
@@ -137,10 +159,14 @@
     <ClInclude Include="json\json-forwards.h" />
     <ClInclude Include="json\json.h" />
     <ClInclude Include="Packet.h" />
+    <ClInclude Include="PacketDispatcher.h" />
+    <ClInclude Include="Parser.h" />
     <ClInclude Include="Serial.h" />
     <ClInclude Include="SerialAdapter.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="SuitHardwareInterface.h" />
+    <ClInclude Include="SuitPacket.h" />
+    <ClInclude Include="Synchronizer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
