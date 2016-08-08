@@ -20,22 +20,12 @@ template<typename T> map_init_helper<T> map_init(T& item)
 
 const char* EnumTranslator::ToString(Location loc) {
 	return this->locations[loc];
-	if (this->locations.find(loc) != this->locations.end()) {
-		return this->locations[loc];
-	}
-	else {
-		return "";
-	}
+	
 }
 
 const char* EnumTranslator::ToString(Effect effect) {
 	return this->effects[effect];
-	if (this->effects.find(effect) != this->effects.end()) {
-		return this->effects[effect];
-	}
-	else {
-		return "";
-	}
+	
 }
 EnumTranslator::EnumTranslator() {
 	init_locations();

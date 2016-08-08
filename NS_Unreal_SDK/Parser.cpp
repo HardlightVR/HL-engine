@@ -8,7 +8,7 @@ Parser::Parser()
 	
 }
 
-Parser::Parser(std::string path) : 
+Parser::Parser(const std::string& path) : 
 	_basePath(path)
 {
 }
@@ -17,7 +17,23 @@ Parser::~Parser()
 {
 }
 
-std::string Parser::GetDirectory(std::string package) {
+void Parser::SetBasePath(const std::string& path)
+{
+	_basePath = path;
+}
+
+void Parser::EnumerateHapticFiles()
+{
+	_paths.clear();
+	HapticEnumerator enumerator(_basePath);
+	EnumNode root = enumerator.GenerateNodes(enumerator.GetEnums(enumerator.EnumerateFiles()));
+	for (auto child : root.Children)
+	{
+		Traverse(child.second, root.Namespace);
+	}
+}
+
+boost::filesystem::path Parser::GetDirectory(std::string package) {
 	if (_paths.find(package) != _paths.end())
 	{
 		return _paths[package];
@@ -26,6 +42,26 @@ std::string Parser::GetDirectory(std::string package) {
 }
 void Parser::Traverse(EnumNode node, std::string prefix)
 {
+	if (node.Data.Namespace!= "")
+	{
+		if (prefix == "")
+		{
+			_paths[node.Namespace] = node.Data.Directory;
+		} else
+		{
+			_paths[prefix + "." + node.Namespace] = node.Data.Directory;
+		}
+	}
+
+	if (node.Children.size() == 0)
+	{
+		return;
+	}
+
+	for (auto child : node.Children)
+	{
+		Traverse(child.second, prefix == "" ? node.Namespace : prefix + "." + node.Namespace);
+	}
 	
 }
 
@@ -47,11 +83,11 @@ void SequenceItem::Deserialize(const Json::Value& root) {
 
 
 
-void Effect::Serialize(const Json::Value& root) {
+void JEffect::Serialize(const Json::Value& root) {
 
 }
 
-void Effect::Deserialize(const Json::Value& root) {
+void JEffect::Deserialize(const Json::Value& root) {
 	this->Location = root.get("location", "INVALID_LOCATION").asString();
 	this->Sequence = root.get("sequence", "INVALID_SEQUENCE").asString();
 	this->Side = root.get("side", "INVALID_SIDE").asString();
@@ -67,7 +103,7 @@ void Frame::Deserialize(const Json::Value& root) {
 	Json::Value frames = root["frame"];
 	if (frames.isArray()) {
 		for (auto effect : frames) {
-			Effect e;
+			JEffect e;
 			e.Deserialize(effect);
 			this->FrameSet.push_back(e);
 		}

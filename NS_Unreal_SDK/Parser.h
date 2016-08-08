@@ -8,6 +8,10 @@
 #include "HapticDirectoryTools.h"
 
 using namespace HapticDirectoryTools;
+
+
+
+
 class PackageNotFoundException : public std::runtime_error {
 public:
 	PackageNotFoundException(const std::string& package) : std::runtime_error(std::string("The package " + package + " was not found!").c_str()) {}
@@ -19,15 +23,15 @@ class Parser
 {
 public:
 	Parser();
-	Parser(std::string);
+	Parser(const std::string& basePath);
 	~Parser();
-	void SetBasePath(std::string);
+	void SetBasePath(const std::string& basePath);
 	void EnumerateHapticFiles();
-	std::string GetDirectory(std::string package);
+	boost::filesystem::path GetDirectory(std::string package);
 	void Traverse(EnumNode node, std::string prefix);
 private:
 	std::string _basePath;
-	std::unordered_map<std::string, std::string> _paths;
+	std::unordered_map<std::string, boost::filesystem::path> _paths;
 
 };
 
@@ -41,7 +45,7 @@ public :
 	void Serialize(const Json::Value& root);
 };
 
-class Effect : public IJsonSerializable {
+class JEffect : public IJsonSerializable {
 public:
 	std::string Sequence;
 	std::string Location;
@@ -53,7 +57,7 @@ public:
 class Frame : public IJsonSerializable {
 public:
 	float Time;
-	std::vector<Effect> FrameSet;
+	std::vector<JEffect> FrameSet;
 	void Deserialize(const Json::Value& root);
 	void Serialize(const Json::Value& root);
 };
