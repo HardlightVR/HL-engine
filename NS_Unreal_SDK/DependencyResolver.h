@@ -3,6 +3,7 @@
 #include "HapticArgs.h"
 #include "HapticCache.h"
 #include "Parser.h"
+#include "HapticClasses.h"
 
 using namespace std;
 
@@ -35,4 +36,5 @@ public:
 private:
 	HapticCache<HapticEffect> _cache;
 	unordered_map<string, vector<SequenceItem>> _loadedFiles;
+	static HapticEffect transformSequenceItemIntoEffect(SequenceItem seq, Location loc);
 };

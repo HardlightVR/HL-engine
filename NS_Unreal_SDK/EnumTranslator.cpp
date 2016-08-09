@@ -1,6 +1,6 @@
 #include "EnumTranslator.h"
 
-
+#include <boost/assign/list_of.hpp>
 
 template<typename T> struct map_init_helper
 {
@@ -18,15 +18,50 @@ template<typename T> map_init_helper<T> map_init(T& item)
 	return map_init_helper<T>(item);
 };
 
-const char* EnumTranslator::ToString(Location loc) {
-	return this->locations[loc];
-	
+std::string EnumTranslator::ToString(Location loc) {
+	//return _locationMap.left[loc];
+	return std::string("hi");
+
 }
 
-const char* EnumTranslator::ToString(Effect effect) {
-	return this->effects[effect];
-	
+std::string EnumTranslator::ToString(Effect effect) {
+	//return _effectMap.left[effect];
+	return std::string("hi");
+
 }
+
+//Effect EnumTranslator::ToEffect(const std::string& effect, Effect defaultEffect)
+//{
+//	if (_effectMap.right.find(effect) != _effectMap.right.end())
+//	{
+//		return _effectMap.right[effect];
+//	}
+//	return defaultEffect;
+//}
+
+Effect EnumTranslator::ToEffect(std::string effect) const
+{
+	//return _effectMap.right.at(effect);
+	return Effect::Buzz_100;
+}
+
+
+//Location EnumTranslator::ToLocation(std::string location, Location defaultLocation)
+//{
+//	const char* temp = location.c_str();
+//	if (_locationMap.right.find(location) != _locationMap.right.end()) {
+//		return _locationMap.right[location];
+//	}
+//
+//	return defaultLocation;
+//}
+
+Location EnumTranslator::ToLocation(std::string location) const
+{
+	///return _locationMap.right.at(location);
+	return Location::Chest_Left;
+}
+
 EnumTranslator::EnumTranslator() {
 	init_locations();
 	init_effects();
@@ -38,8 +73,8 @@ EnumTranslator::~EnumTranslator()
 {
 }
 void EnumTranslator::init_effects() {
-	map_init(this->effects)
-		(Effect::Buzz_100, "Buzz_100")
+	_effectMap = boost::assign::map_list_of
+	(Effect::Buzz_100, "Buzz_100")
 		(Effect::Buzz_20, "Buzz_20")
 		(Effect::Buzz_40, "Buzz_40")
 		(Effect::Buzz_60, "Buzz_60")
@@ -118,8 +153,8 @@ void EnumTranslator::init_effects() {
 }
 
 void EnumTranslator::init_locations() {
-	map_init(this->locations)
-		(Location::Chest_Left, "Chest_Left")
+	_locationMap = boost::assign::map_list_of
+	(Location::Chest_Left, "Chest_Left")
 		(Location::Chest_Right, "Chest_Right")
 		(Location::Forearm_Left, "Forearm_Left")
 		(Location::Forearm_Right, "Forearm_Right")

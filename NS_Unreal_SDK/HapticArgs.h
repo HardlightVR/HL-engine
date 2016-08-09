@@ -11,6 +11,8 @@ public:
 	}
 
 	virtual int GetCombinedHash() const = 0;
+	virtual std::string ToString() const = 0;
+
 };
 
 class PatternArgs : public HapticArgs
@@ -21,6 +23,10 @@ public:
 	Side Side;
 	std::string Name;
 	int GetCombinedHash() const override;
+	std::string ToString() const override {
+		return Name;
+	}
+	
 };
 
 class SequenceArgs : public HapticArgs
@@ -31,6 +37,9 @@ public:
 	Location Location;
 	std::string Name;
 	int GetCombinedHash() const override;
+	std::string ToString() const override {
+		return Name;
+	}
 };
 
 class ExperienceArgs : public HapticArgs
@@ -41,4 +50,7 @@ public:
 	Side Side;
 	std::string Name;
 	int GetCombinedHash() const override;
+	std::string ToString() const override {
+		return Name;
+	}
 };

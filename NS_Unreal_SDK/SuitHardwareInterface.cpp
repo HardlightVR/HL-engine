@@ -34,8 +34,8 @@ void SuitHardwareInterface::SetAdapter(std::shared_ptr<ICommunicationAdapter> ad
 void SuitHardwareInterface::PlayEffect(Location location, Effect effect) {
 
 	if (builder.UseInstruction("PLAY_EFFECT")
-		.WithParam("zone", _translator.ToString(location))
-		.WithParam("effect", _translator.ToString(effect))
+		.WithParam("zone", Locator::getTranslator().ToString(location))
+		.WithParam("effect", Locator::getTranslator().ToString(effect))
 		.Verify())
 	{
 		this->execute(builder.Build());
@@ -49,8 +49,8 @@ void SuitHardwareInterface::PlayEffect(Location location, Effect effect) {
 void SuitHardwareInterface::PlayEffectContinuous(Location location, Effect effect)
 {
 	if (builder.UseInstruction("PLAY_CONTINUOUS")
-		.WithParam("effect", _translator.ToString(effect))
-		.WithParam("zone", _translator.ToString(location))
+		.WithParam("effect", Locator::getTranslator().ToString(effect))
+		.WithParam("zone", Locator::getTranslator().ToString(location))
 		.Verify())
 	{
 		this->execute(builder.Build());
@@ -78,7 +78,7 @@ void SuitHardwareInterface::PlayEffectContinuous(Location location, Effect effec
 void SuitHardwareInterface::HaltEffect(Location location)
 {
 	if (builder.UseInstruction("HALT_SINGLE")
-		.WithParam("zone", _translator.ToString(location))
+		.WithParam("zone", Locator::getTranslator().ToString(location))
 		.Verify())
 	{
 		this->execute(builder.Build());

@@ -3,7 +3,7 @@
 #include "ICommunicationAdapter.h"
 #include "InstructionBuilder.h"
 #include "Enums.h"
-#include "EnumTranslator.h"
+#include "Locator.h"
 class SuitHardwareInterface
 {
 public:
@@ -18,7 +18,6 @@ public:
 private:
 	std::shared_ptr<ICommunicationAdapter> adapter;
 	void execute(Packet packet);
-	EnumTranslator _translator;
 	InstructionBuilder builder;
 };
 
