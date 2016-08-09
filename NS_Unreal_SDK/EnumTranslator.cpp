@@ -19,15 +19,22 @@ template<typename T> map_init_helper<T> map_init(T& item)
 	return map_init_helper<T>(item);
 };
 
-std::string EnumTranslator::ToString(Location loc) {
+std::string EnumTranslator::ToString(Location loc) const
+{
 	return _locationMap.left.at(loc);
 
 }
 
-std::string EnumTranslator::ToString(Effect effect) {
+std::string EnumTranslator::ToString(Effect effect) const
+{
 	return _effectMap.left.at(effect);
 
 
+}
+
+std::string EnumTranslator::ToString(Side side) const
+{
+	return _sideMap.left.at(side);
 }
 
 Effect EnumTranslator::ToEffect(std::string effect, Effect defaultEffect)
@@ -40,11 +47,43 @@ Effect EnumTranslator::ToEffect(std::string effect, Effect defaultEffect)
 	return defaultEffect;
 }
 
-Effect EnumTranslator::ToEffect(std::string effect) 
+Effect EnumTranslator::ToEffect(std::string effect) const
 {
 	return _effectMap.right.at(effect);
 }
 
+Side EnumTranslator::ToSide(std::string side) const
+{
+	return _sideMap.right.at(side);
+}
+
+Side EnumTranslator::ToSide(std::string side, Side defaultSide)
+{
+	if (_sideMap.right.find(side) != _sideMap.right.end())
+	{
+		return _sideMap.right.at(side);
+	}
+	return defaultSide;
+}
+
+std::string EnumTranslator::ToString(JsonLocation jsonLoc) const
+{
+	return _jsonLocationMap.left.at(jsonLoc);
+}
+
+JsonLocation EnumTranslator::ToJsonLocation(std::string jsonLoc) const
+{
+	return _jsonLocationMap.right.at(jsonLoc);
+}
+
+JsonLocation EnumTranslator::ToJsonLocation(std::string jsonLoc, JsonLocation defaultLocation)
+{
+	if (_jsonLocationMap.right.find(jsonLoc) != _jsonLocationMap.right.end())
+	{
+		return _jsonLocationMap.right.at(jsonLoc);
+	} 
+	return defaultLocation;
+}
 
 Location EnumTranslator::ToLocation(std::string location, Location defaultLocation) 
 {
@@ -55,7 +94,7 @@ Location EnumTranslator::ToLocation(std::string location, Location defaultLocati
 	
 }
 
-Location EnumTranslator::ToLocation(std::string location) 
+Location EnumTranslator::ToLocation(std::string location) const
 {
 	return _locationMap.right.at(location);
 }
@@ -72,7 +111,6 @@ EnumTranslator::~EnumTranslator()
 }
 void EnumTranslator::init_effects() {
 
-	//_effectMap = boost::assign::map_list_of
 	boost::assign::insert(_effectMap)
 		(Effect::Buzz_100, "Buzz_100")
 		(Effect::Buzz_20, "Buzz_20")
@@ -152,23 +190,33 @@ void EnumTranslator::init_effects() {
 
 }
 
+void EnumTranslator::init_sides()
+{
+	boost::assign::insert(_sideMap)
+		(Side::Inherit, "inherit")
+		(Side::Left, "left")
+		(Side::Right, "right")
+		(Side::Mirror, "mirror")
+		(Side::NotSpecified, "not_specified");
+}
+
 void EnumTranslator::init_locations() {
 	boost::assign::insert(_locationMap)
 	(Location::Chest_Left, "Chest_Left")
-		(Location::Chest_Right, "Chest_Right")
-		(Location::Forearm_Left, "Forearm_Left")
-		(Location::Forearm_Right, "Forearm_Right")
-		(Location::Lower_Ab_Left, "Lower_Ab_Left")
-		(Location::Lower_Ab_Right, "Lower_Ab_Right")
-		(Location::Mid_Ab_Left, "Mid_Ab_Left")
-		(Location::Mid_Ab_Right, "Mid_Ab_Right")
-		(Location::Shoulder_Left, "Shoulder_Left")
-		(Location::Shoulder_Right, "Shoulder_Right")
-		(Location::Upper_Ab_Left, "Upper_Ab_Left")
-		(Location::Upper_Ab_Right, "Upper_Ab_Right")
-		(Location::Upper_Arm_Left, "Upper_Arm_Left")
-		(Location::Upper_Arm_Right, "Upper_Arm_Right")
-		(Location::Upper_Back_Left, "Upper_Back_Left")
-		(Location::Upper_Back_Right, "Upper_Back_Right")
+	(Location::Chest_Right, "Chest_Right")
+	(Location::Forearm_Left, "Forearm_Left")
+	(Location::Forearm_Right, "Forearm_Right")
+	(Location::Lower_Ab_Left, "Lower_Ab_Left")
+	(Location::Lower_Ab_Right, "Lower_Ab_Right")
+	(Location::Mid_Ab_Left, "Mid_Ab_Left")
+	(Location::Mid_Ab_Right, "Mid_Ab_Right")
+	(Location::Shoulder_Left, "Shoulder_Left")
+	(Location::Shoulder_Right, "Shoulder_Right")
+	(Location::Upper_Ab_Left, "Upper_Ab_Left")
+	(Location::Upper_Ab_Right, "Upper_Ab_Right")
+	(Location::Upper_Arm_Left, "Upper_Arm_Left")
+	(Location::Upper_Arm_Right, "Upper_Arm_Right")
+	(Location::Upper_Back_Left, "Upper_Back_Left")
+	(Location::Upper_Back_Right, "Upper_Back_Right")
 		;
 }

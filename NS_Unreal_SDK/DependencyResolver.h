@@ -12,6 +12,7 @@ class DependencyResolver
 public:
 	DependencyResolver();
 	~DependencyResolver();
+	static Location ComputeLocationSide(JsonLocation loc, Side side);
 };
 
 
@@ -36,5 +37,19 @@ public:
 private:
 	HapticCache<HapticEffect> _cache;
 	unordered_map<string, vector<SequenceItem>> _loadedFiles;
-	static HapticEffect transformSequenceItemIntoEffect(SequenceItem seq, Location loc);
+	static HapticEffect transformSequenceItemIntoEffect(const SequenceItem& seq, Location loc);
+};
+
+class PatternResolver : public IResolvable<PatternArgs, HapticFrame>
+{
+public:
+	PatternResolver(unordered_map<string, vector<Frame>> loadedFiles, std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> seq);
+	~PatternResolver();
+	vector<HapticFrame> Resolve(PatternArgs args) override;
+private:
+	HapticCache<HapticFrame> _cache;
+	unordered_map<string, vector<Frame>> _loadedFiles;
+	std::unique_ptr<IResolvable<SequenceArgs, HapticEffect>> _seqResolver;
+	static HapticFrame transformFrameToHapticFrame(const Frame& frame, Side side);
+	static Side ComputeSidePrecedence(Side inputSide, Side programmaticSide);
 };

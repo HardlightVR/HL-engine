@@ -196,3 +196,16 @@ enum class Duration
 	Infinite = -1,
 	Variable = -2
 };
+
+enum class JsonLocation
+{
+	Shoulder,
+	Upper_Back,
+	Lower_Ab,
+	Mid_Ab,
+	Upper_Ab,
+	Chest,
+	Upper_Arm,
+	Forearm
+
+};

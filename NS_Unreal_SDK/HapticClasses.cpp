@@ -18,3 +18,19 @@ HapticEffect::HapticEffect()
 HapticEffect::~HapticEffect()
 {
 }
+
+HapticSequence::HapticSequence(std::vector<HapticEffect> effects):Effects(effects)
+{
+}
+
+HapticSequence::~HapticSequence()
+{
+}
+
+HapticFrame::HapticFrame(float time, std::vector<HapticSequence> frame, unsigned priority): Time(time), OriginalTime(time), Priority(priority), Frame(frame)
+{
+}
+
+HapticFrame::~HapticFrame()
+{
+}
