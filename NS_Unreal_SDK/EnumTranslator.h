@@ -2,10 +2,13 @@
 #include "StdAfx.h"
 #include "Enums.h"
 #include <unordered_map>
-#include "boost/bimap.hpp"
+#include <boost/bimap.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+#include <boost/bimap/list_of.hpp>
+using namespace boost::bimaps;
 
-typedef boost::bimap<Effect, const char*> EffectMap;
-typedef boost::bimap<Location,const char*> LocationMap;
+typedef bimap<Effect, std::string> EffectMap;
+typedef bimap<Location, std::string> LocationMap;
 
 
 class EnumTranslator
@@ -15,10 +18,10 @@ public:
 	~EnumTranslator();
 	std::string ToString(Location loc);
 	std::string ToString(Effect effect);
-	//Effect ToEffect(const std::string& effect, Effect defaultEffect);
-	Effect ToEffect(std::string effect) const;
-//	Location ToLocation(const std::string& location, Location defaultLocation);
-	Location ToLocation(std::string location) const;
+	Effect ToEffect( std::string effect, Effect defaultEffect);
+	Effect ToEffect(std::string effect);
+	Location ToLocation(std::string location, Location defaultLocation);
+	Location ToLocation(std::string location);
 private:
 	
 	void init_locations();

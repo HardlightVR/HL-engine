@@ -1,7 +1,8 @@
 #include "EnumTranslator.h"
 
 #include <boost/assign/list_of.hpp>
-
+#include <boost/assign/list_inserter.hpp>
+#include <iostream>
 template<typename T> struct map_init_helper
 {
 	T& data;
@@ -19,47 +20,44 @@ template<typename T> map_init_helper<T> map_init(T& item)
 };
 
 std::string EnumTranslator::ToString(Location loc) {
-	//return _locationMap.left[loc];
-	return std::string("hi");
+	return _locationMap.left.at(loc);
 
 }
 
 std::string EnumTranslator::ToString(Effect effect) {
-	//return _effectMap.left[effect];
-	return std::string("hi");
+	return _effectMap.left.at(effect);
+
 
 }
 
-//Effect EnumTranslator::ToEffect(const std::string& effect, Effect defaultEffect)
-//{
-//	if (_effectMap.right.find(effect) != _effectMap.right.end())
-//	{
-//		return _effectMap.right[effect];
-//	}
-//	return defaultEffect;
-//}
-
-Effect EnumTranslator::ToEffect(std::string effect) const
+Effect EnumTranslator::ToEffect(std::string effect, Effect defaultEffect)
 {
-	//return _effectMap.right.at(effect);
-	return Effect::Buzz_100;
+	
+	if (_effectMap.right.find(effect) != _effectMap.right.end())
+	{
+		return _effectMap.right.at(effect);
+	}
+	return defaultEffect;
+}
+
+Effect EnumTranslator::ToEffect(std::string effect) 
+{
+	return _effectMap.right.at(effect);
 }
 
 
-//Location EnumTranslator::ToLocation(std::string location, Location defaultLocation)
-//{
-//	const char* temp = location.c_str();
-//	if (_locationMap.right.find(location) != _locationMap.right.end()) {
-//		return _locationMap.right[location];
-//	}
-//
-//	return defaultLocation;
-//}
-
-Location EnumTranslator::ToLocation(std::string location) const
+Location EnumTranslator::ToLocation(std::string location, Location defaultLocation) 
 {
-	///return _locationMap.right.at(location);
-	return Location::Chest_Left;
+	if (_locationMap.right.find(location) != _locationMap.right.end()) {
+		return _locationMap.right.at(location);
+	}
+	return defaultLocation;
+	
+}
+
+Location EnumTranslator::ToLocation(std::string location) 
+{
+	return _locationMap.right.at(location);
 }
 
 EnumTranslator::EnumTranslator() {
@@ -73,8 +71,10 @@ EnumTranslator::~EnumTranslator()
 {
 }
 void EnumTranslator::init_effects() {
-	_effectMap = boost::assign::map_list_of
-	(Effect::Buzz_100, "Buzz_100")
+
+	//_effectMap = boost::assign::map_list_of
+	boost::assign::insert(_effectMap)
+		(Effect::Buzz_100, "Buzz_100")
 		(Effect::Buzz_20, "Buzz_20")
 		(Effect::Buzz_40, "Buzz_40")
 		(Effect::Buzz_60, "Buzz_60")
@@ -153,7 +153,7 @@ void EnumTranslator::init_effects() {
 }
 
 void EnumTranslator::init_locations() {
-	_locationMap = boost::assign::map_list_of
+	boost::assign::insert(_locationMap)
 	(Location::Chest_Left, "Chest_Left")
 		(Location::Chest_Right, "Chest_Right")
 		(Location::Forearm_Left, "Forearm_Left")

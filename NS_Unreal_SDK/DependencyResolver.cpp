@@ -16,7 +16,7 @@ DependencyResolver::~DependencyResolver()
 
 
 
-SequenceResolver::SequenceResolver(unordered_map<string, vector<SequenceItem>> loadedFiles):
+SequenceResolver::SequenceResolver(unordered_map<string, vector<SequenceItem>> loadedFiles) :
 	_loadedFiles(loadedFiles)
 {
 	
