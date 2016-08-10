@@ -1,16 +1,23 @@
 #pragma once
-#include <string>
 #include "IJsonSerializable.h"
 #include <vector>
 #include <unordered_map>
-#include <exception>
 
 #include "HapticDirectoryTools.h"
-
+#include "Enums.h"
 using namespace HapticDirectoryTools;
 
 
+class SequenceItem;
+class Frame;
+class Sample;
 
+enum class HapticFileType
+{
+	Pattern = 0,
+	Sequence = 1,
+	Experience = 2
+};
 
 class PackageNotFoundException : public std::runtime_error {
 public:
@@ -18,6 +25,7 @@ public:
 	
 };
 
+std::string GetFileType(HapticFileType ftype);
 
 class Parser
 {
@@ -29,6 +37,12 @@ public:
 	void EnumerateHapticFiles();
 	boost::filesystem::path GetDirectory(std::string package);
 	void Traverse(EnumNode node, std::string prefix);
+	static std::vector<std::string> GlueWithTemplate(std::string stemplate, std::string a, const std::vector<std::string>& b);
+	std::vector<SequenceItem> ParseSequence(boost::filesystem::path);
+	std::vector<Frame> ParsePattern(boost::filesystem::path);
+	std::vector<Sample> ParseExperience(boost::filesystem::path);
+	
+
 private:
 	std::string _basePath;
 	std::unordered_map<std::string, boost::filesystem::path> _paths;
@@ -68,4 +82,19 @@ public:
 	std::vector<Frame> Frames;
 	void Deserialize(const Json::Value& root);
 	void Serialize(const Json::Value& root);
+};
+
+
+
+class Sample : public IJsonSerializable
+{
+public:
+	Sample();
+	~Sample();
+	unsigned int Repeat;
+	float Time;
+	std::string Pattern;
+	std::string Side;
+	void Deserialize(const Json::Value& root) override;
+	void Serialize(const Json::Value& root) override;
 };

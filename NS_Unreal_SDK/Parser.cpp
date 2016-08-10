@@ -2,6 +2,20 @@
 #include "json\json.h"
 
 
+std::string GetFileType(HapticFileType ftype)
+{
+	switch (ftype)
+	{
+	case HapticFileType::Experience:
+		return "experience";
+	case HapticFileType::Sequence:
+		return "sequence";
+	case HapticFileType::Pattern:
+		return "pattern";
+	default:
+		return "unrecognized";
+	}
+}
 
 Parser::Parser()
 {
@@ -16,6 +30,7 @@ Parser::Parser(const std::string& path) :
 Parser::~Parser()
 {
 }
+
 
 void Parser::SetBasePath(const std::string& path)
 {
@@ -65,8 +80,63 @@ void Parser::Traverse(EnumNode node, std::string prefix)
 	
 }
 
+std::vector<SequenceItem> Parser::ParseSequence(boost::filesystem::path path)
+{
+	std::vector<SequenceItem> outItems;
+	//check if exists
+	Json::Value root;
+	std::ifstream json(path.string(), std::ifstream::binary);
+	json >> root;
+	if (root.isMember("sequence") && root["sequence"].isArray())
+	{
+		for (auto x : root["sequence"])
+		{
+			SequenceItem s;
+			s.Deserialize(x);
+			outItems.push_back(s);
+		}
+	}
+	return outItems;
+}
 
+std::vector<Frame> Parser::ParsePattern(boost::filesystem::path path)
+{
+	std::vector<Frame> outFrames;
+	//check if exists
+	Json::Value root;
+	std::ifstream json(path.string(), std::ifstream::binary);
+	json >> root;
+	if (root.isMember("pattern") && root["pattern"].isArray())
+	{
+		for (auto x : root["pattern"])
+		{
+			Frame f;
+			f.Deserialize(x);
+			outFrames.push_back(f);
+		}
+	}
+	return outFrames;
+}
 
+std::vector<Sample> Parser::ParseExperience(boost::filesystem::path path)
+{
+	std::vector<Sample> outSamples;
+	//check if exists
+	Json::Value root;
+	std::ifstream json(path.string(), std::ifstream::binary);
+	json >> root;
+	if (root.isMember("experience") && root["experience"].isArray())
+	{
+		for (auto x : root["experience"])
+		{
+			Sample s;
+			s.Deserialize(x);
+			outSamples.push_back(s);
+		}
+	}
+	return outSamples;
+	
+}
 
 void SequenceItem::Serialize(const Json::Value& root) {
 
@@ -112,6 +182,26 @@ void Frame::Deserialize(const Json::Value& root) {
 
 void Pattern::Serialize(const Json::Value& root) {
 
+}
+
+Sample::Sample()
+{
+}
+
+Sample::~Sample()
+{
+}
+
+void Sample::Deserialize(const Json::Value& root)
+{
+	Side = root.get("side", "INVALID_SIDE").asString();
+	Pattern = root.get("pattern", "INVALID_PATTERN").asString();
+	Time = root.get("time", 0.0).asFloat();
+	Repeat = root.get("repeat", 0).asUInt();
+}
+
+void Sample::Serialize(const Json::Value& root)
+{
 }
 
 void Pattern::Deserialize(const Json::Value& root) {

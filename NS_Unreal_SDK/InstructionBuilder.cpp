@@ -56,7 +56,7 @@ bool InstructionBuilder::Verify() {
 
 std::string InstructionBuilder::GetDebugString() {
 	std::string description = this->_instruction + ": ";
-	int index = 0;
+	std::size_t index = 0;
 	for (auto param : this->_parameters)
 	{
 		index++;
@@ -98,8 +98,7 @@ Packet InstructionBuilder::Build() {
 
 bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t>& dict, Json::Value json) {
 	auto names = json.getMemberNames();
-	std::ofstream myfile;
-	myfile.open("keyval_" + names[0] + ".txt");
+
 
 	for (std::string key : names) {
 		std::string val = json.get(key, "0x00").asString();
@@ -107,7 +106,6 @@ bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t>& dict,
 		uint8_t hex[1]{ 0 };
 		HexStringToInt(hexChars, hex);
 		dict[key] = hex[0];
-		myfile <<  "(Effect::" + key + ", \""+ key + "\")\n";
 	}
 	
 

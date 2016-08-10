@@ -133,11 +133,13 @@
     <ClCompile Include="HapticDirectoryTools.cpp" />
     <ClCompile Include="enumser.cpp" />
     <ClCompile Include="EnumTranslator.cpp" />
+    <ClCompile Include="HapticFileInfo.cpp" />
     <ClCompile Include="HexUtils.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
     <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="JsonSerializer.h" />
+    <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Packet.cpp" />
@@ -160,6 +162,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
     <ClInclude Include="EnumTranslator.h" />
+    <ClInclude Include="HapticFileInfo.h" />
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />
@@ -167,6 +170,7 @@
     <ClInclude Include="InstructionBuilder.h" />
     <ClInclude Include="json\json-forwards.h" />
     <ClInclude Include="json\json.h" />
+    <ClInclude Include="Loader.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />

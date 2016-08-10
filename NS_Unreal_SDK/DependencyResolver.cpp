@@ -13,8 +13,10 @@ public:
 
 DependencyResolver::DependencyResolver(const std::string& basePath)
 {
-	_sequenceResolver = std::make_unique<IResolvable<SequenceArgs, HapticEffect>>(new SequenceResolver());
-	_patternResolver = std::make_unique<IResolvable<PatternArgs, HapticFrame>>(new PatternResolver());
+//	_sequenceResolver = std::make_unique<IResolvable<SequenceArgs, HapticEffect>>(new SequenceResolver());
+	//_patternResolver = std::make_unique<IResolvable<PatternArgs, HapticFrame>>(new PatternResolver());
+//	_experienceResolver = std::make_unique<IResolvable<ExperienceArgs, HapticSample>>(new ExperienceResolver());
+
 
 }
 
@@ -49,8 +51,8 @@ Location DependencyResolver::ComputeLocationSide(JsonLocation location, Side sid
 }
 
 
-SequenceResolver::SequenceResolver(std::unique_ptr<unordered_map<string, vector<SequenceItem>>> loadedFiles) :
-	_loadedFiles(std::move(loadedFiles))
+SequenceResolver::SequenceResolver(std::shared_ptr<unordered_map<string, vector<SequenceItem>>> loadedFiles) :
+	_loadedFiles(loadedFiles)
 {
 	
 }
@@ -89,8 +91,8 @@ HapticEffect SequenceResolver::transformSequenceItemIntoEffect(const SequenceIte
 	return HapticEffect(Effect::Strong_Click_100, loc, seq.Duration, seq.Time, 1);
 }
 
-PatternResolver::PatternResolver(std::unique_ptr<unordered_map<string, vector<Frame>>> loadedFiles, std::unique_ptr<IResolvable<SequenceArgs, HapticEffect>> seq)
-	:_loadedFiles(std::move(loadedFiles)), _seqResolver(std::move(seq))
+PatternResolver::PatternResolver(std::shared_ptr<unordered_map<string, vector<Frame>>> loadedFiles, std::unique_ptr<IResolvable<SequenceArgs, HapticEffect>> seq)
+	:_loadedFiles(loadedFiles), _seqResolver(std::move(seq))
 {
 }
 
@@ -176,8 +178,8 @@ Side PatternResolver::ComputeSidePrecedence(Side inputSide, Side programmaticSid
 	}
 }
 
-ExperienceResolver::ExperienceResolver(std::unique_ptr<unordered_map<string, vector<Moment>>> files, std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> pat):
-	_loadedFiles(std::move(files)), _patResolver(std::move(pat))
+ExperienceResolver::ExperienceResolver(std::shared_ptr<unordered_map<string, vector<Moment>>> files, std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> pat):
+	_loadedFiles(files), _patResolver(std::move(pat))
 {
 }
 
