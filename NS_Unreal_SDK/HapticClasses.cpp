@@ -49,6 +49,10 @@ Moment::Moment(std::string name, float t, ::Side side):Name(name), Time(t), Side
 {
 }
 
+Moment::Moment():Time(0), Side(Side::NotSpecified)
+{
+}
+
 Moment::~Moment()
 {
 }

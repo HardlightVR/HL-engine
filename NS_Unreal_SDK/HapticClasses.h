@@ -52,5 +52,6 @@ public:
 	float Time;
 	Side Side;
 	Moment(std::string name, float t, ::Side side = Side::Inherit);
+	Moment();
 	~Moment();
 };
