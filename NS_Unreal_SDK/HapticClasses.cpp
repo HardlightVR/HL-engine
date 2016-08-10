@@ -34,3 +34,21 @@ HapticFrame::HapticFrame(float time, std::vector<HapticSequence> frame, unsigned
 HapticFrame::~HapticFrame()
 {
 }
+
+HapticSample::HapticSample(float time, std::vector<HapticFrame> frames, unsigned priority):
+Priority(priority * 100 + 1000), Time(time), OriginalTime(time), Frames(frames)
+
+{
+}
+
+HapticSample::~HapticSample()
+{
+}
+
+Moment::Moment(std::string name, float t, ::Side side):Name(name), Time(t), Side(side)
+{
+}
+
+Moment::~Moment()
+{
+}

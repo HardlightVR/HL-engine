@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "HapticArgs.h"
+#include <memory>
 template<class T>
 class HapticCache
 {
@@ -31,6 +32,7 @@ template <class T>
 void HapticCache<T>::Cache(const HapticArgs& href, std::vector<T> data)
 {
 	_resolvedHaptics[href.GetCombinedHash()] = data;
+	
 }
 
 template <class T>
@@ -38,7 +40,7 @@ std::vector<T> HapticCache<T>::Get(const HapticArgs& href)
 {
 	if (_resolvedHaptics.find(href.GetCombinedHash()) != _resolvedHaptics.end())
 	{
-		//return _resolvedHaptics[href.GetCombinedHash()];
+		return _resolvedHaptics[href.GetCombinedHash()];
 	}
 
 	return std::vector<T>();

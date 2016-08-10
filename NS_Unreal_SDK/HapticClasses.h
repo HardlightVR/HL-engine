@@ -34,3 +34,23 @@ public:
 	std::vector<HapticSequence> Frame;
 };
 
+class HapticSample
+{
+public:
+	unsigned int Priority;
+	float Time;
+	float OriginalTime;
+	std::vector<HapticFrame> Frames;
+	HapticSample(float time, std::vector<HapticFrame> frames, unsigned int priority);
+	~HapticSample();
+};
+
+class Moment
+{
+public:
+	std::string Name;
+	float Time;
+	Side Side;
+	Moment(std::string name, float t, ::Side side = Side::Inherit);
+	~Moment();
+};
