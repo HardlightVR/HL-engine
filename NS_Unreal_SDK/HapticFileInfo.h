@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "Parser.h"
 #include "HapticArgs.h"
 #include <boost/algorithm/string.hpp>

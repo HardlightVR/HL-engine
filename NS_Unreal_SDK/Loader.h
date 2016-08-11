@@ -63,7 +63,7 @@ private:
 	shared_ptr<Parser> _parser;
 	unordered_map<string, vector<Moment>> _experiences;
 	
-	void loadExperience(const std::string& id, boost::filesystem::path path) const;
+	void loadExperience(std::string id, boost::filesystem::path path);
 	float getLatestTime(const std::string& patternName) const;
 };
 class Loader
@@ -74,10 +74,10 @@ public:
 	shared_ptr<PatternLoader> GetPatternLoader() const;
 	shared_ptr<SequenceLoader> GetSequenceLoader() const;
 	shared_ptr<ExperienceLoader> GetExperienceLoader() const;
-
+	bool Load(const HapticFileInfo& fileInfo) const;
 
 private:
-	Parser _parser;
+	shared_ptr<Parser> _parser;
 	shared_ptr<PatternLoader> _patternLoader;
 	shared_ptr<ExperienceLoader> _experienceLoader;
 	shared_ptr<SequenceLoader> _sequenceLoader;

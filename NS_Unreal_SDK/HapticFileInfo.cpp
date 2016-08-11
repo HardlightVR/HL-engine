@@ -12,7 +12,7 @@ std::vector<std::string> Glue(std::string firstPart, std::string separator, cons
 }
 
 
-const std::string HapticFileInfo::_packageSeparator = ":";
+const std::string HapticFileInfo::_packageSeparator = ".";
 std::string HapticFileInfo::getPackage(std::string thing)
 {
 	std::vector<std::string> parts;
@@ -39,7 +39,7 @@ SequenceFileInfo::~SequenceFileInfo()
 
 std::vector<std::string> SequenceFileInfo::GetValidFileNames() const
 {
-	return Glue(Name, ".", { "seq", ".sequence" });
+	return Glue(Name, ".", { "seq", "sequence" });
 }
 
 std::string SequenceFileInfo::GetDirectory() const

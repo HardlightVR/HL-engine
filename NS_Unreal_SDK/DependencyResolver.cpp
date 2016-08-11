@@ -1,7 +1,7 @@
 #include "DependencyResolver.h"
 #include "Locator.h"
 #include <iostream>
-
+#include "HapticFileInfo.h"
 
 class HapticsNotLoadedException : public std::runtime_error {
 public:
@@ -57,6 +57,10 @@ std::vector<HapticEffect> DependencyResolver::ResolveSequence(const std::string 
 	return _sequenceResolver->Resolve(SequenceArgs(name, location));
 }
 
+bool DependencyResolver::Load(const HapticFileInfo& fileInfo) const
+{
+	return _loader.Load(fileInfo);
+}
 
 
 SequenceResolver::~SequenceResolver()
@@ -80,7 +84,8 @@ vector<HapticEffect> SequenceResolver::Resolve(SequenceArgs args)
 	}
 
 	vector<SequenceItem> inputItems = _sequenceLoader->GetLoadedResource(args.Name);
-	vector<HapticEffect> outputEffects(inputItems.size());
+	vector<HapticEffect> outputEffects;
+	outputEffects.reserve(inputItems.size());
 	for (auto seqItem : inputItems)
 	{
 		outputEffects.push_back(transformSequenceItemIntoEffect(seqItem, args.Location));
@@ -94,7 +99,7 @@ HapticEffect SequenceResolver::transformSequenceItemIntoEffect(const SequenceIte
 {
 	//TODO: priority and explain default values
 	Effect effect = Locator::getTranslator().ToEffect(seq.Waveform, Effect::Buzz_100);
-	return HapticEffect(Effect::Strong_Click_100, loc, seq.Duration, seq.Time, 1);
+	return HapticEffect(effect, loc, seq.Duration, seq.Time, 1);
 }
 
 PatternResolver::PatternResolver(shared_ptr<IResolvable<SequenceArgs, HapticEffect>>  seq, shared_ptr<PatternLoader> p)

@@ -5,12 +5,13 @@
 
 using namespace boost::filesystem;
 
-Loader::Loader(const std::string& basePath): _parser(basePath)
+Loader::Loader(const std::string& basePath): _parser(std::make_shared<Parser>(basePath))
 {
-	auto sharedParser = std::make_shared<Parser>(_parser);
-	_sequenceLoader = std::make_shared<SequenceLoader>(sharedParser);
-	_patternLoader = std::make_shared<PatternLoader>(sharedParser, _sequenceLoader);
-	_experienceLoader = std::make_shared<ExperienceLoader>(sharedParser, _patternLoader);
+	_sequenceLoader = std::make_shared<SequenceLoader>(_parser);
+	_patternLoader = std::make_shared<PatternLoader>(_parser, _sequenceLoader);
+	_experienceLoader = std::make_shared<ExperienceLoader>(_parser, _patternLoader);
+
+	_parser->EnumerateHapticFiles();
 }
 
 
@@ -33,6 +34,20 @@ shared_ptr<ExperienceLoader> Loader::GetExperienceLoader() const
 	return _experienceLoader;
 }
 
+bool Loader::Load(const HapticFileInfo& fileInfo) const
+{
+	switch (fileInfo.FileType)
+	{
+	case HapticFileType::Pattern:
+		return _patternLoader->Load(fileInfo);
+	case HapticFileType::Sequence:
+		return _sequenceLoader->Load(fileInfo);
+	case HapticFileType::Experience:
+		return _experienceLoader->Load(fileInfo);
+	}
+	return false;
+}
+
 SequenceLoader::SequenceLoader(shared_ptr<Parser> p)
 	:_parser(p) {
 }
@@ -48,14 +63,14 @@ bool SequenceLoader::Load(const HapticFileInfo& fileInfo)
 	}
 
 	auto validNames = fileInfo.GetValidFileNames();
-	path directory = _parser->GetDirectory(fileInfo.FullyQualifiedPackage) /= fileInfo.GetDirectory();
+	const path directory = _parser->GetDirectory(fileInfo.FullyQualifiedPackage) /= fileInfo.GetDirectory();
 	for (auto name : validNames)
 	{
-		
-		auto path = directory /= name;
+		auto dir = directory;
+		auto path = dir /= name;
 		if (exists(path)) {
 			vector<SequenceItem> sequence = _parser->ParseSequence(path);
-			_sequences.at(fileInfo.FullId) = sequence;
+			_sequences[fileInfo.FullId] = sequence;
 			return true;
 		} 
 		
@@ -92,7 +107,7 @@ bool PatternLoader::Load(const HapticFileInfo& fileInfo)
 		auto path = directory /= name;
 		if (exists(path)) {
 			vector<Frame> pattern = _parser->ParsePattern(path);
-			_patterns.at(fileInfo.FullId) = pattern;
+			_patterns[fileInfo.FullId] = pattern;
 			loadAllSequences(pattern);
 			return true;
 		}
@@ -154,10 +169,11 @@ vector<Moment> ExperienceLoader::GetLoadedResource(const std::string & key)
 	return _experiences.at(key);
 }
 
-void ExperienceLoader::loadExperience(const std::string& id, path path) const
+void ExperienceLoader::loadExperience(std::string id, path path)
 {
 	vector<Sample> unprocessedSamples = _parser->ParseExperience(path);
-	vector<Moment> processedSamples(unprocessedSamples.size());
+	vector<Moment> processedSamples;
+	processedSamples.reserve(unprocessedSamples.size());
 
 	for (const auto sample : unprocessedSamples)
 	{
@@ -175,6 +191,8 @@ void ExperienceLoader::loadExperience(const std::string& id, path path) const
 			}
 		}
 	}
+
+	_experiences[id] = processedSamples;
 
 
 }
