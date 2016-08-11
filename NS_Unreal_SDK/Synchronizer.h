@@ -2,7 +2,10 @@
 #include "StdAfx.h"
 #include "PacketDispatcher.h"
 #include <boost/circular_buffer.hpp>
-
+struct packet
+{
+	uint8_t raw[8];
+};
 typedef boost::circular_buffer<uint8_t> CircularBuffer;
 class Synchronizer
 {
@@ -32,7 +35,7 @@ private:
 	void confirmSync();
 	void monitorSync();
 	void confirmSyncLoss();
-	uint8_t* dequeuePacket();
-	bool packetIsWellFormed(uint8_t* packet);
+	packet dequeuePacket();
+	bool packetIsWellFormed(packet p);
 };
 

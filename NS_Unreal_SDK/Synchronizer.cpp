@@ -1,10 +1,7 @@
 #include "Synchronizer.h"
 
 
-struct packet
-{
-	uint8_t raw[8];
-};
+
 
 bool Synchronizer::Synchronized()
 {
@@ -66,7 +63,7 @@ void Synchronizer::searchForSync()
 		return;
 	}
 
-	uint8_t* possiblePacket = dequeuePacket();
+	packet possiblePacket = dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
 		this->syncState = Synchronizer::State::ConfirmingSync;
 		return;
@@ -85,7 +82,7 @@ void Synchronizer::searchForSync()
 
 void Synchronizer::confirmSync()
 {
-	uint8_t* possiblePacket = this->dequeuePacket();
+	packet possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
 		this->syncState = State::Synchronized;
 	}
@@ -96,7 +93,7 @@ void Synchronizer::confirmSync()
 
 void Synchronizer::monitorSync()
 {
-	uint8_t* possiblePacket = this->dequeuePacket();
+	packet possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
 	//	this->dispatcher.Dispatch(possiblePacket);
 	}
@@ -108,7 +105,7 @@ void Synchronizer::monitorSync()
 
 void Synchronizer::confirmSyncLoss()
 {
-	uint8_t* possiblePacket = this->dequeuePacket();
+	packet possiblePacket = this->dequeuePacket();
 	if (!this->packetIsWellFormed(possiblePacket)) {
 		this->badSyncCounter++;
 		if (this->badSyncCounter >= BAD_SYNC_LIMIT) {
