@@ -1,7 +1,10 @@
 #include "Synchronizer.h"
 
 
-
+struct packet
+{
+	uint8_t raw[8];
+};
 
 bool Synchronizer::Synchronized()
 {
@@ -16,7 +19,7 @@ Synchronizer::State Synchronizer::SyncState()
 void Synchronizer::TryReadPacket()
 {
 	//if (this->dataStream.Length < this.packetLength
-	if (dataStream) {
+	if (_dataStream) {
 		return;
 	}
 
@@ -39,9 +42,10 @@ void Synchronizer::TryReadPacket()
 	}
 }
 
-Synchronizer::Synchronizer(std::shared_ptr<ByteQueue> dataStream, std::shared_ptr<PacketDispatcher> dispatcher) :
-	dispatcher(dispatcher),
-	dataStream(dataStream),
+
+Synchronizer::Synchronizer(std::shared_ptr<CircularBuffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher) :
+	_dispatcher(dispatcher),
+	_dataStream(dataStream),
 	packetLength(16),
 	packetDelimiter('$'),
 	syncState(Synchronizer::State::SearchingForSync),
@@ -58,7 +62,7 @@ Synchronizer::~Synchronizer()
 void Synchronizer::searchForSync()
 {
 	//this->dataStream.Length < this->packetLength * 2
-	if (true) {
+	if (this->_dataStream->size() < this->packetLength * 2) {
 		return;
 	}
 
@@ -73,7 +77,7 @@ void Synchronizer::searchForSync()
 		if (possiblePacket[offset] == this->packetDelimiter) {
 			std::size_t howMuchLeft = this->packetLength - offset;
 			//this->dataStream.Dequeue(possiblePacket, 0, howMuchLeft);
-			this->syncState = Synchronizer::State::ConfirmingSync;
+			this->syncState = State::ConfirmingSync;
 			return;
 		}
 	}
@@ -83,10 +87,10 @@ void Synchronizer::confirmSync()
 {
 	uint8_t* possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
-		this->syncState = Synchronizer::State::Synchronized;
+		this->syncState = State::Synchronized;
 	}
 	else {
-		this->syncState = Synchronizer::State::SearchingForSync;
+		this->syncState = State::SearchingForSync;
 	}
 }
 
@@ -117,11 +121,16 @@ void Synchronizer::confirmSyncLoss()
 	}
 }
 
-uint8_t * Synchronizer::dequeuePacket()
+packet Synchronizer::dequeuePacket()
 {
-	uint8_t* possiblePacket = new uint8_t[this->packetLength];
-	//this->dataStream.Dequeue(possiblePacket, 0, this->packetLength);
-	return possiblePacket;
+	packet p;
+		
+	std::copy(_dataStream->end(), _dataStream->end() - 8, p.raw);
+	for (std::size_t i = 0; i < packetLength; ++i)
+	{
+		_dataStream->pop_back();
+	}
+	return p;
 
 }
 
