@@ -8,9 +8,9 @@ using namespace boost::filesystem;
 Loader::Loader(const std::string& basePath): _parser(basePath)
 {
 	auto sharedParser = std::make_shared<Parser>(_parser);
-	_sequenceLoader = std::make_unique<SequenceLoader>(sharedParser, Sequences);
-	_patternLoader = std::make_unique<PatternLoader>(sharedParser, std::move(_sequenceLoader), Patterns);
-	_experienceLoader = std::make_unique<ExperienceLoader>(sharedParser, std::move(_patternLoader), Experiences, Patterns);
+	_sequenceLoader = std::make_shared<SequenceLoader>(sharedParser);
+	_patternLoader = std::make_shared<PatternLoader>(sharedParser, _sequenceLoader);
+	_experienceLoader = std::make_shared<ExperienceLoader>(sharedParser, _patternLoader);
 }
 
 
@@ -18,10 +18,23 @@ Loader::~Loader()
 {
 }
 
+shared_ptr<PatternLoader> Loader::GetPatternLoader() const
+{
+	return _patternLoader;
+}
 
+shared_ptr<SequenceLoader> Loader::GetSequenceLoader() const
+{
+	return _sequenceLoader;
+}
 
-SequenceLoader::SequenceLoader(shared_ptr<Parser> p, unordered_map<string, vector<SequenceItem>>& s)
-	:_parser(p), _sequences(s) {
+shared_ptr<ExperienceLoader> Loader::GetExperienceLoader() const
+{
+	return _experienceLoader;
+}
+
+SequenceLoader::SequenceLoader(shared_ptr<Parser> p)
+	:_parser(p) {
 }
 
 SequenceLoader::~SequenceLoader()
@@ -52,8 +65,13 @@ bool SequenceLoader::Load(const HapticFileInfo& fileInfo)
 	return false;
 }
 
-PatternLoader::PatternLoader(shared_ptr<Parser> p, unique_ptr<SequenceLoader> seq,unordered_map<string, vector<Frame>>& files)
-:_sequenceLoader(std::move(seq)), _parser(p), _patterns(files){
+vector<SequenceItem> SequenceLoader::GetLoadedResource(const std::string& key)
+{
+	return _sequences.at(key);
+}
+
+PatternLoader::PatternLoader(shared_ptr<Parser> p, shared_ptr<SequenceLoader> seq)
+:_sequenceLoader(std::move(seq)), _parser(p){
 }
 
 PatternLoader::~PatternLoader()
@@ -83,6 +101,11 @@ bool PatternLoader::Load(const HapticFileInfo& fileInfo)
 	return false;
 }
 
+vector<Frame> PatternLoader::GetLoadedResource(const std::string & key)
+{
+	return _patterns.at(key);
+}
+
 void PatternLoader::loadAllSequences(vector<Frame> pattern) const
 {
 	for (auto frame : pattern)
@@ -95,8 +118,8 @@ void PatternLoader::loadAllSequences(vector<Frame> pattern) const
 	}
 }
 
-ExperienceLoader::ExperienceLoader(shared_ptr<Parser> p, unique_ptr<PatternLoader> pat, unordered_map<string, vector<Moment>>& moments, unordered_map<string, vector<Frame>>& frames)
-	:_patternLoader(std::move(pat)), _parser(p), _experiences(moments), _patterns(frames)
+ExperienceLoader::ExperienceLoader(shared_ptr<Parser> p, shared_ptr<PatternLoader> pat)
+	:_patternLoader(std::move(pat)), _parser(p)
 {
 }
 
@@ -126,7 +149,12 @@ bool ExperienceLoader::Load(const HapticFileInfo& fileInfo)
 	return false;
 }
 
-void ExperienceLoader::loadExperience(const std::string& id, boost::filesystem::path path) const
+vector<Moment> ExperienceLoader::GetLoadedResource(const std::string & key)
+{
+	return _experiences.at(key);
+}
+
+void ExperienceLoader::loadExperience(const std::string& id, path path) const
 {
 	vector<Sample> unprocessedSamples = _parser->ParseExperience(path);
 	vector<Moment> processedSamples(unprocessedSamples.size());
@@ -153,7 +181,8 @@ void ExperienceLoader::loadExperience(const std::string& id, boost::filesystem::
 
 float ExperienceLoader::getLatestTime(const std::string& patternName) const
 {
-	auto pattern = _patterns.at(patternName);
+	
+	auto pattern = _patternLoader->GetLoadedResource(patternName);
 	float latestTime = 0;
 	for (auto frame : pattern)
 	{

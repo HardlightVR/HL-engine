@@ -13,9 +13,9 @@ public:
 
 DependencyResolver::DependencyResolver(const std::string& basePath): _loader(basePath)
 {
-	_sequenceResolver = make_unique<SequenceResolver>(_loader.Sequences);
-	_patternResolver = std::make_unique<PatternResolver>(_loader.Patterns, _sequenceResolver);
-	_experienceResolver = std::make_unique<ExperienceResolver>(_loader.Experiences, _patternResolver);
+	_sequenceResolver = make_shared<SequenceResolver>(_loader.GetSequenceLoader());
+	_patternResolver = make_shared<PatternResolver>(_sequenceResolver, _loader.GetPatternLoader());
+	_experienceResolver = make_shared<ExperienceResolver>(_patternResolver, _loader.GetExperienceLoader());
 
 
 }
@@ -58,29 +58,28 @@ std::vector<HapticEffect> DependencyResolver::ResolveSequence(const std::string 
 }
 
 
-SequenceResolver::SequenceResolver(unordered_map<string, vector<SequenceItem>>& loadedFiles) :
-	_loadedFiles(loadedFiles)
-{
-	
-}
 
 SequenceResolver::~SequenceResolver()
 {
 }
 
+SequenceResolver::SequenceResolver(shared_ptr<SequenceLoader> loader) :_sequenceLoader(loader)
+{
+}
+
 vector<HapticEffect> SequenceResolver::Resolve(SequenceArgs args)
 {
-	if (_loadedFiles.find(args.Name) != _loadedFiles.end())
-	{
-		throw HapticsNotLoadedException(args);
-	}
+	//if (_loadedFiles.find(args.Name) != _loadedFiles.end())
+	//{
+	//	throw HapticsNotLoadedException(args);
+	//}
 
 	if (_cache.Contains(args))
 	{
 		return _cache.Get(args);
 	}
 
-	vector<SequenceItem> inputItems = _loadedFiles.at(args.Name);
+	vector<SequenceItem> inputItems = _sequenceLoader->GetLoadedResource(args.Name);
 	vector<HapticEffect> outputEffects(inputItems.size());
 	for (auto seqItem : inputItems)
 	{
@@ -98,8 +97,9 @@ HapticEffect SequenceResolver::transformSequenceItemIntoEffect(const SequenceIte
 	return HapticEffect(Effect::Strong_Click_100, loc, seq.Duration, seq.Time, 1);
 }
 
-PatternResolver::PatternResolver(unordered_map<string, vector<Frame>>& loadedFiles, unique_ptr<IResolvable<SequenceArgs, HapticEffect>> const& seq)
-:_loadedFiles(loadedFiles), _seqResolver(seq){
+PatternResolver::PatternResolver(shared_ptr<IResolvable<SequenceArgs, HapticEffect>>  seq, shared_ptr<PatternLoader> p)
+: _patternLoader(p), _seqResolver(seq)
+{
 }
 
 
@@ -111,10 +111,10 @@ PatternResolver::~PatternResolver()
 
 vector<HapticFrame> PatternResolver::Resolve(PatternArgs args)
 {
-	if (_loadedFiles.find(args.Name) != _loadedFiles.end())
-	{
-		throw HapticsNotLoadedException(args);
-	}
+	////if (_loadedFiles.find(args.Name) != _loadedFiles.end())
+	//{
+	//	throw HapticsNotLoadedException(args);
+//	}
 
 	if (_cache.Contains(args))
 	{
@@ -122,7 +122,7 @@ vector<HapticFrame> PatternResolver::Resolve(PatternArgs args)
 	}
 
 	std::vector<HapticFrame> outFrames;
-	for (auto frame : _loadedFiles.at(args.Name))
+	for (auto frame : _patternLoader->GetLoadedResource(args.Name))
 	{
 		outFrames.push_back(transformFrameToHapticFrame(frame, args.Side));
 	}
@@ -186,8 +186,8 @@ Side PatternResolver::ComputeSidePrecedence(Side inputSide, Side programmaticSid
 	}
 }
 
-ExperienceResolver::ExperienceResolver(unordered_map<string, vector<Moment>>& files, std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> pat):
-	_loadedFiles(files), _patResolver(std::move(pat))
+ExperienceResolver::ExperienceResolver(shared_ptr<IResolvable<PatternArgs, HapticFrame>> pat, shared_ptr<ExperienceLoader> el):
+	_experienceLoader(el), _patResolver(pat)
 {
 }
 
@@ -197,10 +197,10 @@ ExperienceResolver::~ExperienceResolver()
 
 vector<HapticSample> ExperienceResolver::Resolve(ExperienceArgs args)
 {
-	if (_loadedFiles.find(args.Name) != _loadedFiles.end())
-	{
-		throw HapticsNotLoadedException(args);
-	}
+	//if (_loadedFiles.find(args.Name) != _loadedFiles.end())
+	//{
+	//	throw HapticsNotLoadedException(args);
+	//}
 
 	if (_cache.Contains(args))
 	{
@@ -208,7 +208,7 @@ vector<HapticSample> ExperienceResolver::Resolve(ExperienceArgs args)
 	}
 
 	std::vector<HapticSample> outSamples;
-	for (auto moment : _loadedFiles.at(args.Name))
+	for (auto moment : _experienceLoader->GetLoadedResource(args.Name))
 	{
 		outSamples.push_back(transformMomentToHapticSample(moment, args.Side));
 	}

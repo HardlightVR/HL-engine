@@ -28,9 +28,9 @@ public:
 	std::vector<HapticEffect> ResolveSequence(const std::string& name, Location location) const;
 
 private:
-	std::unique_ptr<IResolvable<SequenceArgs, HapticEffect>> _sequenceResolver;
-	std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> _patternResolver;
-	std::unique_ptr<IResolvable<ExperienceArgs, HapticSample>> _experienceResolver;
+	shared_ptr<IResolvable<SequenceArgs, HapticEffect>> _sequenceResolver;
+	shared_ptr<IResolvable<PatternArgs, HapticFrame>> _patternResolver;
+	shared_ptr<IResolvable<ExperienceArgs, HapticSample>> _experienceResolver;
 	Loader _loader;
 	
 };
@@ -41,25 +41,25 @@ private:
 class SequenceResolver : public IResolvable<SequenceArgs, HapticEffect>
 {
 public:
-	SequenceResolver(unordered_map<string, vector<SequenceItem>>& loadedFiles);
+	SequenceResolver(shared_ptr<SequenceLoader> loader);
 	~SequenceResolver();
 	vector<HapticEffect> Resolve(SequenceArgs args) override;
 private:
 	HapticCache<HapticEffect> _cache;
-	unordered_map<string, vector<SequenceItem>>& _loadedFiles;
+	shared_ptr<SequenceLoader> _sequenceLoader;
 	static HapticEffect transformSequenceItemIntoEffect(const SequenceItem& seq, Location loc);
 };
 
 class PatternResolver : public IResolvable<PatternArgs, HapticFrame>
 {
 public:
-	PatternResolver(unordered_map<string, vector<Frame>>& loadedFiles, unique_ptr<IResolvable<SequenceArgs, HapticEffect>> const& seq);
+	PatternResolver(shared_ptr<IResolvable<SequenceArgs, HapticEffect>>  seq, shared_ptr<PatternLoader>);
 	~PatternResolver();
 	vector<HapticFrame> Resolve(PatternArgs args) override;
 private:
 	HapticCache<HapticFrame> _cache;
-	unordered_map<string, vector<Frame>>& _loadedFiles;
-	unique_ptr<IResolvable<SequenceArgs, HapticEffect>> const& _seqResolver;
+	shared_ptr<PatternLoader> _patternLoader;
+	shared_ptr<IResolvable<SequenceArgs, HapticEffect>>  _seqResolver;
 	HapticFrame transformFrameToHapticFrame(const Frame& frame, Side side) const;
 	static Side ComputeSidePrecedence(Side inputSide, Side programmaticSide);
 };
@@ -67,12 +67,12 @@ private:
 class ExperienceResolver : public IResolvable<ExperienceArgs, HapticSample>
 {
 public:
-	ExperienceResolver(unordered_map<string, vector<Moment>>&, std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> pat);
+	ExperienceResolver(shared_ptr<IResolvable<PatternArgs, HapticFrame>> pat, shared_ptr<ExperienceLoader> el);
 	~ExperienceResolver();
 	vector<HapticSample> Resolve(ExperienceArgs args) override;
 private:
 	HapticCache<HapticSample> _cache;
-	unordered_map<string, vector<Moment>>& _loadedFiles;
-	std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> _patResolver;
+	shared_ptr<ExperienceLoader> _experienceLoader;
+	shared_ptr<IResolvable<PatternArgs, HapticFrame>> _patResolver;
 	HapticSample transformMomentToHapticSample(Moment moment, Side side) const;
 };
