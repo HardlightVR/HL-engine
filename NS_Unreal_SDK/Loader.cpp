@@ -5,9 +5,12 @@
 
 using namespace boost::filesystem;
 
-Loader::Loader(std::shared_ptr<Parser> parser): _parser(parser)
+Loader::Loader(const std::string& basePath): _parser(basePath)
 {
-
+	auto sharedParser = std::make_shared<Parser>(_parser);
+	_sequenceLoader = std::make_unique<SequenceLoader>(sharedParser, Sequences);
+	_patternLoader = std::make_unique<PatternLoader>(sharedParser, std::move(_sequenceLoader), Patterns);
+	_experienceLoader = std::make_unique<ExperienceLoader>(sharedParser, std::move(_patternLoader), Experiences, Patterns);
 }
 
 
@@ -15,7 +18,9 @@ Loader::~Loader()
 {
 }
 
-SequenceLoader::SequenceLoader(shared_ptr<Parser> p, shared_ptr<unordered_map<string, vector<SequenceItem>>> s)
+
+
+SequenceLoader::SequenceLoader(shared_ptr<Parser> p, unordered_map<string, vector<SequenceItem>>& s)
 	:_parser(p), _sequences(s) {
 }
 
@@ -25,7 +30,7 @@ SequenceLoader::~SequenceLoader()
 
 bool SequenceLoader::Load(const HapticFileInfo& fileInfo)
 {
-	if (_sequences->find(fileInfo.FullId) != _sequences->end()) {
+	if (_sequences.find(fileInfo.FullId) != _sequences.end()) {
 		return true;
 	}
 
@@ -37,7 +42,7 @@ bool SequenceLoader::Load(const HapticFileInfo& fileInfo)
 		auto path = directory /= name;
 		if (exists(path)) {
 			vector<SequenceItem> sequence = _parser->ParseSequence(path);
-			_sequences->at(fileInfo.FullId) = sequence;
+			_sequences.at(fileInfo.FullId) = sequence;
 			return true;
 		} 
 		
@@ -47,7 +52,7 @@ bool SequenceLoader::Load(const HapticFileInfo& fileInfo)
 	return false;
 }
 
-PatternLoader::PatternLoader(shared_ptr<Parser> p, unique_ptr<SequenceLoader> seq, shared_ptr<unordered_map<string, vector<Frame>>> files)
+PatternLoader::PatternLoader(shared_ptr<Parser> p, unique_ptr<SequenceLoader> seq,unordered_map<string, vector<Frame>>& files)
 :_sequenceLoader(std::move(seq)), _parser(p), _patterns(files){
 }
 
@@ -57,7 +62,7 @@ PatternLoader::~PatternLoader()
 
 bool PatternLoader::Load(const HapticFileInfo& fileInfo)
 {
-	if (_patterns->find(fileInfo.FullId) != _patterns->end()) {
+	if (_patterns.find(fileInfo.FullId) != _patterns.end()) {
 		return true;
 	}
 
@@ -69,7 +74,7 @@ bool PatternLoader::Load(const HapticFileInfo& fileInfo)
 		auto path = directory /= name;
 		if (exists(path)) {
 			vector<Frame> pattern = _parser->ParsePattern(path);
-			_patterns->at(fileInfo.FullId) = pattern;
+			_patterns.at(fileInfo.FullId) = pattern;
 			loadAllSequences(pattern);
 			return true;
 		}
@@ -78,7 +83,7 @@ bool PatternLoader::Load(const HapticFileInfo& fileInfo)
 	return false;
 }
 
-void PatternLoader::loadAllSequences(vector<Frame> pattern)
+void PatternLoader::loadAllSequences(vector<Frame> pattern) const
 {
 	for (auto frame : pattern)
 	{
@@ -90,7 +95,7 @@ void PatternLoader::loadAllSequences(vector<Frame> pattern)
 	}
 }
 
-ExperienceLoader::ExperienceLoader(shared_ptr<Parser> p, unique_ptr<PatternLoader> pat, shared_ptr<unordered_map<string, vector<Moment>>> moments, shared_ptr<unordered_map<string, vector<Frame>>> frames)
+ExperienceLoader::ExperienceLoader(shared_ptr<Parser> p, unique_ptr<PatternLoader> pat, unordered_map<string, vector<Moment>>& moments, unordered_map<string, vector<Frame>>& frames)
 	:_patternLoader(std::move(pat)), _parser(p), _experiences(moments), _patterns(frames)
 {
 }
@@ -102,7 +107,7 @@ ExperienceLoader::~ExperienceLoader()
 
 bool ExperienceLoader::Load(const HapticFileInfo& fileInfo)
 {
-	if (_experiences->find(fileInfo.FullId) != _experiences->end()) {
+	if (_experiences.find(fileInfo.FullId) != _experiences.end()) {
 		return true;
 	}
 
@@ -121,7 +126,7 @@ bool ExperienceLoader::Load(const HapticFileInfo& fileInfo)
 	return false;
 }
 
-void ExperienceLoader::loadExperience(const std::string& id, boost::filesystem::path path)
+void ExperienceLoader::loadExperience(const std::string& id, boost::filesystem::path path) const
 {
 	vector<Sample> unprocessedSamples = _parser->ParseExperience(path);
 	vector<Moment> processedSamples(unprocessedSamples.size());
@@ -148,7 +153,7 @@ void ExperienceLoader::loadExperience(const std::string& id, boost::filesystem::
 
 float ExperienceLoader::getLatestTime(const std::string& patternName) const
 {
-	auto pattern = _patterns->at(patternName);
+	auto pattern = _patterns.at(patternName);
 	float latestTime = 0;
 	for (auto frame : pattern)
 	{

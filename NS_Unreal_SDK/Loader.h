@@ -20,60 +20,62 @@ public:
 	virtual bool Load(const HapticFileInfo& fileInfo) = 0;
 };
 
-class Loader
-{
-public:
-	Loader(std::shared_ptr<Parser> parser);
-	~Loader();
-private:
-	std::shared_ptr<Parser> _parser;
-	std::shared_ptr<PatternLoader> _patternLoader;
-	std::shared_ptr<ExperienceLoader> _experienceLoader;
-	std::shared_ptr<SequenceLoader> _sequenceLoader;
 
-	std::unordered_map<string, vector<SequenceItem>> _sequences;
-	Dictionary<string, List<SequenceItem>> _sequences;
-	Dictionary<string, List<Moment>> _experiences;
-	Dictionary<string, List<Frame>> _patterns;
-
-};
 
 
 class SequenceLoader : public IHapticLoadingStrategy
 {
 public:
-	SequenceLoader(shared_ptr<Parser>, shared_ptr<unordered_map<string, vector<SequenceItem>>>);
+	SequenceLoader(shared_ptr<Parser>, unordered_map<string, vector<SequenceItem>>&);
 	~SequenceLoader();
 	bool Load(const HapticFileInfo& fileInfo) override;
 private:
 	shared_ptr<Parser> _parser;
-	shared_ptr<unordered_map<string, vector<SequenceItem>>> _sequences;
+	unordered_map<string, vector<SequenceItem>>& _sequences;
 };
 
 class PatternLoader : public IHapticLoadingStrategy
 {
 public:
-	PatternLoader(shared_ptr<Parser>, unique_ptr<SequenceLoader>, shared_ptr<unordered_map<string, vector<Frame>>>);
+	PatternLoader(shared_ptr<Parser>, unique_ptr<SequenceLoader>, unordered_map<string, vector<Frame>>&);
 	~PatternLoader();
 	bool Load(const HapticFileInfo& fileInfo) override;
 private:
 	unique_ptr<SequenceLoader> _sequenceLoader;
 	shared_ptr<Parser> _parser;
-	shared_ptr<unordered_map<string, vector<Frame>>> _patterns;
-	void loadAllSequences(vector<Frame>);
+	unordered_map<string, vector<Frame>>& _patterns;
+	void loadAllSequences(vector<Frame>) const;
 };
 
 class ExperienceLoader : public IHapticLoadingStrategy
 {
 public:
-	ExperienceLoader(shared_ptr<Parser>, unique_ptr<PatternLoader>, shared_ptr<unordered_map<string, vector<Moment>>>, shared_ptr<unordered_map<string, vector<Frame>>>);
+	ExperienceLoader(shared_ptr<Parser>, unique_ptr<PatternLoader>, unordered_map<string, vector<Moment>>&, unordered_map<string, vector<Frame>>&);
 	~ExperienceLoader();
 	bool Load(const HapticFileInfo& fileInfo) override;
 private:
 	unique_ptr<PatternLoader> _patternLoader;
 	shared_ptr<Parser> _parser;
-	shared_ptr<unordered_map<string, vector<Moment>>> _experiences;
-	shared_ptr<unordered_map<string, vector<Frame>>> _patterns;
-	void loadExperience(const std::string& id, boost::filesystem::path path);
+	unordered_map<string, vector<Moment>>& _experiences;
+	unordered_map<string, vector<Frame>>& _patterns;
+	void loadExperience(const std::string& id, boost::filesystem::path path) const;
 	float getLatestTime(const std::string& patternName) const;
+};
+class Loader
+{
+public:
+	Loader(const std::string& basePath);
+	~Loader();
+	unordered_map<string, vector<SequenceItem>> Sequences;
+	unordered_map<string, vector<Moment>>  Experiences;
+	unordered_map<string, vector<Frame>> Patterns;
+
+private:
+	Parser _parser;
+	unique_ptr<PatternLoader> _patternLoader;
+	unique_ptr<ExperienceLoader> _experienceLoader;
+	unique_ptr<SequenceLoader> _sequenceLoader;
+
+
+
 };

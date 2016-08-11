@@ -11,11 +11,11 @@ public:
 
 
 
-DependencyResolver::DependencyResolver(const std::string& basePath)
+DependencyResolver::DependencyResolver(const std::string& basePath): _loader(basePath)
 {
-//	_sequenceResolver = std::make_unique<IResolvable<SequenceArgs, HapticEffect>>(new SequenceResolver());
-	//_patternResolver = std::make_unique<IResolvable<PatternArgs, HapticFrame>>(new PatternResolver());
-//	_experienceResolver = std::make_unique<IResolvable<ExperienceArgs, HapticSample>>(new ExperienceResolver());
+	_sequenceResolver = make_unique<SequenceResolver>(_loader.Sequences);
+	_patternResolver = std::make_unique<PatternResolver>(_loader.Patterns, _sequenceResolver);
+	_experienceResolver = std::make_unique<ExperienceResolver>(_loader.Experiences, _patternResolver);
 
 
 }
@@ -23,6 +23,8 @@ DependencyResolver::DependencyResolver(const std::string& basePath)
 DependencyResolver::~DependencyResolver()
 {
 }
+
+
 
 Location DependencyResolver::ComputeLocationSide(JsonLocation location, Side side)
 {
@@ -50,8 +52,13 @@ Location DependencyResolver::ComputeLocationSide(JsonLocation location, Side sid
 	}
 }
 
+std::vector<HapticEffect> DependencyResolver::ResolveSequence(const std::string & name, Location location) const
+{
+	return _sequenceResolver->Resolve(SequenceArgs(name, location));
+}
 
-SequenceResolver::SequenceResolver(std::shared_ptr<unordered_map<string, vector<SequenceItem>>> loadedFiles) :
+
+SequenceResolver::SequenceResolver(unordered_map<string, vector<SequenceItem>>& loadedFiles) :
 	_loadedFiles(loadedFiles)
 {
 	
@@ -63,7 +70,7 @@ SequenceResolver::~SequenceResolver()
 
 vector<HapticEffect> SequenceResolver::Resolve(SequenceArgs args)
 {
-	if (_loadedFiles->find(args.Name) != _loadedFiles->end())
+	if (_loadedFiles.find(args.Name) != _loadedFiles.end())
 	{
 		throw HapticsNotLoadedException(args);
 	}
@@ -73,7 +80,7 @@ vector<HapticEffect> SequenceResolver::Resolve(SequenceArgs args)
 		return _cache.Get(args);
 	}
 
-	vector<SequenceItem> inputItems = _loadedFiles->at(args.Name);
+	vector<SequenceItem> inputItems = _loadedFiles.at(args.Name);
 	vector<HapticEffect> outputEffects(inputItems.size());
 	for (auto seqItem : inputItems)
 	{
@@ -91,10 +98,11 @@ HapticEffect SequenceResolver::transformSequenceItemIntoEffect(const SequenceIte
 	return HapticEffect(Effect::Strong_Click_100, loc, seq.Duration, seq.Time, 1);
 }
 
-PatternResolver::PatternResolver(std::shared_ptr<unordered_map<string, vector<Frame>>> loadedFiles, std::unique_ptr<IResolvable<SequenceArgs, HapticEffect>> seq)
-	:_loadedFiles(loadedFiles), _seqResolver(std::move(seq))
-{
+PatternResolver::PatternResolver(unordered_map<string, vector<Frame>>& loadedFiles, unique_ptr<IResolvable<SequenceArgs, HapticEffect>> const& seq)
+:_loadedFiles(loadedFiles), _seqResolver(seq){
 }
+
+
 
 
 PatternResolver::~PatternResolver()
@@ -103,7 +111,7 @@ PatternResolver::~PatternResolver()
 
 vector<HapticFrame> PatternResolver::Resolve(PatternArgs args)
 {
-	if (_loadedFiles->find(args.Name) != _loadedFiles->end())
+	if (_loadedFiles.find(args.Name) != _loadedFiles.end())
 	{
 		throw HapticsNotLoadedException(args);
 	}
@@ -114,7 +122,7 @@ vector<HapticFrame> PatternResolver::Resolve(PatternArgs args)
 	}
 
 	std::vector<HapticFrame> outFrames;
-	for (auto frame : _loadedFiles->at(args.Name))
+	for (auto frame : _loadedFiles.at(args.Name))
 	{
 		outFrames.push_back(transformFrameToHapticFrame(frame, args.Side));
 	}
@@ -178,7 +186,7 @@ Side PatternResolver::ComputeSidePrecedence(Side inputSide, Side programmaticSid
 	}
 }
 
-ExperienceResolver::ExperienceResolver(std::shared_ptr<unordered_map<string, vector<Moment>>> files, std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> pat):
+ExperienceResolver::ExperienceResolver(unordered_map<string, vector<Moment>>& files, std::unique_ptr<IResolvable<PatternArgs, HapticFrame>> pat):
 	_loadedFiles(files), _patResolver(std::move(pat))
 {
 }
@@ -189,7 +197,7 @@ ExperienceResolver::~ExperienceResolver()
 
 vector<HapticSample> ExperienceResolver::Resolve(ExperienceArgs args)
 {
-	if (_loadedFiles->find(args.Name) != _loadedFiles->end())
+	if (_loadedFiles.find(args.Name) != _loadedFiles.end())
 	{
 		throw HapticsNotLoadedException(args);
 	}
@@ -200,7 +208,7 @@ vector<HapticSample> ExperienceResolver::Resolve(ExperienceArgs args)
 	}
 
 	std::vector<HapticSample> outSamples;
-	for (auto moment : _loadedFiles->at(args.Name))
+	for (auto moment : _loadedFiles.at(args.Name))
 	{
 		outSamples.push_back(transformMomentToHapticSample(moment, args.Side));
 	}
@@ -211,6 +219,7 @@ vector<HapticSample> ExperienceResolver::Resolve(ExperienceArgs args)
 
 HapticSample ExperienceResolver::transformMomentToHapticSample(Moment moment, Side side) const
 {
+	//todo: step through this
 	vector<HapticFrame>* frames = nullptr;
 	if (moment.Side != Side::NotSpecified && moment.Side != Side::Inherit)
 	{

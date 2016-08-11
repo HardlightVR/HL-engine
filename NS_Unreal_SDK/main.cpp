@@ -10,6 +10,8 @@
 #include "Parser.h"
 
 #include "HapticDirectoryTools.h"
+#include "DependencyResolver.h"
+
 int main() {
 	
 
@@ -20,10 +22,11 @@ int main() {
 
 	suit.SetAdapter(adapter);
 
-	Parser p;
-	p.SetBasePath("C:/Users/NullSpace Team/Documents/API_Environment/Assets/StreamingAssets");
-	p.EnumerateHapticFiles();
+	//Parser p;
+	//p.SetBasePath("C:/Users/NullSpace Team/Documents/API_Environment/Assets/StreamingAssets");
+	//p.EnumerateHapticFiles();
 
+	DependencyResolver resolver("C:/Users/NullSpace Team/Documents/API_Environment/Assets/StreamingAssets");
 
 	std::cin.get();
 
