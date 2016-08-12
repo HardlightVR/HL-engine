@@ -2,18 +2,21 @@
 
 
 
-SuitPacket::PacketType SuitPacket::Type()
+SuitPacket::PacketType SuitPacket::Type() const
 {
-	return this->packetType;
+	return _packetType;
 }
 
-std::shared_ptr<const uint8_t> SuitPacket::Packet() const
+packet SuitPacket::Packet() const
 {
-	return std::shared_ptr<const uint8_t>(this->rawPacket);
+	return _rawPacket;
 }
 
-SuitPacket::SuitPacket()
+SuitPacket::SuitPacket(packet p):_rawPacket(p)
 {
+	//todo: this will allow random values to slip through,
+	//but may not be a problem if we disregard them
+	_packetType = PacketType(_rawPacket.raw[2]);
 }
 
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "StdAfx.h"
+#include "Synchronizer.h"
 class SuitPacket
 {
 public:
@@ -10,13 +11,12 @@ public:
 		Ping = 0x02,
 		Undefined
 	};
-	static constexpr int SUIT_PACKET_LENGTH = 16;
-	PacketType Type();
-	std::shared_ptr<const uint8_t> Packet() const;
-	SuitPacket();
+	PacketType Type() const;
+	packet Packet() const;
+	SuitPacket(packet p);
 	~SuitPacket();
 private:
-	uint8_t rawPacket[SUIT_PACKET_LENGTH];
-	PacketType packetType;
+	packet _rawPacket;
+	PacketType _packetType;
 };
 

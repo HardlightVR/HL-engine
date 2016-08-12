@@ -80,11 +80,11 @@ Packet InstructionBuilder::Build() {
 	assert(packetLength <= 255);
 	packet[3] = packetLength;
 
-	const std::size_t numParams = this->_parameters.size();
+	const size_t numParams = _parameters.size();
 	for (std::size_t i = 0; i < numParams; i++) {
-		std::string paramKey = desired.Parameters[i];
-		std::string userParamVal = this->_parameters[paramKey];
-		auto paramKeyToByteId = this->_paramDict[paramKey];
+		string paramKey = desired.Parameters[i];
+		string userParamVal = _parameters[paramKey];
+		auto paramKeyToByteId = _paramDict[paramKey];
 		uint8_t id = paramKeyToByteId[userParamVal];
 		packet[i + 4] = id;
 	}

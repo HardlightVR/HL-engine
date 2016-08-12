@@ -133,10 +133,13 @@
     <ClCompile Include="HapticDirectoryTools.cpp" />
     <ClCompile Include="enumser.cpp" />
     <ClCompile Include="EnumTranslator.cpp" />
+    <ClCompile Include="HapticEvent.cpp" />
     <ClCompile Include="HapticFileInfo.cpp" />
+    <ClCompile Include="HapticQueue.cpp" />
     <ClCompile Include="HexUtils.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
+    <ClCompile Include="IPacketConsumer.cpp" />
     <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="JsonSerializer.h" />
     <ClCompile Include="Loader.cpp" />
@@ -151,6 +154,7 @@
     <ClCompile Include="SuitHardwareInterface.cpp" />
     <ClCompile Include="SuitPacket.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
+    <ClCompile Include="TimeInstant.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ByteQueue.h" />
@@ -162,12 +166,16 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
     <ClInclude Include="EnumTranslator.h" />
+    <ClInclude Include="HapticEvent.h" />
     <ClInclude Include="HapticFileInfo.h" />
+    <ClInclude Include="HapticQueue.h" />
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />
     <ClInclude Include="Instruction.h" />
     <ClInclude Include="InstructionBuilder.h" />
+    <ClInclude Include="IPacketConsumer.h" />
+    <ClInclude Include="ITimeOffset.h" />
     <ClInclude Include="json\json-forwards.h" />
     <ClInclude Include="json\json.h" />
     <ClInclude Include="Loader.h" />
@@ -181,6 +189,7 @@
     <ClInclude Include="SuitHardwareInterface.h" />
     <ClInclude Include="SuitPacket.h" />
     <ClInclude Include="Synchronizer.h" />
+    <ClInclude Include="TimeInstant.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

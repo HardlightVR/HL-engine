@@ -44,13 +44,9 @@ void Synchronizer::TryReadPacket()
 	}
 }
 
-unsigned const int Synchronizer::PACKET_LENGTH = 16;
+unsigned const int Synchronizer::PACKET_LENGTH = PACKET_LENGTH;
 
-struct packet
-{
-	uint8_t raw[Synchronizer::PACKET_LENGTH];
-};
-Synchronizer::Synchronizer(std::shared_ptr<CircularBuffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher) :
+Synchronizer::Synchronizer(std::shared_ptr<CircularBuffer> dataStream, PacketDispatcher& dispatcher) :
 	_dispatcher(dispatcher),
 	_dataStream(std::move(dataStream)),
 	packetDelimiter('$'),
@@ -119,6 +115,7 @@ void Synchronizer::monitorSync()
 
 void Synchronizer::confirmSyncLoss()
 {
+	
 	packet possiblePacket = this->dequeuePacket();
 	if (!this->packetIsWellFormed(possiblePacket)) {
 		this->badSyncCounter++;
