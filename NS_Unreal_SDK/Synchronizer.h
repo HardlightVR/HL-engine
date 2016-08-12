@@ -2,10 +2,9 @@
 #include "StdAfx.h"
 #include "PacketDispatcher.h"
 #include <boost/circular_buffer.hpp>
-struct packet
-{
-	uint8_t raw[8];
-};
+
+struct packet;
+
 typedef boost::circular_buffer<uint8_t> CircularBuffer;
 class Synchronizer
 {
@@ -19,12 +18,12 @@ public:
 	bool Synchronized();
 	State SyncState();
 	void TryReadPacket();
+	const static unsigned int PACKET_LENGTH;
 
 	Synchronizer(std::shared_ptr<CircularBuffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher);
 	~Synchronizer();
 private:
 	State syncState;
-	int packetLength;
 	uint8_t packetDelimiter;
 	uint8_t packetFooter[2];
 	int badSyncCounter;
@@ -35,7 +34,7 @@ private:
 	void confirmSync();
 	void monitorSync();
 	void confirmSyncLoss();
-	packet dequeuePacket();
-	bool packetIsWellFormed(packet p);
+	packet dequeuePacket() const;
+	bool packetIsWellFormed(const packet p) const;
 };
 

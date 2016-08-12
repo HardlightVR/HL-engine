@@ -6,18 +6,21 @@
 #include "enumser.h"
 #include <memory>
 #include <string>
+#include "Synchronizer.h"
 class SerialAdapter : public virtual ICommunicationAdapter {
 public:
 	SerialAdapter();
 	~SerialAdapter();
-	virtual bool Connect();
-	virtual void Disconnect();
-	virtual void Write(uint8_t bytes[], std::size_t length);
-	virtual void Read();
+	bool Connect() override;
+	void Disconnect() override;
+	void Write(uint8_t bytes[], std::size_t length) override;
+	void Read() override;
 	bool Connect(std::string name);
-	ByteQueue suitDataStream;
+	std::shared_ptr<CircularBuffer> GetDataStream() override;
 private:
 	std::unique_ptr<Serial> port;
 	bool autoConnectPort();
 	bool createPort(std::string name);
+	std::shared_ptr<CircularBuffer> suitDataStream;
+
 };

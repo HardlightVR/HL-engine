@@ -2,9 +2,9 @@
 #include "SerialAdapter.h"
 #include <iostream>
 
-SerialAdapter::SerialAdapter() {
+SerialAdapter::SerialAdapter():suitDataStream(std::make_shared<CircularBuffer>(2048)){
 	//this->suitDataStream = ByteQueue();
-	this->port = NULL;
+	this->port = nullptr;
 }
 
 SerialAdapter::~SerialAdapter() {
@@ -51,8 +51,13 @@ bool SerialAdapter::Connect(std::string name) {
 	return this->createPort(&name[0]);
 }
 
+std::shared_ptr<CircularBuffer> SerialAdapter::GetDataStream()
+{
+	return suitDataStream;
+}
+
 bool SerialAdapter::createPort(std::string name) {
-	this->port = std::unique_ptr<Serial>(new Serial(&name[0]));
+	this->port = std::make_unique<Serial>(&name[0]);
 	if (port->IsConnected()) {
 		return true;
 	}
@@ -76,5 +81,13 @@ void SerialAdapter::Write(uint8_t* stuff, std::size_t length) {
 	} 
 }
 void SerialAdapter::Read() {
-
+	char bytesRead[1024];
+	int actualRead = this->port->ReadData(bytesRead, 1024);
+	if (actualRead > -1)
+	{
+		for (int i = 0; i < actualRead; ++i)
+		{
+			suitDataStream->push_back(bytesRead[i]);
+		}
+	}
 }
