@@ -97,6 +97,7 @@ void SuitHardwareInterface::HaltAllEffects()
 
 
 
-void SuitHardwareInterface::execute(Packet packet) {
+void SuitHardwareInterface::execute(const Packet& packet) const
+{
 	this->adapter->Write(packet.Data, packet.Length);
 }

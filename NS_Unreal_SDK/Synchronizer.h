@@ -1,7 +1,6 @@
 #pragma once
-#include "StdAfx.h"
-#include "PacketDispatcher.h"
 #include <boost/circular_buffer.hpp>
+class PacketDispatcher;
 
 const unsigned int PACKET_LENGTH = 16;
 

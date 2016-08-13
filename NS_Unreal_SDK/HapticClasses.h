@@ -1,8 +1,8 @@
 #pragma once
 #include "Enums.h"
 #include <vector>
-
-class HapticEffect {
+#include "ITimeOffset.h"
+class HapticEffect :public ITimeOffset {
 public:
 	HapticEffect(Effect effect, Location loc, float duration, float time, unsigned int priority);
 	HapticEffect();
@@ -11,6 +11,7 @@ public:
 	Location Location;
 	float Duration;
 	float Time;
+	float GetTime() override;
 	float OriginalTime;
 	unsigned int Priority;
 };
@@ -23,33 +24,36 @@ public:
 	std::vector<HapticEffect> Effects;
 };
 
-class HapticFrame
+class HapticFrame : public ITimeOffset
 {
 public:
 	HapticFrame(float time, std::vector<HapticSequence> frame, unsigned int priority = 1);
 	~HapticFrame();
 	float Time;
+	float GetTime() override;
 	float OriginalTime;
 	unsigned int Priority;
 	std::vector<HapticSequence> Frame;
 };
 
-class HapticSample
+class HapticSample : public ITimeOffset
 {
 public:
 	unsigned int Priority;
 	float Time;
 	float OriginalTime;
+	float GetTime() override;
 	std::vector<HapticFrame> Frames;
 	HapticSample(float time, std::vector<HapticFrame> frames, unsigned int priority);
 	~HapticSample();
 };
 
-class Moment
+class Moment : public ITimeOffset
 {
 public:
 	std::string Name;
 	float Time;
+	float GetTime() override;
 	Side Side;
 	Moment(std::string name, float t, ::Side side = Side::Inherit);
 	Moment();

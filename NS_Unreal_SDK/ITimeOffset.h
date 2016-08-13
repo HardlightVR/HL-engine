@@ -3,6 +3,6 @@ class ITimeOffset
 {
 public:
 	virtual ~ITimeOffset(void) {}
-	virtual float Time() = 0;
+	virtual float GetTime() = 0;
 };
 

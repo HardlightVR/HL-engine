@@ -10,6 +10,9 @@ HapticEvent::~HapticEvent()
 {
 }
 
+
+
+
 ::Duration HapticEvent::DurationType() const
 {
 	if (Duration > 0)
@@ -17,5 +20,5 @@ HapticEvent::~HapticEvent()
 		return ::Duration::Variable;
 	}
 	//cast to int
-	return ::Duration(Duration);
+	return ::Duration(int(Duration));
 }

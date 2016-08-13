@@ -1,5 +1,6 @@
 #include "Synchronizer.h"
 #include <iostream>
+#include "PacketDispatcher.h"
 
 
 bool Synchronizer::Synchronized()

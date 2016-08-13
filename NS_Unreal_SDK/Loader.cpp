@@ -104,7 +104,8 @@ bool PatternLoader::Load(const HapticFileInfo& fileInfo)
 	for (auto name : validNames)
 	{
 
-		auto path = directory /= name;
+		auto dir = directory;
+		auto path = dir /= name;
 		if (exists(path)) {
 			vector<Frame> pattern = _parser->ParsePattern(path);
 			_patterns[fileInfo.FullId] = pattern;
@@ -154,7 +155,8 @@ bool ExperienceLoader::Load(const HapticFileInfo& fileInfo)
 	for (auto name : validNames)
 	{
 
-		auto path = directory /= name;
+		auto dir = directory;
+		auto path = dir /= name;
 		if (exists(path)) {
 			loadExperience(fileInfo.FullId, path);
 			return true;

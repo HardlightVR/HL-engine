@@ -1,11 +1,7 @@
 #pragma once
 #include "ICommunicationAdapter.h"
-#include "ByteQueue.h"
-#include "StdAfx.h"
 #include "Serial.h"
-#include "enumser.h"
 #include <memory>
-#include <string>
 #include "Synchronizer.h"
 class SerialAdapter : public virtual ICommunicationAdapter {
 public:

@@ -4,12 +4,26 @@
 
 Packet::Packet(uint8_t* raw, std::size_t length)
 {
-	this->Data = raw;
+	assert(raw != nullptr);
+	this->Data = new uint8_t[length];
+	memcpy(this->Data, raw, length);
 	this->Length = length;
 }
 
 
 Packet::~Packet()
 {
-	delete[] this->Data;
+	assert(Data != nullptr);
+		delete[] Data;
+		Data = nullptr;
+}
+
+Packet::Packet(const Packet& b)
+{
+	Length = b.Length;
+	Data = new uint8_t[b.Length];
+	memcpy(this->Data, b.Data, b.Length);
+	
+	
+
 }

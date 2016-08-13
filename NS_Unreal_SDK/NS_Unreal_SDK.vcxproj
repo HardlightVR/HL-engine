@@ -136,6 +136,7 @@
     <ClCompile Include="HapticEvent.cpp" />
     <ClCompile Include="HapticFileInfo.cpp" />
     <ClCompile Include="HapticQueue.cpp" />
+    <ClCompile Include="HapticsExecutor.cpp" />
     <ClCompile Include="HexUtils.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="HapticEvent.h" />
     <ClInclude Include="HapticFileInfo.h" />
     <ClInclude Include="HapticQueue.h" />
+    <ClInclude Include="HapticsExecutor.h" />
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />

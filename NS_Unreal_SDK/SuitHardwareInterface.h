@@ -17,7 +17,7 @@ public:
 	void PingSuit();
 private:
 	std::shared_ptr<ICommunicationAdapter> adapter;
-	void execute(Packet packet);
+	void execute(const Packet& packet) const;
 	InstructionBuilder builder;
 };
 

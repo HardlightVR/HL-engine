@@ -7,5 +7,7 @@ public:
 	~Packet();
 	std::size_t Length;
 	uint8_t* Data;
+	Packet(const Packet& b);
+	
 };
 

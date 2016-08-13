@@ -1,8 +1,7 @@
 #include "Instruction.h"
 #include "json\json.h"
-#include <string>
 #include "HexUtils.h"
-Instruction::Instruction()
+Instruction::Instruction():ByteId(0)
 {
 }
 

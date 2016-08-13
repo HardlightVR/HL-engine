@@ -19,7 +19,9 @@ void HapticQueue::Put(unsigned priority, HapticEvent effect)
 		_queue.push_back(pair);
 	} else if(effect.DurationType() != Duration::OneShot || isHigherPriorityOneShot(effect, _queue.at(0), priority))
 	{
-		auto iter = std::lower_bound(_queue.begin(), _queue.end(), pair);
+		auto iter = std::lower_bound(_queue.begin(), _queue.end(), pair, [](const PriorityPair& lhs, const PriorityPair& rhs) {
+			return lhs.first < rhs.first;
+		});
 		_queue.insert(iter, pair);
 	}
 }
@@ -59,6 +61,10 @@ struct shouldEffectBeRemoved
 
 void HapticQueue::Purge()
 {
+	if (_queue.size() == 0)
+	{
+		return;
+	}
 	_queue.erase(std::remove_if(_queue.begin(), _queue.end(), shouldEffectBeRemoved(_queue[0].first)), _queue.end());
 }
 

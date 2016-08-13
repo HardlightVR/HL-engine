@@ -26,6 +26,10 @@ public:
 	//void SetBasePath(const std::string& path);
 	static Location ComputeLocationSide(JsonLocation loc, Side side);
 	std::vector<HapticEffect> ResolveSequence(const std::string& name, Location location) const;
+	std::vector<HapticFrame> ResolvePattern(const std::string& name, Side side) const;
+	std::vector<HapticSample> ResolveSample(const std::string& name, Side side) const;
+
+
 	bool Load(const HapticFileInfo& fileInfo) const;
 private:
 	shared_ptr<IResolvable<SequenceArgs, HapticEffect>> _sequenceResolver;

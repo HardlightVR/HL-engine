@@ -102,6 +102,9 @@
     <ClCompile Include="TimeInstant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HapticsExecutor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Serial.h">
@@ -201,6 +204,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ITimeOffset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HapticsExecutor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

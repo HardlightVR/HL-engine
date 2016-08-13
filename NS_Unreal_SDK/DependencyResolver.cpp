@@ -57,6 +57,16 @@ std::vector<HapticEffect> DependencyResolver::ResolveSequence(const std::string 
 	return _sequenceResolver->Resolve(SequenceArgs(name, location));
 }
 
+std::vector<HapticFrame> DependencyResolver::ResolvePattern(const std::string& name, Side side) const
+{
+	return _patternResolver->Resolve(PatternArgs(name, side));
+}
+
+std::vector<HapticSample> DependencyResolver::ResolveSample(const std::string& name, Side side) const
+{
+	return _experienceResolver->Resolve(ExperienceArgs(name, side));
+}
+
 bool DependencyResolver::Load(const HapticFileInfo& fileInfo) const
 {
 	return _loader.Load(fileInfo);

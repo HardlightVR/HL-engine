@@ -2,7 +2,6 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/list_inserter.hpp>
-#include <iostream>
 template<typename T> struct map_init_helper
 {
 	T& data;

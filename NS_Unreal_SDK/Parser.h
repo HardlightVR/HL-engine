@@ -37,7 +37,6 @@ public:
 	void EnumerateHapticFiles();
 	boost::filesystem::path GetDirectory(std::string package);
 	void Traverse(EnumNode node, std::string prefix);
-	static std::vector<std::string> GlueWithTemplate(std::string stemplate, std::string a, const std::vector<std::string>& b);
 	std::vector<SequenceItem> ParseSequence(boost::filesystem::path);
 	std::vector<Frame> ParsePattern(boost::filesystem::path);
 	std::vector<Sample> ParseExperience(boost::filesystem::path);

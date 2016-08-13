@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "SerialAdapter.h"
 #include <iostream>
+#include "enumser.h"
 
 SerialAdapter::SerialAdapter():suitDataStream(std::make_shared<CircularBuffer>(2048)){
 	//this->suitDataStream = ByteQueue();

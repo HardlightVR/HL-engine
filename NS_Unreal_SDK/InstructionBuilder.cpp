@@ -72,6 +72,7 @@ Packet InstructionBuilder::Build() {
 	Instruction desired = _instructions[this->_instruction];
 	const int packetLength = 7 + this->_parameters.size();
 	uint8_t* packet = new uint8_t[packetLength];
+	
 	std::fill(packet, packet + packetLength, 0);
 	packet[0] = 0x24;
 	packet[1] = 0x02;
@@ -92,7 +93,9 @@ Packet InstructionBuilder::Build() {
 	packet[packetLength - 3] = 0xFF;
 	packet[packetLength - 2] = 0xFF;
 	packet[packetLength - 1] = 0x0A;
-	return Packet(packet, packetLength);
+	Packet retPacket(packet, packetLength);
+	delete[] packet;
+	return retPacket;
 }
 
 
