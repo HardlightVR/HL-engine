@@ -101,7 +101,7 @@ Location EnumTranslator::ToLocation(std::string location) const
 EnumTranslator::EnumTranslator() {
 	init_locations();
 	init_effects();
-
+	init_sides();
 }
 
 
@@ -197,6 +197,20 @@ void EnumTranslator::init_sides()
 		(Side::Right, "right")
 		(Side::Mirror, "mirror")
 		(Side::NotSpecified, "not_specified");
+}
+
+void EnumTranslator::init_json_locations()
+{
+	boost::assign::insert(_jsonLocationMap)
+		(JsonLocation::Chest, "chest")
+		(JsonLocation::Forearm, "forearm")
+		(JsonLocation::Lower_Ab, "lower_ab")
+		(JsonLocation::Mid_Ab, "mid_ab")
+		(JsonLocation::Shoulder, "shoulder")
+		(JsonLocation::Upper_Ab, "upper_ab")
+		(JsonLocation::Upper_Arm, "upper_arm")
+		(JsonLocation::Upper_Back, "upper_back")
+		;
 }
 
 void EnumTranslator::init_locations() {

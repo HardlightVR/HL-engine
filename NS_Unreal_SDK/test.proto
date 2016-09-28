@@ -1,0 +1,30 @@
+syntax = "proto3"
+
+package nsvr.haptics;
+
+message HapticEffect {
+	optional string effect = 1;
+	optional string location = 2;
+	optional float duration = 3;
+	optional float time = 4;
+	optional float originalTime = 5;
+	optional int priority = 6;
+}
+
+message HapticSequence {	
+	repeated HapticEffect effects = 1;
+}
+
+message HapticFrame {
+	optional float time = 1;
+	optional float originalTime = 2;
+	optional int priority = 3;
+	repeated HapticSequence sequences = 4;
+}
+
+message HapticSample {
+	optional float time = 1;
+	optional float originalTime = 2;
+	optional int priority = 3;
+	repeated HapticFrame frames = 4;
+}
