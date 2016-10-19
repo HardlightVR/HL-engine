@@ -11,12 +11,13 @@
 #include <fstream>
 #include <cassert>
 #include <chrono>
-
-
+#include "flatbuffers.h"
+#include "HapticEffect_generated.h"
 #include "SerialAdapter.h"
 #include <memory>
 #define SHOW_CONSOLE
 
+using namespace NullSpace::HapticFiles;
 
 int main() {
 	#ifndef SHOW_CONSOLE
@@ -37,9 +38,10 @@ int main() {
 	try {
 		socket.bind("tcp://127.0.0.1:5555");
 		while (true) {
-			zmq::message_t request;
-			socket.recv(&request);
-			std::cout << request.data() << std::endl;
+			zmq::message_t msg;
+			socket.recv(&msg);
+			auto effect = GetHapticEffect(msg.data());
+			std::cout << "Got effect: " << effect->effect() << " with duration " << effect->duration() << std::endl;
 			Sleep(1);
 		}
 	}
