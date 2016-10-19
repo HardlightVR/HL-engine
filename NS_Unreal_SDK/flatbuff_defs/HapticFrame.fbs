@@ -1,0 +1,11 @@
+include "Sequence.fbs";
+
+namespace NullSpace.HapticFiles;
+
+table HapticFrame{
+	frame:[Sequence];
+	priority:ushort;
+	time:float;
+}
+
+root_type HapticFrame;

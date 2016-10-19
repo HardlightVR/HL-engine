@@ -3,6 +3,7 @@
 #include "SuitHardwareInterface.h"
 
 #include "zmq.hpp"
+#include "zmq_addon.hpp"
 #include "HapticDirectoryTools.h"
 #include "DependencyResolver.h"
 #include "HapticFileInfo.h"
@@ -52,7 +53,9 @@ int main() {
 			previousTime = currentTime;
 			exec.Update(elapsed.count());
 			
-			zmq::message_t msg;
+			
+			zmq::multipart_t msg;
+		
 			if (socket.recv(&msg, ZMQ_DONTWAIT) != -1);
 			{
 				auto data = msg.data();
@@ -69,9 +72,12 @@ int main() {
 						);
 					}
 					exec.Play(effects);
-					
+
 				}
 			}
+
+			
+			
 			
 		}
 	}

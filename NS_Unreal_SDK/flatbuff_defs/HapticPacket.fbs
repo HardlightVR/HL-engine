@@ -1,0 +1,13 @@
+include "Sequence.fbs";
+include "Pattern.fbs";
+
+namespace NullSpace.HapticFiles;
+
+
+union FileType {Pattern, Sequence}
+
+table HapticPacket {
+	packet:FileType;
+}
+
+root_type HapticPacket;
