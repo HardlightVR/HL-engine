@@ -113,6 +113,7 @@ void HapticsExecutor::executePendingEffects(float deltaTime)
 		iter->Time += deltaTime;
 		if (iter->Expired())
 		{
+			std::cout << "Expired at " << iter->Time << "\n";
 			//take ownership
 			std::unique_ptr<HapticEffect> e(static_cast<HapticEffect*>(iter->Item.release()));
 			_model[e->Location].Put(e->Priority, HapticEvent(e->Effect, e->Duration));

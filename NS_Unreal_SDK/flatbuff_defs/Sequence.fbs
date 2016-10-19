@@ -1,0 +1,9 @@
+include "HapticEffect.fbs";
+
+namespace NullSpace.HapticFiles;
+
+table Sequence {
+	items:[HapticEffect];
+}
+
+root_type Sequence;

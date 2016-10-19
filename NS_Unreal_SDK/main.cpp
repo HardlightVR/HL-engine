@@ -9,15 +9,16 @@
 #include "Synchronizer.h"
 #include "HapticsExecutor.h"
 #include <fstream>
+#include <boost\thread.hpp>
 #include <cassert>
 #include <chrono>
-#include "flatbuffers.h"
-#include "HapticEffect_generated.h"
+#include "flatbuffers\flatbuffers.h"
+#include "flatbuff_defs\Sequence_generated.h"
+#include "flatbuff_defs\HapticEffect_generated.h"
 #include "SerialAdapter.h"
 #include <memory>
 #define SHOW_CONSOLE
 
-using namespace NullSpace::HapticFiles;
 
 int main() {
 	#ifndef SHOW_CONSOLE
@@ -27,22 +28,51 @@ int main() {
 	auto suit = std::make_shared<SuitHardwareInterface>();
 
 	std::shared_ptr<ICommunicationAdapter> adapter(new SerialAdapter());
-//	if (!adapter->Connect()) {
-	//	std::cout << "Unable to connect to suit";
-	//	exit(0);
-	//}
+	if (!adapter->Connect()) {
+		std::cout << "Unable to connect to suit" << "\n";
+	}
+	else {
+		std::cout << "Connected to suit" << "\n";
+	}
+	
+
 
 	suit->SetAdapter(adapter);
+	HapticsExecutor exec(suit);
+
 	zmq::context_t context(1);
 	zmq::socket_t socket(context, ZMQ_PAIR);
 	try {
 		socket.bind("tcp://127.0.0.1:5555");
+		auto previousTime = std::chrono::high_resolution_clock::now();
 		while (true) {
+			auto currentTime = std::chrono::high_resolution_clock::now();
+			typedef std::chrono::duration<float, std::ratio<1,1>> duration;
+			duration elapsed = currentTime - previousTime;
+			previousTime = currentTime;
+			exec.Update(elapsed.count());
+			
 			zmq::message_t msg;
-			socket.recv(&msg);
-			auto effect = GetHapticEffect(msg.data());
-			std::cout << "Got effect: " << effect->effect() << " with duration " << effect->duration() << std::endl;
-			Sleep(1);
+			if (socket.recv(&msg, ZMQ_DONTWAIT) != -1);
+			{
+				auto data = msg.data();
+				flatbuffers::Verifier verifier(reinterpret_cast<uint8_t*>(data), msg.size());
+				bool isgood = NullSpace::HapticFiles::VerifySequenceBuffer(verifier);
+				if (isgood) {
+
+					auto sequence = NullSpace::HapticFiles::GetSequence(data);
+					std::vector<HapticEffect> effects;
+					effects.reserve(sequence->items()->size());
+					for (const auto &effect : *sequence->items()) {
+						effects.push_back(
+							HapticEffect((Effect)effect->effect(), (Location)effect->location(), effect->duration(), effect->time(), (int)effect->priority())
+						);
+					}
+					exec.Play(effects);
+					
+				}
+			}
+			
 		}
 	}
 	catch (std::exception& ex) {
@@ -63,7 +93,6 @@ int main() {
 	
 
 	//Synchronizer sync(adapter->GetDataStream(), std::make_shared<PacketDispatcher>());
-	HapticsExecutor exec(suit);
 	
 //	std::vector<HapticEffect> effect;
 //	effect.push_back(HapticEffect(Effect::Smooth_Hum_50, Location::Chest_Left, 1.0, 0.0, 1));

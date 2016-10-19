@@ -3,7 +3,7 @@
 #ifndef FLATBUFFERS_GENERATED_HAPTICEFFECT_NULLSPACE_HAPTICFILES_H_
 #define FLATBUFFERS_GENERATED_HAPTICEFFECT_NULLSPACE_HAPTICFILES_H_
 
-#include "flatbuffers.h"
+#include "flatbuffers\flatbuffers.h"
 
 namespace NullSpace {
 namespace HapticFiles {

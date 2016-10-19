@@ -1,6 +1,7 @@
 #include "HapticQueue.h"
 #include "HapticEvent.h"
 #include <algorithm>
+#include <iostream>
 HapticQueue::HapticQueue():Dirty(false)
 {
 	_queue.reserve(16);
@@ -16,13 +17,20 @@ void HapticQueue::Put(unsigned priority, HapticEvent effect)
 	PriorityPair pair(priority, effect);
 	if (_queue.size() == 0)
 	{
+		std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
 		_queue.push_back(pair);
 	} else if(effect.DurationType() != Duration::OneShot || isHigherPriorityOneShot(effect, _queue.at(0), priority))
 	{
 		auto iter = std::lower_bound(_queue.begin(), _queue.end(), pair, [](const PriorityPair& lhs, const PriorityPair& rhs) {
 			return lhs.first < rhs.first;
 		});
+		std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
+
 		_queue.insert(iter, pair);
+	}
+	else {
+		std::cout << "NOT ADDING " << int(effect.Effect) << " to queue" << "\n";
+
 	}
 }
 

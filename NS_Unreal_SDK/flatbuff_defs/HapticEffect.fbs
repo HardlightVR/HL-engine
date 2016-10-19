@@ -1,0 +1,11 @@
+namespace NullSpace.HapticFiles;
+
+table HapticEffect {
+	effect:ushort;
+	location:ushort;
+	duration:float;
+	priority:ushort;
+	time:float;
+}
+
+root_type HapticEffect;
