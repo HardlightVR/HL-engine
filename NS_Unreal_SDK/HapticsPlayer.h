@@ -9,7 +9,6 @@ class HapticsPlayer
 public:
 	HapticsPlayer(std::shared_ptr<SuitHardwareInterface> hardware, const std::string& basePath);
 	~HapticsPlayer();
-	void Play(PatternFileInfo fileInfo, Side side = Side::Mirror);
 private:
 	DependencyResolver _resolver;
 	HapticsExecutor _executor;

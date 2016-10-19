@@ -10,11 +10,6 @@ HapticsPlayer::HapticsPlayer(std::shared_ptr<SuitHardwareInterface> hardware, co
 
 }	
 
-void HapticsPlayer::Play(PatternFileInfo fileInfo, Side side = Side::Mirror) {
-	_executor.Play(_resolver.ResolvePattern(fileInfo.FullId, side));
-}
-
-
 
 HapticsPlayer::~HapticsPlayer()
 {

@@ -76,9 +76,9 @@ Packet InstructionBuilder::Build() {
 	std::fill(packet, packet + packetLength, 0);
 	packet[0] = 0x24;
 	packet[1] = 0x02;
-	assert(desired.ByteId <= 255);
+	//assert(desired.ByteId <= 255);
 	packet[2] = desired.ByteId;
-	assert(packetLength <= 255);
+	//assert(packetLength <= 255);
 	packet[3] = packetLength;
 
 	const size_t numParams = _parameters.size();

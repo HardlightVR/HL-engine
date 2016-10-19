@@ -1,5 +1,6 @@
 #pragma once
 #include "StdAfx.h"
+#include <iostream>
 class Packet
 {
 public:
