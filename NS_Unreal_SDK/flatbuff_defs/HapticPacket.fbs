@@ -7,6 +7,7 @@ namespace NullSpace.HapticFiles;
 union FileType {Pattern, Sequence}
 
 table HapticPacket {
+	name:string;
 	packet:FileType;
 }
 

@@ -69,25 +69,10 @@
     <ClCompile Include="HapticDirectoryTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HapticCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HapticArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DependencyResolver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="HapticClasses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Locator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HapticFileInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IPacketConsumer.cpp">
@@ -105,7 +90,7 @@
     <ClCompile Include="HapticsExecutor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HapticsPlayer.cpp">
+    <ClCompile Include="HapticCache2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -173,25 +158,10 @@
     <ClInclude Include="HapticDirectoryTools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HapticCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HapticArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DependencyResolver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HapticClasses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Locator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HapticFileInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IPacketConsumer.h">
@@ -212,9 +182,6 @@
     <ClInclude Include="HapticsExecutor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HapticsPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="zmq.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -228,6 +195,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nn.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HapticCache2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\Wire.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

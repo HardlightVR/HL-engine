@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\flatbuffers\include;C:\Program Files %28x86%29\libzmq\include;C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\flatbuffers\include;C:\Program Files %28x86%29\libzmq\include;C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -107,7 +107,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\libzmq\include;C:\Program Files (x86)\flatbuffers\include\flatbuffers;C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\libzmq\include;C:\Program Files (x86)\flatbuffers\include\flatbuffers;C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -136,25 +136,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DependencyResolver.cpp" />
-    <ClCompile Include="HapticArgs.cpp" />
-    <ClCompile Include="HapticCache.cpp" />
+    <ClCompile Include="HapticCache2.cpp" />
     <ClCompile Include="HapticClasses.cpp" />
     <ClCompile Include="HapticDirectoryTools.cpp" />
     <ClCompile Include="enumser.cpp" />
     <ClCompile Include="EnumTranslator.cpp" />
     <ClCompile Include="HapticEvent.cpp" />
-    <ClCompile Include="HapticFileInfo.cpp" />
     <ClCompile Include="HapticQueue.cpp" />
     <ClCompile Include="HapticsExecutor.cpp" />
-    <ClCompile Include="HapticsPlayer.cpp" />
     <ClCompile Include="HexUtils.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
     <ClCompile Include="IPacketConsumer.cpp" />
     <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="JsonSerializer.h" />
-    <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Packet.cpp" />
@@ -171,20 +166,17 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq.h" />
     <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq_utils.h" />
+    <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\Wire.h" />
     <ClInclude Include="ByteQueue.h" />
-    <ClInclude Include="DependencyResolver.h" />
-    <ClInclude Include="HapticArgs.h" />
-    <ClInclude Include="HapticCache.h" />
+    <ClInclude Include="HapticCache2.h" />
     <ClInclude Include="HapticClasses.h" />
     <ClInclude Include="HapticDirectoryTools.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
     <ClInclude Include="EnumTranslator.h" />
     <ClInclude Include="HapticEvent.h" />
-    <ClInclude Include="HapticFileInfo.h" />
     <ClInclude Include="HapticQueue.h" />
     <ClInclude Include="HapticsExecutor.h" />
-    <ClInclude Include="HapticsPlayer.h" />
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />
@@ -194,7 +186,6 @@
     <ClInclude Include="ITimeOffset.h" />
     <ClInclude Include="json\json-forwards.h" />
     <ClInclude Include="json\json.h" />
-    <ClInclude Include="Loader.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="nn.hpp" />
     <ClInclude Include="Packet.h" />

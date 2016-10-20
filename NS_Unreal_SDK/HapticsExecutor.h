@@ -11,7 +11,7 @@ public:
 	HapticsExecutor(std::shared_ptr<SuitHardwareInterface>);
 	~HapticsExecutor();
 	void Play(const std::vector<HapticFrame>& frames);
-	void Play(const std::vector<HapticEffect>& effects);
+	void Play(std::vector<HapticEffect> effects);
 	void Play(const std::vector<HapticSample>& samples);
 	void Update(float dt);
 private:

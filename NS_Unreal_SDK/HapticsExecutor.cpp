@@ -21,7 +21,7 @@ void HapticsExecutor::Play(const std::vector<HapticFrame>& frames)
 }
 
 
-void HapticsExecutor::Play(const std::vector<HapticEffect>& effects)
+void HapticsExecutor::Play(std::vector<HapticEffect> effects)
 {
 	for (auto& e : effects)
 	{

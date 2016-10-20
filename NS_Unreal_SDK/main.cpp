@@ -5,8 +5,6 @@
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 #include "HapticDirectoryTools.h"
-#include "DependencyResolver.h"
-#include "HapticFileInfo.h"
 #include "Synchronizer.h"
 #include "HapticsExecutor.h"
 #include <fstream>
@@ -14,18 +12,20 @@
 #include <cassert>
 #include <chrono>
 #include "flatbuffers\flatbuffers.h"
-#include "flatbuff_defs\Sequence_generated.h"
-#include "flatbuff_defs\HapticEffect_generated.h"
-#include "flatbuff_defs\HapticPacket_generated.h"
+#include "Sequence_generated.h"
+#include "HapticEffect_generated.h"
+#include "HapticPacket_generated.h"
 #include "SerialAdapter.h"
 #include <memory>
+#include "HapticCache2.h"
+#include "Wire.h"
 #define SHOW_CONSOLE
 
 
 int main() {
-	#ifndef SHOW_CONSOLE
+#ifndef SHOW_CONSOLE
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
-	#endif
+#endif
 	using namespace std::chrono;
 	auto suit = std::make_shared<SuitHardwareInterface>();
 
@@ -37,10 +37,11 @@ int main() {
 		std::cout << "Connected to suit" << "\n";
 		suit->SetAdapter(adapter);
 	}
-	
+
+	HapticCache2 _cache;
 
 
-	
+
 	HapticsExecutor exec(suit);
 
 	zmq::context_t context(1);
@@ -50,41 +51,55 @@ int main() {
 		auto previousTime = std::chrono::high_resolution_clock::now();
 		while (true) {
 			auto currentTime = std::chrono::high_resolution_clock::now();
-			typedef std::chrono::duration<float, std::ratio<1,1>> duration;
+			typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
 			duration elapsed = currentTime - previousTime;
 			previousTime = currentTime;
 			exec.Update(elapsed.count());
-			
+
 			zmq::message_t msg;
 			if (socket.recv(&msg, ZMQ_DONTWAIT))
 			{
 				auto data = msg.data();
 				auto size = msg.size();
 				flatbuffers::Verifier verifier(reinterpret_cast<uint8_t*>(data), size);
-				bool isgood = NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier);
-				if (isgood) {
-					auto packet = NullSpace::HapticFiles::GetHapticPacket(data);
-					auto packetType = packet->packet_type();
-					switch (packetType) {
-					case NullSpace::HapticFiles::FileType::FileType_Sequence:
-						auto sequence = static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet());
+				if (NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier)) {
+					auto packet =
+						std::unique_ptr<const NullSpace::HapticFiles::HapticPacket>(NullSpace::HapticFiles::GetHapticPacket(data));
 					
-						break;
-					case NullSpace::HapticFiles::FileType::FileType_Pattern:
-						auto pattern = static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet());
+					switch (packet->packet_type()) {
+					case NullSpace::HapticFiles::FileType::FileType_Sequence: {
+						if (_cache.ContainsSequence(packet->name()->str())) {
+							exec.Play(_cache.GetSequence(packet->name()->str()));
+						}
+						else {
+							
+							auto uniqu = std::unique_ptr<const NullSpace::HapticFiles::Sequence>(static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet()));
+							auto decoded = Wire::Decode(uniqu);
+							_cache.AddSequence(packet->name()->str(), decoded);
+							exec.Play(decoded);
+							
+						}
+
+
 						break;
 					}
-					std::cout << "Received packet of type " << int(packetType) <<" and size " << msg.size() << "\n";
-
+					case NullSpace::HapticFiles::FileType::FileType_Pattern: {
+						//	auto pattern = static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet());
+						break;
+					}
+					}
+		
+					//std::cout << "Received packet of type " << int(packetType) <<" and size " << msg.size() << "\n";
+	
 				}
 				else {
 					std::cout << "Bad packet" << "\n";
 				}
 			}
 
-			
-			
-			
+
+
+
 		}
 	}
 	catch (std::exception& ex) {
@@ -92,7 +107,7 @@ int main() {
 	}
 	return 0;
 	/*
-	
+
 
 	//Parser p;
 	//p.SetBasePath("C:/Users/NullSpace Team/Documents/API_Environment/Assets/StreamingAssets");
@@ -102,22 +117,22 @@ int main() {
 	resolver.Load(PatternFileInfo("ns.full_body_jolt2"));
 
 	auto effect = resolver.ResolvePattern("ns.full_body_jolt2", Side::Mirror);
-	
+
 
 	//Synchronizer sync(adapter->GetDataStream(), std::make_shared<PacketDispatcher>());
-	
+
 //	std::vector<HapticEffect> effect;
 //	effect.push_back(HapticEffect(Effect::Smooth_Hum_50, Location::Chest_Left, 1.0, 0.0, 1));
 	exec.Play(effect);
 	for (auto i = 0; i < 1000; i++)
 	{
-	
+
 		exec.Update(.1f);
 		boost::this_thread::sleep(boost::posix_time::millisec(100));
 
 	}
-	
+
 	*/
-	
-	
+
+
 }

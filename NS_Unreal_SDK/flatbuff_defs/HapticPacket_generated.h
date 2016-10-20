@@ -46,13 +46,17 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
 
 struct HapticPacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_PACKET_TYPE = 4,
-    VT_PACKET = 6
+    VT_NAME = 4,
+    VT_PACKET_TYPE = 6,
+    VT_PACKET = 8
   };
+  const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
   FileType packet_type() const { return static_cast<FileType>(GetField<uint8_t>(VT_PACKET_TYPE, 0)); }
   const void *packet() const { return GetPointer<const void *>(VT_PACKET); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           verifier.Verify(name()) &&
            VerifyField<uint8_t>(verifier, VT_PACKET_TYPE) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_PACKET) &&
            VerifyFileType(verifier, packet(), packet_type()) &&
@@ -63,23 +67,33 @@ struct HapticPacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct HapticPacketBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
+  void add_name(flatbuffers::Offset<flatbuffers::String> name) { fbb_.AddOffset(HapticPacket::VT_NAME, name); }
   void add_packet_type(FileType packet_type) { fbb_.AddElement<uint8_t>(HapticPacket::VT_PACKET_TYPE, static_cast<uint8_t>(packet_type), 0); }
   void add_packet(flatbuffers::Offset<void> packet) { fbb_.AddOffset(HapticPacket::VT_PACKET, packet); }
   HapticPacketBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   HapticPacketBuilder &operator=(const HapticPacketBuilder &);
   flatbuffers::Offset<HapticPacket> Finish() {
-    auto o = flatbuffers::Offset<HapticPacket>(fbb_.EndTable(start_, 2));
+    auto o = flatbuffers::Offset<HapticPacket>(fbb_.EndTable(start_, 3));
     return o;
   }
 };
 
 inline flatbuffers::Offset<HapticPacket> CreateHapticPacket(flatbuffers::FlatBufferBuilder &_fbb,
+    flatbuffers::Offset<flatbuffers::String> name = 0,
     FileType packet_type = FileType_NONE,
     flatbuffers::Offset<void> packet = 0) {
   HapticPacketBuilder builder_(_fbb);
   builder_.add_packet(packet);
+  builder_.add_name(name);
   builder_.add_packet_type(packet_type);
   return builder_.Finish();
+}
+
+inline flatbuffers::Offset<HapticPacket> CreateHapticPacketDirect(flatbuffers::FlatBufferBuilder &_fbb,
+    const char *name = nullptr,
+    FileType packet_type = FileType_NONE,
+    flatbuffers::Offset<void> packet = 0) {
+  return CreateHapticPacket(_fbb, name ? _fbb.CreateString(name) : 0, packet_type, packet);
 }
 
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type) {
