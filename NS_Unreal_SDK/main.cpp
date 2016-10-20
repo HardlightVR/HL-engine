@@ -16,6 +16,7 @@
 #include "flatbuffers\flatbuffers.h"
 #include "flatbuff_defs\Sequence_generated.h"
 #include "flatbuff_defs\HapticEffect_generated.h"
+#include "flatbuff_defs\HapticPacket_generated.h"
 #include "SerialAdapter.h"
 #include <memory>
 #define SHOW_CONSOLE
@@ -34,11 +35,12 @@ int main() {
 	}
 	else {
 		std::cout << "Connected to suit" << "\n";
+		suit->SetAdapter(adapter);
 	}
 	
 
 
-	suit->SetAdapter(adapter);
+	
 	HapticsExecutor exec(suit);
 
 	zmq::context_t context(1);
@@ -53,26 +55,30 @@ int main() {
 			previousTime = currentTime;
 			exec.Update(elapsed.count());
 			
-			
-			zmq::multipart_t msg;
-		
-			if (socket.recv(&msg, ZMQ_DONTWAIT) != -1);
+			zmq::message_t msg;
+			if (socket.recv(&msg, ZMQ_DONTWAIT))
 			{
 				auto data = msg.data();
-				flatbuffers::Verifier verifier(reinterpret_cast<uint8_t*>(data), msg.size());
-				bool isgood = NullSpace::HapticFiles::VerifySequenceBuffer(verifier);
+				auto size = msg.size();
+				flatbuffers::Verifier verifier(reinterpret_cast<uint8_t*>(data), size);
+				bool isgood = NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier);
 				if (isgood) {
-
-					auto sequence = NullSpace::HapticFiles::GetSequence(data);
-					std::vector<HapticEffect> effects;
-					effects.reserve(sequence->items()->size());
-					for (const auto &effect : *sequence->items()) {
-						effects.push_back(
-							HapticEffect((Effect)effect->effect(), (Location)effect->location(), effect->duration(), effect->time(), (int)effect->priority())
-						);
+					auto packet = NullSpace::HapticFiles::GetHapticPacket(data);
+					auto packetType = packet->packet_type();
+					switch (packetType) {
+					case NullSpace::HapticFiles::FileType::FileType_Sequence:
+						auto sequence = static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet());
+					
+						break;
+					case NullSpace::HapticFiles::FileType::FileType_Pattern:
+						auto pattern = static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet());
+						break;
 					}
-					exec.Play(effects);
+					std::cout << "Received packet of type " << int(packetType) <<" and size " << msg.size() << "\n";
 
+				}
+				else {
+					std::cout << "Bad packet" << "\n";
 				}
 			}
 
