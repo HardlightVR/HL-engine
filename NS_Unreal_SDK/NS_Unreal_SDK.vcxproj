@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoostSerialAdapter.cpp" />
     <ClCompile Include="HapticCache2.cpp" />
     <ClCompile Include="HapticClasses.cpp" />
     <ClCompile Include="HapticDirectoryTools.cpp" />
@@ -167,6 +168,8 @@
     <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq.h" />
     <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq_utils.h" />
     <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\Wire.h" />
+    <ClInclude Include="BlockingReader.h" />
+    <ClInclude Include="BoostSerialAdapter.h" />
     <ClInclude Include="ByteQueue.h" />
     <ClInclude Include="HapticCache2.h" />
     <ClInclude Include="HapticClasses.h" />

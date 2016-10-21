@@ -93,6 +93,9 @@
     <ClCompile Include="HapticCache2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BoostSerialAdapter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Serial.h">
@@ -201,6 +204,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\Wire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostSerialAdapter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockingReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

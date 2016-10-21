@@ -19,6 +19,7 @@
 #include <memory>
 #include "HapticCache2.h"
 #include "Wire.h"
+#include "BoostSerialAdapter.h"
 #define SHOW_CONSOLE
 
 
@@ -28,8 +29,8 @@ int main() {
 #endif
 	using namespace std::chrono;
 	auto suit = std::make_shared<SuitHardwareInterface>();
-
-	std::shared_ptr<ICommunicationAdapter> adapter(new SerialAdapter());
+	auto io = std::make_shared<boost::asio::io_service>();
+	std::shared_ptr<ICommunicationAdapter> adapter(new BoostSerialAdapter(io));
 	if (!adapter->Connect()) {
 		std::cout << "Unable to connect to suit" << "\n";
 	}
@@ -50,10 +51,13 @@ int main() {
 		socket.bind("tcp://127.0.0.1:5555");
 		auto previousTime = std::chrono::high_resolution_clock::now();
 		while (true) {
+			io->poll();
 			auto currentTime = std::chrono::high_resolution_clock::now();
 			typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
 			duration elapsed = currentTime - previousTime;
 			previousTime = currentTime;
+			std::cout << "Tick" << elapsed.count()<< "\n";
+
 			exec.Update(elapsed.count());
 
 			zmq::message_t msg;
@@ -68,29 +72,29 @@ int main() {
 					
 					switch (packet->packet_type()) {
 					case NullSpace::HapticFiles::FileType::FileType_Sequence: {
-						if (_cache.ContainsSequence(packet->name()->str())) {
-							exec.Play(_cache.GetSequence(packet->name()->str()));
-						}
-						else {
-							
-							auto uniqu = std::unique_ptr<const NullSpace::HapticFiles::Sequence>(static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet()));
-							auto decoded = Wire::Decode(uniqu);
+						//if (_cache.ContainsSequence(packet->name()->str())) {
+							//exec.Play(_cache.GetSequence(packet->name()->str()));
+						//}
+						//else {
+						auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet()));
 							_cache.AddSequence(packet->name()->str(), decoded);
 							exec.Play(decoded);
 							
-						}
+						//}
 
 
 						break;
 					}
 					case NullSpace::HapticFiles::FileType::FileType_Pattern: {
-						//	auto pattern = static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet());
+						auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet()));
+						_cache.AddPattern(packet->name()->str(), decoded);
+						exec.Play(decoded);
 						break;
 					}
 					}
 		
 					//std::cout << "Received packet of type " << int(packetType) <<" and size " << msg.size() << "\n";
-	
+					packet.release();
 				}
 				else {
 					std::cout << "Bad packet" << "\n";

@@ -1,6 +1,6 @@
 #include "HapticsExecutor.h"
 #include "HapticEvent.h"
-
+#include <boost\thread\thread.hpp>
 using namespace std;
 
 
@@ -113,7 +113,7 @@ void HapticsExecutor::executePendingEffects(float deltaTime)
 		iter->Time += deltaTime;
 		if (iter->Expired())
 		{
-			std::cout << "Expired at " << iter->Time << "\n";
+			//std::cout << "Expired at " << iter->Time << "\n";
 			//take ownership
 			std::unique_ptr<HapticEffect> e(static_cast<HapticEffect*>(iter->Item.release()));
 			_model[e->Location].Put(e->Priority, HapticEvent(e->Effect, e->Duration));
@@ -145,29 +145,32 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 		}
 		auto e = effect.get();
 		toExecute.push_back(pair<Duration, pair<Location, Effect>>(
-			e.DurationType(), 
-				pair<Location, Effect>(
-			queue.first, e.Effect
-		)));
-
-		for (auto& pair : toExecute)
-		{
-			auto& hapticEvent = pair.second;
-			switch (pair.first)
-			{
-				//fallthrough
-			case Duration::Infinite:
-			case Duration::Variable:
-				_suit->PlayEffectContinuous(hapticEvent.first, hapticEvent.second);
-				break;
-			case Duration::OneShot:
-				_suit->HaltEffect(hapticEvent.first);
-				_suit->PlayEffect(hapticEvent.first, hapticEvent.second);
-				_model[hapticEvent.first].Dirty = false;
-				break;
-			default:
-				break;
-			}
-		}
+			e.DurationType(),
+			pair<Location, Effect>(
+				queue.first, e.Effect
+				)));
 	}
+
+	for (auto& pair : toExecute)
+	{
+		
+		auto& hapticEvent = pair.second;
+		switch (pair.first)
+		{
+			//fallthrough
+		case Duration::Infinite:
+		case Duration::Variable:
+			_suit->PlayEffectContinuous(hapticEvent.first, hapticEvent.second);
+			break;
+		case Duration::OneShot:
+			_suit->HaltEffect(hapticEvent.first);
+			_suit->PlayEffect(hapticEvent.first, hapticEvent.second);
+			_model[hapticEvent.first].Dirty = false;
+			break;
+		default:
+			break;
+		}
+	//	boost::this_thread::sleep(boost::posix_time::millisec(1));
+	}
+	
 }
