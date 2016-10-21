@@ -13,6 +13,7 @@ public:
 	void Play(const std::vector<HapticFrame>& frames);
 	void Play(std::vector<HapticEffect> effects);
 	void Play(const std::vector<HapticSample>& samples);
+	void Play(const HapticEffect& e);
 	void Update(float dt);
 private:
 	std::vector<TimeInstant> _queuedFrames;

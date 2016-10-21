@@ -37,6 +37,11 @@ void HapticsExecutor::Play(const std::vector<HapticSample>& samples)
 	}
 }
 
+void HapticsExecutor::Play(const HapticEffect& e)
+{
+	_queuedEffects.push_back(TimeInstant(0, std::make_unique<HapticEffect>(e)));
+}
+
 void HapticsExecutor::Update(float dt)
 {
 	updateLocationModels(dt);

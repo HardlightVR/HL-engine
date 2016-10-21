@@ -22,12 +22,13 @@ enum FileType {
   FileType_Experience = 1,
   FileType_Pattern = 2,
   FileType_Sequence = 3,
+  FileType_HapticEffect = 4,
   FileType_MIN = FileType_NONE,
-  FileType_MAX = FileType_Sequence
+  FileType_MAX = FileType_HapticEffect
 };
 
 inline const char **EnumNamesFileType() {
-  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", nullptr };
+  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", nullptr };
   return names;
 }
 
@@ -47,6 +48,10 @@ template<> struct FileTypeTraits<NullSpace::HapticFiles::Pattern> {
 
 template<> struct FileTypeTraits<NullSpace::HapticFiles::Sequence> {
   static const FileType enum_value = FileType_Sequence;
+};
+
+template<> struct FileTypeTraits<NullSpace::HapticFiles::HapticEffect> {
+  static const FileType enum_value = FileType_HapticEffect;
 };
 
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type);
@@ -109,6 +114,7 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
     case FileType_Experience: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Experience *>(union_obj));
     case FileType_Pattern: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Pattern *>(union_obj));
     case FileType_Sequence: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Sequence *>(union_obj));
+    case FileType_HapticEffect: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::HapticEffect *>(union_obj));
     default: return false;
   }
 }

@@ -17,10 +17,14 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 {
 	if (this->port && this->port->is_open()) {
 		char *chars = reinterpret_cast<char*>(bytes);
-		this->port->async_write_some(boost::asio::buffer(bytes, length), [](
-			const boost::system::error_code& error, 
-			std::size_t bytes_transferred         
-			) {if (error) { std::cout << "Couldnt write bytes!" << "\n"; }});
+		this->port->async_write_some(boost::asio::buffer(bytes, length), 
+			[](const boost::system::error_code& error, std::size_t bytes_transferred) {
+				if (error) { 
+					std::cout << "Couldnt write bytes!" << "\n"; 
+				} else { 
+					//std::cout << "no error!" << "\n"; 
+				} 
+		});
 	}
 }
 

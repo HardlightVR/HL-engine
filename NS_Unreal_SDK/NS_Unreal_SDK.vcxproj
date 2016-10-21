@@ -82,6 +82,7 @@
     <Link>
       <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\Win32\Debug\v140\dynamic;C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <PreBuildEvent>
       <Command>copy /Y "C:\Program Files (x86)\libzmq\bin\Win32\Debug\v140\dynamic\libzmq.dll" "$(OutDir)"</Command>
@@ -107,14 +108,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\libzmq\include;C:\Program Files (x86)\flatbuffers\include\flatbuffers;C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\libzmq\include;C:\Program Files %28x86%29\flatbuffers\include;C:\Program Files\boost\boost_1_61_0</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\Win32\Release\v140\static;C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\Win32\Release\v140\dynamic;C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

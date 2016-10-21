@@ -50,23 +50,35 @@ int main() {
 	try {
 		socket.bind("tcp://127.0.0.1:5555");
 		auto previousTime = std::chrono::high_resolution_clock::now();
+		int framecount = 0;
+		typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
+		float total = 0.0f;
+		//duration total = 
 		while (true) {
+			boost::this_thread::sleep(boost::posix_time::millisec(1));
+			framecount++;
 			io->poll();
 			auto currentTime = std::chrono::high_resolution_clock::now();
-			typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
 			duration elapsed = currentTime - previousTime;
 			previousTime = currentTime;
+			total += elapsed.count();
 		//	std::cout << "Tick" << elapsed.count()<< "\n";
-
-			exec.Update(elapsed.count());
+			if (total >= 1.0f) {
+				//x frames : 1 second
+				std::cout << "FPS: " << (framecount) << "\n";
+				total = 0.0f;
+				framecount = 0;
+			}
 
 			zmq::message_t msg;
 			if (socket.recv(&msg, ZMQ_DONTWAIT))
 			{
+				std::cout << "got something" << "\n";
 				auto data = msg.data();
 				auto size = msg.size();
 				flatbuffers::Verifier verifier(reinterpret_cast<uint8_t*>(data), size);
 				if (NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier)) {
+					std::cout << "	it's a packet" << "\n";
 					auto packet =
 						std::unique_ptr<const NullSpace::HapticFiles::HapticPacket>(NullSpace::HapticFiles::GetHapticPacket(data));
 					
@@ -84,6 +96,7 @@ int main() {
 						break;
 					}
 					case NullSpace::HapticFiles::FileType::FileType_Pattern: {
+						std::cout << "		got pattern" << "\n";
 						if (_cache.ContainsPattern(packet->name()->str())) {
 							exec.Play(_cache.GetPattern(packet->name()->str()));
 						}
@@ -106,6 +119,14 @@ int main() {
 						}
 						break;
 					}
+					case NullSpace::HapticFiles::FileType::FileType_HapticEffect:
+					{
+						auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet->packet()));
+						exec.Play(decoded);
+						break;
+					}
+					default:
+						break;
 					}
 		
 					//std::cout << "Received packet of type " << int(packetType) <<" and size " << msg.size() << "\n";
@@ -115,6 +136,7 @@ int main() {
 					std::cout << "Bad packet" << "\n";
 				}
 			}
+			exec.Update(elapsed.count());
 
 
 
