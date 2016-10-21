@@ -150,7 +150,6 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 				queue.first, e.Effect
 				)));
 	}
-
 	for (auto& pair : toExecute)
 	{
 		

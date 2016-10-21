@@ -5,8 +5,10 @@
 
 #include "flatbuffers/flatbuffers.h"
 
+#include "Experience_generated.h"
 #include "HapticEffect_generated.h"
 #include "HapticFrame_generated.h"
+#include "HapticSample_generated.h"
 #include "Pattern_generated.h"
 #include "Sequence_generated.h"
 
@@ -17,14 +19,15 @@ struct HapticPacket;
 
 enum FileType {
   FileType_NONE = 0,
-  FileType_Pattern = 1,
-  FileType_Sequence = 2,
+  FileType_Experience = 1,
+  FileType_Pattern = 2,
+  FileType_Sequence = 3,
   FileType_MIN = FileType_NONE,
   FileType_MAX = FileType_Sequence
 };
 
 inline const char **EnumNamesFileType() {
-  static const char *names[] = { "NONE", "Pattern", "Sequence", nullptr };
+  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", nullptr };
   return names;
 }
 
@@ -32,6 +35,10 @@ inline const char *EnumNameFileType(FileType e) { return EnumNamesFileType()[sta
 
 template<typename T> struct FileTypeTraits {
   static const FileType enum_value = FileType_NONE;
+};
+
+template<> struct FileTypeTraits<NullSpace::HapticFiles::Experience> {
+  static const FileType enum_value = FileType_Experience;
 };
 
 template<> struct FileTypeTraits<NullSpace::HapticFiles::Pattern> {
@@ -99,6 +106,7 @@ inline flatbuffers::Offset<HapticPacket> CreateHapticPacketDirect(flatbuffers::F
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type) {
   switch (type) {
     case FileType_NONE: return true;
+    case FileType_Experience: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Experience *>(union_obj));
     case FileType_Pattern: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Pattern *>(union_obj));
     case FileType_Sequence: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Sequence *>(union_obj));
     default: return false;

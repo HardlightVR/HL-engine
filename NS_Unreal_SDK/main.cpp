@@ -56,7 +56,7 @@ int main() {
 			typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
 			duration elapsed = currentTime - previousTime;
 			previousTime = currentTime;
-			std::cout << "Tick" << elapsed.count()<< "\n";
+		//	std::cout << "Tick" << elapsed.count()<< "\n";
 
 			exec.Update(elapsed.count());
 
@@ -72,23 +72,38 @@ int main() {
 					
 					switch (packet->packet_type()) {
 					case NullSpace::HapticFiles::FileType::FileType_Sequence: {
-						//if (_cache.ContainsSequence(packet->name()->str())) {
-							//exec.Play(_cache.GetSequence(packet->name()->str()));
-						//}
-						//else {
+						if (_cache.ContainsSequence(packet->name()->str())) {
+							exec.Play(_cache.GetSequence(packet->name()->str()));
+						}
+						else {
 						auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet()));
 							_cache.AddSequence(packet->name()->str(), decoded);
 							exec.Play(decoded);
 							
-						//}
-
-
+						}
 						break;
 					}
 					case NullSpace::HapticFiles::FileType::FileType_Pattern: {
-						auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet()));
-						_cache.AddPattern(packet->name()->str(), decoded);
-						exec.Play(decoded);
+						if (_cache.ContainsPattern(packet->name()->str())) {
+							exec.Play(_cache.GetPattern(packet->name()->str()));
+						}
+						else {
+							auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet()));
+							_cache.AddPattern(packet->name()->str(), decoded);
+							exec.Play(decoded);
+						}
+						break;
+					}
+					case NullSpace::HapticFiles::FileType::FileType_Experience:
+					{
+						if (_cache.ContainsExperience(packet->name()->str())) {
+							exec.Play(_cache.GetExperience(packet->name()->str()));
+						}
+						else {
+							auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet->packet()));
+							_cache.AddExperience(packet->name()->str(), decoded);
+							exec.Play(decoded);
+						}
 						break;
 					}
 					}

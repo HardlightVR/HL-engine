@@ -1,10 +1,11 @@
 include "Sequence.fbs";
 include "Pattern.fbs";
+include "Experience.fbs";
 
 namespace NullSpace.HapticFiles;
 
 
-union FileType {Pattern, Sequence}
+union FileType {Experience, Pattern, Sequence}
 
 table HapticPacket {
 	name:string;
