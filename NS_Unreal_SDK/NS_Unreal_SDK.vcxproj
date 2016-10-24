@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoostSerialAdapter.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="HapticCache2.cpp" />
     <ClCompile Include="HapticClasses.cpp" />
     <ClCompile Include="HapticDirectoryTools.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="BlockingReader.h" />
     <ClInclude Include="BoostSerialAdapter.h" />
     <ClInclude Include="ByteQueue.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="HapticCache2.h" />
     <ClInclude Include="HapticClasses.h" />
     <ClInclude Include="HapticDirectoryTools.h" />

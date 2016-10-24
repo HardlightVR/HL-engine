@@ -8,6 +8,7 @@
 #include "HapticEffect_generated.h"
 #include "HapticFrame_generated.h"
 #include "HapticSample_generated.h"
+#include "Pattern_generated.h"
 #include "Sequence_generated.h"
 
 namespace NullSpace {

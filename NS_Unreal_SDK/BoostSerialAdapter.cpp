@@ -22,7 +22,6 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 				if (error) { 
 					std::cout << "Couldnt write bytes!" << "\n"; 
 				} else { 
-					//std::cout << "no error!" << "\n"; 
 				} 
 		});
 	}
@@ -30,7 +29,29 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 
 void BoostSerialAdapter::Read()
 {
+	if (this->port->is_open()) {
+		auto self(shared_from_this());
+		this->port->async_read_some(boost::asio::buffer(_data, 64),
+			[this, self](boost::system::error_code ec, std::size_t length) {
+			if (!ec && length > 0) {
+				self->copy_data_to_circularbuff(length);
+			}
+			else {
+				std::cout << "Error reading bytes!" << std::endl;
+			}
+		});
+	}
+	
 }
+void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
+	for (std::size_t i = 0; i < length; ++i) {
+		suitDataStream->push_front(_data[i]);
+	}
+
+	std::fill(_data,_data+64, 0);
+}
+
+
 
 bool BoostSerialAdapter::Connect(std::string name)
 {
@@ -39,11 +60,12 @@ bool BoostSerialAdapter::Connect(std::string name)
 
 std::shared_ptr<CircularBuffer> BoostSerialAdapter::GetDataStream()
 {
-	return std::shared_ptr<CircularBuffer>();
+	return this->suitDataStream;
 }
 
-BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(2048)), port(nullptr), _io(io)
+BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io)
 {
+	std::fill(_data, _data + 64, 0);
 
 }
 
@@ -96,3 +118,4 @@ bool BoostSerialAdapter::createPort(std::string name)
 		return false;
 	}
 }
+

@@ -2,7 +2,7 @@
 #include <iostream>
 #include "PacketDispatcher.h"
 
-
+unsigned const int Synchronizer::MY_PACKET_LENGTH = PACKET_LENGTH;
 bool Synchronizer::Synchronized()
 {
 	return this->syncState == Synchronizer::State::Synchronized;
@@ -16,14 +16,14 @@ Synchronizer::State Synchronizer::SyncState()
 void Synchronizer::TryReadPacket()
 {
 	//if (this->dataStream.Length < this.packetLength
-	if (_dataStream->size() < PACKET_LENGTH) {
+	if (_dataStream->size() < MY_PACKET_LENGTH) {
 		return;
 	}
 
 	switch (this->syncState)
 	{
 	case Synchronizer::State::SearchingForSync:
-		std::cout << "Searching for sync.." << "\n";
+		//std::cout << "Searching for sync.." << '\n';
 		this->searchForSync();
 		break;
 	case Synchronizer::State::ConfirmingSync:
@@ -45,11 +45,11 @@ void Synchronizer::TryReadPacket()
 	}
 }
 
-unsigned const int Synchronizer::PACKET_LENGTH = PACKET_LENGTH;
 
-Synchronizer::Synchronizer(std::shared_ptr<CircularBuffer> dataStream, PacketDispatcher& dispatcher) :
+
+Synchronizer::Synchronizer(std::shared_ptr<CircularBuffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher) :
 	_dispatcher(dispatcher),
-	_dataStream(std::move(dataStream)),
+	_dataStream(dataStream),
 	packetDelimiter('$'),
 	syncState(Synchronizer::State::SearchingForSync),
 	badSyncCounter(0),
@@ -65,7 +65,7 @@ Synchronizer::~Synchronizer()
 void Synchronizer::searchForSync()
 {
 	//this->dataStream.Length < this->packetLength * 2
-	if (this->_dataStream->size() < this->PACKET_LENGTH * 2) {
+	if (this->_dataStream->size() < MY_PACKET_LENGTH * 2) {
 		return;
 	}
 
@@ -76,10 +76,10 @@ void Synchronizer::searchForSync()
 	}
 
 	//find offset 
-	for (std::size_t offset = 1; offset < this->PACKET_LENGTH; ++offset) {
+	for (std::size_t offset = 1; offset < MY_PACKET_LENGTH; ++offset) {
 		if (possiblePacket.raw[offset] == this->packetDelimiter) {
-			std::size_t howMuchLeft = this->PACKET_LENGTH - offset;
-			for (std::size_t i = 0; i < PACKET_LENGTH; ++i)
+			std::size_t howMuchLeft = offset;
+			for (std::size_t i = 0; i < howMuchLeft; ++i)
 			{
 				_dataStream->pop_back();
 			}
@@ -105,8 +105,8 @@ void Synchronizer::monitorSync()
 {
 	packet possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
-		std::cout << "got a packet" << "\n";
-	//	this->dispatcher.Dispatch(possiblePacket);
+	
+		this->_dispatcher->Dispatch(possiblePacket);
 	}
 	else {
 		this->badSyncCounter = 1;
@@ -133,9 +133,11 @@ void Synchronizer::confirmSyncLoss()
 packet Synchronizer::dequeuePacket() const
 {
 	packet p;
-		
-	std::copy(_dataStream->end() - PACKET_LENGTH, _dataStream->end(), p.raw);
-	for (std::size_t i = 0; i < PACKET_LENGTH; ++i)
+	
+	std::reverse_copy(_dataStream->end() - MY_PACKET_LENGTH, _dataStream->end(), p.raw);
+	
+
+	for (std::size_t i = 0; i < MY_PACKET_LENGTH; ++i)
 	{
 		_dataStream->pop_back();
 	}

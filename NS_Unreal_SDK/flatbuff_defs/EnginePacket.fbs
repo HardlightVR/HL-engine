@@ -1,0 +1,12 @@
+include "SuitStatusUpdate.fbs";
+
+namespace NullSpace.Communication;
+
+
+union PacketType {SuitStatusUpdate}
+
+table EnginePacket {
+	packet:PacketType;
+}
+
+root_type EnginePacket;

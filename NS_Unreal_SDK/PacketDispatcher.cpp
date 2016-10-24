@@ -22,3 +22,15 @@ void PacketDispatcher::Dispatch(packet packet)
 		}
 	}
 }
+
+void PacketDispatcher::AddConsumer(SuitPacket::PacketType ptype, std::shared_ptr<IPacketConsumer> consumer)
+{
+	if (_consumers.find(ptype) != _consumers.end()) {
+		_consumers[ptype].push_back(consumer);
+	}
+	else {
+		_consumers[ptype] = std::vector<std::shared_ptr<IPacketConsumer>>();
+		_consumers[ptype].push_back(consumer);
+
+	}
+}

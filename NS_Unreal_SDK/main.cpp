@@ -7,6 +7,7 @@
 #include "HapticDirectoryTools.h"
 #include "Synchronizer.h"
 #include "HapticsExecutor.h"
+#include "PacketDispatcher.h"
 #include <fstream>
 #include <boost\thread.hpp>
 #include <cassert>
@@ -15,14 +16,19 @@
 #include "Sequence_generated.h"
 #include "HapticEffect_generated.h"
 #include "HapticPacket_generated.h"
+#include "EnginePacket_generated.h"
 #include "SerialAdapter.h"
 #include <memory>
 #include "HapticCache2.h"
 #include "Wire.h"
 #include "BoostSerialAdapter.h"
+#include <thread>
 #define SHOW_CONSOLE
 
 
+void tick(const boost::system::error_code& e) {
+	
+}
 int main() {
 #ifndef SHOW_CONSOLE
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
@@ -30,34 +36,49 @@ int main() {
 	using namespace std::chrono;
 	auto suit = std::make_shared<SuitHardwareInterface>();
 	auto io = std::make_shared<boost::asio::io_service>();
+	boost::asio::deadline_timer timer(*io, boost::posix_time::seconds(1));
+
 	std::shared_ptr<ICommunicationAdapter> adapter(new BoostSerialAdapter(io));
 	if (!adapter->Connect()) {
 		std::cout << "Unable to connect to suit" << "\n";
 	}
+	
 	else {
 		std::cout << "Connected to suit" << "\n";
 		suit->SetAdapter(adapter);
 	}
 
 	HapticCache2 _cache;
+	PacketDispatcher dispatcher(adapter->GetDataStream());
 
+	Synchronizer sync(adapter->GetDataStream(), dispatcher);
 
-
+	std::function<void(const boost::system::error_code&)> f = [&](const boost::system::error_code&) {
+		suit->PingSuit();
+		timer.expires_at(timer.expires_at() + boost::posix_time::seconds(1));
+		timer.async_wait(f);
+	};
+	//timer.async_wait();
 	HapticsExecutor exec(suit);
-
+	timer.async_wait(f);
 	zmq::context_t context(1);
+	zmq::socket_t server_updates(context, ZMQ_PUB);
 	zmq::socket_t socket(context, ZMQ_PAIR);
 	try {
-		socket.bind("tcp://127.0.0.1:5555");
+		socket.bind("tcp://127.0.0.1:9452");
+		server_updates.bind("tcp://127.0.0.1:9453");
 		auto previousTime = std::chrono::high_resolution_clock::now();
 		int framecount = 0;
 		typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
 		float total = 0.0f;
 		//duration total = 
 		while (true) {
+		
 			boost::this_thread::sleep(boost::posix_time::millisec(1));
 			framecount++;
 			io->poll();
+			adapter->Read();
+			sync.TryReadPacket();
 			auto currentTime = std::chrono::high_resolution_clock::now();
 			duration elapsed = currentTime - previousTime;
 			previousTime = currentTime;
@@ -107,6 +128,7 @@ int main() {
 						}
 						break;
 					}
+																		
 					case NullSpace::HapticFiles::FileType::FileType_Experience:
 					{
 						if (_cache.ContainsExperience(packet->name()->str())) {

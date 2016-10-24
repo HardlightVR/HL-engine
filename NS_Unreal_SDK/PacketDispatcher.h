@@ -11,6 +11,7 @@ public:
 	PacketDispatcher(std::shared_ptr<CircularBuffer> data);
 	~PacketDispatcher();
 	void Dispatch(packet packet);
+	void AddConsumer(SuitPacket::PacketType ptype, std::shared_ptr<IPacketConsumer> consumer);
 private:
 	Synchronizer _synchronizer;
 	unsigned int _dispatchLimit;

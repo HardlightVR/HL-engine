@@ -21,9 +21,9 @@ public:
 	bool Synchronized();
 	State SyncState();
 	void TryReadPacket();
-	const static unsigned int PACKET_LENGTH;
+	const static unsigned int MY_PACKET_LENGTH;
 
-	Synchronizer(std::shared_ptr<CircularBuffer> dataStream, PacketDispatcher& dispatcher);
+	Synchronizer(std::shared_ptr<CircularBuffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher);
 	~Synchronizer();
 private:
 	State syncState;
@@ -31,7 +31,7 @@ private:
 	uint8_t packetFooter[2];
 	int badSyncCounter;
 	const int BAD_SYNC_LIMIT = 2;
-	PacketDispatcher& _dispatcher;
+	std::shared_ptr<PacketDispatcher> _dispatcher;
 	std::shared_ptr<CircularBuffer> _dataStream;
 	void searchForSync();
 	void confirmSync();
