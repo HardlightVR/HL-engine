@@ -74,7 +74,7 @@ void Engine::Update(float dt)
 
 }
 
-bool Engine::SuitConnected()
+bool Engine::SuitConnected() const
 {
 	return _adapter->IsConnected();
 }

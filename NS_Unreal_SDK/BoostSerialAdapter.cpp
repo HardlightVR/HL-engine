@@ -64,7 +64,7 @@ std::shared_ptr<CircularBuffer> BoostSerialAdapter::GetDataStream()
 	return this->suitDataStream;
 }
 
-bool BoostSerialAdapter::IsConnected()
+bool BoostSerialAdapter::IsConnected() const
 {
 	return port->is_open();
 }

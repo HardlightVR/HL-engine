@@ -22,7 +22,7 @@ public:
 	void PlayExperience(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet);
 	void PlayEffect(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet);
 	void Update(float dt);
-	bool SuitConnected();
+	bool SuitConnected() const;
 	~Engine();
 private:
 	std::shared_ptr<SuitHardwareInterface> _suitHardware;

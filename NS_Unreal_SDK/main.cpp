@@ -21,8 +21,10 @@
 #include "Engine.h"
 #define SHOW_CONSOLE
 
-void sendSuitStatusMsg(const boost::system::error_code& ec) {
-
+void sendSuitStatusMsg(const boost::system::error_code& ec, const Engine& e) {
+	if (e.SuitConnected()) {
+		Wire::Encode(NullSpace::Communication::SuitStatus::SuitStatus_Connected);
+	}
 }
 int main() {
 	#ifndef SHOW_CONSOLE

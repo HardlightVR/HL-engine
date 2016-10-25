@@ -12,7 +12,7 @@ public:
 	void Read() override;
 	bool Connect(std::string name);
 	std::shared_ptr<CircularBuffer> GetDataStream() override;
-	bool IsConnected() override;
+	bool IsConnected() const override;
 	BoostSerialAdapter(std::shared_ptr<boost::asio::io_service>);
 	~BoostSerialAdapter();
 private:
