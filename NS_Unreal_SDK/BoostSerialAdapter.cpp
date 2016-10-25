@@ -18,9 +18,10 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 	if (this->port && this->port->is_open()) {
 		char *chars = reinterpret_cast<char*>(bytes);
 		this->port->async_write_some(boost::asio::buffer(bytes, length), 
-			[](const boost::system::error_code& error, std::size_t bytes_transferred) {
+			[&](const boost::system::error_code& error, std::size_t bytes_transferred) {
 				if (error) { 
-					std::cout << "Couldnt write bytes!" << "\n"; 
+					std::cout << "Encoutered error writing to port (disconnecting): " << error.message() << "\n";
+					this->port->close();
 				} else { 
 				} 
 		});
@@ -61,6 +62,11 @@ bool BoostSerialAdapter::Connect(std::string name)
 std::shared_ptr<CircularBuffer> BoostSerialAdapter::GetDataStream()
 {
 	return this->suitDataStream;
+}
+
+bool BoostSerialAdapter::IsConnected()
+{
+	return port->is_open();
 }
 
 BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io)

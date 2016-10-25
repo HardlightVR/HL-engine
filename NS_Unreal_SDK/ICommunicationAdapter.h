@@ -9,5 +9,6 @@ public:
 	virtual void Disconnect() = 0;
 	virtual void Write(uint8_t bytes[], std::size_t length) = 0;
 	virtual void Read() = 0;
+	virtual bool IsConnected();
 	virtual std::shared_ptr<CircularBuffer> GetDataStream() = 0;
 };
