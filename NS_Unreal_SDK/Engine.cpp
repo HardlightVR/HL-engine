@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include "BoostSerialAdapter.h"
 #include "Wire.h"
-
+#include "EncodingOperations.h"
 Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 	_suitHardware(std::make_shared<SuitHardwareInterface>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(new BoostSerialAdapter(io))),
@@ -30,7 +30,7 @@ void Engine::PlaySequence(std::unique_ptr<const NullSpace::HapticFiles::HapticPa
 		_executor.Play(_hapticCache.GetSequence(packet->name()->str()));
 	}
 	else {
-		auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet()));
+		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet()));
 		_hapticCache.AddSequence(packet->name()->str(), decoded);
 		_executor.Play(decoded);
 	}
@@ -42,7 +42,7 @@ void Engine::PlayPattern(std::unique_ptr<const NullSpace::HapticFiles::HapticPac
 		_executor.Play(_hapticCache.GetPattern(packet->name()->str()));
 	}
 	else {
-		auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet()));
+		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet()));
 		_hapticCache.AddPattern(packet->name()->str(), decoded);
 		_executor.Play(decoded);
 	}
@@ -54,7 +54,7 @@ void Engine::PlayExperience(std::unique_ptr<const NullSpace::HapticFiles::Haptic
 		_executor.Play(_hapticCache.GetExperience(packet->name()->str()));
 	}
 	else {
-		auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet->packet()));
+		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet->packet()));
 		_hapticCache.AddExperience(packet->name()->str(), decoded);
 		_executor.Play(decoded);
 	}
@@ -62,7 +62,7 @@ void Engine::PlayExperience(std::unique_ptr<const NullSpace::HapticFiles::Haptic
 
 void Engine::PlayEffect(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet)
 {
-	auto decoded = Wire::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet->packet()));
+	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet->packet()));
 	_executor.Play(decoded);
 }
 

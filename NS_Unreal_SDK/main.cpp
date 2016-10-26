@@ -7,6 +7,7 @@
 #include "HapticDirectoryTools.h"
 #include <fstream>
 #include <boost\thread.hpp>
+#include <boost\asio\placeholders.hpp>
 #include <boost\asio\deadline_timer.hpp>
 #include <cassert>
 #include <chrono>
@@ -19,12 +20,23 @@
 #include "Wire.h"
 #include <thread>
 #include "Engine.h"
+#include "EncodingOperations.h"
 #define SHOW_CONSOLE
 
-void sendSuitStatusMsg(const boost::system::error_code& ec, const Engine& e) {
-	if (e.SuitConnected()) {
-		Wire::Encode(NullSpace::Communication::SuitStatus::SuitStatus_Connected);
-	}
+const auto suit_status_update_interval = boost::posix_time::milliseconds(500);
+
+void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingOperations* encoder, zmq::socket_t* socket, boost::asio::deadline_timer* t) {
+	NullSpace::Communication::SuitStatus status = e->SuitConnected() ?
+		NullSpace::Communication::SuitStatus::SuitStatus_Connected :
+		NullSpace::Communication::SuitStatus::SuitStatus_Disconnected;
+
+	encoder->Finalize(encoder->Encode(status),
+		[&](uint8_t* data, int size) {
+		Wire::sendTo(*socket, data, size);
+	});
+	std::cout << "Sending suit update!" << '\n';
+	t->expires_at(t->expires_at() + suit_status_update_interval);
+	t->async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, e, encoder, socket, t));
 }
 int main() {
 	#ifndef SHOW_CONSOLE
@@ -32,7 +44,7 @@ int main() {
 	#endif
 
 	using namespace std::chrono;
-	
+	EncodingOperations _encoder;
 	auto io = std::make_shared<boost::asio::io_service>();
 
 	Engine engine(io);
@@ -40,9 +52,8 @@ int main() {
 	zmq::context_t context(1);
 	zmq::socket_t server_updates(context, ZMQ_PUB);
 	zmq::socket_t haptic_requests(context, ZMQ_PAIR);
-	boost::asio::deadline_timer suitStatusTimer(*io, boost::posix_time::milliseconds(500));
-
-
+	boost::asio::deadline_timer suitStatusTimer(*io, suit_status_update_interval);
+	suitStatusTimer.async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, &engine, &_encoder, &server_updates, &suitStatusTimer));
 	try {
 		haptic_requests.bind("tcp://127.0.0.1:9452");
 		server_updates.bind("tcp://127.0.0.1:9453");
@@ -107,8 +118,7 @@ int main() {
 				}
 			}
 			engine.Update(elapsed.count());
-		//	if (engine.SuitConnected()) {
-			//	Wire::Encode(NullSpace::Communication::SuitStatus::SuitStatus_Connected)
+			
 		}
 	}
 	catch (std::exception& ex) {
