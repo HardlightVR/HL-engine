@@ -35,9 +35,7 @@ public:
 	float OriginalTime;
 	unsigned int Priority;
 	std::vector<HapticSequence> Frame;
-	HapticFrame(const HapticFrame&) {
-		std::cout << "HapticFrame(Copy constructor)" << std::endl;
-	}
+	
 };
 
 class HapticSample : public ITimeOffset

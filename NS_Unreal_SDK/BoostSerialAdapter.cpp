@@ -23,6 +23,7 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 					std::cout << "Encoutered error writing to port (disconnecting): " << error.message() << "\n";
 					this->port->close();
 				} else { 
+					std::cout << "WROTE TO SUIT" << '\n';
 				} 
 		});
 	}
@@ -35,17 +36,24 @@ void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t 
 	else {
 		std::cout << "Error reading bytes!" << std::endl;
 	}
+	doSuitRead();
+}
+
+void BoostSerialAdapter::doSuitRead()
+{
+	if ( this->port->is_open()) {
+
+		this->port->async_read_some(boost::asio::buffer(_data, 64),
+			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+		
+	}
 }
 
 void BoostSerialAdapter::Read()
 {
 	std::cout << "Called read" << '\n';
-	if (this->port->is_open()) {
-	
-		auto self(shared_from_this());
-		this->port->async_read_some(boost::asio::buffer(_data, 64), 
-		make_custom_alloc_handler(_allocator, boost::bind(&BoostSerialAdapter::read_handler,this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)));
-	}
+	doSuitRead();
+	//_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::doSuitRead, this));
 	
 }
 void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
@@ -73,7 +81,7 @@ bool BoostSerialAdapter::IsConnected() const
 	return port->is_open();
 }
 
-BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io)
+BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io), _readSuitTimer(*io, _readSuitInterval)
 {
 	std::fill(_data, _data + 64, 0);
 

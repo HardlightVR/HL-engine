@@ -21,17 +21,12 @@ Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 		std::cout << "Connected to suit" << "\n";
 		_suitHardware->SetAdapter(_adapter);
 		_keepaliveTimer.async_wait(boost::bind(&Engine::doKeepAlivePing, this, boost::asio::placeholders::error));
-		_readSuitTimer.async_wait(boost::bind(&Engine::doSuitRead, this));
+	//	_readSuitTimer.async_wait(boost::bind(&Engine::doSuitRead, this));
+		_adapter->Read();
 	}
 }
 
-void Engine::doSuitRead() {
-	_adapter->Read();
-	_streamSynchronizer.TryReadPacket();
 
-	_readSuitTimer.expires_at(_readSuitTimer.expires_at() + _readSuitInterval);
-	_readSuitTimer.async_wait(boost::bind(&Engine::doSuitRead, this));
-}
 void Engine::PlaySequence(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet)
 {
 	if (_hapticCache.ContainsSequence(packet->name()->str())) {

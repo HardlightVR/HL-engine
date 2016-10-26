@@ -4,6 +4,7 @@
 #include "boost\asio.hpp"
 #include "boost\thread.hpp"
 #include "handler_allocator.h"
+#include <boost\asio\deadline_timer.hpp>
 class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapter>, public virtual ICommunicationAdapter
 {
 public:
@@ -26,6 +27,11 @@ private:
 	void copy_data_to_circularbuff(std::size_t length);
 	std::shared_ptr<CircularBuffer> suitDataStream;
 	void read_handler(boost::system::error_code ec, std::size_t length);
+	boost::asio::deadline_timer _readSuitTimer;
+	boost::posix_time::milliseconds _readSuitInterval = boost::posix_time::milliseconds(500);
+	void doSuitRead();
+	bool needs_read = true;
+
 
 };
 

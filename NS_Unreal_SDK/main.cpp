@@ -67,7 +67,7 @@ int main() {
 
 		while (true) {
 		
-			boost::this_thread::sleep(boost::posix_time::millisec(5));
+			boost::this_thread::sleep(boost::posix_time::millisec(1));
 			if (io->stopped()) {
 				std::cout << "resetting io " << '\n';
 				io->reset();
