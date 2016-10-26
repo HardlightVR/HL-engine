@@ -14,9 +14,9 @@ HapticsExecutor::~HapticsExecutor()
 
 void HapticsExecutor::Play(const std::vector<HapticFrame>& frames)
 {
-	for (auto& f : frames)
+	for (const auto& f : frames)
 	{
-		_queuedFrames.push_back(TimeInstant(0, std::move(std::make_unique<HapticFrame>(f))));
+		_queuedFrames.push_back(TimeInstant(0, std::make_unique<HapticFrame>(f)));
 	}
 }
 

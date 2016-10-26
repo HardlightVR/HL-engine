@@ -18,7 +18,7 @@ class Engine
 public:
 	Engine(std::shared_ptr<boost::asio::io_service> io);
 	void PlaySequence(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet);
-	void PlayPattern(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet);
+	void PlayPattern(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket>& packet);
 	void PlayExperience(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet);
 	void PlayEffect(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet);
 	void Update(float dt);
@@ -32,8 +32,11 @@ private:
 	Synchronizer _streamSynchronizer;
 	HapticsExecutor _executor;
 	boost::asio::deadline_timer _keepaliveTimer;
-	boost::posix_time::milliseconds _pingTimeout = boost::posix_time::milliseconds(1000);
-	void doKeepAlivePing(const boost::system::error_code& ec);
+	boost::asio::deadline_timer _readSuitTimer;
+	boost::posix_time::milliseconds _readSuitInterval = boost::posix_time::milliseconds(500);
+	boost::posix_time::milliseconds _keepaliveInterval = boost::posix_time::milliseconds(1000);
+	void doKeepAlivePing(const boost::system::error_code& e);
+	void doSuitRead();
 
 };
 

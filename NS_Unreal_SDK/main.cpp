@@ -67,7 +67,11 @@ int main() {
 
 		while (true) {
 		
-			boost::this_thread::sleep(boost::posix_time::millisec(1));
+			boost::this_thread::sleep(boost::posix_time::millisec(5));
+			if (io->stopped()) {
+				std::cout << "resetting io " << '\n';
+				io->reset();
+			}
 			io->poll();
 
 			#pragma region Chrono update
@@ -101,7 +105,7 @@ int main() {
 						engine.PlaySequence(std::move(packet));
 						break;
 					case NullSpace::HapticFiles::FileType::FileType_Pattern: 
-						engine.PlayPattern(std::move(packet));
+						engine.PlayPattern(packet);
 						break;	
 					case NullSpace::HapticFiles::FileType::FileType_HapticEffect:
 						engine.PlayEffect(std::move(packet));
@@ -112,6 +116,7 @@ int main() {
 					default:
 						break;
 					}
+					packet.release();
 				}
 				else {
 					std::cout << "Bad packet" << "\n";

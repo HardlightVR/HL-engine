@@ -8,7 +8,8 @@ Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 	_packetDispatcher(_adapter->GetDataStream()),
 	_streamSynchronizer(_adapter->GetDataStream(), std::shared_ptr<PacketDispatcher>(&_packetDispatcher)),
 	_executor(_suitHardware),
-	_keepaliveTimer(*io, _pingTimeout)
+	_keepaliveTimer(*io, _keepaliveInterval),
+	_readSuitTimer(*io, _readSuitInterval)
 	
 
 {
@@ -20,10 +21,17 @@ Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 		std::cout << "Connected to suit" << "\n";
 		_suitHardware->SetAdapter(_adapter);
 		_keepaliveTimer.async_wait(boost::bind(&Engine::doKeepAlivePing, this, boost::asio::placeholders::error));
-		
+		_readSuitTimer.async_wait(boost::bind(&Engine::doSuitRead, this));
 	}
 }
 
+void Engine::doSuitRead() {
+	_adapter->Read();
+	_streamSynchronizer.TryReadPacket();
+
+	_readSuitTimer.expires_at(_readSuitTimer.expires_at() + _readSuitInterval);
+	_readSuitTimer.async_wait(boost::bind(&Engine::doSuitRead, this));
+}
 void Engine::PlaySequence(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet)
 {
 	if (_hapticCache.ContainsSequence(packet->name()->str())) {
@@ -36,13 +44,14 @@ void Engine::PlaySequence(std::unique_ptr<const NullSpace::HapticFiles::HapticPa
 	}
 }
 
-void Engine::PlayPattern(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet)
+void Engine::PlayPattern(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket>& packet)
 {
 	if (_hapticCache.ContainsPattern(packet->name()->str())) {
 		_executor.Play(_hapticCache.GetPattern(packet->name()->str()));
 	}
 	else {
-		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet()));
+		const NullSpace::HapticFiles::Pattern* packet_ptr = static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet());
+		std::vector<HapticFrame> decoded = EncodingOperations::Decode(packet_ptr);
 		_hapticCache.AddPattern(packet->name()->str(), decoded);
 		_executor.Play(decoded);
 	}
@@ -69,8 +78,8 @@ void Engine::PlayEffect(std::unique_ptr<const NullSpace::HapticFiles::HapticPack
 void Engine::Update(float dt)
 {
 	_executor.Update(dt);
-	_adapter->Read();
-	_streamSynchronizer.TryReadPacket();
+	//_adapter->Read();
+	//_streamSynchronizer.TryReadPacket();
 
 }
 
@@ -89,7 +98,7 @@ Engine::~Engine()
 void Engine::doKeepAlivePing(const boost::system::error_code& ec)
 {
 	_suitHardware->PingSuit();
-	_keepaliveTimer.expires_at(_keepaliveTimer.expires_at() + _pingTimeout);
+	_keepaliveTimer.expires_at(_keepaliveTimer.expires_at() + _keepaliveInterval);
 	_keepaliveTimer.async_wait(boost::bind(&Engine::doKeepAlivePing, this, boost::asio::placeholders::error));
 	
 }

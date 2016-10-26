@@ -27,20 +27,24 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 		});
 	}
 }
+void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t length) {
+	if (!ec && length > 0) {
+		std::cout << "Got data from suit!" << '\n';
+		this->copy_data_to_circularbuff(length);
+	}
+	else {
+		std::cout << "Error reading bytes!" << std::endl;
+	}
+}
 
 void BoostSerialAdapter::Read()
 {
+	std::cout << "Called read" << '\n';
 	if (this->port->is_open()) {
+	
 		auto self(shared_from_this());
-		this->port->async_read_some(boost::asio::buffer(_data, 64),
-			[this, self](boost::system::error_code ec, std::size_t length) {
-			if (!ec && length > 0) {
-				self->copy_data_to_circularbuff(length);
-			}
-			else {
-				std::cout << "Error reading bytes!" << std::endl;
-			}
-		});
+		this->port->async_read_some(boost::asio::buffer(_data, 64), 
+		make_custom_alloc_handler(_allocator, boost::bind(&BoostSerialAdapter::read_handler,this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)));
 	}
 	
 }
@@ -108,6 +112,7 @@ bool BoostSerialAdapter::autoConnectPort()
 		return this->port->is_open();
 	}
 	else {
+		this->port->close();
 		return false;
 	}
 }

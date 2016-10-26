@@ -3,6 +3,7 @@
 #include "ICommunicationAdapter.h"
 #include "boost\asio.hpp"
 #include "boost\thread.hpp"
+#include "handler_allocator.h"
 class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapter>, public virtual ICommunicationAdapter
 {
 public:
@@ -16,6 +17,7 @@ public:
 	BoostSerialAdapter(std::shared_ptr<boost::asio::io_service>);
 	~BoostSerialAdapter();
 private:
+	handler_allocator _allocator;
 	std::shared_ptr<boost::asio::io_service> _io;
 	std::unique_ptr<boost::asio::serial_port> port;
 	bool autoConnectPort();
@@ -23,5 +25,7 @@ private:
 	uint8_t _data[64];
 	void copy_data_to_circularbuff(std::size_t length);
 	std::shared_ptr<CircularBuffer> suitDataStream;
+	void read_handler(boost::system::error_code ec, std::size_t length);
+
 };
 
