@@ -28,9 +28,9 @@ private:
 	std::shared_ptr<CircularBuffer> suitDataStream;
 	void read_handler(boost::system::error_code ec, std::size_t length);
 	boost::asio::deadline_timer _readSuitTimer;
-	boost::posix_time::milliseconds _readSuitInterval = boost::posix_time::milliseconds(500);
+	boost::posix_time::milliseconds _readSuitTimeout = boost::posix_time::milliseconds(200);
 	void doSuitRead();
-	bool needs_read = true;
+	void suitReadCancel(boost::system::error_code ec);
 
 
 };

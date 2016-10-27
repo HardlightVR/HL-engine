@@ -23,7 +23,7 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 					std::cout << "Encoutered error writing to port (disconnecting): " << error.message() << "\n";
 					this->port->close();
 				} else { 
-					std::cout << "WROTE TO SUIT" << '\n';
+				//	std::cout << "WROTE TO SUIT" << '\n';
 				} 
 		});
 	}
@@ -34,7 +34,7 @@ void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t 
 		this->copy_data_to_circularbuff(length);
 	}
 	else {
-		std::cout << "Error reading bytes!" << std::endl;
+		std::cout << "Error reading bytes! " <<ec.message()  << std::endl;
 	}
 	doSuitRead();
 }
@@ -42,18 +42,29 @@ void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t 
 void BoostSerialAdapter::doSuitRead()
 {
 	if ( this->port->is_open()) {
+		blocking_reader blocker(*this->port, 1);
 
 		this->port->async_read_some(boost::asio::buffer(_data, 64),
 			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-		
+		_readSuitTimer.expires_from_now(_readSuitTimeout);
+		_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel,
+			this, boost::asio::placeholders::error));
 	}
+}
+
+void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
+{
+	if (ec) {
+		return;
+	}
+	std::cout << "Canceling all serial operations!" << '\n';
+	this->port->cancel();
 }
 
 void BoostSerialAdapter::Read()
 {
 	std::cout << "Called read" << '\n';
 	doSuitRead();
-	//_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::doSuitRead, this));
 	
 }
 void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
@@ -81,7 +92,7 @@ bool BoostSerialAdapter::IsConnected() const
 	return port->is_open();
 }
 
-BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io), _readSuitTimer(*io, _readSuitInterval)
+BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io), _readSuitTimer(*io, _readSuitTimeout)
 {
 	std::fill(_data, _data + 64, 0);
 

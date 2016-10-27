@@ -98,25 +98,23 @@ int main() {
 				flatbuffers::Verifier verifier(reinterpret_cast<uint8_t*>(data), size);
 				if (NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier)) {
 					std::cout << "	it's a packet" << "\n";
-					auto packet =
-						std::unique_ptr<const NullSpace::HapticFiles::HapticPacket>(NullSpace::HapticFiles::GetHapticPacket(data));
+					auto packet = NullSpace::HapticFiles::GetHapticPacket(data);
 					switch (packet->packet_type()) {
 					case NullSpace::HapticFiles::FileType::FileType_Sequence: 
-						engine.PlaySequence(std::move(packet));
+						engine.PlaySequence(*packet);
 						break;
 					case NullSpace::HapticFiles::FileType::FileType_Pattern: 
-						engine.PlayPattern(packet);
+						engine.PlayPattern(*packet);
 						break;	
 					case NullSpace::HapticFiles::FileType::FileType_HapticEffect:
-						engine.PlayEffect(std::move(packet));
+						engine.PlayEffect(*packet);
 						break;
 					case NullSpace::HapticFiles::FileType::FileType_Experience:
-						engine.PlayExperience(std::move(packet));
+						engine.PlayExperience(*packet);
 						break;
 					default:
 						break;
 					}
-					packet.release();
 				}
 				else {
 					std::cout << "Bad packet" << "\n";

@@ -8,8 +8,7 @@ Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 	_packetDispatcher(_adapter->GetDataStream()),
 	_streamSynchronizer(_adapter->GetDataStream(), std::shared_ptr<PacketDispatcher>(&_packetDispatcher)),
 	_executor(_suitHardware),
-	_keepaliveTimer(*io, _keepaliveInterval),
-	_readSuitTimer(*io, _readSuitInterval)
+	_keepaliveTimer(*io, _keepaliveInterval)
 	
 
 {
@@ -21,52 +20,51 @@ Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 		std::cout << "Connected to suit" << "\n";
 		_suitHardware->SetAdapter(_adapter);
 		_keepaliveTimer.async_wait(boost::bind(&Engine::doKeepAlivePing, this, boost::asio::placeholders::error));
-	//	_readSuitTimer.async_wait(boost::bind(&Engine::doSuitRead, this));
 		_adapter->Read();
 	}
 }
 
 
-void Engine::PlaySequence(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet)
+void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	if (_hapticCache.ContainsSequence(packet->name()->str())) {
-		_executor.Play(_hapticCache.GetSequence(packet->name()->str()));
+	if (_hapticCache.ContainsSequence(packet.name()->str())) {
+		_executor.Play(_hapticCache.GetSequence(packet.name()->str()));
 	}
 	else {
-		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet->packet()));
-		_hapticCache.AddSequence(packet->name()->str(), decoded);
+		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet()));
+		_hapticCache.AddSequence(packet.name()->str(), decoded);
 		_executor.Play(decoded);
 	}
 }
 
-void Engine::PlayPattern(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket>& packet)
+void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	if (_hapticCache.ContainsPattern(packet->name()->str())) {
-		_executor.Play(_hapticCache.GetPattern(packet->name()->str()));
+	if (_hapticCache.ContainsPattern(packet.name()->str())) {
+		_executor.Play(_hapticCache.GetPattern(packet.name()->str()));
 	}
 	else {
-		const NullSpace::HapticFiles::Pattern* packet_ptr = static_cast<const NullSpace::HapticFiles::Pattern*>(packet->packet());
+		const NullSpace::HapticFiles::Pattern* packet_ptr = static_cast<const NullSpace::HapticFiles::Pattern*>(packet.packet());
 		std::vector<HapticFrame> decoded = EncodingOperations::Decode(packet_ptr);
-		_hapticCache.AddPattern(packet->name()->str(), decoded);
+		_hapticCache.AddPattern(packet.name()->str(), decoded);
 		_executor.Play(decoded);
 	}
 }
 
-void Engine::PlayExperience(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet)
+void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	if (_hapticCache.ContainsExperience(packet->name()->str())) {
-		_executor.Play(_hapticCache.GetExperience(packet->name()->str()));
+	if (_hapticCache.ContainsExperience(packet.name()->str())) {
+		_executor.Play(_hapticCache.GetExperience(packet.name()->str()));
 	}
 	else {
-		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet->packet()));
-		_hapticCache.AddExperience(packet->name()->str(), decoded);
+		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet()));
+		_hapticCache.AddExperience(packet.name()->str(), decoded);
 		_executor.Play(decoded);
 	}
 }
 
-void Engine::PlayEffect(std::unique_ptr<const NullSpace::HapticFiles::HapticPacket> packet)
+void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet->packet()));
+	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet.packet()));
 	_executor.Play(decoded);
 }
 
