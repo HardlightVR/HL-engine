@@ -4,12 +4,10 @@
 #include "EncodingOperations.h"
 Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 	_suitHardware(std::make_shared<SuitHardwareInterface>()),
-	_adapter(std::shared_ptr<ICommunicationAdapter>(new BoostSerialAdapter(io))),
+	_adapter(std::shared_ptr<ICommunicationAdapter>(new BoostSerialAdapter(io, _suitHardware))),
 	_packetDispatcher(_adapter->GetDataStream()),
 	_streamSynchronizer(_adapter->GetDataStream(), std::shared_ptr<PacketDispatcher>(&_packetDispatcher)),
-	_executor(_suitHardware),
-	_keepaliveTimer(*io, _keepaliveInterval)
-	
+	_executor(_suitHardware)	
 
 {
 
@@ -19,7 +17,6 @@ Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
 	else {
 		std::cout << "Connected to suit" << "\n";
 		_suitHardware->SetAdapter(_adapter);
-		_keepaliveTimer.async_wait(boost::bind(&Engine::doKeepAlivePing, this, boost::asio::placeholders::error));
 		_adapter->Read();
 	}
 }
@@ -88,10 +85,4 @@ Engine::~Engine()
 {
 }
 
-void Engine::doKeepAlivePing(const boost::system::error_code& ec)
-{
-	_suitHardware->PingSuit();
-	_keepaliveTimer.expires_at(_keepaliveTimer.expires_at() + _keepaliveInterval);
-	_keepaliveTimer.async_wait(boost::bind(&Engine::doKeepAlivePing, this, boost::asio::placeholders::error));
-	
-}
+

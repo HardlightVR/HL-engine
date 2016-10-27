@@ -31,9 +31,7 @@ private:
 	PacketDispatcher _packetDispatcher;
 	Synchronizer _streamSynchronizer;
 	HapticsExecutor _executor;
-	boost::asio::deadline_timer _keepaliveTimer;
-	boost::posix_time::milliseconds _keepaliveInterval = boost::posix_time::milliseconds(100);
-	void doKeepAlivePing(const boost::system::error_code& e);
+
 
 };
 

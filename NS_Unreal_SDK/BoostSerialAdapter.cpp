@@ -21,7 +21,7 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 			[&](const boost::system::error_code& error, std::size_t bytes_transferred) {
 				if (error) { 
 					std::cout << "Encoutered error writing to port (disconnecting): " << error.message() << "\n";
-					this->port->close();
+					//this->port->close();
 				} else { 
 				//	std::cout << "WROTE TO SUIT" << '\n';
 				} 
@@ -30,25 +30,26 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 }
 void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t length) {
 	if (!ec && length > 0) {
+		_readSuitTimer.cancel();
 		std::cout << "Got data from suit!" << '\n';
 		this->copy_data_to_circularbuff(length);
+		doSuitRead();
+
 	}
 	else {
 		std::cout << "Error reading bytes! " <<ec.message()  << std::endl;
 	}
-	doSuitRead();
 }
 
 void BoostSerialAdapter::doSuitRead()
 {
 	if ( this->port->is_open()) {
-		blocking_reader blocker(*this->port, 1);
 
 		this->port->async_read_some(boost::asio::buffer(_data, 64),
 			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-		_readSuitTimer.expires_from_now(_readSuitTimeout);
-		_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel,
-			this, boost::asio::placeholders::error));
+		//_readSuitTimer.expires_from_now(_readSuitTimeout);
+		//_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel,
+		//	this, boost::asio::placeholders::error));
 	}
 }
 
@@ -57,8 +58,9 @@ void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 	if (ec) {
 		return;
 	}
-	std::cout << "Canceling all serial operations!" << '\n';
+	std::cout << "Timed out! Canceling all serial operations!" << '\n';
 	this->port->cancel();
+	
 }
 
 void BoostSerialAdapter::Read()
@@ -75,7 +77,18 @@ void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
 	std::fill(_data,_data+64, 0);
 }
 
+void BoostSerialAdapter::doKeepAlivePing(const boost::system::error_code& ec)
+{
+	_hardware->PingSuit();
+	//Schedule another ping for 10ms
+	//_keepaliveTimer.expires_at(_keepaliveTimer.expires_at() + _keepaliveInterval);
+	_keepaliveTimer.expires_from_now(_keepaliveInterval);
+	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this, boost::asio::placeholders::error));
 
+	_readSuitTimer.expires_from_now(_readSuitTimeout);
+	_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel,
+	this, boost::asio::placeholders::error));
+}
 
 bool BoostSerialAdapter::Connect(std::string name)
 {
@@ -92,7 +105,12 @@ bool BoostSerialAdapter::IsConnected() const
 	return port->is_open();
 }
 
-BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io):suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io), _readSuitTimer(*io, _readSuitTimeout)
+
+
+BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io, std::shared_ptr<SuitHardwareInterface> hardware):
+	suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io), _readSuitTimer(*io, _readSuitTimeout),_hardware(hardware),
+	_keepaliveTimer(*io, _keepaliveInterval)
+
 {
 	std::fill(_data, _data + 64, 0);
 
@@ -128,7 +146,11 @@ bool BoostSerialAdapter::autoConnectPort()
 		}
 	}
 	if (foundPort && this->port) {
-		return this->port->is_open();
+		//Ping the suit in 10ms or so
+		_keepaliveTimer.expires_from_now(this->_keepaliveInterval);
+		_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this, boost::asio::placeholders::error));
+		//return if open instead of true? Or already determined by the blocker.read_char
+		return true;
 	}
 	else {
 		this->port->close();
