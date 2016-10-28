@@ -2,23 +2,25 @@
 #include "BoostSerialAdapter.h"
 #include "Wire.h"
 #include "EncodingOperations.h"
-Engine::Engine(std::shared_ptr<boost::asio::io_service> io):
+#include "IoService.h"
+Engine::Engine(std::shared_ptr<IoService> io):
 	_suitHardware(std::make_shared<SuitHardwareInterface>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(new BoostSerialAdapter(io, _suitHardware))),
-	_packetDispatcher(_adapter->GetDataStream()),
-	_streamSynchronizer(_adapter->GetDataStream(), std::shared_ptr<PacketDispatcher>(&_packetDispatcher)),
-	_executor(_suitHardware)	
+	_packetDispatcher(std::make_shared<PacketDispatcher>(_adapter->GetDataStream())),
+	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
+	_executor(_suitHardware)
 
 {
+	_suitHardware->SetAdapter(_adapter);
 
 	if (!_adapter->Connect()) {
 		std::cout << "Unable to connect to suit" << "\n";
 	}
 	else {
 		std::cout << "Connected to suit" << "\n";
-		_suitHardware->SetAdapter(_adapter);
-		_adapter->Read();
+		
 	}
+	_adapter->BeginRead();
 }
 
 
@@ -68,6 +70,11 @@ void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
 void Engine::Update(float dt)
 {
 	_executor.Update(dt);
+
+		if (_adapter->NeedsReset()) {
+			_adapter->DoReset();
+		}
+	
 	//_adapter->Read();
 	//_streamSynchronizer.TryReadPacket();
 

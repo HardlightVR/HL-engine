@@ -85,7 +85,7 @@ void SerialAdapter::Write(uint8_t* stuff, std::size_t length) {
 		}
 	} 
 }
-void SerialAdapter::Read() {
+void SerialAdapter::BeginRead() {
 	char bytesRead[1024];
 	int actualRead = this->port->ReadData(bytesRead, 1024);
 	if (actualRead > -1)

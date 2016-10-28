@@ -89,7 +89,7 @@ public:
 		// This will block until a character is read
 		// or until the it is cancelled.
 		port.get_io_service().run();
-
+		port.get_io_service().reset();
 		if (!read_error)
 			val = c;
 

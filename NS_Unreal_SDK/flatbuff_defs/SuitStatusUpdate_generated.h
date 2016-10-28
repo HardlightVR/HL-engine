@@ -11,14 +11,15 @@ namespace Communication {
 struct SuitStatusUpdate;
 
 enum SuitStatus {
-  SuitStatus_Connected = 0,
-  SuitStatus_Disconnected = 1,
-  SuitStatus_MIN = SuitStatus_Connected,
-  SuitStatus_MAX = SuitStatus_Disconnected
+  SuitStatus_Disconnected = 0,
+  SuitStatus_Unresponsive = 1,
+  SuitStatus_Connected = 2,
+  SuitStatus_MIN = SuitStatus_Disconnected,
+  SuitStatus_MAX = SuitStatus_Connected
 };
 
 inline const char **EnumNamesSuitStatus() {
-  static const char *names[] = { "Connected", "Disconnected", nullptr };
+  static const char *names[] = { "Disconnected", "Unresponsive", "Connected", nullptr };
   return names;
 }
 
@@ -49,7 +50,7 @@ struct SuitStatusUpdateBuilder {
 };
 
 inline flatbuffers::Offset<SuitStatusUpdate> CreateSuitStatusUpdate(flatbuffers::FlatBufferBuilder &_fbb,
-    SuitStatus status = SuitStatus_Connected) {
+    SuitStatus status = SuitStatus_Disconnected) {
   SuitStatusUpdateBuilder builder_(_fbb);
   builder_.add_status(status);
   return builder_.Finish();

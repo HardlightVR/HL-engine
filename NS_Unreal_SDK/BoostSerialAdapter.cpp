@@ -2,15 +2,19 @@
 #include "enumser.h"
 #include <iostream>
 #include "BlockingReader.h"
+#include <future>
+
 
 bool BoostSerialAdapter::Connect()
 {
 	return this->autoConnectPort();
-
 }
 
 void BoostSerialAdapter::Disconnect()
 {
+	if (port->is_open()) {
+		port->close();
+	}
 }
 
 void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
@@ -20,54 +24,78 @@ void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 		this->port->async_write_some(boost::asio::buffer(bytes, length), 
 			[&](const boost::system::error_code& error, std::size_t bytes_transferred) {
 				if (error) { 
-					std::cout << "Encoutered error writing to port (disconnecting): " << error.message() << "\n";
-					//this->port->close();
-				} else { 
-				//	std::cout << "WROTE TO SUIT" << '\n';
+					std::cout << "Error writing bytes! " << error.message() << '\n';
 				} 
 		});
 	}
 }
 void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t length) {
 	if (!ec && length > 0) {
-		_readSuitTimer.cancel();
-		std::cout << "Got data from suit!" << '\n';
+		_keepaliveTimer.cancel();
 		this->copy_data_to_circularbuff(length);
 		doSuitRead();
-
 	}
 	else {
-		std::cout << "Error reading bytes! " <<ec.message()  << std::endl;
+		std::cout << "Error reading bytes! " <<ec.message()  << '\n';
 	}
 }
 
 void BoostSerialAdapter::doSuitRead()
 {
 	if ( this->port->is_open()) {
-
 		this->port->async_read_some(boost::asio::buffer(_data, 64),
 			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-		//_readSuitTimer.expires_from_now(_readSuitTimeout);
-		//_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel,
-		//	this, boost::asio::placeholders::error));
 	}
 }
 
 void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 {
 	if (ec) {
+		_pingTime = _keepaliveInterval.total_milliseconds() - _keepaliveTimer.expires_from_now().total_milliseconds();
+		_keepaliveTimer.expires_from_now(_keepaliveInterval);
+		_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 		return;
 	}
-	std::cout << "Timed out! Canceling all serial operations!" << '\n';
-	this->port->cancel();
-	
+	std::cout << "Timed out!" << '\n';
+
+	//We have to do a silly reset dance with the main thread because I cannot reset the io service from a handler,
+	//as far as I can tell. If this _can_ be done, please replace!
+	//Relevant items: _resetMutex, _needsReset, and the logic in the Engine update loop which tests if the adapter needs
+	//to be reset.
+
+	std::lock_guard<std::mutex> lock(_resetMutex);
+	if (!_needsReset) {
+		_needsReset = true;
+	}
 }
 
-void BoostSerialAdapter::Read()
-{
-	std::cout << "Called read" << '\n';
-	doSuitRead();
+void BoostSerialAdapter::DoReset() {
+	//Part of the reset dance is locking the flag to reset, because I am not confident enough in the design 
+	//to guarantee that the suitReadCancel may not be called from another thread in the future.
+	//Currently it should not need the lock because we have only one IO thread, and all handlers are guarantee to run non concurrently.
+	_resetMutex.lock();
+	_needsReset = false;
+	_resetMutex.unlock();
+	this->reconnectSuit();
 	
+}
+void BoostSerialAdapter::reconnectSuit() {
+	std::cout << "Attempting to auto reconnect.." << '\n';
+
+	if (this->autoConnectPort()) {
+		this->BeginRead();
+		std::cout << "... auto reconnected!" << '\n';
+	}
+	else {
+		std::lock_guard<std::mutex> lock(_resetMutex);
+		_needsReset = true;
+	}
+}
+void BoostSerialAdapter::BeginRead()
+{
+	this->doKeepAlivePing();
+	doSuitRead();
+
 }
 void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
 	for (std::size_t i = 0; i < length; ++i) {
@@ -77,17 +105,12 @@ void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
 	std::fill(_data,_data+64, 0);
 }
 
-void BoostSerialAdapter::doKeepAlivePing(const boost::system::error_code& ec)
+void BoostSerialAdapter::doKeepAlivePing()
 {
 	_hardware->PingSuit();
-	//Schedule another ping for 10ms
-	//_keepaliveTimer.expires_at(_keepaliveTimer.expires_at() + _keepaliveInterval);
 	_keepaliveTimer.expires_from_now(_keepaliveInterval);
-	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this, boost::asio::placeholders::error));
+	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
 
-	_readSuitTimer.expires_from_now(_readSuitTimeout);
-	_readSuitTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel,
-	this, boost::asio::placeholders::error));
 }
 
 bool BoostSerialAdapter::Connect(std::string name)
@@ -107,9 +130,11 @@ bool BoostSerialAdapter::IsConnected() const
 
 
 
-BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> io, std::shared_ptr<SuitHardwareInterface> hardware):
-	suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(io), _readSuitTimer(*io, _readSuitTimeout),_hardware(hardware),
-	_keepaliveTimer(*io, _keepaliveInterval)
+BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService, std::shared_ptr<SuitHardwareInterface> hardware) :
+	suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(ioService->GetIOService()), _hardware(hardware),
+	_keepaliveTimer(*_io, _keepaliveInterval),
+	_reconnectTimer(*_io, _reconnectInterval),
+	_ioService(ioService)
 
 {
 	std::fill(_data, _data + 64, 0);
@@ -119,55 +144,76 @@ BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<boost::asio::io_service> 
 
 BoostSerialAdapter::~BoostSerialAdapter()
 {
+	if (port && port->is_open()) {
+		port->close();
+	}
 }
 
+
+bool BoostSerialAdapter::doHandshake( std::string portName) {
+
+	//First, we attempt to create and connect to the port. 
+	//Then, we send a short ping and see if we receive a response.
+
+	if (this->createPort(portName)) {
+		_hardware->PingSuit();
+		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
+		//(suit takes about 30ms first ping)
+		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, 64), boost::asio::use_future);
+		auto status = length.wait_for(std::chrono::milliseconds(100));
+		switch (status) {
+		case std::future_status::ready:
+			return true;
+		case std::future_status::timeout:
+			return false;
+		case std::future_status::deferred:
+			return false;
+		default:
+			return false;
+		}
+	}
+}
 bool BoostSerialAdapter::autoConnectPort()
 {
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
 	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
-		std::cout << "No ports available." << "\n";
+		std::cout << "No ports available on system." << "\n";
 		return false;
 	}
-	bool foundPort = false;
 	for (std::size_t i = 0; i < ports.size(); ++i) {
 		std::string strname = "COM" + std::to_string(ports[i]);
-		if (this->createPort(strname)) {
-			char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
-			boost::asio::write(*(this->port), boost::asio::buffer(ping, 7));
-			blocking_reader blocker(*this->port, 10);
-			char c;
-			if (blocker.read_char(c)) {
-				foundPort = true;
-				break;
-			}
-
-
+		if (this->doHandshake(strname)) {
+			return true;
 		}
 	}
-	if (foundPort && this->port) {
-		//Ping the suit in 10ms or so
-		_keepaliveTimer.expires_from_now(this->_keepaliveInterval);
-		_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this, boost::asio::placeholders::error));
-		//return if open instead of true? Or already determined by the blocker.read_char
-		return true;
-	}
-	else {
-		this->port->close();
-		return false;
-	}
+	return false;
 }
 
 bool BoostSerialAdapter::createPort(std::string name)
 {
-	this->port = std::unique_ptr<boost::asio::serial_port>(new boost::asio::serial_port(*_io));
-	this->port->open(name);
-	if (port->is_open()) {
-		return true;
+	//Need to close old port if it is open
+	if (this->port && this->port->is_open()) {
+		this->port->close();
+		//Because weird serial port quirks, we need to reset the entire IO service. 
+		//I would like to reset this from another thread ideally, because this could cause the Main thread to slow down
+		_ioService->RestartIOService();
+		if (this->port->is_open()) {
+			std::cout << "Major error: After resetting IO service, the port was still open. Talk to casey@nullspacevr.com\n";
+		}
 	}
-	else {
-		std::cout << "Tried to use " << name << " but couldn't open it." << "\n";
+
+	this->port.reset(new boost::asio::serial_port(*_io));
+
+	try {
+		this->port->open(name);
+		return this->port->is_open();
+	}
+	catch (boost::system::system_error& e) {
+		//This is the most likely case for failing when opening a port. If there is no device connected, we hit
+		//this case.
 		return false;
 	}
+
 }
 

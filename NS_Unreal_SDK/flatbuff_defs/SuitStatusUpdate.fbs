@@ -1,6 +1,6 @@
 namespace NullSpace.Communication;
 
-enum SuitStatus:short {Connected, Disconnected}
+enum SuitStatus:short {Disconnected, Unresponsive, Connected}
 
 table SuitStatusUpdate {
 	status:SuitStatus;

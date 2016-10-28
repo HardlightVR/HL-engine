@@ -10,10 +10,6 @@ InstructionBuilder::InstructionBuilder()
 	}
 
 }
-static std::string EnumToString(int s) {
-	return "hi";
-}
-
 
 InstructionBuilder::~InstructionBuilder()
 {
@@ -21,8 +17,9 @@ InstructionBuilder::~InstructionBuilder()
 
 
 InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
+	std::cout << "Using instruction: " << name << '\n';
 	this->_parameters.clear();
-	this->_instruction = name;
+	this->_instruction = std::move(name);
 	return *this;
 }
 
@@ -30,26 +27,33 @@ InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
 
 
 InstructionBuilder& InstructionBuilder::WithParam(std::string key, std::string val) {
+	std::cout << "	With param: " << key << " = " << val << '\n';
 	this->_parameters[key] = val;
 	return *this;
 }
 
 bool InstructionBuilder::Verify() {
 	if (_instructions.find(this->_instruction) == _instructions.end()) {
+		std::cout << "		Couldn't find " << this->_instruction << '\n';
 		return false;
 	}
 
-	Instruction desired = _instructions[this->_instruction];
+	const Instruction& desired = _instructions[this->_instruction];
 	for (std::string param : desired.Parameters) {
 		if (_parameters.find(param) == _parameters.end()) {
+			std::cout << "		Couldn't find " << param << '\n';
+
 			return false;
 		}
 		auto dict = this->_paramDict[param];
 		if (dict.find(_parameters[param]) == dict.end()) {
+			std::cout << "		Couldn't find the dict " << param << '\n';
+
 			return false;
 		}
 
 	}
+	std::cout << "	verified." << '\n';
 	return true;
 }
 

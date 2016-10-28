@@ -21,6 +21,7 @@
 #include <thread>
 #include "Engine.h"
 #include "EncodingOperations.h"
+#include "IoService.h"
 #define SHOW_CONSOLE
 
 const auto suit_status_update_interval = boost::posix_time::milliseconds(500);
@@ -29,12 +30,12 @@ void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingO
 	NullSpace::Communication::SuitStatus status = e->SuitConnected() ?
 		NullSpace::Communication::SuitStatus::SuitStatus_Connected :
 		NullSpace::Communication::SuitStatus::SuitStatus_Disconnected;
-
+//	std::cout << "Broadcasting suit update: Suit is " << (status == NullSpace::Communication::SuitStatus::SuitStatus_Connected ? "connected" : "disconnected") << '\n';
 	encoder->Finalize(encoder->Encode(status),
 		[&](uint8_t* data, int size) {
 		Wire::sendTo(*socket, data, size);
 	});
-	std::cout << "Sending suit update!" << '\n';
+//	std::cout << "Sending suit update!" << '\n';
 	t->expires_at(t->expires_at() + suit_status_update_interval);
 	t->async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, e, encoder, socket, t));
 }
@@ -45,17 +46,19 @@ int main() {
 
 	using namespace std::chrono;
 	EncodingOperations _encoder;
-	auto io = std::make_shared<boost::asio::io_service>();
 
+	auto io = std::make_shared<IoService>();
+	io->Start();
 	Engine engine(io);
 
 	zmq::context_t context(1);
 	zmq::socket_t server_updates(context, ZMQ_PUB);
 	zmq::socket_t haptic_requests(context, ZMQ_PAIR);
-	boost::asio::deadline_timer suitStatusTimer(*io, suit_status_update_interval);
+	boost::asio::deadline_timer suitStatusTimer(*io->GetIOService(), suit_status_update_interval);
 	suitStatusTimer.async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, &engine, &_encoder, &server_updates, &suitStatusTimer));
 	try {
 		haptic_requests.bind("tcp://127.0.0.1:9452");
+		server_updates.setsockopt(ZMQ_CONFLATE, 1);
 		server_updates.bind("tcp://127.0.0.1:9453");
 
 		#pragma region Chrono setup
@@ -64,15 +67,16 @@ int main() {
 		typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
 		float total = 0.0f;
 		#pragma endregion
+	
 
 		while (true) {
 		
-			boost::this_thread::sleep(boost::posix_time::millisec(1));
-			if (io->stopped()) {
-				std::cout << "resetting io " << '\n';
-				io->reset();
-			}
-			io->poll();
+			//boost::this_thread::sleep(boost::posix_time::millisec(1));
+			//if (io->stopped()) {
+			//	std::cout << "resetting io " << '\n';
+			//	io->reset();
+		//	}
+			//io->poll();
 
 			#pragma region Chrono update
 			framecount++;
@@ -127,6 +131,8 @@ int main() {
 	catch (std::exception& ex) {
 		std::cout << ex.what() << std::endl;
 	}
+
+	
 	return 0;
 
 }

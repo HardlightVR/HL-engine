@@ -10,7 +10,7 @@ public:
 	bool Connect() override;
 	void Disconnect() override;
 	void Write(uint8_t bytes[], std::size_t length) override;
-	void Read() override;
+	void BeginRead() override;
 	bool Connect(std::string name);
 	std::shared_ptr<CircularBuffer> GetDataStream() override;
 private:
