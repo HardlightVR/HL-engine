@@ -19,19 +19,14 @@ void BoostSerialAdapter::Disconnect()
 
 void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
 {
-	try {
-		if (this->port && this->port->is_open()) {
-			char *chars = reinterpret_cast<char*>(bytes);
-			this->port->async_write_some(boost::asio::buffer(bytes, length),
-				[&](const boost::system::error_code& error, std::size_t bytes_transferred) {
-				if (error) {
-					std::cout << "Error writing bytes! " << error.message() << '\n';
-				}
-			});
-		}
-	}
-	catch (std::exception& e) {
-		std::cout << "ERR" << '\n';
+	if (this->port && this->port->is_open()) {
+		char *chars = reinterpret_cast<char*>(bytes);
+		this->port->async_write_some(boost::asio::buffer(bytes, length),
+			[&](const boost::system::error_code& error, std::size_t bytes_transferred) {
+			if (error) {
+				std::cout << "Error writing bytes! " << error.message() << '\n';
+			}
+		});
 	}
 }
 void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t length) {
@@ -47,18 +42,10 @@ void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t 
 
 void BoostSerialAdapter::doSuitRead()
 {
-	
-	try {
-		if (this->port->is_open()) {
-			this->port->async_read_some(boost::asio::buffer(_data, 64),
-				boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-		}
-	}
-	catch (std::exception& e) {
-
-		std::cout << "ERR" << '\n';
-
-	}
+	if (this->port->is_open()) {
+		this->port->async_read_some(boost::asio::buffer(_data, 64),
+			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+	}	
 }
 
 void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
@@ -126,12 +113,10 @@ void BoostSerialAdapter::write_handler(boost::system::error_code ec, std::size_t
 void BoostSerialAdapter::doKeepAlivePing()
 {
 
-		char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
-		this->port->async_write_some(boost::asio::buffer(&ping, 7), boost::bind(&BoostSerialAdapter::write_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-	//	boost::asio::write(*(this->port), boost::asio::buffer(ping, 7));
-		_keepaliveTimer.expires_from_now(_keepaliveInterval);
-		_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
-	
+	char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
+	this->port->async_write_some(boost::asio::buffer(&ping, 7), boost::bind(&BoostSerialAdapter::write_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+	_keepaliveTimer.expires_from_now(_keepaliveInterval);
+	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
 	
 }
 
@@ -155,7 +140,6 @@ bool BoostSerialAdapter::IsConnected() const
 BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
 	suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(ioService->GetIOService()),
 	_keepaliveTimer(*_io, _keepaliveInterval),
-	_reconnectTimer(*_io, _reconnectInterval),
 	_ioService(ioService)
 
 {
@@ -179,7 +163,8 @@ bool BoostSerialAdapter::doHandshake( std::string portName) {
 
 	if (this->createPort(portName)) {
 		char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
-		boost::asio::write(*(this->port), boost::asio::buffer(ping, 7));
+		this->port->async_write_some(boost::asio::buffer(&ping, 7), boost::bind(&BoostSerialAdapter::write_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+
 		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
 		//(suit takes about 30ms first ping)
 		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, 64), boost::asio::use_future);
@@ -195,58 +180,52 @@ bool BoostSerialAdapter::doHandshake( std::string portName) {
 			return false;
 		}
 	}
+	return false;
 }
 bool BoostSerialAdapter::autoConnectPort()
 {
-	try {
-		CEnumerateSerial::CPortsArray ports;
-		CEnumerateSerial::CNamesArray names;
-		if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
-			std::cout << "No ports available on system." << "\n";
-			return false;
-		}
-		for (std::size_t i = 0; i < ports.size(); ++i) {
-			std::string strname = "COM" + std::to_string(ports[i]);
-			if (this->doHandshake(strname)) {
-				return true;
-			}
-		}
+
+	CEnumerateSerial::CPortsArray ports;
+	CEnumerateSerial::CNamesArray names;
+	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
+		std::cout << "No ports available on system." << "\n";
 		return false;
 	}
-	catch (std::exception& e) {
-		std::cout << "ERR" << '\n';
+	for (std::size_t i = 0; i < ports.size(); ++i) {
+		std::string strname = "COM" + std::to_string(ports[i]);
+		if (this->doHandshake(strname)) {
+			return true;
+		}
 	}
+	return false;
+
 }
 
 bool BoostSerialAdapter::createPort(std::string name)
 {
+
+	//Need to close old port if it is open
+	if (this->port && this->port->is_open()) {
+		this->port->close();
+		//Because weird serial port quirks, we need to reset the entire IO service. 
+		//I would like to reset this from another thread ideally, because this could cause the Main thread to slow down
+		_ioService->RestartIOService();
+		if (this->port->is_open()) {
+			std::cout << "Major error: After resetting IO service, the port was still open. Talk to casey@nullspacevr.com\n";
+		}
+	}
+
+	this->port.reset(new boost::asio::serial_port(*_io));
+
 	try {
-		//Need to close old port if it is open
-		if (this->port && this->port->is_open()) {
-			this->port->close();
-			//Because weird serial port quirks, we need to reset the entire IO service. 
-			//I would like to reset this from another thread ideally, because this could cause the Main thread to slow down
-			_ioService->RestartIOService();
-			if (this->port->is_open()) {
-				std::cout << "Major error: After resetting IO service, the port was still open. Talk to casey@nullspacevr.com\n";
-			}
-		}
-
-		this->port.reset(new boost::asio::serial_port(*_io));
-
-		try {
-			this->port->open(name);
-			return this->port->is_open();
-		}
-		catch (boost::system::system_error& e) {
-			//This is the most likely case for failing when opening a port. If there is no device connected, we hit
-			//this case.
-			return false;
-		}
-
+		this->port->open(name);
+		return this->port->is_open();
 	}
-	catch (std::exception& e) {
-		std::cout << "ERR" << '\n';
+	catch (boost::system::system_error& e) {
+		//This is the most likely case for failing when opening a port. If there is no device connected, we hit
+		//this case.
+		return false;
 	}
+
 }
 

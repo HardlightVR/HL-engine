@@ -57,6 +57,7 @@ int main() {
 //	boost::asio::deadline_timer suitStatusTimer(*io->GetIOService(), suit_status_update_interval);
 	//suitStatusTimer.async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, &engine, &_encoder, &server_updates, &suitStatusTimer));
 	try {
+		haptic_requests.setsockopt(ZMQ_CONFLATE, 1);
 		haptic_requests.bind("tcp://127.0.0.1:9452");
 		server_updates.setsockopt(ZMQ_CONFLATE, 1);
 		server_updates.bind("tcp://127.0.0.1:9453");

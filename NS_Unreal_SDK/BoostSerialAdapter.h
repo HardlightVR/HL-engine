@@ -49,8 +49,6 @@ private:
 	boost::asio::deadline_timer _keepaliveTimer;
 	boost::posix_time::milliseconds _keepaliveInterval = boost::posix_time::milliseconds(100);
 
-	boost::asio::deadline_timer  _reconnectTimer;
-	boost::posix_time::milliseconds _reconnectInterval = boost::posix_time::milliseconds(500);
 	void reconnectSuit();
 	long long _pingTime;
 
