@@ -21,7 +21,7 @@ public:
 	bool Connect(std::string name);
 	std::shared_ptr<CircularBuffer> GetDataStream() override;
 	bool IsConnected() const override;
-	BoostSerialAdapter(std::shared_ptr<IoService>, std::shared_ptr<SuitHardwareInterface> hardware);
+	BoostSerialAdapter(std::shared_ptr<IoService>, SuitHardwareInterface hardware);
 	~BoostSerialAdapter();
 	bool NeedsReset() const override {
 		return _needsReset;
@@ -48,7 +48,7 @@ private:
 
 	boost::asio::deadline_timer _keepaliveTimer;
 	boost::posix_time::milliseconds _keepaliveInterval = boost::posix_time::milliseconds(100);
-	std::shared_ptr<SuitHardwareInterface> _hardware;
+	SuitHardwareInterface _hardware;
 
 	boost::asio::deadline_timer  _reconnectTimer;
 	boost::posix_time::milliseconds _reconnectInterval = boost::posix_time::milliseconds(500);

@@ -4,10 +4,11 @@
 #include "InstructionBuilder.h"
 #include "Enums.h"
 #include "Locator.h"
+
 class SuitHardwareInterface
 {
 public:
-	SuitHardwareInterface();
+	SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter>, std::shared_ptr<InstructionSet> iset);
 	~SuitHardwareInterface();
 	void SetAdapter(std::shared_ptr<ICommunicationAdapter> adapter);
 	void PlayEffect(Location location, Effect effect);

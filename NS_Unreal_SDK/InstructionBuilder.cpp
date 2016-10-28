@@ -1,15 +1,12 @@
 #include "InstructionBuilder.h"
 #include <iostream>
-#include "HexUtils.h"
-#include <fstream>
-InstructionBuilder::InstructionBuilder()
+
+InstructionBuilder::InstructionBuilder(std::shared_ptr<InstructionSet> iset):_iset(iset)
 {
-	std::string validParams[4] = { "zone", "effect", "data", "register" };
-	for (std::string param : validParams) {
-		_paramDict[param] = std::unordered_map<string, uint8_t>();
-	}
+	
 
 }
+
 
 InstructionBuilder::~InstructionBuilder()
 {
@@ -33,19 +30,21 @@ InstructionBuilder& InstructionBuilder::WithParam(std::string key, std::string v
 }
 
 bool InstructionBuilder::Verify() {
-	if (_instructions.find(this->_instruction) == _instructions.end()) {
+	
+
+	if (_iset->Instructions().find(this->_instruction) == _iset->Instructions().end()) {
 		std::cout << "		Couldn't find " << this->_instruction << '\n';
 		return false;
 	}
 
-	const Instruction& desired = _instructions[this->_instruction];
+	const Instruction& desired = _iset->Instructions().at(this->_instruction);
 	for (std::string param : desired.Parameters) {
 		if (_parameters.find(param) == _parameters.end()) {
 			std::cout << "		Couldn't find " << param << '\n';
 
 			return false;
 		}
-		auto dict = this->_paramDict[param];
+		auto dict = this->_iset->ParamDict().at(param);
 		if (dict.find(_parameters[param]) == dict.end()) {
 			std::cout << "		Couldn't find the dict " << param << '\n';
 
@@ -59,13 +58,13 @@ bool InstructionBuilder::Verify() {
 
 
 std::string InstructionBuilder::GetDebugString() {
-	std::string description = this->_instruction + ": ";
+	std::string description = _instruction + ": ";
 	std::size_t index = 0;
-	for (auto param : this->_parameters)
+	for (auto param : _parameters)
 	{
 		index++;
 		description += param.first + " = " + param.second;
-		if (index < this->_parameters.size())
+		if (index < _parameters.size())
 		{
 			description += ", ";
 		}
@@ -73,8 +72,8 @@ std::string InstructionBuilder::GetDebugString() {
 	return description;
 }
 Packet InstructionBuilder::Build() {
-	Instruction desired = _instructions[this->_instruction];
-	const int packetLength = 7 + this->_parameters.size();
+	const Instruction& desired = _iset->Instructions().at(_instruction);
+	const int packetLength = 7 + _parameters.size();
 	uint8_t* packet = new uint8_t[packetLength];
 	
 	std::fill(packet, packet + packetLength, 0);
@@ -89,7 +88,7 @@ Packet InstructionBuilder::Build() {
 	for (std::size_t i = 0; i < numParams; i++) {
 		string paramKey = desired.Parameters[i];
 		string userParamVal = _parameters[paramKey];
-		auto paramKeyToByteId = _paramDict[paramKey];
+		auto paramKeyToByteId =_iset->ParamDict().at(paramKey);
 		uint8_t id = paramKeyToByteId[userParamVal];
 		packet[i + 4] = id;
 	}
@@ -103,38 +102,4 @@ Packet InstructionBuilder::Build() {
 }
 
 
-bool InstructionBuilder::LoadKeyValue(std::unordered_map<string, uint8_t>& dict, Json::Value json) {
-	auto names = json.getMemberNames();
-
-
-	for (std::string key : names) {
-		std::string val = json.get(key, "0x00").asString();
-		const char* hexChars = &val.c_str()[2];
-		uint8_t hex[1]{ 0 };
-		HexStringToInt(hexChars, hex);
-		dict[key] = hex[0];
-	}
-	
-
-	
-	return false;
-}
-
-bool InstructionBuilder::LoadEffects(const Json::Value& json) {
-	return LoadKeyValue(this->_paramDict["effect"], json);
-}
-
-bool InstructionBuilder::LoadZones(const Json::Value& json) {
-	return LoadKeyValue(this->_paramDict["zone"], json);
-}
-
-bool InstructionBuilder::LoadInstructions(const Json::Value& json) {
-	std::size_t numInstructions = json.size();
-	for (std::size_t i = 0; i < numInstructions; ++i) {
-		Instruction inst;
-		inst.Deserialize(json[i]);
-		_instructions[inst.Name] = inst;
-	}
-	return false;
-}
 

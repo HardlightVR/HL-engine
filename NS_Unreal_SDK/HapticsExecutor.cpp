@@ -4,7 +4,7 @@
 using namespace std;
 
 
-HapticsExecutor::HapticsExecutor(std::shared_ptr<SuitHardwareInterface> s):_suit(s)
+HapticsExecutor::HapticsExecutor(SuitHardwareInterface s):_suit(s)
 {
 }
 
@@ -143,7 +143,7 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 		{
 			if (queue.second.Dirty)
 			{
-				_suit->HaltEffect(queue.first);
+				_suit.HaltEffect(queue.first);
 				_model[queue.first].Dirty = false;
 			}
 			continue;
@@ -164,11 +164,11 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 			//fallthrough
 		case Duration::Infinite:
 		case Duration::Variable:
-			_suit->PlayEffectContinuous(hapticEvent.first, hapticEvent.second);
+			_suit.PlayEffectContinuous(hapticEvent.first, hapticEvent.second);
 			break;
 		case Duration::OneShot:
-			_suit->HaltEffect(hapticEvent.first);
-			_suit->PlayEffect(hapticEvent.first, hapticEvent.second);
+			_suit.HaltEffect(hapticEvent.first);
+			_suit.PlayEffect(hapticEvent.first, hapticEvent.second);
 			_model[hapticEvent.first].Dirty = false;
 			break;
 		default:

@@ -3,23 +3,10 @@
 
 #include <iostream>
 
-SuitHardwareInterface::SuitHardwareInterface()
+SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter> a, std::shared_ptr<InstructionSet> iset):adapter(a),builder(iset)
 {
-	Json::Value inst_root;
-	std::ifstream instruction_json("Instructions.json", std::ifstream::binary);
-	instruction_json >> inst_root;
-	this->builder.LoadInstructions(inst_root);
 	
-	Json::Value zone_root;
-	std::ifstream zone_json("Zones.json", std::ifstream::binary);
-	zone_json >> zone_root;
-	this->builder.LoadZones(zone_root);
 	
-	Json::Value effect_root;
-	std::ifstream effect_json("Effects.json", std::ifstream::binary);
-	effect_json >> effect_root;
-	this->builder.LoadEffects(effect_root);
-
 }
 
 

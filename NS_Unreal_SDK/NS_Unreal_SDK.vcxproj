@@ -150,6 +150,7 @@
     <ClCompile Include="HexUtils.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
+    <ClCompile Include="InstructionSet.cpp" />
     <ClCompile Include="IoService.cpp" />
     <ClCompile Include="IPacketConsumer.cpp" />
     <ClCompile Include="jsoncpp.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="IJsonSerializable.h" />
     <ClInclude Include="Instruction.h" />
     <ClInclude Include="InstructionBuilder.h" />
+    <ClInclude Include="InstructionSet.h" />
     <ClInclude Include="IoService.h" />
     <ClInclude Include="IPacketConsumer.h" />
     <ClInclude Include="ITimeOffset.h" />

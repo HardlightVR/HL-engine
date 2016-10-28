@@ -9,7 +9,7 @@
 #include "boost\asio\io_service.hpp"
 #include <boost\asio\deadline_timer.hpp>
 #include "IoService.h"
-
+#include "InstructionSet.h"
 struct suit_status {
 
 };
@@ -25,7 +25,7 @@ public:
 	bool SuitConnected() const;
 	~Engine();
 private:
-	std::shared_ptr<SuitHardwareInterface> _suitHardware;
+	std::shared_ptr<InstructionSet> _instructionSet;
 	std::shared_ptr<ICommunicationAdapter> _adapter;
 	HapticCache2 _hapticCache;
 	std::shared_ptr<PacketDispatcher> _packetDispatcher;

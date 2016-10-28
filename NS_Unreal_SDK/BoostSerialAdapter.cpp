@@ -107,7 +107,7 @@ void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
 
 void BoostSerialAdapter::doKeepAlivePing()
 {
-	_hardware->PingSuit();
+	_hardware.PingSuit();
 	_keepaliveTimer.expires_from_now(_keepaliveInterval);
 	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
 
@@ -130,7 +130,7 @@ bool BoostSerialAdapter::IsConnected() const
 
 
 
-BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService, std::shared_ptr<SuitHardwareInterface> hardware) :
+BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService, SuitHardwareInterface hardware) :
 	suitDataStream(std::make_shared<CircularBuffer>(4096)), port(nullptr), _io(ioService->GetIOService()), _hardware(hardware),
 	_keepaliveTimer(*_io, _keepaliveInterval),
 	_reconnectTimer(*_io, _reconnectInterval),
@@ -156,7 +156,7 @@ bool BoostSerialAdapter::doHandshake( std::string portName) {
 	//Then, we send a short ping and see if we receive a response.
 
 	if (this->createPort(portName)) {
-		_hardware->PingSuit();
+		_hardware.PingSuit();
 		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
 		//(suit takes about 30ms first ping)
 		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, 64), boost::asio::use_future);

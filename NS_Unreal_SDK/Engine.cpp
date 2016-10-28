@@ -4,14 +4,17 @@
 #include "EncodingOperations.h"
 #include "IoService.h"
 Engine::Engine(std::shared_ptr<IoService> io):
-	_suitHardware(std::make_shared<SuitHardwareInterface>()),
-	_adapter(std::shared_ptr<ICommunicationAdapter>(new BoostSerialAdapter(io, _suitHardware))),
+	_instructionSet(std::make_shared<InstructionSet>()),
+	_adapter(std::shared_ptr<ICommunicationAdapter>(
+		new BoostSerialAdapter(io, SuitHardwareInterface(_adapter, _instructionSet))
+	)),
 	_packetDispatcher(std::make_shared<PacketDispatcher>(_adapter->GetDataStream())),
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
-	_executor(_suitHardware)
+	_executor(SuitHardwareInterface(_adapter, _instructionSet))
 
 {
-	_suitHardware->SetAdapter(_adapter);
+	//Pulls all instructions, effects, etc. from disk
+	_instructionSet->LoadAll();
 
 	if (!_adapter->Connect()) {
 		std::cout << "Unable to connect to suit" << "\n";
