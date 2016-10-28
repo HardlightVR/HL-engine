@@ -21,9 +21,11 @@ Engine::Engine(std::shared_ptr<IoService> io) :
 	}
 	else {
 		std::cout << "Connected to suit" << "\n";
-		_adapter->BeginRead();
 
 	}
+
+	_adapter->BeginRead();
+
 }
 
 
@@ -72,13 +74,12 @@ void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
 
 void Engine::Update(float dt)
 {
-//	_executor.Update(dt);
+	_executor.Update(dt);
 
-	//	if (_adapter->NeedsReset()) {
-		//	_adapter->DoReset();
-		//}
+		if (_adapter->NeedsReset()) {
+			_adapter->DoReset();
+		}
 	
-	//_adapter->Read();
 	//_streamSynchronizer.TryReadPacket();
 
 }

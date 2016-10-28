@@ -55,12 +55,15 @@ void BoostSerialAdapter::doSuitRead()
 		}
 	}
 	catch (std::exception& e) {
+
 		std::cout << "ERR" << '\n';
+
 	}
 }
 
 void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 {
+	
 	if (ec) {
 		_pingTime = _keepaliveInterval.total_milliseconds() - _keepaliveTimer.expires_from_now().total_milliseconds();
 		_keepaliveTimer.expires_from_now(_keepaliveInterval);
@@ -78,6 +81,7 @@ void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 	if (!_needsReset) {
 		_needsReset = true;
 	}
+	
 }
 
 void BoostSerialAdapter::DoReset() {
@@ -115,14 +119,20 @@ void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
 
 	std::fill(_data,_data+64, 0);
 }
+void BoostSerialAdapter::write_handler(boost::system::error_code ec, std::size_t length) {
+
+}
 
 void BoostSerialAdapter::doKeepAlivePing()
 {
-	char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
-	boost::asio::write(*(this->port), boost::asio::buffer(ping, 7));
-	_keepaliveTimer.expires_from_now(_keepaliveInterval);
-	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
 
+		char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
+		this->port->async_write_some(boost::asio::buffer(&ping, 7), boost::bind(&BoostSerialAdapter::write_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+	//	boost::asio::write(*(this->port), boost::asio::buffer(ping, 7));
+		_keepaliveTimer.expires_from_now(_keepaliveInterval);
+		_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
+	
+	
 }
 
 bool BoostSerialAdapter::Connect(std::string name)

@@ -45,7 +45,7 @@ private:
 	void doSuitRead();
 	void suitReadCancel(boost::system::error_code ec);
 	void read_handler(boost::system::error_code ec, std::size_t length);
-
+	void write_handler(boost::system::error_code ec, std::size_t length);
 	boost::asio::deadline_timer _keepaliveTimer;
 	boost::posix_time::milliseconds _keepaliveInterval = boost::posix_time::milliseconds(100);
 
