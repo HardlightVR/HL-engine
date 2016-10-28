@@ -63,7 +63,7 @@ bool InstructionSet::LoadInstructions(const Json::Value& json) {
 		inst.Deserialize(json[i]);
 		_instructions[inst.Name] = inst;
 	}
-	return false;
+	return true;
 }
 
 
@@ -81,5 +81,5 @@ bool InstructionSet::LoadKeyValue(std::unordered_map<std::string, uint8_t>& dict
 
 
 
-	return false;
+	return true;
 }

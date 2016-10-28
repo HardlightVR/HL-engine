@@ -3,14 +3,16 @@
 #include "Wire.h"
 #include "EncodingOperations.h"
 #include "IoService.h"
-Engine::Engine(std::shared_ptr<IoService> io):
+Engine::Engine(std::shared_ptr<IoService> io) :
 	_instructionSet(std::make_shared<InstructionSet>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
-		new BoostSerialAdapter(io, SuitHardwareInterface(_adapter, _instructionSet))
+		new BoostSerialAdapter(io, _defaultInterface)
 	)),
+	_defaultInterface(_adapter, _instructionSet),
+
 	_packetDispatcher(std::make_shared<PacketDispatcher>(_adapter->GetDataStream())),
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
-	_executor(SuitHardwareInterface(_adapter, _instructionSet))
+	_executor(_defaultInterface)
 
 {
 	//Pulls all instructions, effects, etc. from disk

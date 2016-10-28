@@ -25,13 +25,15 @@ public:
 	bool SuitConnected() const;
 	~Engine();
 private:
-	std::shared_ptr<InstructionSet> _instructionSet;
-	std::shared_ptr<ICommunicationAdapter> _adapter;
-	HapticCache2 _hapticCache;
-	std::shared_ptr<PacketDispatcher> _packetDispatcher;
-	Synchronizer _streamSynchronizer;
-	HapticsExecutor _executor;
+	std::shared_ptr<InstructionSet> _instructionSet; //order dependency
 
+	std::shared_ptr<ICommunicationAdapter> _adapter; //order dependency
+	SuitHardwareInterface _defaultInterface;
+
+	HapticCache2 _hapticCache;
+	std::shared_ptr<PacketDispatcher> _packetDispatcher; //order dependency
+	Synchronizer _streamSynchronizer; //order dependency
+	HapticsExecutor _executor;//order dependency
 
 };
 
