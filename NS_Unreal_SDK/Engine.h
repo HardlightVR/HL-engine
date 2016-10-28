@@ -28,7 +28,6 @@ private:
 	std::shared_ptr<InstructionSet> _instructionSet; //order dependency
 
 	std::shared_ptr<ICommunicationAdapter> _adapter; //order dependency
-	SuitHardwareInterface _defaultInterface;
 
 	HapticCache2 _hapticCache;
 	std::shared_ptr<PacketDispatcher> _packetDispatcher; //order dependency

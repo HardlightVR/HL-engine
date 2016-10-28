@@ -6,13 +6,11 @@
 Engine::Engine(std::shared_ptr<IoService> io) :
 	_instructionSet(std::make_shared<InstructionSet>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
-		new BoostSerialAdapter(io, _defaultInterface)
+		new BoostSerialAdapter(io)
 	)),
-	_defaultInterface(_adapter, _instructionSet),
-
 	_packetDispatcher(std::make_shared<PacketDispatcher>(_adapter->GetDataStream())),
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
-	_executor(_defaultInterface)
+	_executor(SuitHardwareInterface(_adapter, _instructionSet))
 
 {
 	//Pulls all instructions, effects, etc. from disk
@@ -23,9 +21,9 @@ Engine::Engine(std::shared_ptr<IoService> io) :
 	}
 	else {
 		std::cout << "Connected to suit" << "\n";
-		
+		_adapter->BeginRead();
+
 	}
-	_adapter->BeginRead();
 }
 
 
@@ -74,11 +72,11 @@ void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
 
 void Engine::Update(float dt)
 {
-	_executor.Update(dt);
+//	_executor.Update(dt);
 
-		if (_adapter->NeedsReset()) {
-			_adapter->DoReset();
-		}
+	//	if (_adapter->NeedsReset()) {
+		//	_adapter->DoReset();
+		//}
 	
 	//_adapter->Read();
 	//_streamSynchronizer.TryReadPacket();

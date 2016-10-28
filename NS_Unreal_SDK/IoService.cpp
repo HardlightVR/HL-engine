@@ -7,30 +7,28 @@ IoService::IoService():_io(std::make_shared<boost::asio::io_service>()), _work(s
 	
 }
 
-void IoService::Start() {
-	if (_thread) { return; }
+bool IoService::Start() {
+	if (_thread) { return false; }
 	_work = std::make_unique<boost::asio::io_service::work>(*_io);
-	_thread.reset(new std::thread(boost::bind(&boost::asio::io_service::run, _io)));
+	_thread.reset(new std::thread(boost::bind(&boost::asio::io_service::run, _io.get())));
+	return true;
 }
-void IoService::Stop()
+bool IoService::Stop()
 {
 	if (!_thread) {
-		return;
+		return false;
 	}
 	_work.reset();
 	_io->stop();
 	_thread->join();
 	_io->reset();
 	_thread.reset();
+	return true;
 }
 
 IoService::~IoService()
 {
-	if (_thread && _thread->joinable()) {
-		_io->stop();
-		_thread->join();
-		_thread.reset();
-	}
+	
 }
 
 std::shared_ptr<boost::asio::io_service> IoService::GetIOService()
@@ -40,6 +38,9 @@ std::shared_ptr<boost::asio::io_service> IoService::GetIOService()
 
 void IoService::RestartIOService()
 {
-	this->Stop();
-	this->Start();
+	if (this->Stop()) {
+		if (!this->Start()) {
+			throw std::exception("wtf");
+		}
+	}
 }

@@ -9,8 +9,8 @@ public:
 	~IoService();
 	std::shared_ptr<boost::asio::io_service> GetIOService();
 	void RestartIOService();
-	void Start();
-	void Stop();
+	bool Start();
+	bool Stop();
 private:
 	std::unique_ptr<std::thread> _thread;
 	std::shared_ptr<boost::asio::io_service> _io;
