@@ -83,10 +83,12 @@ void BoostSerialAdapter::DoReset() {
 }
 void BoostSerialAdapter::reconnectSuit() {
 	std::cout << "Attempting to auto reconnect.." << '\n';
-
+	_isResetting = true;
 	if (this->autoConnectPort()) {
 		this->BeginRead();
 		std::cout << "... auto reconnected!" << '\n';
+
+		_isResetting = false;
 	}
 	else {
 		std::lock_guard<std::mutex> lock(_resetMutex);
@@ -132,7 +134,7 @@ std::shared_ptr<CircularBuffer> BoostSerialAdapter::GetDataStream()
 
 bool BoostSerialAdapter::IsConnected() const
 {
-	return port->is_open();
+	return  !_isResetting && this->port && this->port->is_open();
 }
 
 

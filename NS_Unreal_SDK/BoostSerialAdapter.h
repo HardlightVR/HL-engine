@@ -56,6 +56,7 @@ private:
 
 	std::mutex _resetMutex;
 	bool _needsReset;
+	bool _isResetting = false;
 	
 };
 
