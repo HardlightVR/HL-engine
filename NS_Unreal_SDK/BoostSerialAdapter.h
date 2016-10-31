@@ -48,7 +48,7 @@ private:
 	void write_handler(boost::system::error_code ec, std::size_t length);
 	boost::asio::deadline_timer _keepaliveTimer;
 	boost::posix_time::milliseconds _keepaliveInterval = boost::posix_time::milliseconds(100);
-
+	std::chrono::milliseconds _initialConnectTimeout = std::chrono::milliseconds(50);
 	void reconnectSuit();
 	long long _pingTime;
 

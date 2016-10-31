@@ -170,7 +170,7 @@ bool BoostSerialAdapter::doHandshake( std::string portName) {
 		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
 		//(suit takes about 30ms first ping)
 		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, 64), boost::asio::use_future);
-		auto status = length.wait_for(std::chrono::milliseconds(100));
+		auto status = length.wait_for(_initialConnectTimeout);
 		switch (status) {
 		case std::future_status::ready:
 			return true;
