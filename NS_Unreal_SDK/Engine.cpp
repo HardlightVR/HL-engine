@@ -3,14 +3,20 @@
 #include "Wire.h"
 #include "EncodingOperations.h"
 #include "IoService.h"
-Engine::Engine(std::shared_ptr<IoService> io) :
+#include <boost\optional\optional_io.hpp>
+#include "TrackingUpdate_generated.h"
+Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
 	_instructionSet(std::make_shared<InstructionSet>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
 		new BoostSerialAdapter(io)
-	)),
+		)),
 	_packetDispatcher(std::make_shared<PacketDispatcher>(_adapter->GetDataStream())),
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
-	_executor(SuitHardwareInterface(_adapter, _instructionSet))
+	_executor(SuitHardwareInterface(_adapter, _instructionSet)),
+	_imuConsumer(std::make_shared<ImuConsumer>()),
+	_trackingUpdateTimer(*io->GetIOService(), _trackingUpdateInterval),
+	_encoder(encoder),
+	_socket(socket)
 
 {
 	//Pulls all instructions, effects, etc. from disk
@@ -25,10 +31,19 @@ Engine::Engine(std::shared_ptr<IoService> io) :
 	}
 
 	_adapter->BeginRead();
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
+	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
 
 }
 
+void Engine::sendTrackingUpdate() {
+	if (boost::optional<Quaternion> q = _imuConsumer->GetOrientation(Imu::Chest)) {
+		_encoder.Finalize(_encoder.Encode(*q), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
 
+	} 
+	_trackingUpdateTimer.expires_from_now(_trackingUpdateInterval);
+	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
+}
 void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	if (_hapticCache.ContainsSequence(packet.name()->str())) {
@@ -76,11 +91,12 @@ void Engine::Update(float dt)
 {
 	_executor.Update(dt);
 
-		if (_adapter->NeedsReset()) {
-			_adapter->DoReset();
-		}
+	if (_adapter->NeedsReset()) {
+		_adapter->DoReset();
+	}
 	
-	//_streamSynchronizer.TryReadPacket();
+	_streamSynchronizer.TryReadPacket();
+	
 
 }
 

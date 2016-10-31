@@ -43,7 +43,7 @@ void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t 
 void BoostSerialAdapter::doSuitRead()
 {
 	if (this->port->is_open()) {
-		this->port->async_read_some(boost::asio::buffer(_data, 64),
+		this->port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE),
 			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}	
 }
@@ -106,7 +106,7 @@ void BoostSerialAdapter::copy_data_to_circularbuff(std::size_t length) {
 		suitDataStream->push_front(_data[i]);
 	}
 
-	std::fill(_data,_data+64, 0);
+	std::fill(_data,_data+INCOMING_DATA_BUFFER_SIZE, 0);
 }
 void BoostSerialAdapter::write_handler(boost::system::error_code ec, std::size_t length) {
 
@@ -145,7 +145,7 @@ BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
 	_ioService(ioService)
 
 {
-	std::fill(_data, _data + 64, 0);
+	std::fill(_data, _data + INCOMING_DATA_BUFFER_SIZE, 0);
 
 }
 
@@ -169,7 +169,7 @@ bool BoostSerialAdapter::doHandshake( std::string portName) {
 
 		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
 		//(suit takes about 30ms first ping)
-		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, 64), boost::asio::use_future);
+		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE), boost::asio::use_future);
 		auto status = length.wait_for(_initialConnectTimeout);
 		switch (status) {
 		case std::future_status::ready:
@@ -216,8 +216,7 @@ bool BoostSerialAdapter::createPort(std::string name)
 			std::cout << "Major error: After resetting IO service, the port was still open. Talk to casey@nullspacevr.com\n";
 		}
 	}
-
-	this->port.reset(new boost::asio::serial_port(*_io));
+	this->port = std::make_unique<boost::asio::serial_port>(*_io);
 
 	try {
 		this->port->open(name);

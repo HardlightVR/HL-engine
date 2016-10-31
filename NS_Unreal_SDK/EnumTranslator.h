@@ -9,7 +9,7 @@ typedef bimap<Effect, std::string> EffectMap;
 typedef bimap<Location, std::string> LocationMap;
 typedef bimap<Side, std::string> SideMap;
 typedef bimap<JsonLocation, std::string> JsonLocationMap;
-
+typedef bimap<Imu, std::string> ImuMap;
 class EnumTranslator
 {
 public:
@@ -32,15 +32,22 @@ public:
 	std::string ToString(JsonLocation jsonLoc) const;
 	JsonLocation ToJsonLocation(std::string jsonLoc) const;
 	JsonLocation ToJsonLocation(std::string jsonLoc, JsonLocation defaultLocation);
+
+	std::string ToString(Imu imu) const;
+	Imu ToImu(std::string imu) const;
+	Imu ToImu(std::string imu, Imu defaultImu);
 private:
 	
 	void init_locations();
 	void init_effects();
 	void init_sides();
 	void init_json_locations();
+	void init_imus();
+
 	EffectMap _effectMap;
 	LocationMap _locationMap;
 	SideMap _sideMap;
 	JsonLocationMap _jsonLocationMap;
+	ImuMap _imuMap;
 };
 

@@ -1,0 +1,15 @@
+namespace NullSpace.Communication;
+
+
+struct Quaternion {
+	x: float;
+	y: float;
+	z: float; 
+	w: float;
+}
+
+table TrackingUpdate {
+	chest:Quaternion;
+}
+
+root_type TrackingUpdate;

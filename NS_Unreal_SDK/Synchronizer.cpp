@@ -2,7 +2,6 @@
 #include <iostream>
 #include "PacketDispatcher.h"
 
-unsigned const int Synchronizer::MY_PACKET_LENGTH = PACKET_LENGTH;
 bool Synchronizer::Synchronized()
 {
 	return this->syncState == Synchronizer::State::Synchronized;
@@ -16,7 +15,7 @@ Synchronizer::State Synchronizer::SyncState()
 void Synchronizer::TryReadPacket()
 {
 	//if (this->dataStream.Length < this.packetLength
-	if (_dataStream->size() < MY_PACKET_LENGTH) {
+	if (_dataStream->size() < PACKET_LENGTH) {
 		return;
 	}
 
@@ -65,7 +64,7 @@ Synchronizer::~Synchronizer()
 void Synchronizer::searchForSync()
 {
 	//this->dataStream.Length < this->packetLength * 2
-	if (this->_dataStream->size() < MY_PACKET_LENGTH * 2) {
+	if (this->_dataStream->size() < PACKET_LENGTH * 2) {
 		return;
 	}
 
@@ -76,7 +75,7 @@ void Synchronizer::searchForSync()
 	}
 
 	//find offset 
-	for (std::size_t offset = 1; offset < MY_PACKET_LENGTH; ++offset) {
+	for (std::size_t offset = 1; offset < PACKET_LENGTH; ++offset) {
 		if (possiblePacket.raw[offset] == this->packetDelimiter) {
 			std::size_t howMuchLeft = offset;
 			for (std::size_t i = 0; i < howMuchLeft; ++i)
@@ -133,13 +132,20 @@ void Synchronizer::confirmSyncLoss()
 packet Synchronizer::dequeuePacket() const
 {
 	packet p;
-	
-	std::reverse_copy(_dataStream->end() - MY_PACKET_LENGTH, _dataStream->end(), p.raw);
-	
 
-	for (std::size_t i = 0; i < MY_PACKET_LENGTH; ++i)
+
+	try
 	{
-		_dataStream->pop_back();
+		std::reverse_copy(_dataStream->end() - PACKET_LENGTH, _dataStream->end(), p.raw);
+
+
+		for (std::size_t i = 0; i < PACKET_LENGTH; ++i)
+		{
+			_dataStream->pop_back();
+		}
+	}
+	catch (const std::exception& e) {
+		std::cout << "not 'nuff data " << '\n';
 	}
 	return p;
 

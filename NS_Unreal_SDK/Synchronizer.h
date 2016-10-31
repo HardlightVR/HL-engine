@@ -7,6 +7,7 @@ const unsigned int PACKET_LENGTH = 16;
 struct packet
 {
 	uint8_t raw[PACKET_LENGTH];
+	unsigned int size = PACKET_LENGTH;
 };
 typedef boost::circular_buffer<uint8_t> CircularBuffer;
 class Synchronizer

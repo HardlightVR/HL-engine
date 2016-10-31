@@ -6,6 +6,7 @@
 #include "flatbuffers/flatbuffers.h"
 
 #include "SuitStatusUpdate_generated.h"
+#include "TrackingUpdate_generated.h"
 
 namespace NullSpace {
 namespace Communication {
@@ -15,12 +16,13 @@ struct EnginePacket;
 enum PacketType {
   PacketType_NONE = 0,
   PacketType_SuitStatusUpdate = 1,
+  PacketType_TrackingUpdate = 2,
   PacketType_MIN = PacketType_NONE,
-  PacketType_MAX = PacketType_SuitStatusUpdate
+  PacketType_MAX = PacketType_TrackingUpdate
 };
 
 inline const char **EnumNamesPacketType() {
-  static const char *names[] = { "NONE", "SuitStatusUpdate", nullptr };
+  static const char *names[] = { "NONE", "SuitStatusUpdate", "TrackingUpdate", nullptr };
   return names;
 }
 
@@ -32,6 +34,10 @@ template<typename T> struct PacketTypeTraits {
 
 template<> struct PacketTypeTraits<NullSpace::Communication::SuitStatusUpdate> {
   static const PacketType enum_value = PacketType_SuitStatusUpdate;
+};
+
+template<> struct PacketTypeTraits<NullSpace::Communication::TrackingUpdate> {
+  static const PacketType enum_value = PacketType_TrackingUpdate;
 };
 
 inline bool VerifyPacketType(flatbuffers::Verifier &verifier, const void *union_obj, PacketType type);
@@ -78,6 +84,7 @@ inline bool VerifyPacketType(flatbuffers::Verifier &verifier, const void *union_
   switch (type) {
     case PacketType_NONE: return true;
     case PacketType_SuitStatusUpdate: return verifier.VerifyTable(reinterpret_cast<const NullSpace::Communication::SuitStatusUpdate *>(union_obj));
+    case PacketType_TrackingUpdate: return verifier.VerifyTable(reinterpret_cast<const NullSpace::Communication::TrackingUpdate *>(union_obj));
     default: return false;
   }
 }

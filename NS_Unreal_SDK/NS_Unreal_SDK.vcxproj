@@ -148,6 +148,7 @@
     <ClCompile Include="HapticQueue.cpp" />
     <ClCompile Include="HapticsExecutor.cpp" />
     <ClCompile Include="HexUtils.cpp" />
+    <ClCompile Include="ImuConsumer.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
     <ClCompile Include="InstructionSet.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />
+    <ClInclude Include="ImuConsumer.h" />
     <ClInclude Include="Instruction.h" />
     <ClInclude Include="InstructionBuilder.h" />
     <ClInclude Include="InstructionSet.h" />

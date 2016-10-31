@@ -10,7 +10,7 @@
 #include "IoService.h"
 #include <mutex>
 
-#define BOOST_ASIO_ENABLE_HANDLER_TRACKING
+const int INCOMING_DATA_BUFFER_SIZE = 128;
 class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapter>, public virtual ICommunicationAdapter
 {
 public:
@@ -38,7 +38,7 @@ private:
 	bool createPort(std::string name);
 	void copy_data_to_circularbuff(std::size_t length);
 
-	uint8_t _data[64];
+	uint8_t _data[INCOMING_DATA_BUFFER_SIZE];
 	std::shared_ptr<CircularBuffer> suitDataStream;
 	void doKeepAlivePing();
 

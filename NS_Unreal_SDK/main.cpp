@@ -30,12 +30,11 @@ void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingO
 	NullSpace::Communication::SuitStatus status = e->SuitConnected() ?
 		NullSpace::Communication::SuitStatus::SuitStatus_Connected :
 		NullSpace::Communication::SuitStatus::SuitStatus_Disconnected;
-//	std::cout << "Broadcasting suit update: Suit is " << (status == NullSpace::Communication::SuitStatus::SuitStatus_Connected ? "connected" : "disconnected") << '\n';
+
 	encoder->Finalize(encoder->Encode(status),
 		[&](uint8_t* data, int size) {
 		Wire::sendTo(*socket, data, size);
 	});
-//	std::cout << "Sending suit update!" << '\n';
 	t->expires_at(t->expires_at() + suit_status_update_interval);
 	t->async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, e, encoder, socket, t));
 }
@@ -49,11 +48,13 @@ int main() {
 
 	auto io = std::make_shared<IoService>();
 	io->Start();
-	Engine engine(io);
 
 	zmq::context_t context(1);
 	zmq::socket_t server_updates(context, ZMQ_PUB);
 	zmq::socket_t haptic_requests(context, ZMQ_PAIR);
+
+	Engine engine(io, _encoder, server_updates);
+
 	boost::asio::deadline_timer suitStatusTimer(*io->GetIOService(), suit_status_update_interval);
 	suitStatusTimer.async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, &engine, &_encoder, &server_updates, &suitStatusTimer));
 	try {
