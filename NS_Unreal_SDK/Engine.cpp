@@ -5,6 +5,7 @@
 #include "IoService.h"
 #include <boost\optional\optional_io.hpp>
 #include "TrackingUpdate_generated.h"
+#include "FifoConsumer.h"
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
 	_instructionSet(std::make_shared<InstructionSet>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
@@ -32,6 +33,7 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 
 	_adapter->BeginRead();
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, std::make_shared<FifoConsumer>());
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
 
 }

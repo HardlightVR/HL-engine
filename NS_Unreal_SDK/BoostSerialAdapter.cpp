@@ -55,10 +55,7 @@ void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 	
 	if (ec) {
 		_pingTime = _keepaliveInterval.total_milliseconds() - _keepaliveTimer.expires_from_now().total_milliseconds();
-	//	_keepaliveTimer.expires_from_now(_keepaliveInterval);
-		//_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 	
-		//_sendPingTimer.expires_from_now(_keepAliveInterval);
 		_sendPingTimer.expires_from_now(_pingTimeout);
 		_sendPingTimer.async_wait(boost::bind(&BoostSerialAdapter::startPingTimer, this));
 		return;
@@ -123,7 +120,6 @@ void BoostSerialAdapter::write_handler(boost::system::error_code ec, std::size_t
 
 void BoostSerialAdapter::doKeepAlivePing()
 {
-	std::cout << "pinging suit" << '\n';
 	char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 	this->port->async_write_some(boost::asio::buffer(&ping, 7), boost::bind(&BoostSerialAdapter::write_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	_keepaliveTimer.expires_from_now(_keepaliveInterval);

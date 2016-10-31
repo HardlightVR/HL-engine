@@ -38,7 +38,7 @@ private:
 
 	std::shared_ptr<ImuConsumer> _imuConsumer;
 	boost::asio::deadline_timer _trackingUpdateTimer;
-	boost::posix_time::milliseconds _trackingUpdateInterval = boost::posix_time::milliseconds(16);
+	boost::posix_time::milliseconds _trackingUpdateInterval = boost::posix_time::milliseconds(100);
 
 	EncodingOperations& _encoder;
 	zmq::socket_t& _socket;
