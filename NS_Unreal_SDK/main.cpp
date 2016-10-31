@@ -24,7 +24,7 @@
 #include "IoService.h"
 #define SHOW_CONSOLE
 
-const auto suit_status_update_interval = boost::posix_time::milliseconds(500);
+const auto suit_status_update_interval = boost::posix_time::milliseconds(250);
 
 void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingOperations* encoder, zmq::socket_t* socket, boost::asio::deadline_timer* t) {
 	NullSpace::Communication::SuitStatus status = e->SuitConnected() ?

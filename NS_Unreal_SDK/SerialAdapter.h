@@ -12,11 +12,11 @@ public:
 	void Write(uint8_t bytes[], std::size_t length) override;
 	void BeginRead() override;
 	bool Connect(std::string name);
-	std::shared_ptr<CircularBuffer> GetDataStream() override;
+	std::shared_ptr<Buffer> GetDataStream() override;
 private:
 	std::unique_ptr<Serial> port;
 	bool autoConnectPort();
 	bool createPort(std::string name);
-	std::shared_ptr<CircularBuffer> suitDataStream;
+	std::shared_ptr<Buffer> suitDataStream;
 
 };

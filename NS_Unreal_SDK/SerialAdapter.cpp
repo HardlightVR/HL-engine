@@ -4,7 +4,7 @@
 #include "enumser.h"
 #include <boost/thread/thread.hpp> 
 
-SerialAdapter::SerialAdapter():suitDataStream(std::make_shared<CircularBuffer>(2048)){
+SerialAdapter::SerialAdapter():suitDataStream(std::make_shared<Buffer>(2048)){
 	//this->suitDataStream = ByteQueue();
 	this->port = nullptr;
 }
@@ -56,7 +56,7 @@ bool SerialAdapter::Connect(std::string name) {
 	return this->createPort(&name[0]);
 }
 
-std::shared_ptr<CircularBuffer> SerialAdapter::GetDataStream()
+std::shared_ptr<Buffer> SerialAdapter::GetDataStream()
 {
 	return suitDataStream;
 }
@@ -92,7 +92,7 @@ void SerialAdapter::BeginRead() {
 	{
 		for (int i = 0; i < actualRead; ++i)
 		{
-			suitDataStream->push_back(bytesRead[i]);
+			suitDataStream->push(bytesRead[i]);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 #include "PacketDispatcher.h"
 
 
-PacketDispatcher::PacketDispatcher(std::shared_ptr<CircularBuffer> data) : _dispatchLimit(32)
+PacketDispatcher::PacketDispatcher() : _dispatchLimit(32)
 {
 }
 

@@ -12,5 +12,5 @@ public:
 	virtual bool IsConnected() const = 0;
 	virtual bool NeedsReset() const { return false; };
 	virtual void DoReset() {};
-	virtual std::shared_ptr<CircularBuffer> GetDataStream() = 0;
+	virtual std::shared_ptr<Buffer> GetDataStream() = 0;
 };

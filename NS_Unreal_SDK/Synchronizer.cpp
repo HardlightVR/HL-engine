@@ -15,9 +15,12 @@ Synchronizer::State Synchronizer::SyncState()
 void Synchronizer::TryReadPacket()
 {
 	//if (this->dataStream.Length < this.packetLength
-	if (_dataStream->size() < PACKET_LENGTH) {
+	if (_dataStream->read_available() < PACKET_LENGTH){
 		return;
 	}
+	//if (_dataStream->size() < PACKET_LENGTH) {
+	//	return;
+	//}
 
 	switch (this->syncState)
 	{
@@ -46,7 +49,7 @@ void Synchronizer::TryReadPacket()
 
 
 
-Synchronizer::Synchronizer(std::shared_ptr<CircularBuffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher) :
+Synchronizer::Synchronizer(std::shared_ptr<Buffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher) :
 	_dispatcher(dispatcher),
 	_dataStream(dataStream),
 	packetDelimiter('$'),
@@ -64,7 +67,7 @@ Synchronizer::~Synchronizer()
 void Synchronizer::searchForSync()
 {
 	//this->dataStream.Length < this->packetLength * 2
-	if (this->_dataStream->size() < PACKET_LENGTH * 2) {
+	if (this->_dataStream->read_available() < PACKET_LENGTH * 2) {
 		return;
 	}
 
@@ -80,7 +83,7 @@ void Synchronizer::searchForSync()
 			std::size_t howMuchLeft = offset;
 			for (std::size_t i = 0; i < howMuchLeft; ++i)
 			{
-				_dataStream->pop_back();
+				_dataStream->pop();
 			}
 			this->syncState = State::ConfirmingSync;
 			return;
@@ -136,13 +139,15 @@ packet Synchronizer::dequeuePacket() const
 
 	try
 	{
-		std::reverse_copy(_dataStream->end() - PACKET_LENGTH, _dataStream->end(), p.raw);
+		int numPopped = _dataStream->pop(p.raw, PACKET_LENGTH);
+		assert(numPopped == PACKET_LENGTH);
+		//std::reverse_copy(_dataStream->end() - PACKET_LENGTH, _dataStream->end(), p.raw);
 
 
-		for (std::size_t i = 0; i < PACKET_LENGTH; ++i)
-		{
-			_dataStream->pop_back();
-		}
+		//for (std::size_t i = 0; i < PACKET_LENGTH; ++i)
+		//{
+		//	_dataStream->pop_back();
+		//}
 	}
 	catch (const std::exception& e) {
 		std::cout << "not 'nuff data " << '\n';

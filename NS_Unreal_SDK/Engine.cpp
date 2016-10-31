@@ -10,7 +10,7 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
 		new BoostSerialAdapter(io)
 		)),
-	_packetDispatcher(std::make_shared<PacketDispatcher>(_adapter->GetDataStream())),
+	_packetDispatcher(std::make_shared<PacketDispatcher>()),
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
 	_executor(SuitHardwareInterface(_adapter, _instructionSet)),
 	_imuConsumer(std::make_shared<ImuConsumer>()),
