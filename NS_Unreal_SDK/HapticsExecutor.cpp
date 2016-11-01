@@ -164,6 +164,7 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 			//fallthrough
 		case Duration::Infinite:
 		case Duration::Variable:
+			
 			_suit.PlayEffectContinuous(hapticEvent.first, hapticEvent.second);
 			break;
 		case Duration::OneShot:

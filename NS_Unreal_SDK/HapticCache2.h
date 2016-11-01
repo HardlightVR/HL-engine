@@ -35,4 +35,7 @@ inline T HapticCache2::Get(NullSpace::HapticFiles::FileType ftype, std::string n
 	else if (ftype == NullSpace::HapticFiles::FileType::FileType_Sequence) {
 		return _sequences.at(name);
 	}
+	else if (ftype == NullSpace::HapticFiles::FileTipe::FileType_Experience) {
+		return _experiences.at(name);
+	}
 }
