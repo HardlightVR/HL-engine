@@ -17,7 +17,8 @@ class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapte
 public:
 	bool Connect() override;
 	void Disconnect() override;
-	void Write(uint8_t bytes[], std::size_t length) override;
+	void Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(boost::system::error_code, std::size_t)> cb) override;
+	void Write(std::shared_ptr<uint8_t*> bytes, std::size_t length) override;
 	void BeginRead() override;
 	bool Connect(std::string name);
 	std::shared_ptr<Buffer> GetDataStream() override;

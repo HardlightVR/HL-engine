@@ -163,7 +163,6 @@
     <ClCompile Include="PacketDispatcher.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Serial.cpp" />
-    <ClCompile Include="SerialAdapter.cpp" />
     <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="SuitHardwareInterface.cpp" />
     <ClCompile Include="SuitPacket.cpp" />
@@ -207,7 +206,6 @@
     <ClInclude Include="PacketDispatcher.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Serial.h" />
-    <ClInclude Include="SerialAdapter.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="SuitHardwareInterface.h" />
     <ClInclude Include="SuitPacket.h" />

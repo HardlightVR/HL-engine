@@ -16,13 +16,19 @@ void BoostSerialAdapter::Disconnect()
 		port->close();
 	}
 }
-
-void BoostSerialAdapter::Write(uint8_t bytes[], std::size_t length)
+void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(boost::system::error_code, std::size_t)> cb)
 {
 	if (this->port && this->port->is_open()) {
-		char *chars = reinterpret_cast<char*>(bytes);
-		this->port->async_write_some(boost::asio::buffer(bytes, length),
-			[&](const boost::system::error_code& error, std::size_t bytes_transferred) {
+		//char *chars = reinterpret_cast<char*>(bytes);
+		this->port->async_write_some(boost::asio::buffer(*bytes, length), cb);
+	}
+}
+void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length)
+{
+	if (this->port && this->port->is_open()) {
+		//char *chars = reinterpret_cast<char*>(bytes);
+		this->port->async_write_some(boost::asio::buffer(*bytes, length),
+			[bytes](const boost::system::error_code& error, std::size_t bytes_transferred) {
 			if (error) {
 				std::cout << "Error writing bytes! " << error.message() << '\n';
 			}
@@ -120,8 +126,8 @@ void BoostSerialAdapter::write_handler(boost::system::error_code ec, std::size_t
 
 void BoostSerialAdapter::doKeepAlivePing()
 {
-	char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
-	this->port->async_write_some(boost::asio::buffer(&ping, 7), boost::bind(&BoostSerialAdapter::write_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7] { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code, const std::size_t bytes_transferred) {});
 	_keepaliveTimer.expires_from_now(_keepaliveInterval);
 	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
 	
@@ -170,8 +176,8 @@ bool BoostSerialAdapter::doHandshake( std::string portName) {
 	//Then, we send a short ping and see if we receive a response.
 
 	if (this->createPort(portName)) {
-		char ping[] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
-		this->port->async_write_some(boost::asio::buffer(&ping, 7), boost::bind(&BoostSerialAdapter::write_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+		auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+		this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code, const std::size_t bytes_transferred) {});
 
 		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
 		//(suit takes about 30ms first ping)

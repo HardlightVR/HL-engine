@@ -4,7 +4,7 @@
 using namespace std;
 
 
-HapticsExecutor::HapticsExecutor(SuitHardwareInterface s):_suit(s)
+HapticsExecutor::HapticsExecutor(std::unique_ptr<SuitHardwareInterface> s):_suit(std::move(s))
 {
 }
 
@@ -143,7 +143,7 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 		{
 			if (queue.second.Dirty)
 			{
-				_suit.HaltEffect(queue.first);
+				_suit->HaltEffect(queue.first);
 				_model[queue.first].Dirty = false;
 			}
 			continue;
@@ -155,6 +155,12 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 				queue.first, e.Effect
 				)));
 	}
+	if (toExecute.size() <= 4) {
+		_suit->UseDeferredMode();
+	}
+	else {
+		_suit->UseImmediateMode();
+	}
 	for (auto& pair : toExecute)
 	{
 		
@@ -164,12 +170,11 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 			//fallthrough
 		case Duration::Infinite:
 		case Duration::Variable:
-			
-			_suit.PlayEffectContinuous(hapticEvent.first, hapticEvent.second);
+			_suit->PlayEffectContinuous(hapticEvent.first, hapticEvent.second);
 			break;
 		case Duration::OneShot:
-			_suit.HaltEffect(hapticEvent.first);
-			_suit.PlayEffect(hapticEvent.first, hapticEvent.second);
+			_suit->HaltEffect(hapticEvent.first);
+			_suit->PlayEffect(hapticEvent.first, hapticEvent.second);
 			_model[hapticEvent.first].Dirty = false;
 			break;
 		default:
@@ -177,5 +182,6 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 		}
 	//	boost::this_thread::sleep(boost::posix_time::millisec(1));
 	}
-	
+	_suit->Flush();
+
 }

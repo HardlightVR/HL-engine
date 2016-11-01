@@ -8,7 +8,7 @@
 class HapticsExecutor
 {
 public:
-	HapticsExecutor(SuitHardwareInterface);
+	HapticsExecutor(std::unique_ptr<SuitHardwareInterface>);
 	~HapticsExecutor();
 	void Play(const std::vector<HapticFrame>& frames);
 	void Play(std::vector<HapticEffect> effects);
@@ -19,7 +19,7 @@ private:
 	std::vector<TimeInstant> _queuedFrames;
 	std::vector<TimeInstant> _queuedSamples;
 	std::vector<TimeInstant> _queuedEffects;
-	SuitHardwareInterface _suit;
+	std::unique_ptr<SuitHardwareInterface> _suit;
 	std::unordered_map<Location, HapticQueue> _model;
 
 	void executePendingFrames(float dt);
