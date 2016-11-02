@@ -50,9 +50,9 @@ private:
 	void write_handler(boost::system::error_code ec, std::size_t length);
 	void startPingTimer();
 	boost::asio::deadline_timer _keepaliveTimer;
-	boost::posix_time::milliseconds _keepaliveInterval = boost::posix_time::milliseconds(20);
-	std::chrono::milliseconds _initialConnectTimeout = std::chrono::milliseconds(100);
-	boost::posix_time::milliseconds _pingTimeout = boost::posix_time::milliseconds(250);
+	boost::posix_time::milliseconds _keepaliveTimeout = boost::posix_time::milliseconds(20); //was 20
+	std::chrono::milliseconds _initialConnectTimeout = std::chrono::milliseconds(100); //was 100
+	boost::posix_time::milliseconds _pingTimeout = boost::posix_time::milliseconds(150); //was 250
 	void reconnectSuit();
 	long long _pingTime;
 	boost::asio::deadline_timer _sendPingTimer;
@@ -61,6 +61,7 @@ private:
 	std::mutex _resetMutex;
 	bool _needsReset;
 	bool _isResetting = false;
+	int _badPingCount = 0;
 	
 };
 

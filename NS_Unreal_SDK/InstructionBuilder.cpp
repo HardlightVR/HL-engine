@@ -14,7 +14,7 @@ InstructionBuilder::~InstructionBuilder()
 
 
 InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
-	std::cout << "Using instruction: " << name << '\n';
+	//std::cout << "Using instruction: " << name << '\n';
 	this->_parameters.clear();
 	this->_instruction = std::move(name);
 	return *this;

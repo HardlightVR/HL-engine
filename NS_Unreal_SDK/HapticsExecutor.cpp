@@ -161,6 +161,7 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 		}
 	
 	}
+
 	///if (toExecute.size() > 1 && toExecute.size() <= 4) {
 		_suit->UseDeferredMode();
 	//}

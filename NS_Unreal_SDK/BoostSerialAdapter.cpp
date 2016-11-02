@@ -37,10 +37,18 @@ void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t leng
 }
 void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t length) {
 	if (!ec && length > 0) {
-		_keepaliveTimer.cancel();
+		if (_data[2] == 0x02) {
+			_keepaliveTimer.cancel();
+
+		//	std::cout << "got ping response: keepalive had " << _keepaliveTimer.expires_from_now().total_milliseconds() << "ms\n";
+		//	std::cout << "LENGTH! " << length << '\n';
+		
+		}
+		
 		this->copy_data_to_circularbuff(length);
 		doSuitRead();
 	}
+	
 	
 }
 
@@ -52,30 +60,54 @@ void BoostSerialAdapter::doSuitRead()
 	}	
 }
 void BoostSerialAdapter::startPingTimer() {
-		_keepaliveTimer.expires_from_now(_keepaliveInterval);
+		//_keepaliveTimer.expires_from_now(_keepaliveTimeout);
+	//_io->post(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 
-	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
+	//_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 }
+
+void BoostSerialAdapter::doKeepAlivePing()
+{
+//	std::cout << "pinging suit" << '\n';
+	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code ec, const std::size_t bytes_transferred) {
+		if (ec) { std::cout << "error writing ping" << '\n'; }});
+	_keepaliveTimer.expires_from_now(_keepaliveTimeout);
+	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
+
+}
+
 void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 {
 	
 	if (ec) {
-		_pingTime = _keepaliveInterval.total_milliseconds() - _keepaliveTimer.expires_from_now().total_milliseconds();
-	
+		_badPingCount = 0;
+		_pingTime = _keepaliveTimeout.total_milliseconds() - _keepaliveTimer.expires_from_now().total_milliseconds();
+		//std::cout << "keepalive interval: " << _keepaliveTimeout.total_milliseconds() << " ms, timer expires in: " << _keepaliveTimer.expires_from_now().total_milliseconds() << " ms\n";
+		//std::cout << "	got the ping in time (" << _pingTime << ")\n";
+
 		_sendPingTimer.expires_from_now(_pingTimeout);
-		_sendPingTimer.async_wait(boost::bind(&BoostSerialAdapter::startPingTimer, this));
+		_sendPingTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 		return;
 	}
-	std::cout << "Timed out!" << '\n';
+	auto a = _keepaliveTimer.expires_from_now().total_milliseconds();
+	std::cout << "Timed out! " << _keepaliveTimeout.total_milliseconds() << "ms\n";
 
 	//We have to do a silly reset dance with the main thread because I cannot reset the io service from a handler,
 	//as far as I can tell. If this _can_ be done, please replace!
 	//Relevant items: _resetMutex, _needsReset, and the logic in the Engine update loop which tests if the adapter needs
 	//to be reset.
-
-	std::lock_guard<std::mutex> lock(_resetMutex);
-	if (!_needsReset) {
-		_needsReset = true;
+	_badPingCount++;
+	if (_badPingCount > 2) {
+		_badPingCount = 0;
+		std::lock_guard<std::mutex> lock(_resetMutex);
+		if (!_needsReset) {
+			_needsReset = true;
+		}
+	}
+	else {
+		_sendPingTimer.expires_from_now(_pingTimeout);
+		_sendPingTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 	}
 	
 }
@@ -124,15 +156,7 @@ void BoostSerialAdapter::write_handler(boost::system::error_code ec, std::size_t
 
 }
 
-void BoostSerialAdapter::doKeepAlivePing()
-{
-	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7] { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
-	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code ec, const std::size_t bytes_transferred) {
-		if (ec) { std::cout << "error writing ping" << '\n'; }});
-	_keepaliveTimer.expires_from_now(_keepaliveInterval);
-	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
-	
-}
+
 
 bool BoostSerialAdapter::Connect(std::string name)
 {
@@ -153,7 +177,7 @@ bool BoostSerialAdapter::IsConnected() const
 
 BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
 	suitDataStream(std::make_shared<Buffer>(4096)), port(nullptr), _io(ioService->GetIOService()),
-	_keepaliveTimer(*_io, _keepaliveInterval),
+	_keepaliveTimer(*_io, _keepaliveTimeout),
 	_ioService(ioService),
 	_sendPingTimer(*_io, _pingTimeout)
 

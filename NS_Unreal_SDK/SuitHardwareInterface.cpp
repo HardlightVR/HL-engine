@@ -10,10 +10,11 @@ SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapt
 	_useDeferredWriting(false),
 	_lfQueue(512),
 	_writeTimer(*io, _writeInterval),
-	_batchingDeadline(*io, _batchingTimeout)
+	_batchingDeadline(*io, _batchingTimeout),
+	_isBatching(false)
 {
-	//_writeTimer.expires_from_now(_writeInterval);
-	//_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+	_writeTimer.expires_from_now(_writeInterval);
+	_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 	//_preWriteBuffer.reserve(512);
 }
 
@@ -96,23 +97,44 @@ void SuitHardwareInterface::writeBuffer() {
 	if (avail == 0) {
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
-		std::cout << "Nothing avail" << '\n';
 	}
 	else if (avail > 0 && avail < 64) {
-		_writeTimer.expires_from_now(_writeInterval);
-		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
-
+		if (_isBatching) {
+			//std::cout << "psst! I'm waiting for a batch of cookies!" << '\n';
+			_writeTimer.expires_from_now(_writeInterval);
+			_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+			return;
+		}
+		std::cout << "Okay, we need to cook a new batch\n";
+		_isBatching = true;
 		_batchingDeadline.expires_from_now(_batchingTimeout);
 		_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
 			if (!ec) {
-				std::cout << "had to send what I had" << '\n';
+				auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
+				const int actualLen = _lfQueue.pop(*a, 64);
+				//std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
+
+				this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
+					
+				}
+				);
+				_writeTimer.expires_from_now(_writeInterval);
+				_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+				_isBatching = false;
 			}
 		});
-		std::cout << "Some avail, waiting" << '\n';
+		//std::cout << "Some avail, waiting" << '\n';
 	}
 	else {
+		_isBatching = false;
 		_batchingDeadline.cancel();
-		//send batch!
+		auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
+		const int actualLen = _lfQueue.pop(*a, 64);
+		this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
+		
+
+		}
+		);
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 		std::cout << "Got a FULL BATCH!" << '\n';
