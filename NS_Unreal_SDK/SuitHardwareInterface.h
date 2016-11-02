@@ -33,8 +33,8 @@ private:
 	std::vector<uint8_t> _writeBuffer;
 	boost::asio::deadline_timer _writeTimer;
 	boost::asio::deadline_timer _batchingDeadline;
-	boost::posix_time::milliseconds _batchingTimeout = boost::posix_time::milliseconds(10);
-	boost::posix_time::milliseconds _writeInterval = boost::posix_time::milliseconds(5);
+	boost::posix_time::milliseconds _batchingTimeout = boost::posix_time::milliseconds(1000);
+	boost::posix_time::milliseconds _writeInterval = boost::posix_time::milliseconds(500);
 	void writeBuffer();
 	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
 	std::mutex _needsFlushMutex;

@@ -12,8 +12,8 @@ SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapt
 	_writeTimer(*io, _writeInterval),
 	_batchingDeadline(*io, _batchingTimeout)
 {
-	_writeTimer.expires_from_now(_writeInterval);
-	_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+	//_writeTimer.expires_from_now(_writeInterval);
+	//_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 	//_preWriteBuffer.reserve(512);
 }
 
@@ -92,25 +92,33 @@ void SuitHardwareInterface::HaltAllEffects()
 }
 
 void SuitHardwareInterface::writeBuffer() {
-	if (_lfQueue.read_available() >= 64 ) {
-	
-		
-		auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
-		const int actualLen = _lfQueue.pop(*a, 64);
-		this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
-			_writeTimer.expires_from_now(_writeInterval);
-			_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
-
-		}
-		);
-
-	}
-	else {
+	const std::size_t avail = _lfQueue.read_available();
+	if (avail == 0) {
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
-		_batchingDeadline.expires_from_now(_batchingTimeout);
-		_batchingDeadline.async_wait([](const boost::system::error_code& ec) {})
+		std::cout << "Nothing avail" << '\n';
 	}
+	else if (avail > 0 && avail < 64) {
+		_writeTimer.expires_from_now(_writeInterval);
+		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+
+		_batchingDeadline.expires_from_now(_batchingTimeout);
+		_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
+			if (!ec) {
+				std::cout << "had to send what I had" << '\n';
+			}
+		});
+		std::cout << "Some avail, waiting" << '\n';
+	}
+	else {
+		_batchingDeadline.cancel();
+		//send batch!
+		_writeTimer.expires_from_now(_writeInterval);
+		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+		std::cout << "Got a FULL BATCH!" << '\n';
+	}
+	
+	
 }
 void SuitHardwareInterface::UseImmediateMode() {
 	_useDeferredWriting = false;

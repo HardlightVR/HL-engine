@@ -24,7 +24,7 @@ InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
 
 
 InstructionBuilder& InstructionBuilder::WithParam(std::string key, std::string val) {
-	std::cout << "	With param: " << key << " = " << val << '\n';
+	//std::cout << "	With param: " << key << " = " << val << '\n';
 	this->_parameters[key] = val;
 	return *this;
 }
@@ -33,26 +33,26 @@ bool InstructionBuilder::Verify() {
 	
 
 	if (_iset->Instructions().find(this->_instruction) == _iset->Instructions().end()) {
-		std::cout << "		Couldn't find " << this->_instruction << '\n';
+	//	std::cout << "		Couldn't find " << this->_instruction << '\n';
 		return false;
 	}
 
 	const Instruction& desired = _iset->Instructions().at(this->_instruction);
 	for (std::string param : desired.Parameters) {
 		if (_parameters.find(param) == _parameters.end()) {
-			std::cout << "		Couldn't find " << param << '\n';
+		//	std::cout << "		Couldn't find " << param << '\n';
 
 			return false;
 		}
 		auto dict = this->_iset->ParamDict().at(param);
 		if (dict.find(_parameters[param]) == dict.end()) {
-			std::cout << "		Couldn't find the dict " << param << '\n';
+			//std::cout << "		Couldn't find the dict " << param << '\n';
 
 			return false;
 		}
 
 	}
-	std::cout << "	verified." << '\n';
+//	std::cout << "	verified." << '\n';
 	return true;
 }
 
