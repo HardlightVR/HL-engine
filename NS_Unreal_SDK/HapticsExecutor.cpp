@@ -148,19 +148,26 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 			}
 			continue;
 		}
-		auto e = effect.get();
-		toExecute.push_back(pair<Duration, pair<Location, Effect>>(
-			e.DurationType(),
-			pair<Location, Effect>(
-				queue.first, e.Effect
-				)));
+		else {
+			//BUG: Need to not send continuous play repeatedly 
+			auto e = effect.get();
+			if (!e.Sent) {
+				e.Sent = true;
+				toExecute.push_back(pair<Duration, pair<Location, Effect>>(
+					e.DurationType(),
+					pair<Location, Effect>(
+						queue.first, e.Effect
+						)));
+			}
+		}
+	
 	}
-	if (toExecute.size() <= 4) {
-		_suit->UseDeferredMode();
-	}
-	else {
-		_suit->UseImmediateMode();
-	}
+	///if (toExecute.size() > 1 && toExecute.size() <= 4) {
+		//_suit->UseDeferredMode();
+	//}
+	//else {
+//		_suit->UseImmediateMode();
+	//}
 	for (auto& pair : toExecute)
 	{
 		
