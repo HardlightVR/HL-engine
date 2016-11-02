@@ -18,7 +18,6 @@ public:
 	void HaltEffect(Location location);
 	void PlayEffectContinuous(Location location, Effect effect);
 	void HaltAllEffects();
-	void Flush();
 	void PingSuit();
 	void UseImmediateMode();
 	void UseDeferredMode();
@@ -32,11 +31,12 @@ private:
 	bool _useDeferredWriting;
 	std::queue<uint8_t> _preWriteBuffer;
 	std::vector<uint8_t> _writeBuffer;
-//	boost::asio::deadline_timer _writeTimer;
+	boost::asio::deadline_timer _writeTimer;
+	boost::asio::deadline_timer _batchingDeadline;
+	boost::posix_time::milliseconds _batchingTimeout = boost::posix_time::milliseconds(10);
 	boost::posix_time::milliseconds _writeInterval = boost::posix_time::milliseconds(5);
-	void writeBuffer(const boost::system::error_code, std::size_t t);
-
-	bool _needsFlush;
+	void writeBuffer();
+	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
 	std::mutex _needsFlushMutex;
 
 	

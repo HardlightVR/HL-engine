@@ -39,7 +39,7 @@ void HapticQueue::Update(float deltaTime)
 	for (auto& pair : _queue)
 	{
 		auto& effect = pair.second;
-		if (effect.&)
+		if (effect.Dirty)
 		{
 			continue;
 		}

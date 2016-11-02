@@ -3,10 +3,17 @@
 
 #include <iostream>
 #include <boost\thread.hpp>
-SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter> a, std::shared_ptr<InstructionSet> iset, std::shared_ptr<boost::asio::io_service> io):
-	adapter(a),builder(iset), _io(io), _useDeferredWriting(false),  _needsFlush(false)
+SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter> a, std::shared_ptr<InstructionSet> iset, std::shared_ptr<boost::asio::io_service> io) :
+	adapter(a),
+	builder(iset),
+	_io(io),
+	_useDeferredWriting(false),
+	_lfQueue(512),
+	_writeTimer(*io, _writeInterval),
+	_batchingDeadline(*io, _batchingTimeout)
 {
-	
+	_writeTimer.expires_from_now(_writeInterval);
+	_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 	//_preWriteBuffer.reserve(512);
 }
 
@@ -84,30 +91,34 @@ void SuitHardwareInterface::HaltAllEffects()
 	//must reimplement
 }
 
+void SuitHardwareInterface::writeBuffer() {
+	if (_lfQueue.read_available() >= 64 ) {
+	
+		
+		auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
+		const int actualLen = _lfQueue.pop(*a, 64);
+		this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
+			_writeTimer.expires_from_now(_writeInterval);
+			_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+
+		}
+		);
+
+	}
+	else {
+		_writeTimer.expires_from_now(_writeInterval);
+		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+		_batchingDeadline.expires_from_now(_batchingTimeout);
+		_batchingDeadline.async_wait([](const boost::system::error_code& ec) {})
+	}
+}
 void SuitHardwareInterface::UseImmediateMode() {
 	_useDeferredWriting = false;
 }
 void SuitHardwareInterface::UseDeferredMode() {
 	_useDeferredWriting = true;
 }
-void SuitHardwareInterface::Flush()
-{
 
-	if (_preWriteBuffer.size() > 0) {
-		const int size = _preWriteBuffer.size();
-		std::cout << "DEFERRED writing " << size << " bytes" << '\n';
-
-		//write the entire buffer in one call
-		auto a = std::make_shared<uint8_t*>(new uint8_t[size]);
-		for (int i = 0; i < size; ++i) {
-			(*a)[i] = _preWriteBuffer.front();
-			_preWriteBuffer.pop();
-		}
-		this->adapter->Write(a, size);
-
-	}
-	
-}
 
 
 
@@ -121,9 +132,10 @@ void SuitHardwareInterface::executeImmediately(Packet packet)
 
 void SuitHardwareInterface::executeLater(Packet packet)
 {
-	for (int i = 0; i < packet.Length; i++) {
-		_preWriteBuffer.push(packet.Data[i]);
-	}
+	_lfQueue.push(packet.Data, packet.Data + packet.Length);
+	//for (int i = 0; i < packet.Length; i++) {
+	//	_preWriteBuffer.push(packet.Data[i]);
+	//}
 //	_preWriteBuffer.insert(_preWriteBuffer.end(), packet.Data, packet.Data + packet.Length);
 	
 	
