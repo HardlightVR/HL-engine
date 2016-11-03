@@ -3,7 +3,6 @@
 #include "Instruction.h"
 #include "Packet.h"
 #include "json\json.h"
-#include <memory>
 #include "InstructionSet.h"
 using std::string;
 class InstructionBuilder

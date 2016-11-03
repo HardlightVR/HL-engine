@@ -1,3 +1,4 @@
+#include "StdAfx.h"
 #include "InstructionBuilder.h"
 #include <iostream>
 

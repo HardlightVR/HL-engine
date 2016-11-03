@@ -1,5 +1,4 @@
 #pragma once
-#include "StdAfx.h"
 #include "Synchronizer.h"
 class SuitPacket
 {

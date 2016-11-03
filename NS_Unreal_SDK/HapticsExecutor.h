@@ -1,7 +1,6 @@
 #pragma once
 #include "TimeInstant.h"
 #include "SuitHardwareInterface.h"
-#include <vector>
 #include "HapticQueue.h"
 #include "HapticClasses.h"
 

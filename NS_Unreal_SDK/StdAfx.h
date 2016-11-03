@@ -42,8 +42,10 @@
 #include <boost\asio\deadline_timer.hpp>
 #include <boost\asio\io_service.hpp>
 #include <boost\asio\use_future.hpp>
+#include <boost\optional\optional_io.hpp>
 #include "Enums.h"
 #include "HexUtils.h"
+#include <vector>
 #include <mutex>
 #include <cassert>
 #include <chrono>
@@ -53,5 +55,4 @@
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 #include "IoService.h"
-#include <boost\optional\optional_io.hpp>
 #include "enumser.h" //windows specific

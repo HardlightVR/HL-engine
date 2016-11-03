@@ -1,7 +1,7 @@
+#include "StdAfx.h"
 #include "InstructionSet.h"
 
 #include <fstream>
-#include "HexUtils.h"
 
 
 InstructionSet::InstructionSet():_instructions()

@@ -1,6 +1,6 @@
+#include "StdAfx.h"
 #include "HapticsExecutor.h"
 #include "HapticEvent.h"
-#include <boost\thread\thread.hpp>
 using namespace std;
 
 
