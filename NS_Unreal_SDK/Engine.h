@@ -25,6 +25,7 @@ public:
 	void PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet);
 	void PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet);
 	void PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet);
+	void EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket& packet);
 	void Update(float dt);
 	bool SuitConnected() const;
 	~Engine();
@@ -44,6 +45,7 @@ private:
 	zmq::socket_t& _socket;
 	void sendTrackingUpdate();
 
-
+	//todo: App Sessions
+	bool _userRequestsTracking;
 };
 

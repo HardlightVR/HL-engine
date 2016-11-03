@@ -24,6 +24,8 @@
 #include "IoService.h"
 #define SHOW_CONSOLE
 
+
+
 const auto suit_status_update_interval = boost::posix_time::milliseconds(250);
 
 void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingOperations* encoder, zmq::socket_t* socket, boost::asio::deadline_timer* t) {
@@ -42,7 +44,7 @@ int main() {
 	#ifndef SHOW_CONSOLE
 		ShowWindow(GetConsoleWindow(), SW_HIDE);
 	#endif
-
+	
 	using namespace std::chrono;
 	EncodingOperations _encoder;
 
@@ -60,7 +62,7 @@ int main() {
 	try {
 		//haptic_requests.setsockopt(ZMQ_CONFLATE, 16);
 		haptic_requests.setsockopt(ZMQ_RCVHWM, 16);
-		haptic_requests.connect("tcp://127.0.0.1:9452");
+		haptic_requests.bind("tcp://127.0.0.1:9452");
 		haptic_requests.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
 		server_updates.setsockopt(ZMQ_CONFLATE, 1);
@@ -121,6 +123,9 @@ int main() {
 						break;
 					case NullSpace::HapticFiles::FileType::FileType_Experience:
 						engine.PlayExperience(*packet);
+						break;
+					case NullSpace::HapticFiles::FileType::FileType_Tracking:
+						engine.EnableOrDisableTracking(*packet);
 						break;
 					default:
 						break;

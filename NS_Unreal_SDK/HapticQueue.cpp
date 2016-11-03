@@ -12,7 +12,7 @@ HapticQueue::~HapticQueue()
 {
 }
 
-void HapticQueue::Put(unsigned priority, HapticEvent effect)
+void HapticQueue::Put(unsigned int priority, HapticEvent effect)
 {
 	PriorityPair pair(priority, effect);
 	if (_queue.size() == 0)
@@ -33,6 +33,8 @@ void HapticQueue::Put(unsigned priority, HapticEvent effect)
 
 	}
 }
+
+
 
 void HapticQueue::Update(float deltaTime)
 {
@@ -82,7 +84,7 @@ void HapticQueue::Clear()
 	Dirty = false;
 }
 
-boost::optional<HapticEvent> HapticQueue::GetNextEvent()
+HapticEvent* HapticQueue::GetNextEvent()
 {
 	Purge();
 	if (_queue.size() > 0)
@@ -90,12 +92,14 @@ boost::optional<HapticEvent> HapticQueue::GetNextEvent()
 		auto hapticEvent = _queue[0];
 		if (hapticEvent.second.DurationType() == ::Duration::OneShot)
 		{
-			_queue.erase(_queue.begin());
+			_queue[0].second.Dirty = true;
+			//_queue.erase(_queue.begin());
 		}
-		return hapticEvent.second;
+			return &_queue[0].second;
+		
 	}
 
-	return boost::optional<HapticEvent>{};
+	return nullptr;
 }
 
 

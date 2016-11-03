@@ -172,6 +172,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq.h" />
     <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq_utils.h" />
+    <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\EncodingOperations.h" />
     <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\Wire.h" />
     <ClInclude Include="BlockingReader.h" />
     <ClInclude Include="BoostSerialAdapter.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="json\json-forwards.h" />
     <ClInclude Include="json\json.h" />
     <ClInclude Include="Locator.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="nn.hpp" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />

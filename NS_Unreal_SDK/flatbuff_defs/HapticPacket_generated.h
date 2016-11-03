@@ -15,6 +15,8 @@
 namespace NullSpace {
 namespace HapticFiles {
 
+struct Tracking;
+
 struct HapticPacket;
 
 enum FileType {
@@ -23,12 +25,13 @@ enum FileType {
   FileType_Pattern = 2,
   FileType_Sequence = 3,
   FileType_HapticEffect = 4,
+  FileType_Tracking = 5,
   FileType_MIN = FileType_NONE,
-  FileType_MAX = FileType_HapticEffect
+  FileType_MAX = FileType_Tracking
 };
 
 inline const char **EnumNamesFileType() {
-  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", nullptr };
+  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", nullptr };
   return names;
 }
 
@@ -54,7 +57,42 @@ template<> struct FileTypeTraits<NullSpace::HapticFiles::HapticEffect> {
   static const FileType enum_value = FileType_HapticEffect;
 };
 
+template<> struct FileTypeTraits<Tracking> {
+  static const FileType enum_value = FileType_Tracking;
+};
+
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type);
+
+struct Tracking FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_ENABLE = 4
+  };
+  bool enable() const { return GetField<uint8_t>(VT_ENABLE, 0) != 0; }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint8_t>(verifier, VT_ENABLE) &&
+           verifier.EndTable();
+  }
+};
+
+struct TrackingBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_enable(bool enable) { fbb_.AddElement<uint8_t>(Tracking::VT_ENABLE, static_cast<uint8_t>(enable), 0); }
+  TrackingBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  TrackingBuilder &operator=(const TrackingBuilder &);
+  flatbuffers::Offset<Tracking> Finish() {
+    auto o = flatbuffers::Offset<Tracking>(fbb_.EndTable(start_, 1));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<Tracking> CreateTracking(flatbuffers::FlatBufferBuilder &_fbb,
+    bool enable = false) {
+  TrackingBuilder builder_(_fbb);
+  builder_.add_enable(enable);
+  return builder_.Finish();
+}
 
 struct HapticPacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -115,6 +153,7 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
     case FileType_Pattern: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Pattern *>(union_obj));
     case FileType_Sequence: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Sequence *>(union_obj));
     case FileType_HapticEffect: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::HapticEffect *>(union_obj));
+    case FileType_Tracking: return verifier.VerifyTable(reinterpret_cast<const Tracking *>(union_obj));
     default: return false;
   }
 }

@@ -239,5 +239,11 @@
     <ClInclude Include="FifoConsumer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\EncodingOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

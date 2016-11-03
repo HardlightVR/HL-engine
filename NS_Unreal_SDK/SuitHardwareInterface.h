@@ -19,6 +19,8 @@ public:
 	void PlayEffectContinuous(Location location, Effect effect);
 	void HaltAllEffects();
 	void PingSuit();
+	void EnableIMUs();
+	void DisableIMUs();
 	void UseImmediateMode();
 	void UseDeferredMode();
 private:

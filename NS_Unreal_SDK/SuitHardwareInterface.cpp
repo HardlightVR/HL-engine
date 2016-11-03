@@ -71,6 +71,26 @@ void SuitHardwareInterface::PlayEffectContinuous(Location location, Effect effec
 
 }
 
+ void SuitHardwareInterface::EnableIMUs()
+ {
+	 if (builder.UseInstruction("IMU_ENABLE").Verify()) {
+		 chooseExecutionStrategy(builder.Build());
+	 }
+	 else {
+		 std::cout << "Failed to build instruction " << builder.GetDebugString();
+	 }
+ }
+
+ void SuitHardwareInterface::DisableIMUs()
+ {
+	 if (builder.UseInstruction("IMU_DISABLE").Verify()) {
+		 chooseExecutionStrategy(builder.Build());
+	 }
+	 else {
+		 std::cout << "Failed to build instruction " << builder.GetDebugString();
+	 }
+ }
+
 
 void SuitHardwareInterface::HaltEffect(Location location)
 {

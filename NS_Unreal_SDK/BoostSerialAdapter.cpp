@@ -59,12 +59,7 @@ void BoostSerialAdapter::doSuitRead()
 			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}	
 }
-void BoostSerialAdapter::startPingTimer() {
-		//_keepaliveTimer.expires_from_now(_keepaliveTimeout);
-	//_io->post(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 
-	//_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
-}
 
 void BoostSerialAdapter::doKeepAlivePing()
 {

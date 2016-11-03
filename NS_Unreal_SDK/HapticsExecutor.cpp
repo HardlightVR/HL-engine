@@ -51,6 +51,11 @@ void HapticsExecutor::Update(float dt)
 
 }
 
+const std::unique_ptr<SuitHardwareInterface>& HapticsExecutor::Hardware()
+{
+	return _suit;
+}
+
 void HapticsExecutor::executePendingFrames(float deltaTime)
 {
 	
@@ -138,8 +143,8 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 	for (auto& queue : _model)
 	{
 		_model[queue.first].Update(deltaTime);
-		auto effect = _model[queue.first].GetNextEvent();
-		if (!effect)
+		HapticEvent* effect = _model[queue.first].GetNextEvent();
+		if (effect == nullptr)
 		{
 			if (queue.second.Dirty)
 			{
@@ -150,13 +155,21 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 		}
 		else {
 			//BUG: Need to not send continuous play repeatedly 
-			auto e = effect.get();
 			
+			if (!effect->Sent) {
+				effect->Sent = true;
+				//effect->Sent = true;
+				Duration d = Duration(effect->DurationType());
+
+				//Duration d = Duration(Duration::OneShot);
+				Effect e = Effect(effect->Effect);
 				toExecute.push_back(pair<Duration, pair<Location, Effect>>(
-					e.DurationType(),
+					d,
 					pair<Location, Effect>(
-						queue.first, e.Effect
+						queue.first,e
 						)));
+			}
+				
 			
 		}
 	

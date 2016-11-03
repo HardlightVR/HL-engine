@@ -78,6 +78,18 @@
 		"name" : "PLAY_CONTINUOUS",
 		"purpose" : "Play a motor continuously",
 		"parameters" : ["zone", "effect"]
+	},
+	{
+		"id" : "0x34",
+		"name" : "IMU_ENABLE",
+		"purpose" : "Enable the IMUs",
+		"parameters" : []
+	},
+	{
+		"id" : "0x35",
+		"name" : "IMU_DISABLE",
+		"purpose" : "Disable the IMUs",
+		"parameters" : []
 	}
 ]
 

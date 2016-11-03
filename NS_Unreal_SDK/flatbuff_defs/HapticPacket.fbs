@@ -5,8 +5,11 @@ include "HapticEffect.fbs";
 
 namespace NullSpace.HapticFiles;
 
+table Tracking {
+	enable:bool;
+}
 
-union FileType {Experience, Pattern, Sequence, HapticEffect}
+union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking}
 
 table HapticPacket {
 	name:string;

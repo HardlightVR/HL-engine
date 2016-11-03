@@ -17,7 +17,8 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	_imuConsumer(std::make_shared<ImuConsumer>()),
 	_trackingUpdateTimer(*io->GetIOService(), _trackingUpdateInterval),
 	_encoder(encoder),
-	_socket(socket)
+	_socket(socket),
+	_userRequestsTracking(false)
 
 {
 	//Pulls all instructions, effects, etc. from disk
@@ -89,10 +90,22 @@ void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
 	_executor.Play(decoded);
 }
 
+void Engine::EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket & packet)
+{
+	_userRequestsTracking = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Tracking*>(packet.packet()));
+	
+	if (_userRequestsTracking) {
+		_executor.Hardware()->EnableIMUs();
+	}
+	else {
+		_executor.Hardware()->DisableIMUs();
+	}
+}
+
 void Engine::Update(float dt)
 {
 	_executor.Update(dt);
-
+	//todo: Raise event on disconnect and reconnect, so that engine can set the tracking to what the user requested
 	if (_adapter->NeedsReset()) {
 		_adapter->DoReset();
 	}

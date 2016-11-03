@@ -48,7 +48,6 @@ private:
 	void suitReadCancel(boost::system::error_code ec);
 	void read_handler(boost::system::error_code ec, std::size_t length);
 	void write_handler(boost::system::error_code ec, std::size_t length);
-	void startPingTimer();
 	boost::asio::deadline_timer _keepaliveTimer;
 	boost::posix_time::milliseconds _keepaliveTimeout = boost::posix_time::milliseconds(20); //was 20
 	std::chrono::milliseconds _initialConnectTimeout = std::chrono::milliseconds(100); //was 100

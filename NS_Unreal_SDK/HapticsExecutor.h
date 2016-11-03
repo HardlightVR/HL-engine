@@ -15,6 +15,8 @@ public:
 	void Play(const std::vector<HapticSample>& samples);
 	void Play(const HapticEffect& e);
 	void Update(float dt);
+
+	const std::unique_ptr<SuitHardwareInterface>& Hardware();
 private:
 	std::vector<TimeInstant> _queuedFrames;
 	std::vector<TimeInstant> _queuedSamples;

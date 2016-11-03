@@ -14,7 +14,7 @@ public:
 	void Update(float deltaTime);
 	void Purge();
 	void Clear();
-	boost::optional<HapticEvent> GetNextEvent();
+	HapticEvent* GetNextEvent();
 	
 private:
 	//todo: CHANGE PRIORITY MULTIPLICATION!!
