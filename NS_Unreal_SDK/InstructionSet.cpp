@@ -58,7 +58,7 @@ bool InstructionSet::LoadAll() {
 }
 bool InstructionSet::LoadInstructions(const Json::Value& json) {
 	std::size_t numInstructions = json.size();
-	for (std::size_t i = 0; i < numInstructions; ++i) {
+	for (int i = 0; i < numInstructions; ++i) {
 		Instruction inst;
 		inst.Deserialize(json[i]);
 		_instructions[inst.Name] = inst;
