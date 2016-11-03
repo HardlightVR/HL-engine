@@ -1,6 +1,6 @@
+#include "StdAfx.h"
 #include "IoService.h"
 #include <iostream>
-#include "boost\thread.hpp"
 
 IoService::IoService():_io(std::make_shared<boost::asio::io_service>()), _work(std::make_unique<boost::asio::io_service::work>(*_io)), _thread()
 {

@@ -1,3 +1,5 @@
+#include "StdAfx.h"
+
 #include "EnumTranslator.h"
 
 #include <boost/assign/list_of.hpp>

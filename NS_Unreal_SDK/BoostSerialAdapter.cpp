@@ -1,5 +1,5 @@
+#include "StdAfx.h"
 #include "BoostSerialAdapter.h"
-#include "enumser.h"
 #include <iostream>
 #include "BlockingReader.h"
 #include <future>

@@ -1,5 +1,4 @@
 #pragma once
-#include "StdAfx.h"
 #include "Enums.h"
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>

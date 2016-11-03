@@ -1,3 +1,4 @@
+#include "StdAfx.h"
 #include "Synchronizer.h"
 #include <iostream>
 #include "PacketDispatcher.h"

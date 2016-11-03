@@ -1,14 +1,9 @@
 #include "StdAfx.h"
 
 #include "SuitHardwareInterface.h"
-
-#include "zmq.hpp"
-#include "zmq_addon.hpp"
 #include "HapticDirectoryTools.h"
 #include <fstream>
-#include <boost\thread.hpp>
-#include <boost\asio\placeholders.hpp>
-#include <boost\asio\deadline_timer.hpp>
+
 #include <cassert>
 #include <chrono>
 #include "flatbuffers\flatbuffers.h"
@@ -16,12 +11,9 @@
 #include "HapticEffect_generated.h"
 #include "HapticPacket_generated.h"
 #include "EnginePacket_generated.h"
-#include <memory>
-#include "Wire.h"
-#include <thread>
+
 #include "Engine.h"
-#include "EncodingOperations.h"
-#include "IoService.h"
+
 #define SHOW_CONSOLE
 
 

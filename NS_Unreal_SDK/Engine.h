@@ -1,18 +1,12 @@
 #pragma once
 
-#include <memory>
 #include "SuitHardwareInterface.h"
 #include "HapticCache2.h"
 #include "PacketDispatcher.h"
 #include "Synchronizer.h"
 #include "HapticsExecutor.h"
-#include "boost\asio\io_service.hpp"
-#include <boost\asio\deadline_timer.hpp>
-#include "IoService.h"
 #include "InstructionSet.h"
 #include "ImuConsumer.h"
-#include "EncodingOperations.h"
-#include "zmq.hpp"
 
 struct suit_status {
 

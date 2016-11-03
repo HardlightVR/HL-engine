@@ -2,12 +2,10 @@
 
 #include "ICommunicationAdapter.h"
 #include "InstructionBuilder.h"
-#include "Enums.h"
 #include "Locator.h"
-#include <boost\asio.hpp>
-#include <mutex>
 #include <boost\lockfree\spsc_queue.hpp>
 #include <queue>
+
 class SuitHardwareInterface
 {
 public:

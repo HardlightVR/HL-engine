@@ -2,9 +2,8 @@
 #include "IJsonSerializable.h"
 #include <vector>
 #include <unordered_map>
-
 #include "HapticDirectoryTools.h"
-#include "Enums.h"
+
 using namespace HapticDirectoryTools;
 
 

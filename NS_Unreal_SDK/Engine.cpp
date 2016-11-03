@@ -1,9 +1,7 @@
+#include "StdAfx.h"
 #include "Engine.h"
 #include "BoostSerialAdapter.h"
-#include "Wire.h"
-#include "EncodingOperations.h"
-#include "IoService.h"
-#include <boost\optional\optional_io.hpp>
+
 #include "TrackingUpdate_generated.h"
 #include "FifoConsumer.h"
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
@@ -31,7 +29,6 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 		std::cout << "Connected to suit" << "\n";
 
 	}
-
 	_adapter->BeginRead();
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, std::make_shared<FifoConsumer>());

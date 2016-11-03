@@ -1,5 +1,4 @@
 #pragma once
-#include <boost/circular_buffer.hpp>
 #include <boost\lockfree\spsc_queue.hpp>
 class PacketDispatcher;
 

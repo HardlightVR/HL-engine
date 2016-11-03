@@ -1,14 +1,7 @@
 #pragma once
-#include <memory>
 #include "ICommunicationAdapter.h"
-#include "boost\asio.hpp"
-#include "boost\thread.hpp"
 #include "handler_allocator.h"
-#include <boost\asio\deadline_timer.hpp>
-#include <boost\asio\use_future.hpp>
 #include "SuitHardwareInterface.h"
-#include "IoService.h"
-#include <mutex>
 #include <boost\lockfree\spsc_queue.hpp>
 
 const int INCOMING_DATA_BUFFER_SIZE = 128;
