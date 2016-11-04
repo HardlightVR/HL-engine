@@ -10,6 +10,7 @@ public:
 	Effect Effect;
 	float Duration;
 	float TimeElapsed;
+	bool Sent;
 	::Duration DurationType() const;
 };
 

@@ -2,7 +2,7 @@
 
 
 
-HapticEvent::HapticEvent(::Effect effect, float duration):Dirty(false), Effect(effect), Duration(duration), TimeElapsed(0)
+HapticEvent::HapticEvent(::Effect effect, float duration):Dirty(false), Effect(effect), Duration(duration), TimeElapsed(0), Sent(false)
 {
 }
 

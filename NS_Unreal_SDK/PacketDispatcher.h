@@ -8,11 +8,11 @@ using namespace std;
 class PacketDispatcher
 {
 public:
-	PacketDispatcher(std::shared_ptr<CircularBuffer> data);
+	PacketDispatcher();
 	~PacketDispatcher();
 	void Dispatch(packet packet);
+	void AddConsumer(SuitPacket::PacketType ptype, std::shared_ptr<IPacketConsumer> consumer);
 private:
-	Synchronizer _synchronizer;
 	unsigned int _dispatchLimit;
 	unordered_map<SuitPacket::PacketType, std::vector<std::shared_ptr<IPacketConsumer>>> _consumers;
 };

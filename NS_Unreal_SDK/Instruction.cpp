@@ -1,6 +1,7 @@
+#include "StdAfx.h"
 #include "Instruction.h"
 #include "json\json.h"
-#include "HexUtils.h"
+
 Instruction::Instruction():ByteId(0)
 {
 }

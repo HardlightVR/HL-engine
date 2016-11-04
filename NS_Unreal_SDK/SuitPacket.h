@@ -1,5 +1,4 @@
 #pragma once
-#include "StdAfx.h"
 #include "Synchronizer.h"
 class SuitPacket
 {
@@ -9,6 +8,7 @@ public:
 		ImuStatus,
 		DrvStatus = 0x15,
 		Ping = 0x02,
+		FifoOverflow = 0x34,
 		Undefined
 	};
 	PacketType Type() const;

@@ -1,3 +1,5 @@
+#include "StdAfx.h"
+
 #include "EnumTranslator.h"
 
 #include <boost/assign/list_of.hpp>
@@ -84,6 +86,24 @@ JsonLocation EnumTranslator::ToJsonLocation(std::string jsonLoc, JsonLocation de
 	return defaultLocation;
 }
 
+std::string EnumTranslator::ToString(Imu imu) const
+{
+	return _imuMap.left.at(imu);
+}
+
+Imu EnumTranslator::ToImu(std::string imu) const
+{
+	return _imuMap.right.at(imu);
+}
+
+Imu EnumTranslator::ToImu(std::string imu, Imu defaultImu)
+{
+	if (_imuMap.right.find(imu) != _imuMap.right.end()) {
+		return _imuMap.right.at(imu);
+	}
+	return defaultImu;
+}
+
 Location EnumTranslator::ToLocation(std::string location, Location defaultLocation) 
 {
 	if (_locationMap.right.find(location) != _locationMap.right.end()) {
@@ -102,6 +122,7 @@ EnumTranslator::EnumTranslator() {
 	init_locations();
 	init_effects();
 	init_sides();
+	init_imus();
 }
 
 
@@ -210,6 +231,16 @@ void EnumTranslator::init_json_locations()
 		(JsonLocation::Upper_Ab, "upper_ab")
 		(JsonLocation::Upper_Arm, "upper_arm")
 		(JsonLocation::Upper_Back, "upper_back")
+		;
+}
+
+void EnumTranslator::init_imus()
+{
+	boost::assign::insert(_imuMap)
+		(Imu::Chest, "Chest")
+		(Imu::Left_Forearm, "Left_Forearm")
+		(Imu::Right_Forearm, "Right_Forearm")
+		(Imu::Right_Upper_Arm, "Right_Upper_Arm")
 		;
 }
 

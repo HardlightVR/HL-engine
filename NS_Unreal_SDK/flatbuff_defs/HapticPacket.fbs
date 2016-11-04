@@ -1,0 +1,19 @@
+include "Sequence.fbs";
+include "Pattern.fbs";
+include "Experience.fbs";
+include "HapticEffect.fbs";
+
+namespace NullSpace.HapticFiles;
+
+table Tracking {
+	enable:bool;
+}
+
+union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking}
+
+table HapticPacket {
+	name:string;
+	packet:FileType;
+}
+
+root_type HapticPacket;

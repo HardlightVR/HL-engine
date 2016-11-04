@@ -1,3 +1,4 @@
+#include "StdAfx.h"
 #include "HexUtils.h"
 
 int char2int(char input)

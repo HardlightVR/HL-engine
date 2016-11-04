@@ -29,43 +29,30 @@
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1 //Use the Secure C Runtime in ATL
 #endif
-
+#define NOMINMAX
 //Pull in MFC support
 //#include <afxext.h> 
 //#include <afxtempl.h>
+#include "stdint.h"
+#include <thread>
 
-//Or Pull in Standard Windows support
-#include <Windows.h>
-
-//Pull in ATL support
-#include <atlbase.h>
-#include <atlstr.h>
-
-//Other includes
-#include <tchar.h>
-#include <setupapi.h>
-#include <malloc.h>
-#include <winspool.h>
-#include <Wbemcli.h>
-#include <comdef.h>
-#include <stdio.h>
-
-#define CENUMERATESERIAL_USE_STL //Uncomment this line if you want to test the MFC / ATL support in CEnumerateSerial
-
-#ifdef CENUMERATESERIAL_USE_STL
-//Pull in STL support
+#include <boost\thread.hpp>
+#include <boost\asio.hpp>
+#include <boost\asio\placeholders.hpp>
+#include <boost\asio\deadline_timer.hpp>
+#include <boost\asio\io_service.hpp>
+#include <boost\asio\use_future.hpp>
+#include <boost\optional\optional_io.hpp>
+#include "Enums.h"
+#include "HexUtils.h"
 #include <vector>
-#include <string>
+#include <mutex>
+#include <cassert>
+#include <chrono>
 #include <memory>
-#endif
-
-//Out of the box lets exclude support for CEnumerateSerial::UsingComDB on the Windows SDK 7.1 or earlier since msports.h
-//is only available with the Windows SDK 8 or later.
-#include <ntverp.h>
-#if VER_PRODUCTBUILD <= 7600
-#define NO_CENUMERATESERIAL_USING_COMDB
-#endif
-
-#ifndef NO_CENUMERATESERIAL_USING_COMDB
-#include <msports.h>
-#endif //#ifndef NO_CENUMERATESERIAL_USING_COMDB
+#include "Wire.h"
+#include "EncodingOperations.h"
+#include "zmq.hpp"
+#include "zmq_addon.hpp"
+#include "IoService.h"
+#include "enumser.h" //windows specific

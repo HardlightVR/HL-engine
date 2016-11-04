@@ -1,0 +1,9 @@
+namespace NullSpace.Communication;
+
+enum SuitStatus:short {Disconnected, Unresponsive, Connected}
+
+table SuitStatusUpdate {
+	status:SuitStatus;
+}
+
+root_type SuitStatusUpdate;

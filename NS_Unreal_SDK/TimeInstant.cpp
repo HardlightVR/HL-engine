@@ -3,7 +3,7 @@
 
 bool TimeInstant::Expired() const
 {
-	return Time > Item->GetTime();
+	return Time >= Item->GetTime();
 }
 
 TimeInstant::TimeInstant(float t, std::unique_ptr<ITimeOffset> to):Time(t), Item(std::move(to))

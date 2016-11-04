@@ -1,0 +1,11 @@
+include "Pattern.fbs";
+
+namespace NullSpace.HapticFiles;
+
+table HapticSample{
+	frames:Pattern;
+	priority:ushort;
+	time:float;
+}
+
+root_type HapticSample;

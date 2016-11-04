@@ -18,16 +18,10 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Serial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="enumser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StdAfx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SerialAdapter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SuitHardwareInterface.cpp">
@@ -69,25 +63,10 @@
     <ClCompile Include="HapticDirectoryTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HapticCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HapticArgs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DependencyResolver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="HapticClasses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Locator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HapticFileInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IPacketConsumer.cpp">
@@ -105,11 +84,32 @@
     <ClCompile Include="HapticsExecutor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HapticCache2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BoostSerialAdapter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IoService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InstructionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImuConsumer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FifoConsumer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Atom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Serial.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="enumser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -117,9 +117,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ICommunicationAdapter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SerialAdapter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ByteQueue.h">
@@ -170,25 +167,10 @@
     <ClInclude Include="HapticDirectoryTools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HapticCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HapticArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DependencyResolver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HapticClasses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Locator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HapticFileInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IPacketConsumer.h">
@@ -207,6 +189,57 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HapticsExecutor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zmq.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zmq_addon.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="nn.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HapticCache2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\Wire.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoostSerialAdapter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockingReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="handler_allocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IoService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InstructionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImuConsumer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FifoConsumer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\EncodingOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Atom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "Enums.h"
 #include <vector>
 #include "ITimeOffset.h"
+#include <iostream>
 class HapticEffect :public ITimeOffset {
 public:
 	HapticEffect(Effect effect, Location loc, float duration, float time, unsigned int priority);
@@ -34,6 +35,7 @@ public:
 	float OriginalTime;
 	unsigned int Priority;
 	std::vector<HapticSequence> Frame;
+	
 };
 
 class HapticSample : public ITimeOffset

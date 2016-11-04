@@ -1,0 +1,13 @@
+include "SuitStatusUpdate.fbs";
+include "TrackingUpdate.fbs";
+
+namespace NullSpace.Communication;
+
+
+union PacketType {SuitStatusUpdate, TrackingUpdate}
+
+table EnginePacket {
+	packet:PacketType;
+}
+
+root_type EnginePacket;

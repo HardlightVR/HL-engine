@@ -1,6 +1,7 @@
 #include "HapticQueue.h"
 #include "HapticEvent.h"
 #include <algorithm>
+#include <iostream>
 HapticQueue::HapticQueue():Dirty(false)
 {
 	_queue.reserve(16);
@@ -11,20 +12,29 @@ HapticQueue::~HapticQueue()
 {
 }
 
-void HapticQueue::Put(unsigned priority, HapticEvent effect)
+void HapticQueue::Put(unsigned int priority, HapticEvent effect)
 {
 	PriorityPair pair(priority, effect);
 	if (_queue.size() == 0)
 	{
+		//std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
 		_queue.push_back(pair);
 	} else if(effect.DurationType() != Duration::OneShot || isHigherPriorityOneShot(effect, _queue.at(0), priority))
 	{
 		auto iter = std::lower_bound(_queue.begin(), _queue.end(), pair, [](const PriorityPair& lhs, const PriorityPair& rhs) {
 			return lhs.first < rhs.first;
 		});
+		//std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
+
 		_queue.insert(iter, pair);
 	}
+	else {
+		//std::cout << "NOT ADDING " << int(effect.Effect) << " to queue" << "\n";
+
+	}
 }
+
+
 
 void HapticQueue::Update(float deltaTime)
 {
@@ -74,7 +84,7 @@ void HapticQueue::Clear()
 	Dirty = false;
 }
 
-boost::optional<HapticEvent> HapticQueue::GetNextEvent()
+HapticEvent* HapticQueue::GetNextEvent()
 {
 	Purge();
 	if (_queue.size() > 0)
@@ -82,12 +92,14 @@ boost::optional<HapticEvent> HapticQueue::GetNextEvent()
 		auto hapticEvent = _queue[0];
 		if (hapticEvent.second.DurationType() == ::Duration::OneShot)
 		{
-			_queue.erase(_queue.begin());
+			_queue[0].second.Dirty = true;
+			//_queue.erase(_queue.begin());
 		}
-		return hapticEvent.second;
+			return &_queue[0].second;
+		
 	}
 
-	return boost::optional<HapticEvent>{};
+	return nullptr;
 }
 
 

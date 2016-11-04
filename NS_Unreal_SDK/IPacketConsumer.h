@@ -4,7 +4,7 @@ struct packet;
 class IPacketConsumer
 {
 public:
-	virtual void ConsumePacket(packet packet) = 0;
+	virtual void ConsumePacket(const packet& packet) = 0;
 	virtual ~IPacketConsumer() {};
 };
 

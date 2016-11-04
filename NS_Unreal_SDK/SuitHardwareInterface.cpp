@@ -1,25 +1,22 @@
+#include "StdAfx.h"
 #include "SuitHardwareInterface.h"
 #include <fstream>
 
 #include <iostream>
-
-SuitHardwareInterface::SuitHardwareInterface()
+#include <boost\thread.hpp>
+SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter> a, std::shared_ptr<InstructionSet> iset, std::shared_ptr<boost::asio::io_service> io) :
+	adapter(a),
+	builder(iset),
+	_io(io),
+	_useDeferredWriting(false),
+	_lfQueue(512),
+	_writeTimer(*io, _writeInterval),
+	_batchingDeadline(*io, _batchingTimeout),
+	_isBatching(false)
 {
-	Json::Value inst_root;
-	std::ifstream instruction_json("Instructions.json", std::ifstream::binary);
-	instruction_json >> inst_root;
-	this->builder.LoadInstructions(inst_root);
-	
-	Json::Value zone_root;
-	std::ifstream zone_json("Zones.json", std::ifstream::binary);
-	zone_json >> zone_root;
-	this->builder.LoadZones(zone_root);
-	
-	Json::Value effect_root;
-	std::ifstream effect_json("Effects.json", std::ifstream::binary);
-	effect_json >> effect_root;
-	this->builder.LoadEffects(effect_root);
-
+	_writeTimer.expires_from_now(_writeInterval);
+	_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+	//_preWriteBuffer.reserve(512);
 }
 
 
@@ -38,7 +35,8 @@ void SuitHardwareInterface::PlayEffect(Location location, Effect effect) {
 		.WithParam("effect", Locator::getTranslator().ToString(effect))
 		.Verify())
 	{
-		this->execute(builder.Build());
+		chooseExecutionStrategy(builder.Build());
+
 	}
 	else
 	{
@@ -53,7 +51,7 @@ void SuitHardwareInterface::PlayEffectContinuous(Location location, Effect effec
 		.WithParam("zone", Locator::getTranslator().ToString(location))
 		.Verify())
 	{
-		this->execute(builder.Build());
+		chooseExecutionStrategy(builder.Build());
 	}
 	else
 	{
@@ -65,7 +63,7 @@ void SuitHardwareInterface::PlayEffectContinuous(Location location, Effect effec
 {
 	if (builder.UseInstruction("STATUS_PING").Verify())
 	{
-		this->execute(builder.Build());
+		chooseExecutionStrategy(builder.Build());
 	}
 	else
 	{
@@ -74,6 +72,26 @@ void SuitHardwareInterface::PlayEffectContinuous(Location location, Effect effec
 
 }
 
+ void SuitHardwareInterface::EnableIMUs()
+ {
+	 if (builder.UseInstruction("IMU_ENABLE").Verify()) {
+		 chooseExecutionStrategy(builder.Build());
+	 }
+	 else {
+		 std::cout << "Failed to build instruction " << builder.GetDebugString();
+	 }
+ }
+
+ void SuitHardwareInterface::DisableIMUs()
+ {
+	 if (builder.UseInstruction("IMU_DISABLE").Verify()) {
+		 chooseExecutionStrategy(builder.Build());
+	 }
+	 else {
+		 std::cout << "Failed to build instruction " << builder.GetDebugString();
+	 }
+ }
+
 
 void SuitHardwareInterface::HaltEffect(Location location)
 {
@@ -81,7 +99,7 @@ void SuitHardwareInterface::HaltEffect(Location location)
 		.WithParam("zone", Locator::getTranslator().ToString(location))
 		.Verify())
 	{
-		this->execute(builder.Build());
+		chooseExecutionStrategy(builder.Build());
 	}
 	else
 	{
@@ -95,9 +113,91 @@ void SuitHardwareInterface::HaltAllEffects()
 	//must reimplement
 }
 
+void SuitHardwareInterface::writeBuffer() {
+	const std::size_t avail = _lfQueue.read_available();
+	if (avail == 0) {
+		_writeTimer.expires_from_now(_writeInterval);
+		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+	}
+	else if (avail > 0 && avail < 64) {
+		if (_isBatching) {
+			//std::cout << "psst! I'm waiting for a batch of cookies!" << '\n';
+			_writeTimer.expires_from_now(_writeInterval);
+			_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+			return;
+		}
+		std::cout << "Okay, we need to cook a new batch\n";
+		_isBatching = true;
+		_batchingDeadline.expires_from_now(_batchingTimeout);
+		_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
+			if (!ec) {
+				auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
+				const int actualLen = _lfQueue.pop(*a, 64);
+				//std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
+
+				this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
+					
+				}
+				);
+				_writeTimer.expires_from_now(_writeInterval);
+				_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+				_isBatching = false;
+			}
+		});
+		//std::cout << "Some avail, waiting" << '\n';
+	}
+	else {
+		_isBatching = false;
+		_batchingDeadline.cancel();
+		auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
+		const int actualLen = _lfQueue.pop(*a, 64);
+		this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
+		
+
+		}
+		);
+		_writeTimer.expires_from_now(_writeInterval);
+		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
+		std::cout << "Got a FULL BATCH!" << '\n';
+	}
+	
+	
+}
+void SuitHardwareInterface::UseImmediateMode() {
+	_useDeferredWriting = false;
+}
+void SuitHardwareInterface::UseDeferredMode() {
+	_useDeferredWriting = true;
+}
 
 
-void SuitHardwareInterface::execute(const Packet& packet) const
+
+
+void SuitHardwareInterface::executeImmediately(Packet packet)
 {
-	this->adapter->Write(packet.Data, packet.Length);
+	//grab the bytes out of the packet, and copy them into a new shared pointer
+	auto a = std::make_shared<uint8_t*>(new uint8_t[packet.Length]);
+	memcpy(*a, packet.Data, packet.Length);
+	this->adapter->Write(a, packet.Length);
+}
+
+void SuitHardwareInterface::executeLater(Packet packet)
+{
+	_lfQueue.push(packet.Data, packet.Data + packet.Length);
+	//for (int i = 0; i < packet.Length; i++) {
+	//	_preWriteBuffer.push(packet.Data[i]);
+	//}
+//	_preWriteBuffer.insert(_preWriteBuffer.end(), packet.Data, packet.Data + packet.Length);
+	
+	
+}
+
+void SuitHardwareInterface::chooseExecutionStrategy(Packet  packet)
+{
+	if (_useDeferredWriting) {
+		this->executeLater(packet);
+	}
+	else {
+		this->executeImmediately(packet);
+	}
 }

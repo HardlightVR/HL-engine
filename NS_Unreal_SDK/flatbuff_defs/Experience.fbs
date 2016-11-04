@@ -1,0 +1,9 @@
+include "HapticSample.fbs";
+
+namespace NullSpace.HapticFiles;
+
+table Experience {
+	items:[HapticSample];
+}
+
+root_type Experience;

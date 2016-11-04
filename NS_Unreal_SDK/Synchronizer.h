@@ -1,5 +1,5 @@
 #pragma once
-#include <boost/circular_buffer.hpp>
+#include <boost\lockfree\spsc_queue.hpp>
 class PacketDispatcher;
 
 const unsigned int PACKET_LENGTH = 16;
@@ -7,8 +7,9 @@ const unsigned int PACKET_LENGTH = 16;
 struct packet
 {
 	uint8_t raw[PACKET_LENGTH];
+	unsigned int size = PACKET_LENGTH;
 };
-typedef boost::circular_buffer<uint8_t> CircularBuffer;
+typedef boost::lockfree::spsc_queue<uint8_t> Buffer;
 class Synchronizer
 {
 public:
@@ -21,9 +22,8 @@ public:
 	bool Synchronized();
 	State SyncState();
 	void TryReadPacket();
-	const static unsigned int PACKET_LENGTH;
-
-	Synchronizer(std::shared_ptr<CircularBuffer> dataStream, PacketDispatcher& dispatcher);
+	std::size_t PossiblePacketsAvailable();
+	Synchronizer(std::shared_ptr<Buffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher);
 	~Synchronizer();
 private:
 	State syncState;
@@ -31,8 +31,8 @@ private:
 	uint8_t packetFooter[2];
 	int badSyncCounter;
 	const int BAD_SYNC_LIMIT = 2;
-	PacketDispatcher& _dispatcher;
-	std::shared_ptr<CircularBuffer> _dataStream;
+	std::shared_ptr<PacketDispatcher> _dispatcher;
+	std::shared_ptr<Buffer> _dataStream;
 	void searchForSync();
 	void confirmSync();
 	void monitorSync();
