@@ -28,6 +28,11 @@ const std::unordered_map<std::string, std::unordered_map<std::string, uint8_t>>&
 	return _paramDict;
 }
 
+const std::unordered_map<std::string, Atom>& InstructionSet::Atoms() const
+{
+	return _atoms;
+}
+
 
 void InstructionSet::loadFromJson(std::string path, Loader loader) {
 	Json::Value root;
@@ -52,6 +57,12 @@ bool InstructionSet::LoadAll() {
 		loadFromJson("Instructions.json", 
 			boost::bind(&InstructionSet::LoadInstructions, this, _1));
 
+		loadFromJson("Atoms.json",
+			boost::bind(&InstructionSet::LoadAtoms, this, _1));
+
+	
+
+
 		return true;
 
 	}
@@ -70,6 +81,16 @@ void InstructionSet::LoadInstructions(const Json::Value& json) {
 		}
 
 	
+}
+
+void InstructionSet::LoadAtoms(const Json::Value & json)
+{
+	std::size_t numAtoms = json.size();
+	for (int i = 0; i < numAtoms; ++i) {
+		Atom atom;
+		atom.Deserialize(json[i]);
+		_atoms[atom.Id()] = atom;
+	}
 }
 
 

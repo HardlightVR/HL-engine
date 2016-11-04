@@ -139,6 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Atom.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="BoostSerialAdapter.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -247,6 +253,7 @@
     <ClInclude Include="..\..\..\..\..\Program Files\ZeroMQ 4.0.4\include\zmq_utils.h" />
     <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\EncodingOperations.h" />
     <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\Wire.h" />
+    <ClInclude Include="Atom.h" />
     <ClInclude Include="BlockingReader.h" />
     <ClInclude Include="BoostSerialAdapter.h" />
     <ClInclude Include="ByteQueue.h" />

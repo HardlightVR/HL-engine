@@ -105,6 +105,9 @@
     <ClCompile Include="FifoConsumer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Atom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumser.h">
@@ -234,6 +237,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\EncodingOperations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Atom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
