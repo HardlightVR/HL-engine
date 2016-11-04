@@ -1,0 +1,14 @@
+namespace NullSpace.Configuration;
+
+table Instruction {
+	id:string;
+	name:string;
+	purpose:string;
+	parameters:[string];
+}
+
+table InstructionList {
+	instructions: [Instruction];
+}
+
+root_type InstructionList;

@@ -20,7 +20,11 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 
 {
 	//Pulls all instructions, effects, etc. from disk
-	_instructionSet->LoadAll();
+	if (!_instructionSet->LoadAll()) {
+		std::cout << "Couldn't load configuration data, will exit after you hit [any key]" << '\n';
+		std::cin.get();
+		exit(0);
+	}
 
 	if (!_adapter->Connect()) {
 		std::cout << "Unable to connect to suit" << "\n";
@@ -106,8 +110,13 @@ void Engine::Update(float dt)
 	if (_adapter->NeedsReset()) {
 		_adapter->DoReset();
 	}
-	
-	_streamSynchronizer.TryReadPacket();
+
+	//read however many packets there are, with 500 as a hard maximum to keep the loop from
+	//taking too much time
+	int totalPackets = std::min(500, (int)_streamSynchronizer.PossiblePacketsAvailable());
+	for (int i = 0; i < totalPackets; i++) {
+		_streamSynchronizer.TryReadPacket();
+	}
 	
 
 }

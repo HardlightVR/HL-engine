@@ -22,8 +22,7 @@ public:
 	bool Synchronized();
 	State SyncState();
 	void TryReadPacket();
-	const static unsigned int MY_PACKET_LENGTH;
-
+	std::size_t PossiblePacketsAvailable();
 	Synchronizer(std::shared_ptr<Buffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher);
 	~Synchronizer();
 private:

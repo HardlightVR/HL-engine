@@ -58,9 +58,25 @@ const std::unique_ptr<SuitHardwareInterface>& HapticsExecutor::Hardware()
 
 void HapticsExecutor::executePendingFrames(float deltaTime)
 {
-	
-	
+	std::for_each(_queuedFrames.begin(), _queuedFrames.end(), [&](TimeInstant& t) {
+		t.Time += deltaTime;
+		if (t.Expired()) {
+			HapticFrame* frame = static_cast<HapticFrame*>(t.Item.get());
+			for (auto& sequence : frame->Frame)
+			{
+				for (auto& effect : sequence.Effects)
+				{
+					effect.Priority = frame->Priority;
 
+					_queuedEffects.push_back(TimeInstant(0, move(std::make_unique<HapticEffect>(effect))));
+				}
+			}
+		}
+	});
+	auto iter = std::remove_if(_queuedFrames.begin(), _queuedFrames.end(), [](const TimeInstant& t) {return t.Expired(); });
+	_queuedFrames.erase(iter, _queuedFrames.end());
+	
+/*
 	auto iter = _queuedFrames.begin();
 	while (iter != _queuedFrames.end())
 	{
@@ -87,11 +103,29 @@ void HapticsExecutor::executePendingFrames(float deltaTime)
 			++iter;
 		}
 	}
+	*/
 }
 
 void HapticsExecutor::executePendingSamples(float deltaTime)
 {
-	
+	std::for_each(_queuedSamples.begin(), _queuedSamples.end(), [&](TimeInstant& t) {
+		t.Time += deltaTime;
+		//std::cout << "Instant time: " << t.Time << " Instant Expires: " << t.Item->GetTime() << '\n';
+		//std::cout << "Sample is " << (t.Expired() ? "expired" : " NOT expired ") << '\n';
+		if (t.Expired()) {
+			HapticSample* e = static_cast<HapticSample*>(t.Item.get());
+			
+			for (auto& frame : e->Frames)
+			{
+				frame.Priority = e->Priority;
+				_queuedFrames.push_back(TimeInstant(0, std::make_unique<HapticFrame>(std::move(frame))));
+
+			}
+		}
+	});
+	auto iter = std::remove_if(_queuedSamples.begin(), _queuedSamples.end(), [](const TimeInstant& t) {return t.Expired(); });
+	_queuedSamples.erase(iter, _queuedSamples.end());
+/*
 	auto iter = _queuedSamples.begin();
 	while (iter != _queuedSamples.end())
 	{
@@ -112,11 +146,24 @@ void HapticsExecutor::executePendingSamples(float deltaTime)
 			++iter;
 		}
 	}
+	*/
 }
 
 void HapticsExecutor::executePendingEffects(float deltaTime)
 {
-	
+
+	std::for_each(_queuedEffects.begin(), _queuedEffects.end(), [&](TimeInstant& t) {
+		t.Time += deltaTime; 
+		if (t.Expired()) {
+			HapticEffect* e = static_cast<HapticEffect*>(t.Item.get());
+			_model[e->Location].Put(e->Priority, HapticEvent(e->Effect, e->Duration));
+		}
+	});
+
+	auto iter = std::remove_if(_queuedEffects.begin(), _queuedEffects.end(), [](const TimeInstant& t) {return t.Expired(); });
+	_queuedEffects.erase(iter, _queuedEffects.end());
+
+	/*
 	auto iter = _queuedEffects.begin();
 	while (iter != _queuedEffects.end())
 	{
@@ -127,13 +174,16 @@ void HapticsExecutor::executePendingEffects(float deltaTime)
 			//take ownership
 			std::unique_ptr<HapticEffect> e(static_cast<HapticEffect*>(iter->Item.release()));
 			_model[e->Location].Put(e->Priority, HapticEvent(e->Effect, e->Duration));
-			iter = _queuedEffects.erase(iter);
+			//iter->Item.release();
+			iter = std::remove(_queuedEffects.begin(), _queuedEffects.end(), iter);
+			//iter = _queuedEffects.erase(iter);
 		} else
 		{
 			++iter;
 		}
 
 	}
+	*/
 }
 
 void HapticsExecutor::updateLocationModels(float deltaTime)

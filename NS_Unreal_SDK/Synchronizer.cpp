@@ -15,13 +15,10 @@ Synchronizer::State Synchronizer::SyncState()
 
 void Synchronizer::TryReadPacket()
 {
-	//if (this->dataStream.Length < this.packetLength
 	if (_dataStream->read_available() < PACKET_LENGTH){
 		return;
 	}
-	//if (_dataStream->size() < PACKET_LENGTH) {
-	//	return;
-	//}
+	
 
 	switch (this->syncState)
 	{
@@ -46,6 +43,11 @@ void Synchronizer::TryReadPacket()
 	default:
 		break;
 	}
+}
+
+std::size_t Synchronizer::PossiblePacketsAvailable()
+{
+	return _dataStream->read_available() / PACKET_LENGTH;
 }
 
 
