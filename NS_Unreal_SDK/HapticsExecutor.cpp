@@ -11,6 +11,24 @@ HapticsExecutor::HapticsExecutor(std::unique_ptr<SuitHardwareInterface> s):_suit
 HapticsExecutor::~HapticsExecutor()
 {
 }
+void HapticsExecutor::Create(HapticHandle h, std::unique_ptr<IPlayable> playable)
+{
+	_effects[h] = std::move(playable);
+}
+
+void HapticsExecutor::Play(HapticHandle h)
+{
+	if (_effects.find(h) != _effects.end()) {
+		_effects.at(h)->Play();
+	}
+}
+
+void HapticsExecutor::Pause(HapticHandle h)
+{
+	if (_effects.find(h) != _effects.end()) {
+		_effects.at(h)->Pause();
+	}
+}
 
 void HapticsExecutor::Play(const std::vector<HapticFrame>& frames)
 {

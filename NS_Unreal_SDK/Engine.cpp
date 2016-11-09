@@ -54,7 +54,8 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 		_executor.Play(_hapticCache.GetSequence(packet.name()->str()));
 	}
 	else {
-	//	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet()));
+		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet()));
+		//_executor.Create(packet.handle(), )
 	//	_hapticCache.AddSequence(packet.name()->str(), decoded);
 	//	_executor.Play(decoded);
 	}
