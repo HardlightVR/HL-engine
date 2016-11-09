@@ -16,7 +16,7 @@ public:
 };
 class PlayableSequence : public IPlayable {
 public:
-	PlayableSequence(std::vector<JsonSequenceAtom>, Area loc);
+	PlayableSequence(std::vector<JsonSequenceAtom>, AreaFlag loc);
 	~PlayableSequence();
 	void Play() override;
 	void Reset() override;
@@ -27,9 +27,10 @@ private:
 	std::vector<MyInstant> _effects;
 	std::vector<JsonSequenceAtom> _sourceOfTruth;
 	std::vector<boost::uuids::uuid> _activeEffects;
+	void insertIntoModel(std::unordered_map<Location, HapticQueue> & model, MyInstant& ef, Location loc);
 	bool _paused;
 	int _handle;
-	Area _location;
+	AreaFlag _location;
 };
 
 

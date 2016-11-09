@@ -58,7 +58,7 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 		auto a = static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet());
 		auto decoded = EncodingOperations::Decode(a);
 		_executor.Create(packet.handle(), 
-			std::unique_ptr<IPlayable>(new PlayableSequence(decoded, a->location())));
+			std::unique_ptr<IPlayable>(new PlayableSequence(decoded, AreaFlag(a->location()))));
 	//	_hapticCache.AddSequence(packet.name()->str(), decoded);
 	//	_executor.Play(decoded);
 	}
