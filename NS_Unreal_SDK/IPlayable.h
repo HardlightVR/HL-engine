@@ -5,7 +5,8 @@ class IPlayable {
 public:
 	virtual ~IPlayable() = default;
 	virtual void Play() = 0;
-	virtual void Pause() = 0;
+	virtual void Reset() = 0;
+	virtual void Pause(std::unordered_map<Location, HapticQueue> & model) = 0;
 	//virtual void Resume() = 0;
 	//virtual void Cancel() = 0;
 	virtual void Update(float dt, std::unordered_map<Location, HapticQueue>& model) = 0;

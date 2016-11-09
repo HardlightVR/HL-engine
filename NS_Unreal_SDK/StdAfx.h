@@ -43,6 +43,8 @@
 #include <boost\asio\io_service.hpp>
 #include <boost\asio\use_future.hpp>
 #include <boost\optional\optional_io.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #include "Enums.h"
 #include "HexUtils.h"
 #include <vector>

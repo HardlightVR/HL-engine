@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "HapticQueue.h"
 #include "HapticEvent.h"
 #include <algorithm>
@@ -12,13 +13,14 @@ HapticQueue::~HapticQueue()
 {
 }
 
-void HapticQueue::Put(unsigned int priority, HapticEvent effect)
+boost::optional<boost::uuids::uuid> HapticQueue::Put(unsigned int priority, HapticEvent effect)
 {
 	PriorityPair pair(priority, effect);
 	if (_queue.size() == 0)
 	{
 		//std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
 		_queue.push_back(pair);
+		return pair.second.Handle;
 	} else if(effect.DurationType() != Duration::OneShot || isHigherPriorityOneShot(effect, _queue.at(0), priority))
 	{
 		auto iter = std::lower_bound(_queue.begin(), _queue.end(), pair, [](const PriorityPair& lhs, const PriorityPair& rhs) {
@@ -27,10 +29,11 @@ void HapticQueue::Put(unsigned int priority, HapticEvent effect)
 		//std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
 
 		_queue.insert(iter, pair);
+		return pair.second.Handle;
 	}
 	else {
 		//std::cout << "NOT ADDING " << int(effect.Effect) << " to queue" << "\n";
-
+		return boost::optional<boost::uuids::uuid>();
 	}
 }
 
@@ -84,6 +87,20 @@ void HapticQueue::Clear()
 	Dirty = false;
 }
 
+boost::optional<HapticEvent> HapticQueue::Remove(boost::uuids::uuid id)
+{
+	auto any = std::find_if(_queue.begin(), _queue.end(), [id](const PriorityPair& p) {return p.second.Handle == id; });
+	if (any == _queue.end()) {
+		return boost::optional<HapticEvent>();
+	}
+	else {
+		HapticEvent whichExpired = (*any).second;
+		this->Dirty = true;
+		_queue.erase(std::remove_if(_queue.begin(), _queue.end(), [id](const PriorityPair& h) {return h.second.Handle == id; }));
+		return whichExpired;
+	}
+}
+
 HapticEvent* HapticQueue::GetNextEvent()
 {
 	Purge();
@@ -93,8 +110,9 @@ HapticEvent* HapticQueue::GetNextEvent()
 		if (hapticEvent.second.DurationType() == ::Duration::OneShot)
 		{
 			_queue[0].second.Dirty = true;
-			//_queue.erase(_queue.begin());
 		}
+		//temporary pointer to this event, will be invalid when the next purge happens.
+		//only need for executing right then
 			return &_queue[0].second;
 		
 	}

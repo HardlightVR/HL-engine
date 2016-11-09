@@ -24,12 +24,13 @@ struct HapticPacket;
 enum Command {
   Command_PLAY = 0,
   Command_PAUSE = 1,
+  Command_RESET = 2,
   Command_MIN = Command_PLAY,
-  Command_MAX = Command_PAUSE
+  Command_MAX = Command_RESET
 };
 
 inline const char **EnumNamesCommand() {
-  static const char *names[] = { "PLAY", "PAUSE", nullptr };
+  static const char *names[] = { "PLAY", "PAUSE", "RESET", nullptr };
   return names;
 }
 

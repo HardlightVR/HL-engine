@@ -105,6 +105,9 @@ void Engine::HandleCommand(const NullSpace::HapticFiles::HapticPacket & packet)
 	case NullSpace::HapticFiles::Command_PLAY:
 		_executor.Play(decoded.Handle);
 		break;
+	case NullSpace::HapticFiles::Command_RESET:
+		_executor.Reset(decoded.Handle);
+		break;
 	default:
 		break;
 	}

@@ -26,7 +26,14 @@ void HapticsExecutor::Play(HapticHandle h)
 void HapticsExecutor::Pause(HapticHandle h)
 {
 	if (_effects.find(h) != _effects.end()) {
-		_effects.at(h)->Pause();
+		_effects.at(h)->Pause(_model);
+	}
+}
+
+void HapticsExecutor::Reset(HapticHandle h)
+{
+	if (_effects.find(h) != _effects.end()) {
+		_effects.at(h)->Reset();
 	}
 }
 

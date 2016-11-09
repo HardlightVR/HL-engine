@@ -1,14 +1,19 @@
+#include "StdAfx.h"
 #include "HapticEvent.h"
 
 
-
-HapticEvent::HapticEvent(::Effect effect, float duration):Dirty(false), Effect(effect), Duration(duration), TimeElapsed(0), Sent(false)
+HapticEvent::HapticEvent(::Effect effect, float duration):Dirty(false), Effect(effect), Duration(duration), TimeElapsed(0), Sent(false),
+Handle(boost::uuids::random_generator()())
 {
 }
 
 HapticEvent::~HapticEvent()
 {
 }
+bool HapticEvent::operator==(const HapticEvent& rhs) {
+	return Handle == rhs.Handle;
+}
+
 
 
 
