@@ -17,19 +17,16 @@ struct HapticSample;
 
 struct HapticSample FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_FRAMES = 4,
-    VT_PRIORITY = 6,
-    VT_TIME = 8
+    VT_TIME = 4,
+    VT_PATTERN = 6
   };
-  const NullSpace::HapticFiles::Pattern *frames() const { return GetPointer<const NullSpace::HapticFiles::Pattern *>(VT_FRAMES); }
-  uint16_t priority() const { return GetField<uint16_t>(VT_PRIORITY, 0); }
   float time() const { return GetField<float>(VT_TIME, 0.0f); }
+  const NullSpace::HapticFiles::Pattern *pattern() const { return GetPointer<const NullSpace::HapticFiles::Pattern *>(VT_PATTERN); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_FRAMES) &&
-           verifier.VerifyTable(frames()) &&
-           VerifyField<uint16_t>(verifier, VT_PRIORITY) &&
            VerifyField<float>(verifier, VT_TIME) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, VT_PATTERN) &&
+           verifier.VerifyTable(pattern()) &&
            verifier.EndTable();
   }
 };
@@ -37,25 +34,22 @@ struct HapticSample FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct HapticSampleBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_frames(flatbuffers::Offset<NullSpace::HapticFiles::Pattern> frames) { fbb_.AddOffset(HapticSample::VT_FRAMES, frames); }
-  void add_priority(uint16_t priority) { fbb_.AddElement<uint16_t>(HapticSample::VT_PRIORITY, priority, 0); }
   void add_time(float time) { fbb_.AddElement<float>(HapticSample::VT_TIME, time, 0.0f); }
+  void add_pattern(flatbuffers::Offset<NullSpace::HapticFiles::Pattern> pattern) { fbb_.AddOffset(HapticSample::VT_PATTERN, pattern); }
   HapticSampleBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   HapticSampleBuilder &operator=(const HapticSampleBuilder &);
   flatbuffers::Offset<HapticSample> Finish() {
-    auto o = flatbuffers::Offset<HapticSample>(fbb_.EndTable(start_, 3));
+    auto o = flatbuffers::Offset<HapticSample>(fbb_.EndTable(start_, 2));
     return o;
   }
 };
 
 inline flatbuffers::Offset<HapticSample> CreateHapticSample(flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<NullSpace::HapticFiles::Pattern> frames = 0,
-    uint16_t priority = 0,
-    float time = 0.0f) {
+    float time = 0.0f,
+    flatbuffers::Offset<NullSpace::HapticFiles::Pattern> pattern = 0) {
   HapticSampleBuilder builder_(_fbb);
+  builder_.add_pattern(pattern);
   builder_.add_time(time);
-  builder_.add_frames(frames);
-  builder_.add_priority(priority);
   return builder_.Finish();
 }
 

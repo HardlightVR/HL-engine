@@ -108,6 +108,9 @@
     <ClCompile Include="Atom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\IntermediateHapticFormats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumser.h">
@@ -240,6 +243,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Atom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\IntermediateHapticFormats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

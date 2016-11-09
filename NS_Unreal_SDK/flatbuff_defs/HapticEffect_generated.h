@@ -12,24 +12,25 @@ struct HapticEffect;
 
 struct HapticEffect FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_EFFECT = 4,
-    VT_LOCATION = 6,
-    VT_DURATION = 8,
-    VT_PRIORITY = 10,
-    VT_TIME = 12
+    VT_TIME = 4,
+    VT_EFFECT = 6,
+    VT_STRENGTH = 8,
+    VT_DURATION = 10,
+    VT_REPEAT = 12
   };
-  uint16_t effect() const { return GetField<uint16_t>(VT_EFFECT, 0); }
-  uint16_t location() const { return GetField<uint16_t>(VT_LOCATION, 0); }
-  float duration() const { return GetField<float>(VT_DURATION, 0.0f); }
-  uint16_t priority() const { return GetField<uint16_t>(VT_PRIORITY, 0); }
   float time() const { return GetField<float>(VT_TIME, 0.0f); }
+  const flatbuffers::String *effect() const { return GetPointer<const flatbuffers::String *>(VT_EFFECT); }
+  float strength() const { return GetField<float>(VT_STRENGTH, 0.0f); }
+  float duration() const { return GetField<float>(VT_DURATION, 0.0f); }
+  int32_t repeat() const { return GetField<int32_t>(VT_REPEAT, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint16_t>(verifier, VT_EFFECT) &&
-           VerifyField<uint16_t>(verifier, VT_LOCATION) &&
-           VerifyField<float>(verifier, VT_DURATION) &&
-           VerifyField<uint16_t>(verifier, VT_PRIORITY) &&
            VerifyField<float>(verifier, VT_TIME) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, VT_EFFECT) &&
+           verifier.Verify(effect()) &&
+           VerifyField<float>(verifier, VT_STRENGTH) &&
+           VerifyField<float>(verifier, VT_DURATION) &&
+           VerifyField<int32_t>(verifier, VT_REPEAT) &&
            verifier.EndTable();
   }
 };
@@ -37,11 +38,11 @@ struct HapticEffect FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct HapticEffectBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_effect(uint16_t effect) { fbb_.AddElement<uint16_t>(HapticEffect::VT_EFFECT, effect, 0); }
-  void add_location(uint16_t location) { fbb_.AddElement<uint16_t>(HapticEffect::VT_LOCATION, location, 0); }
-  void add_duration(float duration) { fbb_.AddElement<float>(HapticEffect::VT_DURATION, duration, 0.0f); }
-  void add_priority(uint16_t priority) { fbb_.AddElement<uint16_t>(HapticEffect::VT_PRIORITY, priority, 0); }
   void add_time(float time) { fbb_.AddElement<float>(HapticEffect::VT_TIME, time, 0.0f); }
+  void add_effect(flatbuffers::Offset<flatbuffers::String> effect) { fbb_.AddOffset(HapticEffect::VT_EFFECT, effect); }
+  void add_strength(float strength) { fbb_.AddElement<float>(HapticEffect::VT_STRENGTH, strength, 0.0f); }
+  void add_duration(float duration) { fbb_.AddElement<float>(HapticEffect::VT_DURATION, duration, 0.0f); }
+  void add_repeat(int32_t repeat) { fbb_.AddElement<int32_t>(HapticEffect::VT_REPEAT, repeat, 0); }
   HapticEffectBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   HapticEffectBuilder &operator=(const HapticEffectBuilder &);
   flatbuffers::Offset<HapticEffect> Finish() {
@@ -51,18 +52,27 @@ struct HapticEffectBuilder {
 };
 
 inline flatbuffers::Offset<HapticEffect> CreateHapticEffect(flatbuffers::FlatBufferBuilder &_fbb,
-    uint16_t effect = 0,
-    uint16_t location = 0,
+    float time = 0.0f,
+    flatbuffers::Offset<flatbuffers::String> effect = 0,
+    float strength = 0.0f,
     float duration = 0.0f,
-    uint16_t priority = 0,
-    float time = 0.0f) {
+    int32_t repeat = 0) {
   HapticEffectBuilder builder_(_fbb);
-  builder_.add_time(time);
+  builder_.add_repeat(repeat);
   builder_.add_duration(duration);
-  builder_.add_priority(priority);
-  builder_.add_location(location);
+  builder_.add_strength(strength);
   builder_.add_effect(effect);
+  builder_.add_time(time);
   return builder_.Finish();
+}
+
+inline flatbuffers::Offset<HapticEffect> CreateHapticEffectDirect(flatbuffers::FlatBufferBuilder &_fbb,
+    float time = 0.0f,
+    const char *effect = nullptr,
+    float strength = 0.0f,
+    float duration = 0.0f,
+    int32_t repeat = 0) {
+  return CreateHapticEffect(_fbb, time, effect ? _fbb.CreateString(effect) : 0, strength, duration, repeat);
 }
 
 inline const NullSpace::HapticFiles::HapticEffect *GetHapticEffect(const void *buf) {

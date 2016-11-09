@@ -54,9 +54,9 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 		_executor.Play(_hapticCache.GetSequence(packet.name()->str()));
 	}
 	else {
-		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet()));
-		_hapticCache.AddSequence(packet.name()->str(), decoded);
-		_executor.Play(decoded);
+	//	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet()));
+	//	_hapticCache.AddSequence(packet.name()->str(), decoded);
+	//	_executor.Play(decoded);
 	}
 }
 
@@ -67,9 +67,9 @@ void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 	}
 	else {
 		const NullSpace::HapticFiles::Pattern* packet_ptr = static_cast<const NullSpace::HapticFiles::Pattern*>(packet.packet());
-		std::vector<HapticFrame> decoded = EncodingOperations::Decode(packet_ptr);
-		_hapticCache.AddPattern(packet.name()->str(), decoded);
-		_executor.Play(decoded);
+		//std::vector<HapticFrame> decoded = EncodingOperations::Decode(packet_ptr);
+		//_hapticCache.AddPattern(packet.name()->str(), decoded);
+		//_executor.Play(decoded);
 	}
 }
 
@@ -79,16 +79,16 @@ void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
 		_executor.Play(_hapticCache.GetExperience(packet.name()->str()));
 	}
 	else {
-		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet()));
-		_hapticCache.AddExperience(packet.name()->str(), decoded);
-		_executor.Play(decoded);
+		//auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet()));
+		//_hapticCache.AddExperience(packet.name()->str(), decoded);
+		//_executor.Play(decoded);
 	}
 }
 
 void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet.packet()));
-	_executor.Play(decoded);
+	///auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet.packet()));
+	//_executor.Play(decoded);
 }
 
 void Engine::EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket & packet)

@@ -1,11 +1,11 @@
 namespace NullSpace.HapticFiles;
 
 table HapticEffect {
-	effect:ushort;
-	location:ushort;
-	duration:float;
-	priority:ushort;
 	time:float;
+	effect:string;
+	strength:float;
+	duration:float;
+	repeat:int;
 }
 
 root_type HapticEffect;

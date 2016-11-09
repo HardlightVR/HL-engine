@@ -3,9 +3,10 @@ include "Sequence.fbs";
 namespace NullSpace.HapticFiles;
 
 table HapticFrame{
-	frame:[Sequence];
-	priority:ushort;
 	time:float;
+	sequence:Sequence;
+	area:string;
+	
 }
 
 root_type HapticFrame;

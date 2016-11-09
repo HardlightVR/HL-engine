@@ -17,7 +17,23 @@ namespace HapticFiles {
 
 struct Tracking;
 
+struct HandleCommand;
+
 struct HapticPacket;
+
+enum Command {
+  Command_PLAY = 0,
+  Command_PAUSE = 1,
+  Command_MIN = Command_PLAY,
+  Command_MAX = Command_PAUSE
+};
+
+inline const char **EnumNamesCommand() {
+  static const char *names[] = { "PLAY", "PAUSE", nullptr };
+  return names;
+}
+
+inline const char *EnumNameCommand(Command e) { return EnumNamesCommand()[static_cast<int>(e)]; }
 
 enum FileType {
   FileType_NONE = 0,
@@ -26,12 +42,13 @@ enum FileType {
   FileType_Sequence = 3,
   FileType_HapticEffect = 4,
   FileType_Tracking = 5,
+  FileType_HandleCommand = 6,
   FileType_MIN = FileType_NONE,
-  FileType_MAX = FileType_Tracking
+  FileType_MAX = FileType_HandleCommand
 };
 
 inline const char **EnumNamesFileType() {
-  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", nullptr };
+  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", nullptr };
   return names;
 }
 
@@ -59,6 +76,10 @@ template<> struct FileTypeTraits<NullSpace::HapticFiles::HapticEffect> {
 
 template<> struct FileTypeTraits<Tracking> {
   static const FileType enum_value = FileType_Tracking;
+};
+
+template<> struct FileTypeTraits<HandleCommand> {
+  static const FileType enum_value = FileType_HandleCommand;
 };
 
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type);
@@ -94,15 +115,54 @@ inline flatbuffers::Offset<Tracking> CreateTracking(flatbuffers::FlatBufferBuild
   return builder_.Finish();
 }
 
+struct HandleCommand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_HANDLE = 4,
+    VT_COMMAND = 6
+  };
+  uint64_t handle() const { return GetField<uint64_t>(VT_HANDLE, 0); }
+  Command command() const { return static_cast<Command>(GetField<int16_t>(VT_COMMAND, 0)); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<uint64_t>(verifier, VT_HANDLE) &&
+           VerifyField<int16_t>(verifier, VT_COMMAND) &&
+           verifier.EndTable();
+  }
+};
+
+struct HandleCommandBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_handle(uint64_t handle) { fbb_.AddElement<uint64_t>(HandleCommand::VT_HANDLE, handle, 0); }
+  void add_command(Command command) { fbb_.AddElement<int16_t>(HandleCommand::VT_COMMAND, static_cast<int16_t>(command), 0); }
+  HandleCommandBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  HandleCommandBuilder &operator=(const HandleCommandBuilder &);
+  flatbuffers::Offset<HandleCommand> Finish() {
+    auto o = flatbuffers::Offset<HandleCommand>(fbb_.EndTable(start_, 2));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<HandleCommand> CreateHandleCommand(flatbuffers::FlatBufferBuilder &_fbb,
+    uint64_t handle = 0,
+    Command command = Command_PLAY) {
+  HandleCommandBuilder builder_(_fbb);
+  builder_.add_handle(handle);
+  builder_.add_command(command);
+  return builder_.Finish();
+}
+
 struct HapticPacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_NAME = 4,
     VT_PACKET_TYPE = 6,
-    VT_PACKET = 8
+    VT_PACKET = 8,
+    VT_HANDLE = 10
   };
   const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
   FileType packet_type() const { return static_cast<FileType>(GetField<uint8_t>(VT_PACKET_TYPE, 0)); }
   const void *packet() const { return GetPointer<const void *>(VT_PACKET); }
+  uint64_t handle() const { return GetField<uint64_t>(VT_HANDLE, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
@@ -110,6 +170,7 @@ struct HapticPacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint8_t>(verifier, VT_PACKET_TYPE) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_PACKET) &&
            VerifyFileType(verifier, packet(), packet_type()) &&
+           VerifyField<uint64_t>(verifier, VT_HANDLE) &&
            verifier.EndTable();
   }
 };
@@ -120,10 +181,11 @@ struct HapticPacketBuilder {
   void add_name(flatbuffers::Offset<flatbuffers::String> name) { fbb_.AddOffset(HapticPacket::VT_NAME, name); }
   void add_packet_type(FileType packet_type) { fbb_.AddElement<uint8_t>(HapticPacket::VT_PACKET_TYPE, static_cast<uint8_t>(packet_type), 0); }
   void add_packet(flatbuffers::Offset<void> packet) { fbb_.AddOffset(HapticPacket::VT_PACKET, packet); }
+  void add_handle(uint64_t handle) { fbb_.AddElement<uint64_t>(HapticPacket::VT_HANDLE, handle, 0); }
   HapticPacketBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   HapticPacketBuilder &operator=(const HapticPacketBuilder &);
   flatbuffers::Offset<HapticPacket> Finish() {
-    auto o = flatbuffers::Offset<HapticPacket>(fbb_.EndTable(start_, 3));
+    auto o = flatbuffers::Offset<HapticPacket>(fbb_.EndTable(start_, 4));
     return o;
   }
 };
@@ -131,8 +193,10 @@ struct HapticPacketBuilder {
 inline flatbuffers::Offset<HapticPacket> CreateHapticPacket(flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> name = 0,
     FileType packet_type = FileType_NONE,
-    flatbuffers::Offset<void> packet = 0) {
+    flatbuffers::Offset<void> packet = 0,
+    uint64_t handle = 0) {
   HapticPacketBuilder builder_(_fbb);
+  builder_.add_handle(handle);
   builder_.add_packet(packet);
   builder_.add_name(name);
   builder_.add_packet_type(packet_type);
@@ -142,8 +206,9 @@ inline flatbuffers::Offset<HapticPacket> CreateHapticPacket(flatbuffers::FlatBuf
 inline flatbuffers::Offset<HapticPacket> CreateHapticPacketDirect(flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     FileType packet_type = FileType_NONE,
-    flatbuffers::Offset<void> packet = 0) {
-  return CreateHapticPacket(_fbb, name ? _fbb.CreateString(name) : 0, packet_type, packet);
+    flatbuffers::Offset<void> packet = 0,
+    uint64_t handle = 0) {
+  return CreateHapticPacket(_fbb, name ? _fbb.CreateString(name) : 0, packet_type, packet, handle);
 }
 
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type) {
@@ -154,6 +219,7 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
     case FileType_Sequence: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Sequence *>(union_obj));
     case FileType_HapticEffect: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::HapticEffect *>(union_obj));
     case FileType_Tracking: return verifier.VerifyTable(reinterpret_cast<const Tracking *>(union_obj));
+    case FileType_HandleCommand: return verifier.VerifyTable(reinterpret_cast<const HandleCommand *>(union_obj));
     default: return false;
   }
 }

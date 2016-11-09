@@ -9,11 +9,20 @@ table Tracking {
 	enable:bool;
 }
 
-union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking}
+enum Command:short {
+	PLAY=0, PAUSE
+}
+table HandleCommand {
+	handle:ulong;
+	command:Command;
+}
+
+union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking, HandleCommand}
 
 table HapticPacket {
 	name:string;
 	packet:FileType;
+	handle:ulong;
 }
 
 root_type HapticPacket;

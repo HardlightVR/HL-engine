@@ -19,13 +19,14 @@ struct Instruction FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_PURPOSE = 8,
     VT_PARAMETERS = 10
   };
-  int16_t id() const { return GetField<int16_t>(VT_ID, 0); }
+  const flatbuffers::String *id() const { return GetPointer<const flatbuffers::String *>(VT_ID); }
   const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
   const flatbuffers::String *purpose() const { return GetPointer<const flatbuffers::String *>(VT_PURPOSE); }
   const flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>> *parameters() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>> *>(VT_PARAMETERS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int16_t>(verifier, VT_ID) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, VT_ID) &&
+           verifier.Verify(id()) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_PURPOSE) &&
@@ -40,7 +41,7 @@ struct Instruction FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct InstructionBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_id(int16_t id) { fbb_.AddElement<int16_t>(Instruction::VT_ID, id, 0); }
+  void add_id(flatbuffers::Offset<flatbuffers::String> id) { fbb_.AddOffset(Instruction::VT_ID, id); }
   void add_name(flatbuffers::Offset<flatbuffers::String> name) { fbb_.AddOffset(Instruction::VT_NAME, name); }
   void add_purpose(flatbuffers::Offset<flatbuffers::String> purpose) { fbb_.AddOffset(Instruction::VT_PURPOSE, purpose); }
   void add_parameters(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> parameters) { fbb_.AddOffset(Instruction::VT_PARAMETERS, parameters); }
@@ -53,7 +54,7 @@ struct InstructionBuilder {
 };
 
 inline flatbuffers::Offset<Instruction> CreateInstruction(flatbuffers::FlatBufferBuilder &_fbb,
-    int16_t id = 0,
+    flatbuffers::Offset<flatbuffers::String> id = 0,
     flatbuffers::Offset<flatbuffers::String> name = 0,
     flatbuffers::Offset<flatbuffers::String> purpose = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> parameters = 0) {
@@ -66,11 +67,11 @@ inline flatbuffers::Offset<Instruction> CreateInstruction(flatbuffers::FlatBuffe
 }
 
 inline flatbuffers::Offset<Instruction> CreateInstructionDirect(flatbuffers::FlatBufferBuilder &_fbb,
-    int16_t id = 0,
+    const char *id = nullptr,
     const char *name = nullptr,
     const char *purpose = nullptr,
     const std::vector<flatbuffers::Offset<flatbuffers::String>> *parameters = nullptr) {
-  return CreateInstruction(_fbb, id, name ? _fbb.CreateString(name) : 0, purpose ? _fbb.CreateString(purpose) : 0, parameters ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*parameters) : 0);
+  return CreateInstruction(_fbb, id ? _fbb.CreateString(id) : 0, name ? _fbb.CreateString(name) : 0, purpose ? _fbb.CreateString(purpose) : 0, parameters ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*parameters) : 0);
 }
 
 struct InstructionList FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {

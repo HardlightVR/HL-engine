@@ -3,9 +3,9 @@ include "Pattern.fbs";
 namespace NullSpace.HapticFiles;
 
 table HapticSample{
-	frames:Pattern;
-	priority:ushort;
 	time:float;
+	pattern:Pattern;
+	
 }
 
 root_type HapticSample;
