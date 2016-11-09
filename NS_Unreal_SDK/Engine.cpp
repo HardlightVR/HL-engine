@@ -95,6 +95,21 @@ void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
 	//_executor.Play(decoded);
 }
 
+void Engine::HandleCommand(const NullSpace::HapticFiles::HapticPacket & packet)
+{
+	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HandleCommand*>(packet.packet()));
+	switch (decoded.Command) {
+	case NullSpace::HapticFiles::Command_PAUSE:
+		_executor.Pause(decoded.Handle);
+		break;
+	case NullSpace::HapticFiles::Command_PLAY:
+		_executor.Play(decoded.Handle);
+		break;
+	default:
+		break;
+	}
+}
+
 void Engine::EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket & packet)
 {
 	_userRequestsTracking = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Tracking*>(packet.packet()));

@@ -119,6 +119,9 @@ int main() {
 					case NullSpace::HapticFiles::FileType::FileType_Tracking:
 						engine.EnableOrDisableTracking(*packet);
 						break;
+					case NullSpace::HapticFiles::FileType::FileType_HandleCommand:
+						engine.HandleCommand(*packet);
+						break;
 					default:
 						break;
 					}

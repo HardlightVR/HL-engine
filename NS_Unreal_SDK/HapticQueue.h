@@ -14,6 +14,7 @@ public:
 	void Update(float deltaTime);
 	void Purge();
 	void Clear();
+	
 	HapticEvent* GetNextEvent();
 	
 private:

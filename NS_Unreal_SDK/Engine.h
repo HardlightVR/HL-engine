@@ -19,6 +19,7 @@ public:
 	void PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet);
 	void PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet);
 	void PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet);
+	void HandleCommand(const NullSpace::HapticFiles::HapticPacket& packet);
 	void EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket& packet);
 	void Update(float dt);
 	bool SuitConnected() const;

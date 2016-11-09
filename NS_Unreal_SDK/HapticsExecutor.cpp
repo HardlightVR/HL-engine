@@ -64,6 +64,7 @@ void HapticsExecutor::Update(float dt)
 {
 	updateLocationModels(dt);
 	std::for_each(_effects.begin(), _effects.end(), [&](std::pair<const HapticHandle, std::unique_ptr<IPlayable>>& p) {
+
 		p.second->Update(dt, _model);
 	});
 	//executePendingSamples(dt);

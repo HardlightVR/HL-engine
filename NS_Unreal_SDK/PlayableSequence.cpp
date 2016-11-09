@@ -3,7 +3,7 @@
 #include "HapticEvent.h"
 #include "HapticsExecutor.h"
 
-PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, Area loc):_effects(j), _paused(false), _location(loc)
+PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, Area loc):_effects(j), _paused(true), _location(loc)
 {
 	_liveEffects.clear();
 	for (const auto& e : _effects) {
