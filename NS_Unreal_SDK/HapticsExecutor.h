@@ -4,12 +4,12 @@
 #include "HapticQueue.h"
 #include "HapticClasses.h"
 #include "IPlayable.h"
-typedef std::unordered_map<Location, HapticQueue> Model;
 
 typedef unsigned int HapticHandle;
 class HapticsExecutor
 {
 public:
+
 	HapticsExecutor(std::unique_ptr<SuitHardwareInterface>);
 	~HapticsExecutor();
 	void Play(const std::vector<HapticFrame>& frames);
@@ -26,9 +26,8 @@ private:
 	std::vector<TimeInstant> _queuedSamples;
 	std::vector<TimeInstant> _queuedEffects;
 	std::unique_ptr<SuitHardwareInterface> _suit;
-	Model _model;
+	std::unordered_map<Location, HapticQueue> _model;
 	std::unordered_map<HapticHandle, std::unique_ptr<IPlayable>> _effects;
-
 	void executePendingFrames(float dt);
 	void executePendingSamples(float dt);
 	void executePendingEffects(float dt);

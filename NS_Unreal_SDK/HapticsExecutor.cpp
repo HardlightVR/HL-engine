@@ -63,9 +63,12 @@ void HapticsExecutor::Play(const HapticEffect& e)
 void HapticsExecutor::Update(float dt)
 {
 	updateLocationModels(dt);
-	executePendingSamples(dt);
-	executePendingFrames(dt);
-	executePendingEffects(dt);
+	std::for_each(_effects.begin(), _effects.end(), [&](std::pair<const HapticHandle, std::unique_ptr<IPlayable>>& p) {
+		p.second->Update(dt, _model);
+	});
+	//executePendingSamples(dt);
+	//executePendingFrames(dt);
+	//executePendingEffects(dt);
 
 }
 
@@ -73,6 +76,8 @@ const std::unique_ptr<SuitHardwareInterface>& HapticsExecutor::Hardware()
 {
 	return _suit;
 }
+
+
 
 void HapticsExecutor::executePendingFrames(float deltaTime)
 {

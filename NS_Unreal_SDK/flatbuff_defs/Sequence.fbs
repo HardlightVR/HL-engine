@@ -3,6 +3,7 @@ include "HapticEffect.fbs";
 namespace NullSpace.HapticFiles;
 
 table Sequence {
+	location:uint;
 	items:[HapticEffect];
 }
 

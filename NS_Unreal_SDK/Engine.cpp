@@ -4,6 +4,7 @@
 
 #include "TrackingUpdate_generated.h"
 #include "FifoConsumer.h"
+#include "PlayableSequence.h"
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
 	_instructionSet(std::make_shared<InstructionSet>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
@@ -54,8 +55,10 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 		_executor.Play(_hapticCache.GetSequence(packet.name()->str()));
 	}
 	else {
-		auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet()));
-		//_executor.Create(packet.handle(), )
+		auto a = static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet());
+		auto decoded = EncodingOperations::Decode(a);
+		_executor.Create(packet.handle(), 
+			std::unique_ptr<IPlayable>(new PlayableSequence(decoded, a->location())));
 	//	_hapticCache.AddSequence(packet.name()->str(), decoded);
 	//	_executor.Play(decoded);
 	}
