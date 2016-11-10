@@ -45,23 +45,24 @@ void Engine::sendTrackingUpdate() {
 	if (boost::optional<Quaternion> q = _imuConsumer->GetOrientation(Imu::Chest)) {
 		_encoder.Finalize(_encoder.Encode(*q), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
 
-	} 
+	}
 	_trackingUpdateTimer.expires_from_now(_trackingUpdateInterval);
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
 }
+
 void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	if (_hapticCache.ContainsSequence(packet.name()->str())) {
-		//_executor.Play(_hapticCache.GetSequence(packet.name()->str()));
+	auto name = packet.name()->str();
+	auto rawSequenceData = static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet());
+	auto location = AreaFlag(rawSequenceData->location());
+	auto handle = packet.handle(); //converts from uint64 to uint32, maybe should check this
+
+	if (!_hapticCache.ContainsSequence(name)) {
+		auto decoded = EncodingOperations::Decode(rawSequenceData);
+		_hapticCache.AddSequence(name, decoded);
 	}
-	else {
-		auto a = static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet());
-		auto decoded = EncodingOperations::Decode(a);
-		_executor.Create(packet.handle(), 
-			std::unique_ptr<IPlayable>(new PlayableSequence(decoded, AreaFlag(a->location()))));
-	//	_hapticCache.AddSequence(packet.name()->str(), decoded);
-	//	_executor.Play(decoded);
-	}
+
+	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableSequence(_hapticCache.GetSequence(name), location)));
 }
 
 void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
@@ -80,7 +81,7 @@ void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	if (_hapticCache.ContainsExperience(packet.name()->str())) {
-	//	_executor.Play(_hapticCache.GetExperience(packet.name()->str()));
+		//	_executor.Play(_hapticCache.GetExperience(packet.name()->str()));
 	}
 	else {
 		//auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet()));
@@ -118,7 +119,7 @@ void Engine::HandleCommand(const NullSpace::HapticFiles::HapticPacket & packet)
 void Engine::EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket & packet)
 {
 	_userRequestsTracking = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Tracking*>(packet.packet()));
-	
+
 	if (_userRequestsTracking) {
 		_executor.Hardware()->EnableIMUs();
 	}
@@ -141,7 +142,7 @@ void Engine::Update(float dt)
 	for (int i = 0; i < totalPackets; i++) {
 		_streamSynchronizer.TryReadPacket();
 	}
-	
+
 
 }
 

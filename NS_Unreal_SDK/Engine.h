@@ -27,7 +27,11 @@ public:
 private:
 	std::shared_ptr<InstructionSet> _instructionSet; //order dependency
 	std::shared_ptr<ICommunicationAdapter> _adapter; //order dependency
-	HapticCache2 _hapticCache;
+	HapticCache2<
+		std::vector<JsonSequenceAtom>, 
+		std::vector<JsonSequenceAtom>, 
+		std::vector<JsonSequenceAtom>> 
+	_hapticCache;
 	std::shared_ptr<PacketDispatcher> _packetDispatcher; //order dependency
 	Synchronizer _streamSynchronizer; //order dependency
 	HapticsExecutor _executor;//order dependency
