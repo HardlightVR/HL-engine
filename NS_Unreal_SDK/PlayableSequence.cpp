@@ -7,14 +7,15 @@
 #include "PriorityModel.h"
 PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, AreaFlag loc):_sourceOfTruth(j), _paused(true), _location(loc)
 {
-	//_liveEffects.clear();
+	_comparator = [](JsonSequenceAtom a, float time) { return time >= a.Time; };
 	for (const auto& e : j) {
-		_effects.push_back(MyInstant(0.0, e));
+		_effects.push_back(Instant<JsonSequenceAtom>(0.0, e, _comparator));
 	}
 }
 
 void PlayableSequence::Play()
 {
+	
 	_paused = false;
 }
 
@@ -26,7 +27,7 @@ void PlayableSequence::Reset(PriorityModel &model)
 	_activeEffects.clear();
 	_effects.clear();
 	for (const auto& e : _sourceOfTruth) {
-		_effects.push_back(MyInstant(0.0, e));
+		_effects.push_back(Instant<JsonSequenceAtom>(0.0, e, _comparator));
 	}
 }
 
@@ -41,7 +42,7 @@ void PlayableSequence::Pause(PriorityModel &model)
 	_paused = true;
 	for (auto& ef : _effects) {
 		if (boost::optional<HapticEvent> ev = model.Remove(_location, ef.Handle)) {
-			auto pausedHaptic = std::find_if(_effects.begin(), _effects.end(), [&](const MyInstant& m) {return m.Handle == ev.get().Handle; });
+			auto pausedHaptic = std::find_if(_effects.begin(), _effects.end(), [&](const Instant<JsonSequenceAtom>& m) {return m.Handle == ev.get().Handle; });
 			(*pausedHaptic).Time = 0;
 			(*pausedHaptic).Executed = false;
 			(*pausedHaptic).Item.Duration = (*pausedHaptic).Item.Duration - ev.get().TimeElapsed;
