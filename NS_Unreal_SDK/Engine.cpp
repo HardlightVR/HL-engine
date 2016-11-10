@@ -52,7 +52,7 @@ void Engine::sendTrackingUpdate() {
 void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	if (_hapticCache.ContainsSequence(packet.name()->str())) {
-		_executor.Play(_hapticCache.GetSequence(packet.name()->str()));
+		//_executor.Play(_hapticCache.GetSequence(packet.name()->str()));
 	}
 	else {
 		auto a = static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet());
@@ -67,7 +67,7 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	if (_hapticCache.ContainsPattern(packet.name()->str())) {
-		_executor.Play(_hapticCache.GetPattern(packet.name()->str()));
+		//_executor.Play(_hapticCache.GetPattern(packet.name()->str()));
 	}
 	else {
 		const NullSpace::HapticFiles::Pattern* packet_ptr = static_cast<const NullSpace::HapticFiles::Pattern*>(packet.packet());
@@ -80,7 +80,7 @@ void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	if (_hapticCache.ContainsExperience(packet.name()->str())) {
-		_executor.Play(_hapticCache.GetExperience(packet.name()->str()));
+	//	_executor.Play(_hapticCache.GetExperience(packet.name()->str()));
 	}
 	else {
 		//auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet()));
@@ -108,6 +108,8 @@ void Engine::HandleCommand(const NullSpace::HapticFiles::HapticPacket & packet)
 	case NullSpace::HapticFiles::Command_RESET:
 		_executor.Reset(decoded.Handle);
 		break;
+	case NullSpace::HapticFiles::Command_RELEASE:
+		_executor.Release(decoded.Handle);
 	default:
 		break;
 	}

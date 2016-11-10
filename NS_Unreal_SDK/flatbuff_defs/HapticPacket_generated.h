@@ -25,12 +25,13 @@ enum Command {
   Command_PLAY = 0,
   Command_PAUSE = 1,
   Command_RESET = 2,
+  Command_RELEASE = 3,
   Command_MIN = Command_PLAY,
-  Command_MAX = Command_RESET
+  Command_MAX = Command_RELEASE
 };
 
 inline const char **EnumNamesCommand() {
-  static const char *names[] = { "PLAY", "PAUSE", "RESET", nullptr };
+  static const char *names[] = { "PLAY", "PAUSE", "RESET", "RELEASE", nullptr };
   return names;
 }
 

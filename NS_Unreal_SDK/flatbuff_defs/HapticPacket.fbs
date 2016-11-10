@@ -10,7 +10,7 @@ table Tracking {
 }
 
 enum Command:short {
-	PLAY=0, PAUSE, RESET
+	PLAY=0, PAUSE, RESET, RELEASE
 }
 table HandleCommand {
 	handle:ulong;

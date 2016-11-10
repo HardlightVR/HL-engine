@@ -16,11 +16,13 @@ HapticQueue::~HapticQueue()
 boost::optional<boost::uuids::uuid> HapticQueue::Put(unsigned int priority, HapticEvent effect)
 {
 	PriorityPair pair(priority, effect);
+	assert(pair.second.Handle == effect.Handle);
 	if (_queue.size() == 0)
 	{
 		//std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
 		_queue.push_back(pair);
-		return pair.second.Handle;
+		
+		return effect.Handle;
 	} else if(effect.DurationType() != Duration::OneShot || isHigherPriorityOneShot(effect, _queue.at(0), priority))
 	{
 		auto iter = std::lower_bound(_queue.begin(), _queue.end(), pair, [](const PriorityPair& lhs, const PriorityPair& rhs) {
@@ -29,7 +31,7 @@ boost::optional<boost::uuids::uuid> HapticQueue::Put(unsigned int priority, Hapt
 		//std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
 
 		_queue.insert(iter, pair);
-		return pair.second.Handle;
+		return effect.Handle;
 	}
 	else {
 		//std::cout << "NOT ADDING " << int(effect.Effect) << " to queue" << "\n";

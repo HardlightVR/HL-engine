@@ -2,7 +2,6 @@
 #include "IPlayable.h"
 #include "TimeInstant.h"
 
-
 class MyInstant {
 public:
 	JsonSequenceAtom Item;
@@ -19,15 +18,14 @@ public:
 	PlayableSequence(std::vector<JsonSequenceAtom>, AreaFlag loc);
 	~PlayableSequence();
 	void Play() override;
-	void Reset() override;
-	void Pause(std::unordered_map<Location, HapticQueue> & model) override;
-	void Update(float dt, std::unordered_map<Location, HapticQueue>& model) override;
-	int GetHandle() const override;
+	void Reset(PriorityModel & model) override;
+	void Pause(PriorityModel & model) override;
+	void Update(float dt, PriorityModel & model) override;
+	uint32_t GetHandle() const override;
 private:
 	std::vector<MyInstant> _effects;
 	std::vector<JsonSequenceAtom> _sourceOfTruth;
 	std::vector<boost::uuids::uuid> _activeEffects;
-	void insertIntoModel(std::unordered_map<Location, HapticQueue> & model, MyInstant& ef, Location loc);
 	bool _paused;
 	int _handle;
 	AreaFlag _location;
