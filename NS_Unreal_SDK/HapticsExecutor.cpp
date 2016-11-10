@@ -4,9 +4,9 @@
 using namespace std;
 
 
-HapticsExecutor::HapticsExecutor(std::unique_ptr<SuitHardwareInterface> s):_suit(std::move(s)), _model(_suit)
+HapticsExecutor::HapticsExecutor(std::shared_ptr<InstructionSet> iset, std::unique_ptr<SuitHardwareInterface> s):_suit(std::move(s)), _model(_suit), _iset(iset)
 {
-
+	
 }
 
 HapticsExecutor::~HapticsExecutor()
@@ -53,7 +53,7 @@ void HapticsExecutor::Update(float dt)
 	updateLocationModels(dt);
 	std::for_each(_effects.begin(), _effects.end(), [&](std::pair<const HapticHandle, std::unique_ptr<IPlayable>>& p) {
 
-		p.second->Update(dt, _model);
+		p.second->Update(dt, _model, _iset->Atoms());
 	});
 	//executePendingSamples(dt);
 	//executePendingFrames(dt);

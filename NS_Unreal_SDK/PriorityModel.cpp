@@ -43,6 +43,7 @@ std::vector<PriorityModel::ExecutionCommand> PriorityModel::Update(float dt)
 			if (!effect->Sent) {
 				effect->Sent = true;
 				Duration d = Duration(effect->DurationType());
+				
 				commands.push_back(ExecutionCommand(queue.first, PriorityModel::Command::PLAY, effect->DurationType(), effect->Effect));
 			}
 		}

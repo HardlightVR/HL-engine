@@ -12,7 +12,7 @@ public:
 	void Play() override;
 	void Reset(PriorityModel & model) override;
 	void Pause(PriorityModel & model) override;
-	void Update(float dt, PriorityModel & model) override;
+	void Update(float dt, PriorityModel & model, const std::unordered_map<std::string, Atom>&) override;
 	uint32_t GetHandle() const override;
 private:
 	std::function<bool(JsonSequenceAtom a, float)> _comparator; 

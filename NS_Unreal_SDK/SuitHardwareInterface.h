@@ -21,6 +21,7 @@ public:
 	void DisableIMUs();
 	void UseImmediateMode();
 	void UseDeferredMode();
+	
 private:
 	std::shared_ptr<boost::asio::io_service> _io;
 	std::shared_ptr<ICommunicationAdapter> adapter;

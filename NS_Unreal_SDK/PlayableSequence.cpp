@@ -9,7 +9,7 @@ PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, AreaFlag loc
 {
 	_comparator = [](JsonSequenceAtom a, float time) { return time >= a.Time; };
 	for (const auto& e : j) {
-		_effects.push_back(Instant<JsonSequenceAtom>(0.0, e, _comparator));
+		_effects.push_back(Instant<JsonSequenceAtom>(e, e.Time));
 	}
 }
 
@@ -27,7 +27,7 @@ void PlayableSequence::Reset(PriorityModel &model)
 	_activeEffects.clear();
 	_effects.clear();
 	for (const auto& e : _sourceOfTruth) {
-		_effects.push_back(Instant<JsonSequenceAtom>(0.0, e, _comparator));
+		_effects.push_back(Instant<JsonSequenceAtom>(e, e.Time));
 	}
 }
 
@@ -58,7 +58,7 @@ void PlayableSequence::Pause(PriorityModel &model)
 
 
 
-void PlayableSequence::Update(float dt, PriorityModel & model)
+void PlayableSequence::Update(float dt, PriorityModel & model,const std::unordered_map<std::string, Atom>& atoms)
 {
 	
 	if (_paused) { return; }
@@ -72,11 +72,17 @@ void PlayableSequence::Update(float dt, PriorityModel & model)
 		if (effect.Expired()) {
 			auto& h = effect.Item;
 			effect.Executed = true;
-			auto ef = HapticEvent(Effect::Strong_Click_100, h.Duration);
-			if (boost::optional<boost::uuids::uuid> id = model.Put(_location, ef)) {
-				_activeEffects.push_back(id.get());
-				effect.Handle = id.get();
+			if (atoms.find(h.Effect) != atoms.end()) {
+				auto ef = HapticEvent(atoms.at(h.Effect).GetEffect(h.Strength), h.Duration);
+				if (boost::optional<boost::uuids::uuid> id = model.Put(_location, ef)) {
+					_activeEffects.push_back(id.get());
+					effect.Handle = id.get();
+				}
 			}
+			else {
+				std::cout << "Couldn't find an effect with that name\n";
+			}
+			
 			//HapticEffect* h = static_cast<HapticEffect*>(effect.Item.get());
 			//todo: Need the logic for playing in multiple spots
 			//use real priority

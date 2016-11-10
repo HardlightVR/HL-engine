@@ -12,7 +12,7 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 		)),
 	_packetDispatcher(std::make_shared<PacketDispatcher>()),
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
-	_executor(std::make_unique<SuitHardwareInterface>(_adapter, _instructionSet, io->GetIOService())),
+	_executor(_instructionSet, std::make_unique<SuitHardwareInterface>(_adapter, _instructionSet, io->GetIOService())),
 	_imuConsumer(std::make_shared<ImuConsumer>()),
 	_trackingUpdateTimer(*io->GetIOService(), _trackingUpdateInterval),
 	_encoder(encoder),

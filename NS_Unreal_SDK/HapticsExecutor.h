@@ -10,7 +10,7 @@ class HapticsExecutor
 {
 public:
 
-	HapticsExecutor(std::unique_ptr<SuitHardwareInterface>);
+	HapticsExecutor(std::shared_ptr<InstructionSet>,std::unique_ptr<SuitHardwareInterface>);
 	~HapticsExecutor();
 
 	void Update(float dt);
@@ -20,8 +20,9 @@ public:
 	void Release(HapticHandle h);
 	void Create(HapticHandle h, std::unique_ptr<IPlayable> playable);
 	const std::unique_ptr<SuitHardwareInterface>& Hardware();
+	
 private:
-
+	std::shared_ptr<InstructionSet> _iset;
 	std::unique_ptr<SuitHardwareInterface> _suit;
 	std::unordered_map<HapticHandle, std::unique_ptr<IPlayable>> _effects;
 	PriorityModel _model;
