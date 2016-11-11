@@ -5,7 +5,7 @@ namespace NullSpace.HapticFiles;
 table HapticFrame{
 	time:float;
 	sequence:Sequence;
-	area:string;
+	area:uint;
 	
 }
 

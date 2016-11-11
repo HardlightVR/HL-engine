@@ -1,6 +1,5 @@
 #include "HapticClasses.h"
 
-
 HapticEffect::HapticEffect(::Effect effect, ::Location loc, float duration, float time, unsigned int priority):
 	Effect(effect),
 	Location(loc),
@@ -30,7 +29,7 @@ HapticSequence::~HapticSequence()
 {
 }
 
-HapticFrame::HapticFrame(float time, std::vector<HapticSequence> frame, unsigned int priority): Time(time), OriginalTime(time), Priority(priority), Frame(frame)
+HapticFrame::HapticFrame(float time, std::vector<JsonSequenceAtom> frame, AreaFlag a, unsigned int priority): Time(time), OriginalTime(time), Priority(priority), Frame(frame), Area(a)
 {
 }
 

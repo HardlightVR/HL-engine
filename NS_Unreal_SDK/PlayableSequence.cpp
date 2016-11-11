@@ -7,7 +7,6 @@
 #include "PriorityModel.h"
 PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, AreaFlag loc):_sourceOfTruth(j), _paused(true), _location(loc)
 {
-	_comparator = [](JsonSequenceAtom a, float time) { return time >= a.Time; };
 	for (const auto& e : j) {
 		_effects.push_back(Instant<JsonSequenceAtom>(e, e.Time));
 	}
@@ -58,7 +57,7 @@ void PlayableSequence::Pause(PriorityModel &model)
 
 
 
-void PlayableSequence::Update(float dt, PriorityModel & model,const std::unordered_map<std::string, Atom>& atoms)
+void PlayableSequence::Update(float dt, PriorityModel & model,const std::unordered_map<std::string, Atom>& atoms, HapticsExecutor& h)
 {
 	
 	if (_paused) { return; }

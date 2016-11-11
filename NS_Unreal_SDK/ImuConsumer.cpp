@@ -15,10 +15,16 @@ ImuConsumer::~ImuConsumer()
 
 boost::optional<Quaternion> ImuConsumer::GetOrientation(Imu imu)
 {
-	if (_quaternions.find(imu) != _quaternions.end()) {
-		return _quaternions.at(imu);
+	try {
+		if (_quaternions.find(imu) != _quaternions.end()) {
+			return _quaternions[imu];
+		}
+		else {
+			return boost::none;
+		}
 	}
-	else {
+	catch (std::exception& e) {
+		std::cout << "EXCEPTION while attempting to get quaternion data!\n";
 		return boost::none;
 	}
 }

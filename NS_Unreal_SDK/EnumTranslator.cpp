@@ -104,6 +104,24 @@ Imu EnumTranslator::ToImu(std::string imu, Imu defaultImu)
 	return defaultImu;
 }
 
+AreaFlag EnumTranslator::ToArea(std::string area, AreaFlag defaultArea) const
+{
+	if (_areaMap.right.find(area) != _areaMap.right.end()) {
+		return _areaMap.right.at(area);
+	}
+	return defaultArea;
+}
+
+AreaFlag EnumTranslator::ToArea(std::string area) const
+{
+	return _areaMap.right.at(area);
+}
+
+std::string EnumTranslator::ToString(AreaFlag area) const
+{
+	return _areaMap.left.at(area);
+}
+
 Location EnumTranslator::ToLocation(std::string location, Location defaultLocation) 
 {
 	if (_locationMap.right.find(location) != _locationMap.right.end()) {
@@ -123,6 +141,7 @@ EnumTranslator::EnumTranslator() {
 	init_effects();
 	init_sides();
 	init_imus();
+	init_areas();
 }
 
 
@@ -242,6 +261,32 @@ void EnumTranslator::init_imus()
 		(Imu::Right_Forearm, "Right_Forearm")
 		(Imu::Right_Upper_Arm, "Right_Upper_Arm")
 		;
+}
+
+void EnumTranslator::init_areas()
+{
+	boost::assign::insert(_areaMap)
+		(AreaFlag::None, "None")
+		(AreaFlag::Forearm_Left, "Forearm_Left")
+		(AreaFlag::Upper_Arm_Left, "Upper_Arm_Left")
+		(AreaFlag::Shoulder_Left, "Shoulder_Left")
+		(AreaFlag::Back_Left, "Back_Left")
+		(AreaFlag::Chest_Left, "Chest_Left")
+		(AreaFlag::Upper_Ab_Left, "Upper_Ab_Left")
+		(AreaFlag::Mid_Ab_Left, "Mid_Ab_Left")
+		(AreaFlag::Lower_Ab_Left, "Lower_Ab_Left")
+		(AreaFlag::Forearm_Right, "Forearm_Right")
+		(AreaFlag::Upper_Arm_Right, "Upper_Arm_Right")
+		(AreaFlag::Shoulder_Right, "Shoulder_Right")
+		(AreaFlag::Back_Right, "Back_Right")
+		(AreaFlag::Chest_Right, "Chest_Right")
+		(AreaFlag::Upper_Ab_Right, "Upper_Ab_Right")
+		(AreaFlag::Mid_Ab_Right, "Mid_Ab_Right")
+		(AreaFlag::Lower_Ab_Right, "Lower_Ab_Right")
+		(AreaFlag::Left_All, "Left_All")
+		(AreaFlag::Right_All, "Right_All")
+		(AreaFlag::All_Areas, "All_Areas");
+		
 }
 
 void EnumTranslator::init_locations() {

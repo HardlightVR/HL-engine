@@ -3,6 +3,8 @@
 #include <vector>
 #include "ITimeOffset.h"
 #include <iostream>
+#include "IntermediateHapticFormats.h"
+
 class HapticEffect :public ITimeOffset {
 public:
 	HapticEffect(Effect effect, Location loc, float duration, float time, unsigned int priority);
@@ -28,13 +30,14 @@ public:
 class HapticFrame : public ITimeOffset
 {
 public:
-	HapticFrame(float time, std::vector<HapticSequence> frame, unsigned int priority = 1);
+	HapticFrame(float time, std::vector<JsonSequenceAtom> frame, AreaFlag area, unsigned int priority = 1);
 	~HapticFrame();
 	float Time;
 	float GetTime() override;
 	float OriginalTime;
+	AreaFlag Area;
 	unsigned int Priority;
-	std::vector<HapticSequence> Frame;
+	std::vector<JsonSequenceAtom> Frame;
 	
 };
 

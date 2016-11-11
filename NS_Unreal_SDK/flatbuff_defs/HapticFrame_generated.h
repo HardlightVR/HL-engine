@@ -21,14 +21,13 @@ struct HapticFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   };
   float time() const { return GetField<float>(VT_TIME, 0.0f); }
   const NullSpace::HapticFiles::Sequence *sequence() const { return GetPointer<const NullSpace::HapticFiles::Sequence *>(VT_SEQUENCE); }
-  const flatbuffers::String *area() const { return GetPointer<const flatbuffers::String *>(VT_AREA); }
+  uint32_t area() const { return GetField<uint32_t>(VT_AREA, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<float>(verifier, VT_TIME) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_SEQUENCE) &&
            verifier.VerifyTable(sequence()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_AREA) &&
-           verifier.Verify(area()) &&
+           VerifyField<uint32_t>(verifier, VT_AREA) &&
            verifier.EndTable();
   }
 };
@@ -38,7 +37,7 @@ struct HapticFrameBuilder {
   flatbuffers::uoffset_t start_;
   void add_time(float time) { fbb_.AddElement<float>(HapticFrame::VT_TIME, time, 0.0f); }
   void add_sequence(flatbuffers::Offset<NullSpace::HapticFiles::Sequence> sequence) { fbb_.AddOffset(HapticFrame::VT_SEQUENCE, sequence); }
-  void add_area(flatbuffers::Offset<flatbuffers::String> area) { fbb_.AddOffset(HapticFrame::VT_AREA, area); }
+  void add_area(uint32_t area) { fbb_.AddElement<uint32_t>(HapticFrame::VT_AREA, area, 0); }
   HapticFrameBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   HapticFrameBuilder &operator=(const HapticFrameBuilder &);
   flatbuffers::Offset<HapticFrame> Finish() {
@@ -50,19 +49,12 @@ struct HapticFrameBuilder {
 inline flatbuffers::Offset<HapticFrame> CreateHapticFrame(flatbuffers::FlatBufferBuilder &_fbb,
     float time = 0.0f,
     flatbuffers::Offset<NullSpace::HapticFiles::Sequence> sequence = 0,
-    flatbuffers::Offset<flatbuffers::String> area = 0) {
+    uint32_t area = 0) {
   HapticFrameBuilder builder_(_fbb);
   builder_.add_area(area);
   builder_.add_sequence(sequence);
   builder_.add_time(time);
   return builder_.Finish();
-}
-
-inline flatbuffers::Offset<HapticFrame> CreateHapticFrameDirect(flatbuffers::FlatBufferBuilder &_fbb,
-    float time = 0.0f,
-    flatbuffers::Offset<NullSpace::HapticFiles::Sequence> sequence = 0,
-    const char *area = nullptr) {
-  return CreateHapticFrame(_fbb, time, sequence, area ? _fbb.CreateString(area) : 0);
 }
 
 inline const NullSpace::HapticFiles::HapticFrame *GetHapticFrame(const void *buf) {

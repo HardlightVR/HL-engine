@@ -29,7 +29,7 @@ private:
 	std::shared_ptr<ICommunicationAdapter> _adapter; //order dependency
 	HapticCache2<
 		std::vector<JsonSequenceAtom>, 
-		std::vector<JsonSequenceAtom>, 
+		std::vector<HapticFrame>, 
 		std::vector<JsonSequenceAtom>> 
 	_hapticCache;
 	std::shared_ptr<PacketDispatcher> _packetDispatcher; //order dependency

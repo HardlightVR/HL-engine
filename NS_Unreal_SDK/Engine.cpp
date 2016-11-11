@@ -5,6 +5,7 @@
 #include "TrackingUpdate_generated.h"
 #include "FifoConsumer.h"
 #include "PlayableSequence.h"
+#include "PlayablePattern.h"
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
 	_instructionSet(std::make_shared<InstructionSet>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
@@ -43,7 +44,7 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 
 void Engine::sendTrackingUpdate() {
 	if (boost::optional<Quaternion> q = _imuConsumer->GetOrientation(Imu::Chest)) {
-		_encoder.Finalize(_encoder.Encode(*q), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
+		_encoder.Finalize(_encoder.Encode(q.get()), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
 
 	}
 	_trackingUpdateTimer.expires_from_now(_trackingUpdateInterval);
@@ -57,25 +58,22 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 	auto location = AreaFlag(rawSequenceData->location());
 	auto handle = packet.handle(); //converts from uint64 to uint32, maybe should check this
 
-	if (!_hapticCache.ContainsSequence(name)) {
-		auto decoded = EncodingOperations::Decode(rawSequenceData);
-		_hapticCache.AddSequence(name, decoded);
-	}
+	auto decoded = EncodingOperations::Decode(rawSequenceData);
+		
+	//todo: figure out caching. If user changes a sequence's effects and the engine isn't
+	//reloaded, then it is cached. Could do on create for very first time, cache
 
 	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableSequence(_hapticCache.GetSequence(name), location)));
 }
 
 void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	if (_hapticCache.ContainsPattern(packet.name()->str())) {
-		//_executor.Play(_hapticCache.GetPattern(packet.name()->str()));
-	}
-	else {
-		const NullSpace::HapticFiles::Pattern* packet_ptr = static_cast<const NullSpace::HapticFiles::Pattern*>(packet.packet());
-		//std::vector<HapticFrame> decoded = EncodingOperations::Decode(packet_ptr);
-		//_hapticCache.AddPattern(packet.name()->str(), decoded);
-		//_executor.Play(decoded);
-	}
+	auto name = packet.name()->str();
+	auto rawPatternData = static_cast<const NullSpace::HapticFiles::Pattern*>(packet.packet());
+	auto handle = packet.handle();
+
+	auto decoded = EncodingOperations::Decode(rawPatternData);
+	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayablePattern(_hapticCache.GetPattern(name))));
 }
 
 void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
