@@ -57,7 +57,7 @@
 "Pulsing_Sharp_100" : "0x38",
 "Pulsing_Sharp_60" : "0x39",
 "Transition_Click_100" : "0x3A",
-"fTransition_Click_80" : "0x3B",
+"Transition_Click_80" : "0x3B",
 "Transition_Click_60" : "0x3C",
 "Transition_Click_40" : "0x3D",
 "Transition_Click_20" : "0x3E",

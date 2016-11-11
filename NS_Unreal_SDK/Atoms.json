@@ -129,5 +129,31 @@
 		"Smooth_Hum_50"
 	]
 
+},
+{
+	"id" : "transition_click",
+	"levels":[
+		"Transition_Click_10",
+		"Transition_Click_20",
+		"Transition_Click_40",
+		"Transition_Click_60",
+		"Transition_Click_80"
+	]
+
+},
+{
+	"id" : "transition_hum",
+	"levels":[
+		"Transition_Hum_10",
+		"Transition_Hum_20",
+		"Transition_Hum_40",
+		"Transition_Hum_60",
+		"Transition_Hum_80",
+		"Transition_Hum_100"
+	]
+
 }
 ]
+
+
+
