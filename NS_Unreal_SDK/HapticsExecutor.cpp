@@ -51,7 +51,7 @@ void HapticsExecutor::Release(HapticHandle hh)
 	
 	auto it = _effects.find(uuid_hasher(h));
 	if (it != _effects.end()) {
-		_effects.erase(it);
+		_garbageCan.push_back(h);
 	}
 	else {
 		std::cout << "Tried to release a handle that I never had in the first place\n";
@@ -69,6 +69,17 @@ void HapticsExecutor::Update(float dt)
 
 		p.second->Update(dt, _model, _iset->Atoms(), *this);
 	});
+
+	_garbageCan.erase(remove_if(_garbageCan.begin(), _garbageCan.end(), [&](const auto& id) {
+
+		return _effects.at(uuid_hasher(id))->CurrentTime() >= _effects.at(uuid_hasher(id))->GetTotalPlayTime();
+	}));
+	
+	
+	_effects.erase(remove_if(_effects.begin(), _effects.end(),       [&](const auto& p) {
+	
+		return p.second->CurrentTime() >= p.second->GetTotalPlayTime();
+	}));
 	
 
 }

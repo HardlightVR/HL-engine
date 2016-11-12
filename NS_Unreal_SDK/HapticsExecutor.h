@@ -33,7 +33,7 @@ private:
 	std::unique_ptr<SuitHardwareInterface> _suit;
 	std::unordered_map<std::size_t, std::unique_ptr<IPlayable>> _effects;
 	PriorityModel _model;
-
+	std::vector<boost::uuids::uuid> _garbageCan;
 	std::unordered_map<HapticHandle, boost::uuids::uuid> _outsideHandleToUUID;
 
 	void updateLocationModels(float dt);

@@ -28,6 +28,7 @@ void PlayableSequence::Reset(PriorityModel &model)
 	for (const auto& e : _sourceOfTruth) {
 		_effects.push_back(Instant<JsonSequenceAtom>(e, e.Time));
 	}
+	_currentTime = 0;
 }
 
 
@@ -61,7 +62,7 @@ void PlayableSequence::Update(float dt, PriorityModel & model,const std::unorder
 {
 	
 	if (_paused) { return; }
-
+	_currentTime += dt;
 	for (auto& effect : _effects) {
 		if (effect.Executed) {
 			continue;
@@ -97,6 +98,17 @@ uint32_t PlayableSequence::GetHandle() const
 {
 	return _handle;
 }
+
+float PlayableSequence::GetTotalPlayTime() const
+{
+	return ::GetTotalPlayTime(_sourceOfTruth);
+}
+
+float PlayableSequence::CurrentTime() const
+{
+	return _currentTime;
+}
+
 
 
 PlayableSequence::~PlayableSequence()

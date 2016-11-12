@@ -11,11 +11,14 @@ public:
 	void Pause(PriorityModel & model) override;
 	void Update(float dt, PriorityModel & model, const std::unordered_map<std::string, Atom>&, HapticsExecutor& h) override;
 	uint32_t GetHandle() const override;
+	float GetTotalPlayTime() const override;
+	float CurrentTime() const override;
 private:
 	std::vector<Instant<HapticFrame>> _effects;
 	std::vector<HapticFrame> _sourceOfTruth;
 	std::vector<boost::uuids::uuid> _activeEffects;
 	bool _paused;
 	int _handle;
+	float _currentTime;
 };
 

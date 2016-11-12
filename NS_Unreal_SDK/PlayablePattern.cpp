@@ -32,6 +32,7 @@ void PlayablePattern::Reset(PriorityModel & model)
 	for (const auto& e : _sourceOfTruth) {
 		_effects.push_back(Instant<HapticFrame>(e, e.Time));
 	}
+	_currentTime = 0;
 }
 
 void PlayablePattern::Pause(PriorityModel & model)
@@ -41,6 +42,7 @@ void PlayablePattern::Pause(PriorityModel & model)
 void PlayablePattern::Update(float dt, PriorityModel & model, const std::unordered_map<std::string, Atom>&, HapticsExecutor& executor)
 {
 	if (_paused) { return; }
+	_currentTime += dt;
 
 	for (auto& effect : _effects) {
 		if (effect.Executed) {
@@ -67,3 +69,14 @@ uint32_t PlayablePattern::GetHandle() const
 {
 	return _handle;
 }
+
+float PlayablePattern::GetTotalPlayTime() const
+{
+	return ::GetTotalPlayTime(_sourceOfTruth);
+}
+
+float PlayablePattern::CurrentTime() const
+{
+	return _currentTime;
+}
+
