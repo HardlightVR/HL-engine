@@ -51,7 +51,6 @@ int main() {
 
 	boost::asio::deadline_timer suitStatusTimer(*io->GetIOService(), suit_status_update_interval);
 	suitStatusTimer.async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, &engine, &_encoder, &server_updates, &suitStatusTimer));
-	try {
 		//haptic_requests.setsockopt(ZMQ_CONFLATE, 16);
 		haptic_requests.setsockopt(ZMQ_RCVHWM, 16);
 		haptic_requests.bind("tcp://127.0.0.1:9452");
@@ -133,11 +132,7 @@ int main() {
 			engine.Update(elapsed.count());
 			
 		}
-	}
-	catch (std::exception& ex) {
-		std::cout << ex.what() << std::endl;
-	}
-
+	
 	
 	return 0;
 
