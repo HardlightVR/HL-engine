@@ -285,7 +285,15 @@ void EnumTranslator::init_areas()
 		(AreaFlag::Lower_Ab_Right, "Lower_Ab_Right")
 		(AreaFlag::Left_All, "Left_All")
 		(AreaFlag::Right_All, "Right_All")
-		(AreaFlag::All_Areas, "All_Areas");
+		(AreaFlag::All_Areas, "All_Areas")
+		(AreaFlag::Forearm_Both, "Forearm_Both")
+		(AreaFlag::Upper_Arm_Both, "Upper_Arm_Both")
+		(AreaFlag::Shoulder_Both, "Shoulder_Both")
+		(AreaFlag::Back_Both, "Back_Both")
+		(AreaFlag::Chest_Both, "Chest_Both")
+		(AreaFlag::Upper_Ab_Both, "Upper_Ab_Both")
+		(AreaFlag::Mid_Ab_Both, "Mid_Ab_Both")
+		(AreaFlag::Lower_Ab_Both, "Lower_Ab_Both");
 		
 }
 
