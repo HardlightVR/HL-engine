@@ -31,6 +31,15 @@ void PlayableExperience::Play()
 
 void PlayableExperience::Reset(PriorityModel & model)
 {
+	//use pause to remove anything that is playing in the Model
+	this->Pause(model);
+	//then clear all actives, reset everything from our source of truth
+	_activeEffects.clear();
+	_effects.clear();
+	for (const auto& e : _sourceOfTruth) {
+		_effects.push_back(Instant<HapticSample>(e, e.Time));
+	}
+	_currentTime = 0;
 }
 
 void PlayableExperience::Pause(PriorityModel & model)
@@ -56,10 +65,10 @@ void PlayableExperience::Update(float dt, PriorityModel & model, const std::unor
 		if (effect.Expired()) {
 			auto& h = effect.Item;
 			effect.Executed = true;
-
+			effect.Handle = effect.Handle = boost::uuids::random_generator()();
 			_exec.Create(effect.Handle, std::unique_ptr<IPlayable>(new PlayablePattern(h.Frames, _exec)));
 			_exec.Play(effect.Handle);
-
+			_activeEffects.push_back(effect.Handle);
 			//HapticEffect* h = static_cast<HapticEffect*>(effect.Item.get());
 			//todo: Need the logic for playing in multiple spots
 			//use real priority
@@ -71,20 +80,20 @@ void PlayableExperience::Update(float dt, PriorityModel & model, const std::unor
 
 uint32_t PlayableExperience::GetHandle() const
 {
-	return uint32_t();
+	return _handle;
 }
 
 float PlayableExperience::GetTotalPlayTime() const
 {
-	return 0.0f;
+	return ::GetTotalPlayTime(_sourceOfTruth);
 }
 
 float PlayableExperience::CurrentTime() const
 {
-	return 0.0f;
+	return _currentTime;
 }
 
 bool PlayableExperience::IsPlaying() const
 {
-	return false;
+	return !_paused;
 }
