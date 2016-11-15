@@ -60,7 +60,7 @@ void PlayablePattern::Update(float dt, PriorityModel & model, const std::unorder
 		if (effect.Expired()) {
 			auto& h = effect.Item;
 			effect.Executed = true;
-			
+			effect.Handle = boost::uuids::random_generator()();
 			_exec.Create(effect.Handle, std::unique_ptr<IPlayable>(new PlayableSequence(h.Frame, h.Area)));
 			_exec.Play(effect.Handle);
 			_activeEffects.push_back(effect.Handle);
