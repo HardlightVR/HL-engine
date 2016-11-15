@@ -30,15 +30,6 @@ HapticSequence::~HapticSequence()
 }
 
 
-HapticSample::HapticSample(float time, std::vector<HapticFrame> frames, unsigned int priority):
-Priority(priority), Time(time), OriginalTime(time), Frames(frames)
-
-{
-}
-
-HapticSample::~HapticSample()
-{
-}
 
 
 float Moment::GetTime()
