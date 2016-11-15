@@ -1,10 +1,11 @@
 [{
 	"id" : "click",
 	"levels":[
-		"Medium_Click_60",
-		"Medium_Click_80",
-		"Medium_Click_100",
+		
+		
 		"Strong_Click_30",
+		"Medium_Click_60",
+		
 		"Strong_Click_60",
 		"Strong_Click_100"
 	]
