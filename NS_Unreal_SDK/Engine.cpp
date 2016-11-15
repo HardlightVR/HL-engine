@@ -6,6 +6,7 @@
 #include "FifoConsumer.h"
 #include "PlayableSequence.h"
 #include "PlayablePattern.h"
+#include "PlayableExperience.h"
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
 	_instructionSet(std::make_shared<InstructionSet>()),
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
@@ -73,19 +74,17 @@ void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 	auto handle = packet.handle();
 
 	auto decoded = EncodingOperations::Decode(rawPatternData);
-	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayablePattern(decoded)));
+	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayablePattern(decoded, _executor)));
 }
 
 void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
 {
-	if (_hapticCache.ContainsExperience(packet.name()->str())) {
-		//	_executor.Play(_hapticCache.GetExperience(packet.name()->str()));
-	}
-	else {
-		//auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet()));
-		//_hapticCache.AddExperience(packet.name()->str(), decoded);
-		//_executor.Play(decoded);
-	}
+	auto name = packet.name()->str();
+	auto rawExperienceData = static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet());
+	auto handle = packet.handle();
+
+	auto decoded = EncodingOperations::Decode(rawExperienceData);
+	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableExperience(decoded, _executor)));
 }
 
 void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)

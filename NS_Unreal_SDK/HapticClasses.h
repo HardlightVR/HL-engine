@@ -28,7 +28,7 @@ public:
 };
 
 
-class HapticSample : public ITimeOffset
+class HapticSample 
 {
 public:
 	unsigned int Priority;

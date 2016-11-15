@@ -96,12 +96,12 @@ int main() {
 			zmq::message_t msg;
 			if (haptic_requests.recv(&msg, ZMQ_DONTWAIT))
 			{
-				std::cout << "got something" << "\n";
+			//	std::cout << "got something" << "\n";
 				auto data = msg.data();
 				auto size = msg.size();
 				flatbuffers::Verifier verifier(reinterpret_cast<uint8_t*>(data), size);
 				if (NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier)) {
-					std::cout << "	it's a packet" << "\n";
+					//std::cout << "	it's a packet" << "\n";
 					auto packet = NullSpace::HapticFiles::GetHapticPacket(data);
 					switch (packet->packet_type()) {
 					case NullSpace::HapticFiles::FileType::FileType_Sequence: 

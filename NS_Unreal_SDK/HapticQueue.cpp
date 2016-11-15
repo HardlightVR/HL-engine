@@ -55,13 +55,17 @@ void HapticQueue::Update(float deltaTime)
 		{
 			if (effect.TimeElapsed < effect.Duration - deltaTime)
 			{
+			//	std::cout << "Duration of effect is variable, so gonna add time\n";
+
 				effect.TimeElapsed += deltaTime;
 			} else
 			{
+				std::cout << "duration of effect is variable, but time is all elapsed, so marking dirty\n";
 				this->Dirty = effect.Dirty = true;
 			}
 		}
 	}
+
 }
 
 struct shouldEffectBeRemoved
@@ -70,7 +74,7 @@ struct shouldEffectBeRemoved
 	shouldEffectBeRemoved(const unsigned int p) : firstPriority(p){}
 	bool operator()(const PriorityPair& m) const
 	{
-		return m.second.Dirty || m.first < firstPriority && m.second.DurationType() == ::Duration::OneShot;
+		return (m.second.Dirty) || m.first < firstPriority && m.second.DurationType() == ::Duration::OneShot;
 	}
 };
 

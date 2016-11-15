@@ -2,12 +2,11 @@
 #include "IPlayable.h"
 #include "TimeInstant.h"
 
-
-class PlayableSequence : public IPlayable {
+class PlayableExperience : public IPlayable
+{
 public:
-
-	PlayableSequence(std::vector<JsonSequenceAtom>, AreaFlag loc);
-	~PlayableSequence();
+	PlayableExperience(std::vector<HapticSample>, HapticsExecutor&);
+	~PlayableExperience();
 	void Play() override;
 	void Reset(PriorityModel & model) override;
 	void Pause(PriorityModel & model) override;
@@ -17,14 +16,14 @@ public:
 	float CurrentTime() const override;
 	bool IsPlaying() const override;
 private:
-
-	std::vector<Instant<JsonSequenceAtom>> _effects;
-	std::vector<JsonSequenceAtom> _sourceOfTruth;
+	std::vector<Instant<HapticSample>> _effects;
+	std::vector<HapticSample> _sourceOfTruth;
 	std::vector<boost::uuids::uuid> _activeEffects;
+	HapticsExecutor& _exec;
+
 	bool _paused;
 	int _handle;
 	float _currentTime;
 	AreaFlag _location;
 };
-
 

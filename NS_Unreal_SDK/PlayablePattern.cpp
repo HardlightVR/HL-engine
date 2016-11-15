@@ -3,7 +3,7 @@
 #include "HapticsExecutor.h"
 
 #include "PlayableSequence.h"
-PlayablePattern::PlayablePattern(std::vector<HapticFrame> frames):_sourceOfTruth(frames), _paused(true)
+PlayablePattern::PlayablePattern(std::vector<HapticFrame> frames, HapticsExecutor& exec):_sourceOfTruth(frames), _paused(true), _exec(exec)
 {
 	for (const auto& e : frames) {
 		_effects.push_back(Instant<HapticFrame>(e, e.Time));
@@ -19,7 +19,10 @@ PlayablePattern::~PlayablePattern()
 
 void PlayablePattern::Play()
 {
-	_paused = false;
+	_paused = false; 
+	for (auto& effect : _activeEffects) {
+		_exec.Play(effect);
+	}
 }
 
 void PlayablePattern::Reset(PriorityModel & model)
@@ -37,9 +40,13 @@ void PlayablePattern::Reset(PriorityModel & model)
 
 void PlayablePattern::Pause(PriorityModel & model)
 {
+	_paused = true;
+	for (auto& effect : _activeEffects) {
+		_exec.Pause(effect);
+	}
 }
 
-void PlayablePattern::Update(float dt, PriorityModel & model, const std::unordered_map<std::string, Atom>&, HapticsExecutor& executor)
+void PlayablePattern::Update(float dt, PriorityModel & model, const std::unordered_map<std::string, Atom>&)
 {
 	if (_paused) { return; }
 	_currentTime += dt;
@@ -53,13 +60,14 @@ void PlayablePattern::Update(float dt, PriorityModel & model, const std::unorder
 		if (effect.Expired()) {
 			auto& h = effect.Item;
 			effect.Executed = true;
-			executor.Create(effect.Handle, std::unique_ptr<IPlayable>(new PlayableSequence(h.Frame, h.Area)));
-			executor.Play(effect.Handle);
+			
+			_exec.Create(effect.Handle, std::unique_ptr<IPlayable>(new PlayableSequence(h.Frame, h.Area)));
+			_exec.Play(effect.Handle);
+			_activeEffects.push_back(effect.Handle);
 
 			//HapticEffect* h = static_cast<HapticEffect*>(effect.Item.get());
-			//todo: Need the logic for playing in multiple spots
 			//use real priority
-			//use actual effect as well..
+	
 
 		}
 	}
@@ -78,5 +86,10 @@ float PlayablePattern::GetTotalPlayTime() const
 float PlayablePattern::CurrentTime() const
 {
 	return _currentTime;
+}
+
+bool PlayablePattern::IsPlaying() const
+{
+	return !_paused;
 }
 

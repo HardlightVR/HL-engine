@@ -9,7 +9,12 @@ typedef unsigned int HapticHandle;
 class HapticsExecutor
 {
 public:
-
+	struct Released {
+	public:
+		boost::uuids::uuid ID;
+		bool NeedsSweep;
+		Released(boost::uuids::uuid id) :ID(id), NeedsSweep(false) {}
+	};
 	HapticsExecutor(std::shared_ptr<InstructionSet>,std::unique_ptr<SuitHardwareInterface>);
 	~HapticsExecutor();
 
@@ -33,7 +38,7 @@ private:
 	std::unique_ptr<SuitHardwareInterface> _suit;
 	std::unordered_map<std::size_t, std::unique_ptr<IPlayable>> _effects;
 	PriorityModel _model;
-	std::vector<boost::uuids::uuid> _garbageCan;
+	std::vector<Released> _releasedEffects;
 	std::unordered_map<HapticHandle, boost::uuids::uuid> _outsideHandleToUUID;
 
 	void updateLocationModels(float dt);

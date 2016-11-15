@@ -59,7 +59,6 @@ void PriorityModel::Clean(Location loc)
 }
 
 
-
 boost::optional<HapticEvent> PriorityModel::Remove(AreaFlag area, boost::uuids::uuid e)
 {
 	boost::optional<HapticEvent> removedEffect;
@@ -119,6 +118,8 @@ boost::optional<HapticEvent> PriorityModel::Remove(AreaFlag area, boost::uuids::
 
 	return removedEffect;
 }
+
+
 
 boost::optional<boost::uuids::uuid> PriorityModel::Put(AreaFlag area, HapticEvent e)
 {

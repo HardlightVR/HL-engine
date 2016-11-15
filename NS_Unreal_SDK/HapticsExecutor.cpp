@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "HapticsExecutor.h"
 #include "HapticEvent.h"
+#include <boost/range/algorithm.hpp>
+#include <boost/range/adaptors.hpp>
 using namespace std;
 
 
@@ -47,11 +49,13 @@ void HapticsExecutor::Reset(HapticHandle hh)
 
 void HapticsExecutor::Release(HapticHandle hh)
 {
+	std::cout << "Got a new handle to release\n";
+
 	auto h = _outsideHandleToUUID[hh];
 	
 	auto it = _effects.find(uuid_hasher(h));
 	if (it != _effects.end()) {
-		_garbageCan.push_back(h);
+		_releasedEffects.push_back(Released(h));
 	}
 	else {
 		std::cout << "Tried to release a handle that I never had in the first place\n";
@@ -60,26 +64,35 @@ void HapticsExecutor::Release(HapticHandle hh)
 	_outsideHandleToUUID.erase(_outsideHandleToUUID.find(hh));
 }
 
-
+bool EffectIsExpired(const std::unique_ptr<IPlayable> &p) {
+	return !p->IsPlaying() || p->CurrentTime() >= p->GetTotalPlayTime();
+}
 
 void HapticsExecutor::Update(float dt)
 {
 	updateLocationModels(dt);
-	std::for_each(_effects.begin(), _effects.end(), [&](std::pair<const HapticHandle, std::unique_ptr<IPlayable>>& p) {
 
-		p.second->Update(dt, _model, _iset->Atoms(), *this);
+	for (auto& effect : _effects) {
+		effect.second->Update(dt, _model, _iset->Atoms());
+	}
+	
+	//mark & erase from _effects
+
+	for (auto& released : _releasedEffects) {
+		if (EffectIsExpired(_effects.at(uuid_hasher(released.ID)))) {
+			released.NeedsSweep = true;
+			_effects.erase(uuid_hasher(released.ID));
+			std::cout << "Hey, found an expired released handle, deleting from effects\n";
+		}
+	}
+
+	//sweep from _released
+
+	auto toRemove = std::remove_if(_releasedEffects.begin(), _releasedEffects.end(), [](const Released& e) {
+		return e.NeedsSweep;
 	});
+	_releasedEffects.erase(toRemove, _releasedEffects.end());
 
-	_garbageCan.erase(remove_if(_garbageCan.begin(), _garbageCan.end(), [&](const auto& id) {
-
-		return _effects.at(uuid_hasher(id))->CurrentTime() >= _effects.at(uuid_hasher(id))->GetTotalPlayTime();
-	}));
-	
-	
-	_effects.erase(remove_if(_effects.begin(), _effects.end(),       [&](const auto& p) {
-	
-		return p.second->CurrentTime() >= p.second->GetTotalPlayTime();
-	}));
 	
 
 }
@@ -140,18 +153,21 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 	{
 		switch (command.Command) {
 		case PriorityModel::Command::HALT:
+			std:: cout << "HALTING!\n" ;
 			_suit->HaltEffect(command.Location);
 			break;
 		case PriorityModel::Command::PLAY:
 			switch (command.Duration) {
 			case Duration::Infinite:
 			case Duration::Variable:
+				std::cout << "PLAYING CONTINUOUS!\n";
 				_suit->PlayEffectContinuous(command.Location, command.Effect);
 				break;
 			case Duration::OneShot:
 				_suit->HaltEffect(command.Location);
 				_suit->PlayEffect(command.Location, command.Effect);
 				_model.Clean(command.Location);
+			
 				break;
 			default:
 				break;

@@ -58,7 +58,7 @@ void PlayableSequence::Pause(PriorityModel &model)
 
 
 
-void PlayableSequence::Update(float dt, PriorityModel & model,const std::unordered_map<std::string, Atom>& atoms, HapticsExecutor& h)
+void PlayableSequence::Update(float dt, PriorityModel & model,const std::unordered_map<std::string, Atom>& atoms)
 {
 	
 	if (_paused) { return; }
@@ -107,6 +107,11 @@ float PlayableSequence::GetTotalPlayTime() const
 float PlayableSequence::CurrentTime() const
 {
 	return _currentTime;
+}
+
+bool PlayableSequence::IsPlaying() const
+{
+	return !_paused;
 }
 
 

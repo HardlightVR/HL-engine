@@ -11,10 +11,11 @@ public:
 	virtual void Pause(PriorityModel& model) = 0;
 	//virtual void Resume() = 0;
 	//virtual void Cancel() = 0;
-	virtual void Update(float dt, PriorityModel& model, const std::unordered_map<std::string, Atom>&, HapticsExecutor& h) = 0;
+	virtual void Update(float dt, PriorityModel& model, const std::unordered_map<std::string, Atom>&) = 0;
 	virtual uint32_t GetHandle() const = 0;
 	virtual float GetTotalPlayTime() const = 0;
 	virtual float CurrentTime() const = 0;
+	virtual bool IsPlaying() const = 0;
 };
 
 
