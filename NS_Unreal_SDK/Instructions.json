@@ -1,8 +1,8 @@
 [
 	{
 		"id" : "0x01",
-		"name" : "RESET",
-		"purpose" : "Resets the suit",
+		"name" : "GET_VERSION",
+		"purpose" : "Retrieves the version of the suit",
 		"parameters" : []
 		
 	},
