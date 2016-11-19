@@ -8,17 +8,31 @@
 #include "PlayablePattern.h"
 #include "PlayableExperience.h"
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
+	//This contains all suit instructions, like GET_VERSION, PLAY_EFFECT, etc.
 	_instructionSet(std::make_shared<InstructionSet>()),
+	//This allows us to communicate with the suit. We are using Boost ASIO library right now, although
+	//anything satisfying ICommunicationAdapter should work
 	_adapter(std::shared_ptr<ICommunicationAdapter>(
 		new BoostSerialAdapter(io)
-		)),
+	)),
+	//The dispatcher takes packets and hands them out to components that subscribed to a certain packet type
+	//For example, ImuConsumer is a subscriber to IMU Data packets
 	_packetDispatcher(std::make_shared<PacketDispatcher>()),
+	//The synchronizer reads from the raw suit stream and partitions it into packets. It can be upgraded to
+	//do CRC, variable size packets, etc. 
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
+	//The executor is responsible for executing haptic effects, and garbage collecting them when handles are
+	//released.
 	_executor(_instructionSet, std::make_unique<SuitHardwareInterface>(_adapter, _instructionSet, io->GetIOService())),
+	//Since we want IMU data, we need an ImuConsumer to parse those packets into quaternions
 	_imuConsumer(std::make_shared<ImuConsumer>()),
+	//Since we only receive IMU data at a fixed rate, we should only dispatch it to the plugin at a fixed rate
 	_trackingUpdateTimer(*io->GetIOService(), _trackingUpdateInterval),
+	//Need an encoder to actually create the binary data that we send over the wire to the plugin
 	_encoder(encoder),
 	_socket(socket),
+	//This is only present because we do not track separate state for each client. This wants to be its own
+	//struct with all client related data. 
 	_userRequestsTracking(false)
 
 {
@@ -29,13 +43,13 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 		exit(0);
 	}
 
-	if (!_adapter->Connect()) {
-		std::cout << "Unable to connect to suit" << "\n";
+	if (_adapter->Connect()) {
+		std::cout << "Connected to suit" << "\n";
 	}
 	else {
-		std::cout << "Connected to suit" << "\n";
-
+		std::cout << "Unable to connect to suit" << "\n";
 	}
+	//Kickoff the communication adapter
 	_adapter->BeginRead();
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, std::make_shared<FifoConsumer>());

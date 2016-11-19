@@ -1,0 +1,12 @@
+include "MixedSequence.fbs";
+
+namespace NullSpace.HapticFiles.Mixed;
+
+table HapticFrame{
+	time:float;
+	sequence:Sequence;
+	area:uint;
+	
+}
+
+root_type HapticFrame;

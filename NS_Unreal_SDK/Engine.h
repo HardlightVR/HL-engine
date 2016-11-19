@@ -25,6 +25,7 @@ public:
 	bool SuitConnected() const;
 	~Engine();
 private:
+	//Be very careful if you reorder these parameters. 
 	std::shared_ptr<InstructionSet> _instructionSet; //order dependency
 	std::shared_ptr<ICommunicationAdapter> _adapter; //order dependency
 	HapticCache2<
