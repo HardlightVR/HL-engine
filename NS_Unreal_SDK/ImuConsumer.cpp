@@ -32,7 +32,7 @@ boost::optional<Quaternion> ImuConsumer::GetOrientation(Imu imu)
 void ImuConsumer::ConsumePacket(const packet& packet)
 {
 	std::cout << "Got Imu  packet: " << int(packet.raw[13]) << " in the fifo" << '\n';
-
+	//todo: DO THE MAPPING ON VERSION DETECT
 	Imu id = Imu(packet.raw[11]);
 	_quaternions[id] = parseQuaternion(packet.raw);
 
