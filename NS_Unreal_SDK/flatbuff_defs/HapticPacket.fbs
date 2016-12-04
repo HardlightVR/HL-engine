@@ -9,6 +9,14 @@ table Tracking {
 	enable:bool;
 }
 
+
+enum EngineCommand:short {
+	NO_COMMAND, PLAY_ALL=1, PAUSE_ALL, CLEAR_ALL, ENABLE_TRACKING, DISABLE_TRACKING
+}
+
+table EngineCommandData {
+	command:EngineCommand;
+}
 enum Command:short {
 	PLAY=0, PAUSE, RESET, RELEASE
 }
@@ -17,7 +25,7 @@ table HandleCommand {
 	command:Command;
 }
 
-union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking, HandleCommand}
+union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking, HandleCommand, EngineCommandData}
 
 table HapticPacket {
 	name:string;

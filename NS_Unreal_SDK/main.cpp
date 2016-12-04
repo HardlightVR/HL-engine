@@ -125,9 +125,6 @@ int main() {
 					break;
 				case NullSpace::HapticFiles::FileType::FileType_Pattern: 
 					engine.PlayPattern(*packet);
-					break;	
-				case NullSpace::HapticFiles::FileType::FileType_HapticEffect:
-					engine.PlayEffect(*packet);
 					break;
 				case NullSpace::HapticFiles::FileType::FileType_Experience:
 					engine.PlayExperience(*packet);
@@ -138,6 +135,9 @@ int main() {
 				//Commands like Stop, Start, Play, Reset, Pause, etc.
 				case NullSpace::HapticFiles::FileType::FileType_HandleCommand:
 					engine.HandleCommand(*packet);
+					break;
+				case NullSpace::HapticFiles::FileType::FileType_EngineCommandData:
+					engine.EngineCommand(*packet);
 					break;
 				default:
 					break;

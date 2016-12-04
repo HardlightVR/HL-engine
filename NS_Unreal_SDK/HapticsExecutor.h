@@ -32,6 +32,10 @@ public:
 	void Create(boost::uuids::uuid, std::unique_ptr<IPlayable>);
 	const std::unique_ptr<SuitHardwareInterface>& Hardware();
 	
+
+	void PlayAll();
+	void PauseAll();
+	void ClearAll();
 private:
 	boost::hash<boost::uuids::uuid> uuid_hasher;
 	std::shared_ptr<InstructionSet> _iset;
@@ -42,5 +46,7 @@ private:
 	std::unordered_map<HapticHandle, boost::uuids::uuid> _outsideHandleToUUID;
 
 	void updateLocationModels(float dt);
+
+	bool _paused;
 };
 

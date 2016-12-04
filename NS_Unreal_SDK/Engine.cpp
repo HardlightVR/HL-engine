@@ -101,11 +101,6 @@ void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
 	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableExperience(decoded, _executor)));
 }
 
-void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet)
-{
-	///auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HapticEffect*>(packet.packet()));
-	//_executor.Play(decoded);
-}
 
 void Engine::HandleCommand(const NullSpace::HapticFiles::HapticPacket & packet)
 {
@@ -127,6 +122,28 @@ void Engine::HandleCommand(const NullSpace::HapticFiles::HapticPacket & packet)
 	}
 }
 
+void Engine::EngineCommand(const NullSpace::HapticFiles::HapticPacket& packet) {
+	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::EngineCommandData*>(packet.packet()));
+	switch (decoded.Command) {
+	case NullSpace::HapticFiles::EngineCommand_ENABLE_TRACKING:
+		_executor.Hardware()->EnableIMUs();
+		break;
+	case NullSpace::HapticFiles::EngineCommand_DISABLE_TRACKING:
+		_executor.Hardware()->DisableIMUs();
+		break;
+	case NullSpace::HapticFiles::EngineCommand_CLEAR_ALL:
+		_executor.ClearAll();
+		break;
+	case NullSpace::HapticFiles::EngineCommand_PAUSE_ALL:
+		_executor.PauseAll();
+		break;
+	case NullSpace::HapticFiles::EngineCommand_PLAY_ALL:
+		_executor.PlayAll();
+		break;
+	default:
+		break;
+	}
+}
 void Engine::EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket & packet)
 {
 	_userRequestsTracking = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Tracking*>(packet.packet()));

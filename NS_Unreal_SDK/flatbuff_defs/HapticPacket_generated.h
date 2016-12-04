@@ -17,9 +17,29 @@ namespace HapticFiles {
 
 struct Tracking;
 
+struct EngineCommandData;
+
 struct HandleCommand;
 
 struct HapticPacket;
+
+enum EngineCommand {
+  EngineCommand_NO_COMMAND = 0,
+  EngineCommand_PLAY_ALL = 1,
+  EngineCommand_PAUSE_ALL = 2,
+  EngineCommand_CLEAR_ALL = 3,
+  EngineCommand_ENABLE_TRACKING = 4,
+  EngineCommand_DISABLE_TRACKING = 5,
+  EngineCommand_MIN = EngineCommand_NO_COMMAND,
+  EngineCommand_MAX = EngineCommand_DISABLE_TRACKING
+};
+
+inline const char **EnumNamesEngineCommand() {
+  static const char *names[] = { "NO_COMMAND", "PLAY_ALL", "PAUSE_ALL", "CLEAR_ALL", "ENABLE_TRACKING", "DISABLE_TRACKING", nullptr };
+  return names;
+}
+
+inline const char *EnumNameEngineCommand(EngineCommand e) { return EnumNamesEngineCommand()[static_cast<int>(e)]; }
 
 enum Command {
   Command_PLAY = 0,
@@ -45,12 +65,13 @@ enum FileType {
   FileType_HapticEffect = 4,
   FileType_Tracking = 5,
   FileType_HandleCommand = 6,
+  FileType_EngineCommandData = 7,
   FileType_MIN = FileType_NONE,
-  FileType_MAX = FileType_HandleCommand
+  FileType_MAX = FileType_EngineCommandData
 };
 
 inline const char **EnumNamesFileType() {
-  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", nullptr };
+  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", "EngineCommandData", nullptr };
   return names;
 }
 
@@ -84,6 +105,10 @@ template<> struct FileTypeTraits<HandleCommand> {
   static const FileType enum_value = FileType_HandleCommand;
 };
 
+template<> struct FileTypeTraits<EngineCommandData> {
+  static const FileType enum_value = FileType_EngineCommandData;
+};
+
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type);
 
 struct Tracking FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -114,6 +139,37 @@ inline flatbuffers::Offset<Tracking> CreateTracking(flatbuffers::FlatBufferBuild
     bool enable = false) {
   TrackingBuilder builder_(_fbb);
   builder_.add_enable(enable);
+  return builder_.Finish();
+}
+
+struct EngineCommandData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_COMMAND = 4
+  };
+  EngineCommand command() const { return static_cast<EngineCommand>(GetField<int16_t>(VT_COMMAND, 0)); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyField<int16_t>(verifier, VT_COMMAND) &&
+           verifier.EndTable();
+  }
+};
+
+struct EngineCommandDataBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_command(EngineCommand command) { fbb_.AddElement<int16_t>(EngineCommandData::VT_COMMAND, static_cast<int16_t>(command), 0); }
+  EngineCommandDataBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  EngineCommandDataBuilder &operator=(const EngineCommandDataBuilder &);
+  flatbuffers::Offset<EngineCommandData> Finish() {
+    auto o = flatbuffers::Offset<EngineCommandData>(fbb_.EndTable(start_, 1));
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<EngineCommandData> CreateEngineCommandData(flatbuffers::FlatBufferBuilder &_fbb,
+    EngineCommand command = EngineCommand_NO_COMMAND) {
+  EngineCommandDataBuilder builder_(_fbb);
+  builder_.add_command(command);
   return builder_.Finish();
 }
 
@@ -222,6 +278,7 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
     case FileType_HapticEffect: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::HapticEffect *>(union_obj));
     case FileType_Tracking: return verifier.VerifyTable(reinterpret_cast<const Tracking *>(union_obj));
     case FileType_HandleCommand: return verifier.VerifyTable(reinterpret_cast<const HandleCommand *>(union_obj));
+    case FileType_EngineCommandData: return verifier.VerifyTable(reinterpret_cast<const EngineCommandData *>(union_obj));
     default: return false;
   }
 }

@@ -6,7 +6,11 @@
 using namespace std;
 
 
-HapticsExecutor::HapticsExecutor(std::shared_ptr<InstructionSet> iset, std::unique_ptr<SuitHardwareInterface> s):_suit(std::move(s)), _model(_suit), _iset(iset)
+HapticsExecutor::HapticsExecutor(std::shared_ptr<InstructionSet> iset, std::unique_ptr<SuitHardwareInterface> s):
+	_suit(std::move(s)), 
+	_model(_suit), 
+	_iset(iset),
+	_paused(false)
 {
 	
 }
@@ -70,6 +74,10 @@ bool EffectIsExpired(const std::unique_ptr<IPlayable> &p) {
 
 void HapticsExecutor::Update(float dt)
 {
+	if (_paused) {
+		return;
+	}
+
 	updateLocationModels(dt);
 
 	for (auto& effect : _effects) {
@@ -102,6 +110,21 @@ const std::unique_ptr<SuitHardwareInterface>& HapticsExecutor::Hardware()
 	return _suit;
 }
 
+void HapticsExecutor::PlayAll()
+{
+	_paused = false;
+}
+
+void HapticsExecutor::PauseAll()
+{
+	_paused = true;
+}
+
+void HapticsExecutor::ClearAll()
+{
+	_effects.clear();
+	_releasedEffects.clear();
+}
 void HapticsExecutor::Play(boost::uuids::uuid h)
 {
 	if (_effects.find(uuid_hasher(h)) != _effects.end()) {
