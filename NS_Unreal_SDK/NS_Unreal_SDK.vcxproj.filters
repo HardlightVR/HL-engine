@@ -123,6 +123,12 @@
     <ClCompile Include="PlayableExperience.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NSEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NSEngineApi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumser.h">
@@ -270,6 +276,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayableExperience.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NSEngineApi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NSEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
