@@ -44,10 +44,10 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	}
 
 	if (_adapter->Connect()) {
-		std::cout << "Connected to suit" << "\n";
+		std::cout << "> Connected to suit" << '\n';
 	}
 	else {
-		std::cout << "Unable to connect to suit" << "\n";
+		std::cout << "> Unable to connect to suit." << "\n";
 	}
 	//Kickoff the communication adapter
 	_adapter->BeginRead();

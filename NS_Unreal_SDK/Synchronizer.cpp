@@ -23,11 +23,9 @@ void Synchronizer::TryReadPacket()
 	switch (this->syncState)
 	{
 	case Synchronizer::State::SearchingForSync:
-		//std::cout << "Searching for sync.." << '\n';
 		this->searchForSync();
 		break;
 	case Synchronizer::State::ConfirmingSync:
-		std::cout << "Confirming sync.." << "\n";
 
 		this->confirmSync();
 		break;
@@ -99,7 +97,7 @@ void Synchronizer::confirmSync()
 	packet possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
 		this->syncState = State::Synchronized;
-		std::cout << "synced" << "\n";
+		std::cout << "> Synchronized with suit" << "\n";
 	}
 	else {
 		this->syncState = State::SearchingForSync;

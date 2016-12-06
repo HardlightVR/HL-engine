@@ -60,7 +60,7 @@ void HapticQueue::Update(float deltaTime)
 				effect.TimeElapsed += deltaTime;
 			} else
 			{
-				std::cout << "duration of effect is variable, but time is all elapsed, so marking dirty\n";
+				//std::cout << "duration of effect is variable, but time is all elapsed, so marking dirty\n";
 				this->Dirty = effect.Dirty = true;
 			}
 		}

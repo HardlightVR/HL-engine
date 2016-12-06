@@ -19,18 +19,16 @@ void BoostSerialAdapter::Disconnect()
 void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(boost::system::error_code, std::size_t)> cb)
 {
 	if (this->port && this->port->is_open()) {
-		//char *chars = reinterpret_cast<char*>(bytes);
 		this->port->async_write_some(boost::asio::buffer(*bytes, length), cb);
 	}
 }
 void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length)
 {
 	if (this->port && this->port->is_open()) {
-		//char *chars = reinterpret_cast<char*>(bytes);
 		this->port->async_write_some(boost::asio::buffer(*bytes, length),
 			[bytes](const boost::system::error_code& error, std::size_t bytes_transferred) {
 			if (error) {
-				std::cout << "Error writing bytes! " << error.message() << '\n';
+				std::cout << "Error writing to suit! " << error.message() << '\n';
 			}
 		});
 	}
@@ -40,9 +38,7 @@ void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t 
 		if (_data[2] == 0x02) {
 			_keepaliveTimer.cancel();
 
-		//	std::cout << "got ping response: keepalive had " << _keepaliveTimer.expires_from_now().total_milliseconds() << "ms\n";
-		//	std::cout << "LENGTH! " << length << '\n';
-		
+	
 		}
 		
 		this->copy_data_to_circularbuff(length);
@@ -66,7 +62,7 @@ void BoostSerialAdapter::doKeepAlivePing()
 //	std::cout << "pinging suit" << '\n';
 	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
 	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code ec, const std::size_t bytes_transferred) {
-		if (ec) { std::cout << "error writing ping" << '\n'; }});
+		if (ec) {  }});
 	_keepaliveTimer.expires_from_now(_keepaliveTimeout);
 	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
 
@@ -86,14 +82,16 @@ void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 		return;
 	}
 	auto a = _keepaliveTimer.expires_from_now().total_milliseconds();
-	std::cout << "Timed out! " << _keepaliveTimeout.total_milliseconds() << "ms\n";
+
 
 	//We have to do a silly reset dance with the main thread because I cannot reset the io service from a handler,
 	//as far as I can tell. If this _can_ be done, please replace!
 	//Relevant items: _resetMutex, _needsReset, and the logic in the Engine update loop which tests if the adapter needs
 	//to be reset.
+	
 	_badPingCount++;
 	if (_badPingCount > 2) {
+		std::cout << "> The suit is disconnected\nAttempting to auto reconnect...\n";
 		_badPingCount = 0;
 		std::lock_guard<std::mutex> lock(_resetMutex);
 		if (!_needsReset) {
@@ -101,6 +99,7 @@ void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 		}
 	}
 	else {
+		//std::cout << "Trying again.\n";
 		_sendPingTimer.expires_from_now(_pingTimeout);
 		_sendPingTimer.async_wait(boost::bind(&BoostSerialAdapter::doKeepAlivePing, this));
 	}
@@ -118,11 +117,11 @@ void BoostSerialAdapter::DoReset() {
 	
 }
 void BoostSerialAdapter::reconnectSuit() {
-	std::cout << "Attempting to auto reconnect.." << '\n';
+	//std::cout << "Attempting to auto reconnect.." << '\n';
 	_isResetting = true;
 	if (this->autoConnectPort()) {
 		this->BeginRead();
-		std::cout << "... auto reconnected!" << '\n';
+		std::cout << "> Auto reconnected" << '\n';
 
 		_isResetting = false;
 	}
@@ -222,7 +221,7 @@ bool BoostSerialAdapter::autoConnectPort()
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
 	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
-		std::cout << "No ports available on system." << "\n";
+		std::cout << "No ports available on system. Check Device Manager > Ports and " << "\n";
 		return false;
 	}
 	for (std::size_t i = 0; i < ports.size(); ++i) {

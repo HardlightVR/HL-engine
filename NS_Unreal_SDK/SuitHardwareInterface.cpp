@@ -126,7 +126,7 @@ void SuitHardwareInterface::writeBuffer() {
 			_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 			return;
 		}
-		std::cout << "Okay, we need to cook a new batch\n";
+		//std::cout << "Okay, we need to cook a new batch\n";
 		_isBatching = true;
 		_batchingDeadline.expires_from_now(_batchingTimeout);
 		_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
@@ -158,7 +158,7 @@ void SuitHardwareInterface::writeBuffer() {
 		);
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
-		std::cout << "Got a FULL BATCH!" << '\n';
+		//std::cout << "Got a FULL BATCH!" << '\n';
 	}
 	
 	

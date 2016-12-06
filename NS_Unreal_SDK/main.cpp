@@ -21,7 +21,7 @@
 //this variable and the following function should probably be part of Engine, but Engine is becoming
 //a monolith. 
 //This controls how often the engine sends a "I'm plugged in" message to a game. 
-const auto suit_status_update_interval = boost::posix_time::milliseconds(250);
+const auto suit_status_update_interval = boost::posix_time::milliseconds(200);
 
 void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingOperations* encoder, zmq::socket_t* socket, boost::asio::deadline_timer* t) {
 	NullSpace::Communication::SuitStatus status = e->SuitConnected() ?
@@ -36,6 +36,11 @@ void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingO
 	t->async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, e, encoder, socket, t));
 }
 int main() {
+	std::cout << "---------------------------------------" << '\n';
+
+	std::cout << "---- NullSpace Engine 0.1.0 -----------" << '\n';
+	std::cout << "---------------------------------------" << '\n';
+	std::cout << "Initializing...\n";
 	#ifndef SHOW_CONSOLE
 		ShowWindow(GetConsoleWindow(), SW_HIDE);
 	#endif
@@ -103,7 +108,7 @@ int main() {
 		total += elapsed.count();
 
 		if (total >= 1.0f) {
-			std::cout << "FPS: " << (framecount) << "\n";
+			//std::cout << "FPS: " << (framecount) << "\n";
 			total = 0.0f;
 			framecount = 0;
 		}
