@@ -14,8 +14,8 @@
 
 #include "Engine.h"
 
+#include "boost\program_options.hpp"
 
-#define SHOW_CONSOLE
 
 
 //this variable and the following function should probably be part of Engine, but Engine is becoming
@@ -35,15 +35,34 @@ void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingO
 	t->expires_at(t->expires_at() + suit_status_update_interval);
 	t->async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, e, encoder, socket, t));
 }
-int main() {
+
+
+int main(int argc, char *argv[]) {
+	namespace po = boost::program_options;
+
 	std::cout << "---------------------------------------" << '\n';
 
 	std::cout << "---- NullSpace Engine 0.1.0 -----------" << '\n';
 	std::cout << "---------------------------------------" << '\n';
 	std::cout << "Initializing...\n";
-	#ifndef SHOW_CONSOLE
+
+	po::options_description desc("Available options");
+	desc.add_options()
+		("help", "produce this message")
+		("console", "enable the console to show NullSpace Engine status");
+	po::variables_map vm;
+	po::store(po::parse_command_line(argc, argv, desc), vm);
+	po::notify(vm);
+
+	if (vm.count("help")) {
+		cout << desc << '\n';
+		return 1;
+	}
+
+	if (!vm.count("console")) {
 		ShowWindow(GetConsoleWindow(), SW_HIDE);
-	#endif
+	}
+	
 	
 	using namespace std::chrono;
 	EncodingOperations _encoder;
