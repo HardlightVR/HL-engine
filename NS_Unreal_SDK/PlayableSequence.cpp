@@ -14,8 +14,19 @@ PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, AreaFlag loc
 
 void PlayableSequence::Play()
 {
-	
+	//If the user paused the effect, we want to resume where they left off.
 	_paused = false;
+
+	//Additionally, if they called Play() after the effect was expired, Play will 
+	//now start playing from the beginning immediately
+	if (_currentTime >= GetTotalPlayTime()) {
+		_activeEffects.clear();
+		_effects.clear();
+		for (const auto& e : _sourceOfTruth) {
+			_effects.push_back(Instant<JsonSequenceAtom>(e, e.Time));
+		}
+		_currentTime = 0;
+	}
 }
 
 void PlayableSequence::Reset(PriorityModel &model)
@@ -45,7 +56,10 @@ void PlayableSequence::Pause(PriorityModel &model)
 			auto pausedHaptic = std::find_if(_effects.begin(), _effects.end(), [&](const Instant<JsonSequenceAtom>& m) {return m.Handle == ev.get().Handle; });
 			(*pausedHaptic).Time = 0;
 			(*pausedHaptic).Executed = false;
+
 			(*pausedHaptic).Item.Duration = (*pausedHaptic).Item.Duration - ev.get().TimeElapsed;
+			//std::cout << "Pausing effect. Timeelapsed was " << ev.get().TimeElapsed << " and new duration is " << (*pausedHaptic).Item.Duration << '\n';
+
 		}
 		
 	}

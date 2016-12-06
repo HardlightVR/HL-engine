@@ -15,6 +15,8 @@ public:
 		bool NeedsSweep;
 		Released(boost::uuids::uuid id) :ID(id), NeedsSweep(false) {}
 	};
+
+	
 	HapticsExecutor(std::shared_ptr<InstructionSet>,std::unique_ptr<SuitHardwareInterface>);
 	~HapticsExecutor();
 
@@ -44,7 +46,7 @@ private:
 	PriorityModel _model;
 	std::vector<Released> _releasedEffects;
 	std::unordered_map<HapticHandle, boost::uuids::uuid> _outsideHandleToUUID;
-
+	std::vector<std::size_t> _frozenEffects;
 	void updateLocationModels(float dt);
 
 	bool _paused;

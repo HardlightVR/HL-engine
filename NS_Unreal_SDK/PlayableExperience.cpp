@@ -23,10 +23,26 @@ PlayableExperience::~PlayableExperience()
 
 void PlayableExperience::Play()
 {
-	_paused = false;
-	for (auto& ef : _activeEffects) {
-		_exec.Play(ef);
+	if (_paused) {
+		_paused = false;
+		for (auto& ef : _activeEffects) {
+			_exec.Play(ef);
+		}
 	}
+
+
+
+	//Additionally, if they called Play() after the effect was expired, Play will 
+	//now start playing from the beginning immediately
+	if (_currentTime >= GetTotalPlayTime()) {
+		_activeEffects.clear();
+		_effects.clear();
+		for (const auto& e : _sourceOfTruth) {
+			_effects.push_back(Instant<HapticSample>(e, e.Time));
+		}
+		_currentTime = 0;
+	}
+
 }
 
 void PlayableExperience::Reset(PriorityModel & model)

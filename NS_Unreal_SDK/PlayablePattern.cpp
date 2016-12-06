@@ -19,9 +19,24 @@ PlayablePattern::~PlayablePattern()
 
 void PlayablePattern::Play()
 {
-	_paused = false; 
-	for (auto& effect : _activeEffects) {
-		_exec.Play(effect);
+	//If the effect was paused, we need to resume the sequences that were paused. 
+	if (_paused) {
+		_paused = false;
+		for (auto& effect : _activeEffects) {
+				_exec.Play(effect);
+		}
+	}
+
+
+	//Additionally, if they called Play() after the effect was expired, Play will 
+	//now start playing from the beginning immediately
+	if (_currentTime >= GetTotalPlayTime()) {
+		_activeEffects.clear();
+		_effects.clear();
+		for (const auto& e : _sourceOfTruth) {
+			_effects.push_back(Instant<HapticFrame>(e, e.Time));
+		}
+		_currentTime = 0;
 	}
 }
 
