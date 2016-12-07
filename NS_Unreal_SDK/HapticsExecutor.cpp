@@ -150,6 +150,7 @@ void HapticsExecutor::ClearAll()
 	for (auto& effect : _effects) {
 		effect.second->Pause(_model);
 	}
+	_outsideHandleToUUID.clear();
 	_effects.clear();
 	_releasedEffects.clear();
 }
