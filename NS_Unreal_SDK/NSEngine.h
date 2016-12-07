@@ -7,6 +7,7 @@ public:
 	NSEngine();
 	~NSEngine();
 	void Update();
+	bool Shutdown();
 private:
 	const boost::posix_time::milliseconds suit_status_update_interval;
 	EncodingOperations _encoder;

@@ -42,7 +42,7 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 		std::cin.get();
 		exit(0);
 	}
-
+	//bug: If you remove this initial connect, the port object could be empty. Should check for that.
 	if (_adapter->Connect()) {
 		std::cout << "> Connected to suit" << '\n';
 	}

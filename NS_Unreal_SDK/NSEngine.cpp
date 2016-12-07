@@ -23,7 +23,7 @@
 NSEngine::NSEngine():
 	suit_status_update_interval(200),
 	_encoder(),
-	io(std::make_shared<IoService>()),
+	io(new IoService()),
 	context(1),
 	server_updates(context, ZMQ_PUB),
 	haptic_requests(context, ZMQ_SUB), 
@@ -32,6 +32,7 @@ NSEngine::NSEngine():
 
 
 {
+
 
 	//The ZMQ sockets require some tweaking. For haptic_requests, we want the "high water mark" to be fairly small. Meaning,
 	//if we receive more messages than the HWM, we discard them. This is because we don't want old haptics. 
@@ -48,19 +49,23 @@ NSEngine::NSEngine():
 	server_updates.setsockopt(ZMQ_CONFLATE, 1);
 	server_updates.bind("tcp://127.0.0.1:9453");
 	lastFrameTime = std::chrono::high_resolution_clock::now();
+
+	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg,this, boost::asio::placeholders::error, &server_updates));
+
 }
 
 
 NSEngine::~NSEngine()
 {
+	suitStatusTimer.cancel();
 }
 
 
 void NSEngine::Update() {
 	typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
-
-	duration elapsed = std::chrono::high_resolution_clock::now() - lastFrameTime;
-
+	auto timeNow = std::chrono::high_resolution_clock::now();
+	duration elapsed = timeNow - lastFrameTime;
+	lastFrameTime = timeNow;
 	zmq::message_t msg;
 	if (haptic_requests.recv(&msg, ZMQ_DONTWAIT))
 	{
@@ -101,6 +106,12 @@ void NSEngine::Update() {
 	}
 
 	engine.Update(elapsed.count());
+}
+bool NSEngine::Shutdown()
+{
+	io->Stop();
+
+	return true;;
 }
 void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket_t* socket)
 {

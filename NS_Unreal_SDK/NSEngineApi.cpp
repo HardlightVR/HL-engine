@@ -2,18 +2,22 @@
 #include "NSEngine.h"
 
 extern "C" {
-	NS_UNREAL_SDK_API NSEnginePtr __stdcall NSEngine_Create()
+	NS_UNREAL_SDK_API NSEngine* __stdcall NSEngine_Create()
 	{
-		return  reinterpret_cast<NSEnginePtr>(new NSEngine());
+		return  new NSEngine();
 	}
 
-	NS_UNREAL_SDK_API void __stdcall NSEngine_Destroy(NSEnginePtr ptr)
+	NS_UNREAL_SDK_API void __stdcall NSEngine_Destroy(NSEngine* ptr)
 	{
-		delete reinterpret_cast<NSEngine*>(ptr);
+		delete ptr;
 	}
 
-	NS_UNREAL_SDK_API void __stdcall NSEngine_Update(NSEnginePtr ptr)
+	NS_UNREAL_SDK_API void __stdcall NSEngine_Update(NSEngine* ptr)
 	{
-		reinterpret_cast<NSEngine*>(ptr)->Update();
+		ptr->Update();
+	}
+
+	NS_UNREAL_SDK_API bool __stdcall NSEngine_Shutdown(NSEngine* ptr) {
+		return ptr->Shutdown();
 	}
 }

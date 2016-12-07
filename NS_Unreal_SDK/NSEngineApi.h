@@ -7,11 +7,12 @@
 #define NS_UNREAL_SDK_API __declspec(dllimport)   
 #endif  
 
-struct NSEngineStruct;
-typedef struct NSEngineStruct* NSEnginePtr;
+#include "NSEngine.h"
+
 
 extern "C" {
-	NS_UNREAL_SDK_API NSEnginePtr __stdcall NSEngine_Create();
-	NS_UNREAL_SDK_API void __stdcall NSEngine_Destroy(NSEnginePtr ptr);
-	NS_UNREAL_SDK_API void __stdcall NSEngine_Update(NSEnginePtr ptr);
+	NS_UNREAL_SDK_API NSEngine* __stdcall NSEngine_Create();
+	NS_UNREAL_SDK_API void __stdcall NSEngine_Destroy(NSEngine* ptr);
+	NS_UNREAL_SDK_API void __stdcall NSEngine_Update(NSEngine* ptr);
+	NS_UNREAL_SDK_API bool __stdcall NSEngine_Shutdown(NSEngine* ptr);
 }
