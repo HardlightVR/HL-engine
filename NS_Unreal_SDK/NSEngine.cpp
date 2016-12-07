@@ -121,7 +121,7 @@ bool NSEngine::Shutdown()
 		_workThread.join();
 	}
 	io->Stop();
-
+	//todo: NEED TO SEND SUIT DISCONNECTED MESSAGE
 	return true;
 }
 void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket_t* socket)
