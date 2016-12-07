@@ -6,6 +6,7 @@ class NSEngine
 public:
 	NSEngine();
 	~NSEngine();
+	void StartThread();
 	void Update();
 	bool Shutdown();
 private:
@@ -20,7 +21,9 @@ private:
 	void sendSuitStatusMsg(const boost::system::error_code& ec, zmq::socket_t* socket);
 
 	std::chrono::steady_clock::time_point lastFrameTime;
-
+	std::thread _workThread;
+	bool _running;
+	void _UpdateLoop();
 
 };
 

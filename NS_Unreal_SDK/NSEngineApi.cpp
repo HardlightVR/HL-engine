@@ -20,4 +20,8 @@ extern "C" {
 	NS_UNREAL_SDK_API bool __stdcall NSEngine_Shutdown(NSEngine* ptr) {
 		return ptr->Shutdown();
 	}
+	NS_UNREAL_SDK_API void __stdcall NSEngine_StartThread(NSEngine * ptr)
+	{
+		ptr->StartThread();
+	}
 }

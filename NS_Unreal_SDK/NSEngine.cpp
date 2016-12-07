@@ -28,7 +28,8 @@ NSEngine::NSEngine():
 	server_updates(context, ZMQ_PUB),
 	haptic_requests(context, ZMQ_SUB), 
 	engine(io, _encoder, server_updates),
-	suitStatusTimer(*io->GetIOService(), suit_status_update_interval)
+	suitStatusTimer(*io->GetIOService(), suit_status_update_interval),
+	_running(false)
 
 
 {
@@ -58,6 +59,12 @@ NSEngine::NSEngine():
 NSEngine::~NSEngine()
 {
 	suitStatusTimer.cancel();
+}
+
+void NSEngine::StartThread()
+{
+	_running = true;
+	_workThread = std::thread(&NSEngine::_UpdateLoop, this);
 }
 
 
@@ -109,9 +116,13 @@ void NSEngine::Update() {
 }
 bool NSEngine::Shutdown()
 {
+	_running = false;
+	if (_workThread.joinable()) {
+		_workThread.join();
+	}
 	io->Stop();
 
-	return true;;
+	return true;
 }
 void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket_t* socket)
 {
@@ -125,4 +136,12 @@ void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket
 	});
 	suitStatusTimer.expires_at(suitStatusTimer.expires_at() + suit_status_update_interval);
 	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg, this, boost::asio::placeholders::error, socket));
+}
+
+void NSEngine::_UpdateLoop()
+{
+	while (_running) {
+		this->Update();
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
 }

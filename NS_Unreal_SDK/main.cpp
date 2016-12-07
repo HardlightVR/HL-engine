@@ -175,6 +175,7 @@ int main(int argc, char *argv[]) {
 		//Update the state of any playing haptics, reset adapter if it needs to be reset,
 		//parse packets from the suit
 		engine.Update(elapsed.count());
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			
 	}
 	
