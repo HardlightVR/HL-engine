@@ -48,16 +48,16 @@ void InstructionSet::loadFromJson(std::string path, Loader loader) {
 bool InstructionSet::LoadAll() {
 	try {
 		
-		loadFromJson("C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/NS_Unreal_SDK/Zones.json",
+		loadFromJson("Zones.json",
 			boost::bind(&InstructionSet::LoadKeyValue, this, boost::ref(_paramDict["zone"]), _1));
 		
-		loadFromJson("C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/NS_Unreal_SDK/Effects.json",
+		loadFromJson("Effects.json",
 			boost::bind(&InstructionSet::LoadKeyValue, this, boost::ref(_paramDict["effect"]), _1));
 
-		loadFromJson("C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/NS_Unreal_SDK/Instructions.json", 
+		loadFromJson("Instructions.json", 
 			boost::bind(&InstructionSet::LoadInstructions, this, _1));
 
-		loadFromJson("C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/NS_Unreal_SDK/Atoms.json",
+		loadFromJson("Atoms.json",
 			boost::bind(&InstructionSet::LoadAtoms, this, _1));
 
 	

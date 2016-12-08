@@ -59,8 +59,9 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 
 void Engine::sendTrackingUpdate() {
 	if (boost::optional<Quaternion> q = _imuConsumer->GetOrientation(Imu::Chest)) {
+		_encoder.AquireEncodingLock();
 		_encoder.Finalize(_encoder.Encode(q.get()), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
-
+		_encoder.ReleaseEncodingLock();
 	}
 	_trackingUpdateTimer.expires_from_now(_trackingUpdateInterval);
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));

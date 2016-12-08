@@ -129,11 +129,12 @@ void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket
 	NullSpace::Communication::SuitStatus status = engine.SuitConnected() ?
 		NullSpace::Communication::SuitStatus::SuitStatus_Connected :
 		NullSpace::Communication::SuitStatus::SuitStatus_Disconnected;
-
+	_encoder.AquireEncodingLock();
 	_encoder.Finalize(_encoder.Encode(status),
 		[&](uint8_t* data, int size) {
 		Wire::sendTo(*socket, data, size);
 	});
+	_encoder.ReleaseEncodingLock();
 	suitStatusTimer.expires_at(suitStatusTimer.expires_at() + suit_status_update_interval);
 	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg, this, boost::asio::placeholders::error, socket));
 }
