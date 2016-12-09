@@ -51,9 +51,12 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	}
 	//Kickoff the communication adapter
 	_adapter->BeginRead();
+	std::cout << "Beginread\n";
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, std::make_shared<FifoConsumer>());
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
+	std::cout << "Packetdispatch\n";
+
 
 }
 

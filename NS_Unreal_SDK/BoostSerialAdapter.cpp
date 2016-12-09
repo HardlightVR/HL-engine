@@ -50,7 +50,7 @@ void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t 
 
 void BoostSerialAdapter::doSuitRead()
 {
-	if (this->port->is_open()) {
+	if (this->port && this->port->is_open()) {
 		this->port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE),
 			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 	}	
@@ -60,12 +60,13 @@ void BoostSerialAdapter::doSuitRead()
 void BoostSerialAdapter::doKeepAlivePing()
 {
 //	std::cout << "pinging suit" << '\n';
-	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
-	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code ec, const std::size_t bytes_transferred) {
-		if (ec) {  }});
-	_keepaliveTimer.expires_from_now(_keepaliveTimeout);
-	_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
-
+	if (this->port && this->port->is_open()) {
+		auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+		this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code ec, const std::size_t bytes_transferred) {
+			if (ec) {}});
+		_keepaliveTimer.expires_from_now(_keepaliveTimeout);
+		_keepaliveTimer.async_wait(boost::bind(&BoostSerialAdapter::suitReadCancel, this, boost::asio::placeholders::error));
+	}
 }
 
 void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)

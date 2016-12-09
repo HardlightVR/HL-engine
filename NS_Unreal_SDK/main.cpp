@@ -46,22 +46,7 @@ int main(int argc, char *argv[]) {
 	std::cout << "---------------------------------------" << '\n';
 	std::cout << "Initializing...\n";
 
-	po::options_description desc("Available options");
-	desc.add_options()
-		("help", "produce this message")
-		("console", "enable the console to show NullSpace Engine status");
-	po::variables_map vm;
-	po::store(po::parse_command_line(argc, argv, desc), vm);
-	po::notify(vm);
-
-	if (vm.count("help")) {
-		cout << desc << '\n';
-		return 1;
-	}
-
-	if (!vm.count("console")) {
-		ShowWindow(GetConsoleWindow(), SW_HIDE);
-	}
+	
 	
 	
 	using namespace std::chrono;
@@ -71,6 +56,7 @@ int main(int argc, char *argv[]) {
 	//This allows us to do io which is not controlled by our update loop, but totally independent
 	auto io = std::make_shared<IoService>();
 	io->Start();
+	std::cout << "Test3\n";
 
 	//We use the ZeroMQ library to communicate between plugin and engine. 
 	//Right now we have a server_updates pub socket, where the Engine publishes anything that a plugin needs to know. 
@@ -81,6 +67,7 @@ int main(int argc, char *argv[]) {
 	zmq::context_t context(1);
 	zmq::socket_t server_updates(context, ZMQ_PUB);
 	zmq::socket_t haptic_requests(context, ZMQ_SUB);
+	std::cout << "Test4\n";
 
 	//Engine is responsible for executing haptics, and sending updates. The engine handles each haptic
 	//as it's own entity, capable of playing, pausing, resetting. They are referenced by handles which are passed
