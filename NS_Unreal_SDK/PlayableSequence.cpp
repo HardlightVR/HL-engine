@@ -5,7 +5,7 @@
 #include <functional>
 #include <algorithm>
 #include "PriorityModel.h"
-PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, AreaFlag loc):_sourceOfTruth(j), _paused(true), _location(loc)
+PlayableSequence::PlayableSequence(std::vector<JsonSequenceAtom> j, AreaFlag loc, float strength):_sourceOfTruth(j), _paused(true), _location(loc), _strength(strength)
 {
 	for (const auto& e : j) {
 		_effects.push_back(Instant<JsonSequenceAtom>(e, e.Time));
@@ -87,7 +87,8 @@ void PlayableSequence::Update(float dt, PriorityModel & model,const std::unorder
 			auto& h = effect.Item;
 			effect.Executed = true;
 			if (atoms.find(h.Effect) != atoms.end()) {
-				auto ef = HapticEvent(atoms.at(h.Effect).GetEffect(h.Strength), h.Duration);
+				//here is where the natural strength is modulated by the overriding sequence strength
+				auto ef = HapticEvent(atoms.at(h.Effect).GetEffect(h.Strength * _strength), h.Duration);
 				if (boost::optional<boost::uuids::uuid> id = model.Put(_location, ef)) {
 					_activeEffects.push_back(id.get());
 					effect.Handle = id.get();

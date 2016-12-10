@@ -75,14 +75,15 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 	auto name = packet.name()->str();
 	auto rawSequenceData = static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet());
 	auto location = AreaFlag(rawSequenceData->location());
+
 	auto handle = packet.handle(); //converts from uint64 to uint32, maybe should check this
 
 	auto decoded = EncodingOperations::Decode(rawSequenceData);
 		
 	//todo: figure out caching. If user changes a sequence's effects and the engine isn't
 	//reloaded, then it is cached. Could do on create for very first time, cache
-
-	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableSequence(decoded, location)));
+	                                                                        //default strength --V for now
+	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableSequence(decoded, location, 1.0)));
 }
 
 void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
@@ -90,7 +91,7 @@ void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 	auto name = packet.name()->str();
 	auto rawPatternData = static_cast<const NullSpace::HapticFiles::Pattern*>(packet.packet());
 	auto handle = packet.handle();
-
+	
 	auto decoded = EncodingOperations::Decode(rawPatternData);
 	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayablePattern(decoded, _executor)));
 }

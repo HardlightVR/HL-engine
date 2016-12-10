@@ -6,7 +6,7 @@
 class PlayableSequence : public IPlayable {
 public:
 
-	PlayableSequence(std::vector<JsonSequenceAtom>, AreaFlag loc);
+	PlayableSequence(std::vector<JsonSequenceAtom>, AreaFlag loc, float strength);
 	~PlayableSequence();
 	void Play() override;
 	void Reset(PriorityModel & model) override;
@@ -23,6 +23,7 @@ private:
 	std::vector<boost::uuids::uuid> _activeEffects;
 	bool _paused;
 	int _handle;
+	float _strength;
 	float _currentTime;
 	AreaFlag _location;
 };

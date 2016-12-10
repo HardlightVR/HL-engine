@@ -17,17 +17,20 @@ struct HapticFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_TIME = 4,
     VT_SEQUENCE = 6,
-    VT_AREA = 8
+    VT_AREA = 8,
+    VT_STRENGTH = 10
   };
   float time() const { return GetField<float>(VT_TIME, 0.0f); }
   const NullSpace::HapticFiles::Sequence *sequence() const { return GetPointer<const NullSpace::HapticFiles::Sequence *>(VT_SEQUENCE); }
   uint32_t area() const { return GetField<uint32_t>(VT_AREA, 0); }
+  float strength() const { return GetField<float>(VT_STRENGTH, 0.0f); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<float>(verifier, VT_TIME) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_SEQUENCE) &&
            verifier.VerifyTable(sequence()) &&
            VerifyField<uint32_t>(verifier, VT_AREA) &&
+           VerifyField<float>(verifier, VT_STRENGTH) &&
            verifier.EndTable();
   }
 };
@@ -38,10 +41,11 @@ struct HapticFrameBuilder {
   void add_time(float time) { fbb_.AddElement<float>(HapticFrame::VT_TIME, time, 0.0f); }
   void add_sequence(flatbuffers::Offset<NullSpace::HapticFiles::Sequence> sequence) { fbb_.AddOffset(HapticFrame::VT_SEQUENCE, sequence); }
   void add_area(uint32_t area) { fbb_.AddElement<uint32_t>(HapticFrame::VT_AREA, area, 0); }
+  void add_strength(float strength) { fbb_.AddElement<float>(HapticFrame::VT_STRENGTH, strength, 0.0f); }
   HapticFrameBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   HapticFrameBuilder &operator=(const HapticFrameBuilder &);
   flatbuffers::Offset<HapticFrame> Finish() {
-    auto o = flatbuffers::Offset<HapticFrame>(fbb_.EndTable(start_, 3));
+    auto o = flatbuffers::Offset<HapticFrame>(fbb_.EndTable(start_, 4));
     return o;
   }
 };
@@ -49,8 +53,10 @@ struct HapticFrameBuilder {
 inline flatbuffers::Offset<HapticFrame> CreateHapticFrame(flatbuffers::FlatBufferBuilder &_fbb,
     float time = 0.0f,
     flatbuffers::Offset<NullSpace::HapticFiles::Sequence> sequence = 0,
-    uint32_t area = 0) {
+    uint32_t area = 0,
+    float strength = 0.0f) {
   HapticFrameBuilder builder_(_fbb);
+  builder_.add_strength(strength);
   builder_.add_area(area);
   builder_.add_sequence(sequence);
   builder_.add_time(time);

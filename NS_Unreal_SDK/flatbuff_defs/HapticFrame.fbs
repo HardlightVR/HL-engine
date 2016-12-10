@@ -6,6 +6,8 @@ table HapticFrame{
 	time:float;
 	sequence:Sequence;
 	area:uint;
+	strength:float;
+
 	
 }
 

@@ -112,6 +112,7 @@ void SuitHardwareInterface::HaltAllEffects()
 {
 	//must reimplement
 }
+#define BATCH_SIZE 64
 
 void SuitHardwareInterface::writeBuffer() {
 	const std::size_t avail = _lfQueue.read_available();
@@ -119,7 +120,7 @@ void SuitHardwareInterface::writeBuffer() {
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 	}
-	else if (avail > 0 && avail < 64) {
+	else if (avail > 0 && avail < BATCH_SIZE) {
 		if (_isBatching) {
 			//std::cout << "psst! I'm waiting for a batch of cookies!" << '\n';
 			_writeTimer.expires_from_now(_writeInterval);
@@ -131,8 +132,8 @@ void SuitHardwareInterface::writeBuffer() {
 		_batchingDeadline.expires_from_now(_batchingTimeout);
 		_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
 			if (!ec) {
-				auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
-				const int actualLen = _lfQueue.pop(*a, 64);
+				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
+				const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
 				//std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
 
 				this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
@@ -149,8 +150,8 @@ void SuitHardwareInterface::writeBuffer() {
 	else {
 		_isBatching = false;
 		_batchingDeadline.cancel();
-		auto a = std::make_shared<uint8_t*>(new uint8_t[64]);
-		const int actualLen = _lfQueue.pop(*a, 64);
+		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
+		const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
 		this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
 		
 

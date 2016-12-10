@@ -61,7 +61,9 @@ void PriorityModel::Clean(Location loc)
 
 boost::optional<HapticEvent> PriorityModel::Remove(AreaFlag area, boost::uuids::uuid e)
 {
+
 	boost::optional<HapticEvent> removedEffect;
+	//This is actually a loop to extract out the individual masks from the area flag
 	START_BITMASK_SWITCH(uint32_t(area))
 	{
 		case AreaFlag::Forearm_Left:
