@@ -33,9 +33,15 @@ void ImuConsumer::ConsumePacket(const packet& packet)
 {
 	std::cout << "Got Imu  packet: " << int(packet.raw[13]) << " in the fifo" << '\n';
 	//todo: DO THE MAPPING ON VERSION DETECT
-	Imu id = Imu(packet.raw[11]);
+	Imu id = _mapping[packet.raw[11]];
 	_quaternions[id] = parseQuaternion(packet.raw);
+	std::cout << _quaternions[id].w << ", " << _quaternions[id].x << ", " << _quaternions[id].y << '\n';
 
+}
+
+void ImuConsumer::AssignMapping(uint32_t key, Imu id)
+{
+	_mapping[key] = id;
 }
 
 Quaternion ImuConsumer::parseQuaternion(const uint8_t * rec) const
