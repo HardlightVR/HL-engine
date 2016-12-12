@@ -4,6 +4,8 @@ class SuitPacket
 {
 public:
 	enum class PacketType {
+		SuitVersion = 0x01,
+		SuitStatus = 0x03,
 		ImuData = 0x33,
 		ImuStatus,
 		DrvStatus = 0x15,

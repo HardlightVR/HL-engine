@@ -129,6 +129,12 @@
     <ClCompile Include="NSEngineApi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SuitInfoConsumer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SuitStatusConsumer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumser.h">
@@ -282,6 +288,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NSEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuitInfoConsumer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuitStatusConsumer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,6 +4,8 @@
 
 #include "TrackingUpdate_generated.h"
 #include "FifoConsumer.h"
+#include "SuitInfoConsumer.h"
+#include "SuitStatusConsumer.h"
 #include "PlayableSequence.h"
 #include "PlayablePattern.h"
 #include "PlayableExperience.h"
@@ -49,13 +51,16 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	else {
 		std::cout << "> Unable to connect to suit." << "\n";
 	}
+	
 	//Kickoff the communication adapter
 	_adapter->BeginRead();
-	std::cout << "Beginread\n";
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, std::make_shared<FifoConsumer>());
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitVersion, 
+		std::make_shared<SuitInfoConsumer>(boost::bind(&Engine::handleSuitVersionUpdate, this, _1)));
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitStatus, std::make_shared<SuitStatusConsumer>());
+
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
-	std::cout << "Packetdispatch\n";
 
 
 }
@@ -68,6 +73,17 @@ void Engine::sendTrackingUpdate() {
 	}
 	_trackingUpdateTimer.expires_from_now(_trackingUpdateInterval);
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
+}
+
+void Engine::handleSuitVersionUpdate(const SuitHardwareInterface::VersionInfo & v)
+{
+	std::cout << "Major version: " << v.Major << "\nMinor version: " << v.Minor << "\n";
+	if (v.Major == 2 && v.Minor == 4) {
+		_imuConsumer->AssignMapping(3, Imu::Chest);
+	}
+	else if (v.Major == 2 && v.Minor == 3) {
+		_imuConsumer->AssignMapping(0, Imu::Chest);
+	}
 }
 
 void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)

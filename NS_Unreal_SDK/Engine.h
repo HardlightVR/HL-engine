@@ -47,5 +47,7 @@ private:
 
 	//todo: App Sessions
 	bool _userRequestsTracking;
+
+	void handleSuitVersionUpdate(const SuitHardwareInterface::VersionInfo& v);
 };
 
