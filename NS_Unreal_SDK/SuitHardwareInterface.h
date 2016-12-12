@@ -5,15 +5,28 @@
 #include "Locator.h"
 #include <boost\lockfree\spsc_queue.hpp>
 #include <queue>
-
 class SuitHardwareInterface
 {
 public:
+	struct VersionInfo {
+		unsigned int Major;
+		unsigned int Minor;
+		VersionInfo(unsigned int major, unsigned int minor) :Major(major), Minor(minor) {}
+	};
+
+	struct SuitStatusUpdate {
+		enum class SuitStatus {ImuInitialize, DrvInitialize, Booted};
+		SuitStatus Stage;
+		unsigned int Response;
+		SuitStatusUpdate(unsigned int stage, unsigned int responsecode) :Stage(SuitStatus(stage)), Response(responsecode) {}
+	};
+	typedef std::function<void(const SuitHardwareInterface::VersionInfo&)> VersionInfoCallback;
 	SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter>, std::shared_ptr<InstructionSet> iset, std::shared_ptr<boost::asio::io_service> io);
 	~SuitHardwareInterface();
 	void SetAdapter(std::shared_ptr<ICommunicationAdapter> adapter);
 	void PlayEffect(Location location, Effect effect);
 	void HaltEffect(Location location);
+	void RequestSuitVersion();
 	void PlayEffectContinuous(Location location, Effect effect);
 	void HaltAllEffects();
 	void PingSuit();
@@ -40,6 +53,8 @@ private:
 	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
 	std::mutex _needsFlushMutex;
 	bool _isBatching;
+	
+	std::unordered_map<SuitStatusUpdate::SuitStatus, std::unordered_map<unsigned int, std::string>> _errorCodes;
 	
 };
 

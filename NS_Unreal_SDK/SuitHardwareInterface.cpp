@@ -14,6 +14,9 @@ SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapt
 	_batchingDeadline(*io, _batchingTimeout),
 	_isBatching(false)
 {
+	//fill in rest of errorcodes
+	_errorCodes[SuitStatusUpdate::SuitStatus::ImuInitialize][0] = "success";
+
 	_writeTimer.expires_from_now(_writeInterval);
 	_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 	//_preWriteBuffer.reserve(512);
@@ -106,6 +109,16 @@ void SuitHardwareInterface::HaltEffect(Location location)
 		std::cout << "Failed to build instruction " << builder.GetDebugString();
 	}
 
+}
+
+void SuitHardwareInterface::RequestSuitVersion()
+{
+	if (builder.UseInstruction("GET_VERSION").Verify()) {
+		chooseExecutionStrategy(builder.Build());
+	}
+	else {
+		std::cout << "Failed to build instruction " << builder.GetDebugString();
+	}
 }
 
 void SuitHardwareInterface::HaltAllEffects()
