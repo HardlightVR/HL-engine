@@ -3,9 +3,9 @@
 #include "BoostSerialAdapter.h"
 
 #include "TrackingUpdate_generated.h"
-#include "FifoConsumer.h"
-#include "SuitInfoConsumer.h"
-#include "SuitStatusConsumer.h"
+#include "Consumers\FifoConsumer.h"
+#include "Consumers\SuitInfoConsumer.h"
+#include "Consumers\SuitStatusConsumer.h"
 #include "PlayableSequence.h"
 #include "PlayablePattern.h"
 #include "PlayableExperience.h"

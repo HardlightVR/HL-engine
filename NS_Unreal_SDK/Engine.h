@@ -6,7 +6,7 @@
 #include "Synchronizer.h"
 #include "HapticsExecutor.h"
 #include "InstructionSet.h"
-#include "ImuConsumer.h"
+#include "Consumers\ImuConsumer.h"
 
 struct suit_status {
 
