@@ -1,5 +1,6 @@
 #pragma once
-
+#include "Wire.h"
+#include "EncodingOperations.h"
 #include "SuitHardwareInterface.h"
 #include "HapticCache2.h"
 #include "PacketDispatcher.h"
@@ -7,7 +8,7 @@
 #include "HapticsExecutor.h"
 #include "InstructionSet.h"
 #include "Consumers\ImuConsumer.h"
-
+#include "SuitDiagnostics.h"
 struct suit_status {
 
 };
@@ -47,7 +48,7 @@ private:
 
 	//todo: App Sessions
 	bool _userRequestsTracking;
-
+	SuitDiagnostics _diagnostics;
 	void handleSuitVersionUpdate(const SuitHardwareInterface::VersionInfo& v);
 };
 

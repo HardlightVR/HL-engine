@@ -135,6 +135,9 @@
     <ClCompile Include="Consumers\SuitStatusConsumer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SuitDiagnostics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enumser.h">
@@ -294,6 +297,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Consumers\SuitStatusConsumer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuitDiagnostics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportedStructures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

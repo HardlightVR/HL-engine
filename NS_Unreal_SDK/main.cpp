@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#define NOMINMAX
 
 #include "SuitHardwareInterface.h"
 #include "HapticDirectoryTools.h"
@@ -6,6 +7,7 @@
 
 #include <cassert>
 #include <chrono>
+
 #include "flatbuffers\flatbuffers.h"
 #include "Sequence_generated.h"
 #include "HapticEffect_generated.h"

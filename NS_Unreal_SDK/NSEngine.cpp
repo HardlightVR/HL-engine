@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#define NOMINMAX
 
 #include "NSEngine.h"
 
@@ -10,6 +11,7 @@
 
 #include <cassert>
 #include <chrono>
+
 #include "flatbuffers\flatbuffers.h"
 #include "Sequence_generated.h"
 #include "HapticEffect_generated.h"

@@ -15,7 +15,6 @@ SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapt
 	_isBatching(false)
 {
 	//fill in rest of errorcodes
-	_errorCodes[SuitStatusUpdate::SuitStatus::ImuInitialize][0] = "success";
 
 	_writeTimer.expires_from_now(_writeInterval);
 	_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
@@ -25,6 +24,7 @@ SuitHardwareInterface::SuitHardwareInterface(std::shared_ptr<ICommunicationAdapt
 
 SuitHardwareInterface::~SuitHardwareInterface()
 {
+
 }
 
 void SuitHardwareInterface::SetAdapter(std::shared_ptr<ICommunicationAdapter> adapter) {

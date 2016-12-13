@@ -1,13 +1,14 @@
 #include "StdAfx.h"
 #include "SuitStatusConsumer.h"
-#include "SuitHardwareInterface.h"
+#include "SuitDiagnostics.h"
 
 
 
-SuitStatusConsumer::SuitStatusConsumer()
+
+
+SuitStatusConsumer::SuitStatusConsumer(SuitDiagnostics::SuitDiagnosticsCallback cb):_callback(cb)
 {
 }
-
 
 SuitStatusConsumer::~SuitStatusConsumer()
 {
@@ -15,7 +16,14 @@ SuitStatusConsumer::~SuitStatusConsumer()
 
 void SuitStatusConsumer::ConsumePacket(const packet & packet)
 {
-	SuitHardwareInterface::SuitStatusUpdate update(packet.raw[3], packet.raw[4]);
-	std::cout << "Suit init update: Stage " << int(update.Stage) << ", Response: " << update.Response;
+	SuitDiagnostics::SuitDiagnosticInfo info;
+	info.Count = packet.raw[3];
+	info.Message = packet.raw[4];
+	info.Device = SuitDiagnostics::SuitDiagnosticInfo::DeviceType(packet.raw[5]);
+	info.Response = packet.raw[6];
+	info.Param1 = packet.raw[7];
+	info.Param2 = packet.raw[8];
+	_callback(info);
+
 	
 }

@@ -9,6 +9,7 @@
 #include "PlayableSequence.h"
 #include "PlayablePattern.h"
 #include "PlayableExperience.h"
+#include "SuitDiagnostics.h"
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
 	//This contains all suit instructions, like GET_VERSION, PLAY_EFFECT, etc.
 	_instructionSet(std::make_shared<InstructionSet>()),
@@ -58,7 +59,10 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, std::make_shared<FifoConsumer>());
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitVersion, 
 		std::make_shared<SuitInfoConsumer>(boost::bind(&Engine::handleSuitVersionUpdate, this, _1)));
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitStatus, std::make_shared<SuitStatusConsumer>());
+
+	
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitStatus, 
+		std::make_shared<SuitStatusConsumer>(boost::bind(&SuitDiagnostics::ReceiveDiagnostics, _diagnostics,_1)));
 
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
 

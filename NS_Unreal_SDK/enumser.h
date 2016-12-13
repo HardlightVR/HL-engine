@@ -22,6 +22,8 @@ to maintain a single distribution point for the source code.
 ///////////////////////// Macros / Defines ////////////////////////////////////
 
 #pragma once
+#define NOMINMAX
+
 #include <Windows.h>
 
 //Pull in ATL support

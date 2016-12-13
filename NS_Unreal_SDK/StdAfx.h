@@ -52,8 +52,7 @@
 #include <cassert>
 #include <chrono>
 #include <memory>
-#include "Wire.h"
-#include "EncodingOperations.h"
+
 #include "zmq.hpp"
 #include "zmq_addon.hpp"
 #include "IoService.h"

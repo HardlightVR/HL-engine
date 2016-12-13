@@ -14,12 +14,6 @@ public:
 		VersionInfo(unsigned int major, unsigned int minor) :Major(major), Minor(minor) {}
 	};
 
-	struct SuitStatusUpdate {
-		enum class SuitStatus {ImuInitialize, DrvInitialize, Booted};
-		SuitStatus Stage;
-		unsigned int Response;
-		SuitStatusUpdate(unsigned int stage, unsigned int responsecode) :Stage(SuitStatus(stage)), Response(responsecode) {}
-	};
 	typedef std::function<void(const SuitHardwareInterface::VersionInfo&)> VersionInfoCallback;
 	SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter>, std::shared_ptr<InstructionSet> iset, std::shared_ptr<boost::asio::io_service> io);
 	~SuitHardwareInterface();
@@ -54,7 +48,6 @@ private:
 	std::mutex _needsFlushMutex;
 	bool _isBatching;
 	
-	std::unordered_map<SuitStatusUpdate::SuitStatus, std::unordered_map<unsigned int, std::string>> _errorCodes;
 	
 };
 
