@@ -18,11 +18,12 @@
 
 #include "boost\program_options.hpp"
 
-
+#include "NSEngine.h"
 
 //this variable and the following function should probably be part of Engine, but Engine is becoming
 //a monolith. 
-//This controls how often the engine sends a "I'm plugged in" message to a game. 
+//This controls how often the engine sends a "I'm plugged in" message to a game.
+/*
 const auto suit_status_update_interval = boost::posix_time::milliseconds(200);
 
 void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingOperations* encoder, zmq::socket_t* socket, boost::asio::deadline_timer* t) {
@@ -37,9 +38,15 @@ void sendSuitStatusMsg(const boost::system::error_code& ec, Engine* e, EncodingO
 	t->expires_at(t->expires_at() + suit_status_update_interval);
 	t->async_wait(boost::bind(sendSuitStatusMsg, boost::asio::placeholders::error, e, encoder, socket, t));
 }
+*/
 
 
 int main(int argc, char *argv[]) {
+	NSEngine engine;
+	engine.StartThread();
+	std::cin.get();
+	engine.Shutdown();
+	/*
 	namespace po = boost::program_options;
 
 	std::cout << "---------------------------------------" << '\n';
@@ -168,7 +175,7 @@ int main(int argc, char *argv[]) {
 			
 	}
 	
-	
+	*/
 	return 0;
 
 }
