@@ -49,8 +49,10 @@ NSEngine::NSEngine():
 
 	//We don't want server updates buffered at all. Might get stale IMU data, disconnections, reconnections, etc. Also,
 	//say the application froze - we don't want them to receive a bunch of junk data, just the most recent.
-	server_updates.setsockopt(ZMQ_CONFLATE, 1);
+	int confl = 1;
 	server_updates.bind("tcp://127.0.0.1:9453");
+	server_updates.setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
+
 	lastFrameTime = std::chrono::high_resolution_clock::now();
 
 	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg,this, boost::asio::placeholders::error, &server_updates));
