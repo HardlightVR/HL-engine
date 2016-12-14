@@ -5,11 +5,10 @@ class SuitPacket
 public:
 	enum class PacketType {
 		SuitVersion = 0x01,
-		SuitStatus = 0x03,
-		ImuData = 0x33,
-		ImuStatus,
-		DrvStatus = 0x15,
 		Ping = 0x02,
+		SuitStatus = 0x03,
+		DrvStatus = 0x15,
+		ImuData = 0x33,
 		FifoOverflow = 0x34,
 		Undefined
 	};
