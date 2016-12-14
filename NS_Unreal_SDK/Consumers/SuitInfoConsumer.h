@@ -1,15 +1,15 @@
 #pragma once
 #include "IPacketConsumer.h"
 #include <functional>
-#include "SuitHardwareInterface.h"
+#include "SuitDiagnostics.h"
 class SuitInfoConsumer : public IPacketConsumer
 {
 public:
 	
-	SuitInfoConsumer(SuitHardwareInterface::VersionInfoCallback c);
+	SuitInfoConsumer(SuitDiagnostics::SuitVersionCallback c);
 	~SuitInfoConsumer();
 	void ConsumePacket(const packet& packet) override;
 private:
-	SuitHardwareInterface::VersionInfoCallback _callbackToEngine;
+	SuitDiagnostics::SuitVersionCallback _callback;
 };
 

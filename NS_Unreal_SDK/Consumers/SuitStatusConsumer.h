@@ -1,6 +1,8 @@
 #pragma once
 #include "IPacketConsumer.h"
 #include "SuitDiagnostics.h"
+
+
 class SuitStatusConsumer : public IPacketConsumer
 {
 public:

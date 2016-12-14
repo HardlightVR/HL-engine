@@ -18,7 +18,7 @@ void PacketDispatcher::Dispatch(packet packet)
 	
 	if (_consumers.find(packetType) != _consumers.end())
 	{
-		for (auto monitor : _consumers[packetType])
+		for (auto monitor : _consumers.at(packetType))
 		{
 			monitor->ConsumePacket(packet);
 		}

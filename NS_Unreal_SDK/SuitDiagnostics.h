@@ -1,5 +1,10 @@
 #pragma once
 #include "SuitHardwareInterface.h"
+
+class SuitStatusConsumer;
+class SuitInfoConsumer;
+class FifoConsumer;
+
 class SuitDiagnostics
 {
 public:
@@ -31,12 +36,36 @@ public:
 		uint32_t Param2;
 		SuitDiagnosticInfo() {}
 	};
-	typedef std::function<void(const SuitDiagnosticInfo& info)> SuitDiagnosticsCallback;
+
+	struct VersionInfo {
+		unsigned int Major;
+		unsigned int Minor;
+		VersionInfo(unsigned int major, unsigned int minor) :Major(major), Minor(minor) {}
+	};
+
+	typedef std::function<void(const VersionInfo&)> SuitVersionCallback;
+	typedef std::function<void(const SuitDiagnosticInfo&)> SuitDiagnosticsCallback;
+
 	SuitDiagnostics();
 	~SuitDiagnostics();
 	void ReceiveDiagnostics(const SuitDiagnosticInfo& info);
+	void ReceiveVersion(const VersionInfo& info);
+	//todo: badly named
+	//status is only received on suit connection, whereas info could be received at any time
+	std::shared_ptr<SuitStatusConsumer> StatusConsumer();
+	std::shared_ptr<SuitInfoConsumer> InfoConsumer();
+	std::shared_ptr<FifoConsumer> OverflowConsumer();
+
+	void OnReceiveVersion(SuitVersionCallback);
+
+
 private:
-	//std::unordered_map<SuitStatusUpdate::SuitStatus, std::unordered_map<unsigned int, std::string>> _errorCodes;
 	SuitDiagnosticsCallback _receiveDiagnostics;
+
+	std::shared_ptr<SuitStatusConsumer> _statusConsumer;
+	std::shared_ptr<SuitInfoConsumer> _versionConsumer;
+	std::shared_ptr<FifoConsumer> _fifoConsumer;
+
+	SuitVersionCallback _callback;
 };
 

@@ -36,7 +36,8 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	_socket(socket),
 	//This is only present because we do not track separate state for each client. This wants to be its own
 	//struct with all client related data. 
-	_userRequestsTracking(false)
+	_userRequestsTracking(false),
+	_diagnostics()
 
 {
 	//Pulls all instructions, effects, etc. from disk
@@ -52,20 +53,18 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	else {
 		std::cout << "> Unable to connect to suit." << "\n";
 	}
+
+	_diagnostics.OnReceiveVersion(boost::bind(&Engine::handleSuitVersionUpdate, this, _1));
+
 	
 	//Kickoff the communication adapter
 	_adapter->BeginRead();
 	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, std::make_shared<FifoConsumer>());
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitVersion, 
-		std::make_shared<SuitInfoConsumer>(boost::bind(&Engine::handleSuitVersionUpdate, this, _1)));
-
-	
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitStatus, 
-		std::make_shared<SuitStatusConsumer>(boost::bind(&SuitDiagnostics::ReceiveDiagnostics, _diagnostics,_1)));
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, _diagnostics.OverflowConsumer());
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitVersion, _diagnostics.InfoConsumer());
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitStatus, _diagnostics.StatusConsumer());
 
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
-
 
 }
 
@@ -79,7 +78,8 @@ void Engine::sendTrackingUpdate() {
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
 }
 
-void Engine::handleSuitVersionUpdate(const SuitHardwareInterface::VersionInfo & v)
+
+void Engine::handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v)
 {
 	std::cout << "Major version: " << v.Major << "\nMinor version: " << v.Minor << "\n";
 	if (v.Major == 2 && v.Minor == 4) {
@@ -152,6 +152,7 @@ void Engine::EngineCommand(const NullSpace::HapticFiles::HapticPacket& packet) {
 	switch (decoded.Command) {
 	case NullSpace::HapticFiles::EngineCommand_ENABLE_TRACKING:
 		_executor.Hardware()->EnableIMUs();
+		_executor.Hardware()->RequestSuitVersion();
 		break;
 	case NullSpace::HapticFiles::EngineCommand_DISABLE_TRACKING:
 		_executor.Hardware()->DisableIMUs();

@@ -19,7 +19,7 @@ $wrapper_x64_dir = $wrapper_root_dir + '\bin\x64\'
 Write-Host "For Wrapper DLL:" `n "x86:"  $wrapper_x86_dir `n "x64: " $wrapper_x64_dir `n
 
 
-$API_root_dir = 'C:\Users\NullSpace Team\Documents\API_Environment\Assets\Plugins'
+$API_root_dir = 'C:\Users\NullSpace Team\Documents\NullSpace SDK 0.1.1\Assets\NullSpace SDK\Plugins'
 $API_x86_dir = $API_root_dir + '\x86\'
 $API_x64_dir = $API_root_dir + '\x86_64\'
 

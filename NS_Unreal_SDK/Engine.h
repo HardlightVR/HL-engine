@@ -49,6 +49,7 @@ private:
 	//todo: App Sessions
 	bool _userRequestsTracking;
 	SuitDiagnostics _diagnostics;
-	void handleSuitVersionUpdate(const SuitHardwareInterface::VersionInfo& v);
+
+	void handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v);
 };
 

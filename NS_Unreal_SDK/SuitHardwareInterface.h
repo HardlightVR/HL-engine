@@ -8,13 +8,7 @@
 class SuitHardwareInterface
 {
 public:
-	struct VersionInfo {
-		unsigned int Major;
-		unsigned int Minor;
-		VersionInfo(unsigned int major, unsigned int minor) :Major(major), Minor(minor) {}
-	};
-
-	typedef std::function<void(const SuitHardwareInterface::VersionInfo&)> VersionInfoCallback;
+	
 	SuitHardwareInterface(std::shared_ptr<ICommunicationAdapter>, std::shared_ptr<InstructionSet> iset, std::shared_ptr<boost::asio::io_service> io);
 	~SuitHardwareInterface();
 	void SetAdapter(std::shared_ptr<ICommunicationAdapter> adapter);

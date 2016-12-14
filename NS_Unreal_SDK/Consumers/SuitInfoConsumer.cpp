@@ -3,7 +3,7 @@
 
 
 
-SuitInfoConsumer::SuitInfoConsumer(SuitHardwareInterface::VersionInfoCallback c):_callbackToEngine(c)
+SuitInfoConsumer::SuitInfoConsumer(SuitDiagnostics::SuitVersionCallback c):_callback(c)
 {
 }
 
@@ -16,5 +16,5 @@ void SuitInfoConsumer::ConsumePacket(const packet & packet)
 {
 	unsigned int major = packet.raw[3];
 	unsigned int minor = packet.raw[4];
-	_callbackToEngine(SuitHardwareInterface::VersionInfo(major, minor));
+	_callback(SuitDiagnostics::VersionInfo(major, minor));
 }
