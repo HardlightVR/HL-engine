@@ -71,7 +71,14 @@ function Tag([HashTable]$repos, [string]$tag, [string]$tag_message) {
 
 }
 
-
+function BumpVersion($file_path, $contents)
+ {
+    if (Test-Path $file_path) {
+        Add-Content -Path $file_path -Value $contents
+    } else {
+        New-Item -Path $file_path -Value $contents
+    }
+ }
 function Main() {
     $release_groups = @{
         "Service" = "installer", "engine";
@@ -95,7 +102,6 @@ function Main() {
         "Plugin" = "Plugin $tag";
         "Unity_SDK" = "Unity SDK $tag";
         "Chimera" = "Chimera SDK $tag";
-        # grab this so we can set it later
     }
 
     if (-not $message) {
@@ -130,6 +136,13 @@ function Main() {
         Write-Host "Service = $latest_service_release"
         Write-Host "Plugin = $latest_plugin_release"
         Write-Host "Unity SDK = $latest_unitysdk_release"
+
+        $output_str = "Chimera SDK $tag`n"
+        $output_str += "------------------------`n"
+        $output_str += "Service = $latest_service_release`n"
+        $output_str += "Plugin = $latest_plugin_release`n"
+        $output_str += "Unity SDK = $latest_unitysdk_release`n`n"
+        # BumpVersion ($repo_directories["installer"] + "\versions.txt")
     }
 
     Set-Location $current_location
