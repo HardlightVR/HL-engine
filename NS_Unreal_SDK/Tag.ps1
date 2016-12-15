@@ -2,10 +2,10 @@
 Param (
      [Parameter(Mandatory=$True)]
     [string]$tag,
-     [Parameter(Mandatory=$True)]
     [string]$product,
     [string]$message,
-    [switch]$bundle
+    [switch]$bundle,
+    [switch]$release
 )
 $current_location = $(Get-Location)
 
@@ -22,11 +22,12 @@ function CheckPreconditions([HashTable]$repos) {
     }
     foreach ($repo in $repos.GetEnumerator()) {
         Set-Location -path $repo.Value
-        Write-Host "At repo $($repo.Key):"
+       # Write-Host "At repo $($repo.Key):"
         $result = iex "git rev-parse --abbrev-ref HEAD"
         if ($result -eq "master") {
-            Write-Host "        master is checked out!"
+           # Write-Host "        master is checked out!"
         }else {
+            Write-Host "At repo $($repo.Key):"
             Write-Host "        Error: branch master must be checked out. Aborting."
             Abort
         }
@@ -42,7 +43,7 @@ function GetLatestRelease([string]$selected_product, [HashTable]$groups, [HashTa
 
 function GetLatestTag([string]$prefix, [string]$repo_path) {
     $cmd = "git tag -l --sort=-version:refname `"$($prefix)_v*`""
-    Write-Host "    Using command: $cmd"
+   # Write-Host "    Using command: $cmd"
     Set-Location $repo_path
     $result = iex $cmd
     $latest_tag = $result.Split(' ')[0]
@@ -79,6 +80,35 @@ function BumpVersion($file_path, $contents)
         New-Item -Path $file_path -Value $contents
     }
  }
+
+ function AssembleChimera([string]$service_version, [string]$unity_package_path, [string]$installer_path, [string]$public_chimera_path) {
+    $confirm = Read-Host "At this time, make sure that the version file is updated for the installer. Rebuild the installer and do your testing. [enter]"
+    $confirm = Read-Host "Update the readme [enter]"
+    $package_name = Read-Host "Build the Unity Package and put in the sdk repo root path. Write the name of the package [enter]"
+    if (-not $package_name.Contains($service_version)) {
+        Write-Host "It looks like the package you built is not the same version that was assembled ($service_version)! Aborting."
+        Abort
+    }
+
+    $path = $unity_package_path + '/' + $package_name
+
+    if (-not (Test-Path $path)) {
+        Write-Host "Could not find the unity package at $path. Aborting."
+        Abort
+    }
+
+    $chimera_unitypackage_path = ($public_chimera_path + '/' + $package_name)
+    $chimera_installer_path = ($public_chimera_path + '/' + "NullSpaceVR Service Installer")
+    Copy-Item $path $chimera_unitypackage_path -force
+    Remove-Item -Recurse -Force $chimera_installer_path
+    Copy-Item ($installer_path + '/' + "Release") $chimera_installer_path -Recurse
+    #precondition: the version info has been built into the installer
+    # 3 components needed: 
+    # the installer output
+    # the unity package
+    # the readme
+ }
+
 function Main() {
     $release_groups = @{
         "Service" = "installer", "engine";
@@ -104,31 +134,34 @@ function Main() {
         "Chimera" = "Chimera SDK $tag";
     }
 
-    if (-not $message) {
-        $message = $messages[$product]
+    if ($product) {
+        if (-not $message) {
+            $message = $messages[$product]
+        }
+
+        # so we can easily use git? may not be necessary
+        New-Alias -Name git -Value "$Env:ProgramFiles\Git\bin\git.exe"
+
+        $component_repo_names = $release_groups[$product]
+        $component_repos = @{}
+        foreach ($repo in $component_repo_names) {
+            $component_repos[$repo] = $repo_directories[$repo]
+        }
+
+        # make sure the repos are all on master, etc.
+        CheckPreconditions $component_repos
+
+        if ($release) {
+            Tag $component_repos "$($product)_$($tag)" $message
+        }
+
     }
-
-    # so we can easily use git? may not be necessary
-    New-Alias -Name git -Value "$Env:ProgramFiles\Git\bin\git.exe"
-
-    $component_repo_names = $release_groups[$product]
-    $component_repos = @{}
-    foreach ($repo in $component_repo_names) {
-        $component_repos[$repo] = $repo_directories[$repo]
-    }
-
-    # make sure the repos are all on master, etc.
-    CheckPreconditions $component_repos
-
-    Tag $component_repos "$($product)_$($tag)" $message
-
-
 
 
     if ($bundle) {
-        $latest_service_release = FormatTag (GetLatestRelease "Service" $release_groups $repos)
-        $latest_plugin_release = FormatTag (GetLatestRelease "Plugin" $release_groups $repos)
-        $latest_unitysdk_release = FormatTag (GetLatestRelease "Unity_SDK" $release_groups $repos)
+        $latest_service_release = FormatTag (GetLatestRelease "Service" $release_groups $repo_directories)
+        $latest_plugin_release = FormatTag (GetLatestRelease "Plugin" $release_groups $repo_directories)
+        $latest_unitysdk_release = FormatTag (GetLatestRelease "Unity_SDK" $release_groups $repo_directories)
 
         Write-Host "Creating version string"
         Write-Host "Chimera SDK $tag"
@@ -143,6 +176,8 @@ function Main() {
         $output_str += "Plugin = $latest_plugin_release`n"
         $output_str += "Unity SDK = $latest_unitysdk_release`n`n"
         # BumpVersion ($repo_directories["installer"] + "\versions.txt")
+        AssembleChimera $latest_unitysdk_release $repo_directories["unity_sdk"] ($repo_directories["installer"] + '/' + "NSVRServiceSetup") $repo_directories["public_chimera"]
+        Write-Host "`nDone."
     }
 
     Set-Location $current_location
