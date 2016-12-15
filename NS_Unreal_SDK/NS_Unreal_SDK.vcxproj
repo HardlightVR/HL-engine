@@ -85,6 +85,7 @@
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;Iphlpapi.lib;libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerbose</ShowProgress>
       <Profile>true</Profile>
+      <AdditionalOptions>/Zm300 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>copy /Y "C:\Program Files (x86)\libzmq\bin\Win32\Debug\v140\dynamic\libzmq.dll" "$(OutDir)"</Command>
