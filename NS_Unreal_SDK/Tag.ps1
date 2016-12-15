@@ -82,7 +82,9 @@ function BumpVersion($file_path, $contents)
  }
 
  function AssembleChimera([string]$service_version, [string]$unity_package_path, [string]$installer_path, [string]$public_chimera_path) {
-    $confirm = Read-Host "At this time, make sure that the version file is updated for the installer. Rebuild the installer and do your testing. [enter]"
+    $confirm = Read-Host "Pull just in case someone updated the wiki. [enter]"
+    $confirm = Read-Host "Make sure that the version file is updated for the installer.[enter]"
+    $confirm = Read-Host "Rebuild the installer and do your testing. [enter]"
     $confirm = Read-Host "Update the readme [enter]"
     $package_name = Read-Host "Build the Unity Package and put in the sdk repo root path. Write the name of the package [enter]"
     if (-not $package_name.Contains($service_version)) {
