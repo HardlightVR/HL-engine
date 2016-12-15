@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "HapticDirectoryTools.h"
 #include <boost/filesystem.hpp>
 #include <iostream>
