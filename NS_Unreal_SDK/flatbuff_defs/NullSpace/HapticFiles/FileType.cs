@@ -12,6 +12,8 @@ public enum FileType : byte
  HapticEffect = 4,
  Tracking = 5,
  HandleCommand = 6,
+ EngineCommandData = 7,
+ Node = 8,
 };
 
 
