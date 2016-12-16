@@ -93,12 +93,12 @@ void Engine::handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v)
 void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	auto name = packet.name()->str();
-	auto rawSequenceData = static_cast<const NullSpace::HapticFiles::Sequence*>(packet.packet());
-	auto location = AreaFlag(rawSequenceData->location());
+	auto rawSequenceData = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
+	auto location = AreaFlag(rawSequenceData->area());
 
 	auto handle = packet.handle(); //converts from uint64 to uint32, maybe should check this
 
-	auto decoded = EncodingOperations::Decode(rawSequenceData);
+	auto decoded = EncodingOperations::DecodeSequence(rawSequenceData);
 		
 	//todo: figure out caching. If user changes a sequence's effects and the engine isn't
 	//reloaded, then it is cached. Could do on create for very first time, cache
@@ -109,20 +109,20 @@ void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
 void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	auto name = packet.name()->str();
-	auto rawPatternData = static_cast<const NullSpace::HapticFiles::Pattern*>(packet.packet());
+	auto rawPatternData = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
 	auto handle = packet.handle();
 	
-	auto decoded = EncodingOperations::Decode(rawPatternData);
+	auto decoded = EncodingOperations::DecodePattern(rawPatternData);
 	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayablePattern(decoded, _executor)));
 }
 
 void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
 {
 	auto name = packet.name()->str();
-	auto rawExperienceData = static_cast<const NullSpace::HapticFiles::Experience*>(packet.packet());
+	auto rawExperienceData = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
 	auto handle = packet.handle();
 
-	auto decoded = EncodingOperations::Decode(rawExperienceData);
+	auto decoded = EncodingOperations::DecodeExperience(rawExperienceData);
 	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableExperience(decoded, _executor)));
 }
 
@@ -167,6 +167,24 @@ void Engine::EngineCommand(const NullSpace::HapticFiles::HapticPacket& packet) {
 		_executor.PlayAll();
 		break;
 	default:
+		break;
+	}
+}
+void Engine::Play(const NullSpace::HapticFiles::HapticPacket & packet)
+{
+	auto node = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
+	switch (node->type()) {
+	case NullSpace::HapticFiles::NodeType_Sequence:
+		PlaySequence(packet);
+		break;
+	case NullSpace::HapticFiles::NodeType_Pattern:
+		PlayPattern(packet);
+		break;
+	case NullSpace::HapticFiles::NodeType_Experience:
+		PlayExperience(packet);
+		break;
+	default:
+		std::cout << "Unrecognized node type!" << node->type() << '\n';
 		break;
 	}
 }

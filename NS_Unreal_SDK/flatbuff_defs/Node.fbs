@@ -1,0 +1,16 @@
+namespace NullSpace.HapticFiles;
+
+enum NodeType:short {
+	Effect, Sequence, Pattern, Experience
+}
+table Node{
+	type:NodeType;
+	children: [Node];
+	time:float;
+	effect:string;
+	strength:float;
+	duration:float;
+	area:uint;
+}
+
+root_type Node;

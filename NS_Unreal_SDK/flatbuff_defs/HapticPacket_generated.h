@@ -9,6 +9,7 @@
 #include "HapticEffect_generated.h"
 #include "HapticFrame_generated.h"
 #include "HapticSample_generated.h"
+#include "Node_generated.h"
 #include "Pattern_generated.h"
 #include "Sequence_generated.h"
 
@@ -66,12 +67,13 @@ enum FileType {
   FileType_Tracking = 5,
   FileType_HandleCommand = 6,
   FileType_EngineCommandData = 7,
+  FileType_Node = 8,
   FileType_MIN = FileType_NONE,
-  FileType_MAX = FileType_EngineCommandData
+  FileType_MAX = FileType_Node
 };
 
 inline const char **EnumNamesFileType() {
-  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", "EngineCommandData", nullptr };
+  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", "EngineCommandData", "Node", nullptr };
   return names;
 }
 
@@ -107,6 +109,10 @@ template<> struct FileTypeTraits<HandleCommand> {
 
 template<> struct FileTypeTraits<EngineCommandData> {
   static const FileType enum_value = FileType_EngineCommandData;
+};
+
+template<> struct FileTypeTraits<NullSpace::HapticFiles::Node> {
+  static const FileType enum_value = FileType_Node;
 };
 
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type);
@@ -279,6 +285,7 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
     case FileType_Tracking: return verifier.VerifyTable(reinterpret_cast<const Tracking *>(union_obj));
     case FileType_HandleCommand: return verifier.VerifyTable(reinterpret_cast<const HandleCommand *>(union_obj));
     case FileType_EngineCommandData: return verifier.VerifyTable(reinterpret_cast<const EngineCommandData *>(union_obj));
+    case FileType_Node: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Node *>(union_obj));
     default: return false;
   }
 }

@@ -15,6 +15,7 @@
 #include "flatbuffers\flatbuffers.h"
 #include "Sequence_generated.h"
 #include "HapticEffect_generated.h"
+#include "Node_generated.h"
 #include "HapticPacket_generated.h"
 #include "EnginePacket_generated.h"
 
@@ -90,6 +91,9 @@ void NSEngine::Update() {
 			switch (packet->packet_type()) {
 			case NullSpace::HapticFiles::FileType::FileType_Sequence:
 				engine.PlaySequence(*packet);
+				break;
+			case NullSpace::HapticFiles::FileType::FileType_Node:
+				engine.Play(*packet);
 				break;
 			case NullSpace::HapticFiles::FileType::FileType_Pattern:
 				engine.PlayPattern(*packet);
