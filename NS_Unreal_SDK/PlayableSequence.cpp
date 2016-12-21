@@ -129,6 +129,10 @@ bool PlayableSequence::IsPlaying() const
 	return !_paused;
 }
 
+void PlayableSequence::Release() const
+{
+}
+
 
 
 PlayableSequence::~PlayableSequence()

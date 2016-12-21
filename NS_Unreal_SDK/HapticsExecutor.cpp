@@ -82,8 +82,6 @@ bool EffectIsExpired(const std::unique_ptr<IPlayable> &p, bool isGlobalPause) {
 
 void HapticsExecutor::Update(float dt)
 {
-
-
 	updateLocationModels(dt);
 
 	for (auto& effect : _effects) {
@@ -95,6 +93,7 @@ void HapticsExecutor::Update(float dt)
 	for (auto& released : _releasedEffects) {
 		if (EffectIsExpired(_effects.at(uuid_hasher(released.ID)), _paused)) {
 			released.NeedsSweep = true;
+			_effects.at(uuid_hasher(released.ID))->Release();
 			_effects.erase(uuid_hasher(released.ID));
 		//	std::cout << "Hey, found an expired released handle, deleting from effects\n";
 		}
@@ -180,8 +179,12 @@ void HapticsExecutor::Reset(boost::uuids::uuid h)
 
 void HapticsExecutor::Release(boost::uuids::uuid h)
 {
+	
 	auto it = _effects.find(uuid_hasher(h));
-	_effects.erase(it);
+	if (it != _effects.end()) {
+		it->second->Release();
+		_effects.erase(it);
+	}
 }
 
 void HapticsExecutor::Create(boost::uuids::uuid id, std::unique_ptr<IPlayable> playable)

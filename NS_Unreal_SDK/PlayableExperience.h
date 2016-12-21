@@ -15,6 +15,7 @@ public:
 	float GetTotalPlayTime() const override;
 	float CurrentTime() const override;
 	bool IsPlaying() const override;
+	void Release() const override;
 private:
 	std::vector<Instant<HapticSample>> _effects;
 	std::vector<HapticSample> _sourceOfTruth;

@@ -113,3 +113,10 @@ bool PlayableExperience::IsPlaying() const
 {
 	return !_paused;
 }
+
+void PlayableExperience::Release() const
+{
+	for (auto& ef : _activeEffects) {
+		_exec.Release(ef);
+	}
+}

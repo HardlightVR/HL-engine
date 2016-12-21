@@ -108,3 +108,10 @@ bool PlayablePattern::IsPlaying() const
 	return !_paused;
 }
 
+void PlayablePattern::Release() const
+{
+	for (auto& ef : _activeEffects) {
+		_exec.Release(ef);
+	}
+}
+
