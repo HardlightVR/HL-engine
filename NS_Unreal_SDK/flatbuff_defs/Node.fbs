@@ -8,7 +8,7 @@ table Node{
 	children: [Node];
 	time:float;
 	effect:string;
-	strength:float;
+	strength:float = 1.0;
 	duration:float;
 	area:uint;
 }

@@ -40,7 +40,7 @@ struct Node FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::Vector<flatbuffers::Offset<Node>> *children() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Node>> *>(VT_CHILDREN); }
   float time() const { return GetField<float>(VT_TIME, 0.0f); }
   const flatbuffers::String *effect() const { return GetPointer<const flatbuffers::String *>(VT_EFFECT); }
-  float strength() const { return GetField<float>(VT_STRENGTH, 0.0f); }
+  float strength() const { return GetField<float>(VT_STRENGTH, 1.0f); }
   float duration() const { return GetField<float>(VT_DURATION, 0.0f); }
   uint32_t area() const { return GetField<uint32_t>(VT_AREA, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -66,7 +66,7 @@ struct NodeBuilder {
   void add_children(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Node>>> children) { fbb_.AddOffset(Node::VT_CHILDREN, children); }
   void add_time(float time) { fbb_.AddElement<float>(Node::VT_TIME, time, 0.0f); }
   void add_effect(flatbuffers::Offset<flatbuffers::String> effect) { fbb_.AddOffset(Node::VT_EFFECT, effect); }
-  void add_strength(float strength) { fbb_.AddElement<float>(Node::VT_STRENGTH, strength, 0.0f); }
+  void add_strength(float strength) { fbb_.AddElement<float>(Node::VT_STRENGTH, strength, 1.0f); }
   void add_duration(float duration) { fbb_.AddElement<float>(Node::VT_DURATION, duration, 0.0f); }
   void add_area(uint32_t area) { fbb_.AddElement<uint32_t>(Node::VT_AREA, area, 0); }
   NodeBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
@@ -82,7 +82,7 @@ inline flatbuffers::Offset<Node> CreateNode(flatbuffers::FlatBufferBuilder &_fbb
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Node>>> children = 0,
     float time = 0.0f,
     flatbuffers::Offset<flatbuffers::String> effect = 0,
-    float strength = 0.0f,
+    float strength = 1.0f,
     float duration = 0.0f,
     uint32_t area = 0) {
   NodeBuilder builder_(_fbb);
@@ -101,7 +101,7 @@ inline flatbuffers::Offset<Node> CreateNodeDirect(flatbuffers::FlatBufferBuilder
     const std::vector<flatbuffers::Offset<Node>> *children = nullptr,
     float time = 0.0f,
     const char *effect = nullptr,
-    float strength = 0.0f,
+    float strength = 1.0f,
     float duration = 0.0f,
     uint32_t area = 0) {
   return CreateNode(_fbb, type, children ? _fbb.CreateVector<flatbuffers::Offset<Node>>(*children) : 0, time, effect ? _fbb.CreateString(effect) : 0, strength, duration, area);

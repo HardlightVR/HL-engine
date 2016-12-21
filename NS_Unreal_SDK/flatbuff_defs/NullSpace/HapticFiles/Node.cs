@@ -21,7 +21,7 @@ public struct Node : IFlatbufferObject
   public float Time { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
   public string Effect { get { int o = __p.__offset(10); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
   public ArraySegment<byte>? GetEffectBytes() { return __p.__vector_as_arraysegment(10); }
-  public float Strength { get { int o = __p.__offset(12); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
+  public float Strength { get { int o = __p.__offset(12); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)1.0f; } }
   public float Duration { get { int o = __p.__offset(14); return o != 0 ? __p.bb.GetFloat(o + __p.bb_pos) : (float)0.0f; } }
   public uint Area { get { int o = __p.__offset(16); return o != 0 ? __p.bb.GetUint(o + __p.bb_pos) : (uint)0; } }
 
@@ -30,7 +30,7 @@ public struct Node : IFlatbufferObject
       VectorOffset childrenOffset = default(VectorOffset),
       float time = 0.0f,
       StringOffset effectOffset = default(StringOffset),
-      float strength = 0.0f,
+      float strength = 1.0f,
       float duration = 0.0f,
       uint area = 0) {
     builder.StartObject(7);
@@ -51,7 +51,7 @@ public struct Node : IFlatbufferObject
   public static void StartChildrenVector(FlatBufferBuilder builder, int numElems) { builder.StartVector(4, numElems, 4); }
   public static void AddTime(FlatBufferBuilder builder, float time) { builder.AddFloat(2, time, 0.0f); }
   public static void AddEffect(FlatBufferBuilder builder, StringOffset effectOffset) { builder.AddOffset(3, effectOffset.Value, 0); }
-  public static void AddStrength(FlatBufferBuilder builder, float strength) { builder.AddFloat(4, strength, 0.0f); }
+  public static void AddStrength(FlatBufferBuilder builder, float strength) { builder.AddFloat(4, strength, 1.0f); }
   public static void AddDuration(FlatBufferBuilder builder, float duration) { builder.AddFloat(5, duration, 0.0f); }
   public static void AddArea(FlatBufferBuilder builder, uint area) { builder.AddUint(6, area, 0); }
   public static Offset<Node> EndNode(FlatBufferBuilder builder) {
