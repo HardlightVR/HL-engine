@@ -125,7 +125,7 @@ void NSEngine::Update() {
 	engine.Update(elapsed.count());
 }
 	
-}
+
 bool NSEngine::Shutdown()
 {
 	_running = false;
@@ -164,7 +164,7 @@ void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket
 	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg, this, boost::asio::placeholders::error, socket));
 }
 	
-}
+
 
 void NSEngine::_UpdateLoop()
 {
