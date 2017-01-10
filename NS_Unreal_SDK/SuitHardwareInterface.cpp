@@ -197,11 +197,12 @@ void SuitHardwareInterface::executeImmediately(Packet packet)
 
 void SuitHardwareInterface::executeLater(Packet packet)
 {
+	//todo: evaluate if we actually need a lock free queue here. 
+	//Thoughts: executeLater always called from one thread? Or can be called from two at once?
+	//The writer can be called from one thread? Or multiple workers at once?
+
 	_lfQueue.push(packet.Data, packet.Data + packet.Length);
-	//for (int i = 0; i < packet.Length; i++) {
-	//	_preWriteBuffer.push(packet.Data[i]);
-	//}
-//	_preWriteBuffer.insert(_preWriteBuffer.end(), packet.Data, packet.Data + packet.Length);
+	
 	
 	
 }

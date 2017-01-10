@@ -22,7 +22,7 @@ private:
 
 	std::chrono::steady_clock::time_point lastFrameTime;
 	std::thread _workThread;
-	bool _running;
+	std::atomic<bool> _running;
 	void _UpdateLoop();
 
 };

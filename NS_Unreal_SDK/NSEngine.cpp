@@ -63,7 +63,6 @@ NSEngine::NSEngine():
 
 NSEngine::~NSEngine()
 {
-	suitStatusTimer.cancel();
 }
 
 void NSEngine::StartThread()
@@ -125,11 +124,23 @@ void NSEngine::Update() {
 bool NSEngine::Shutdown()
 {
 	_running = false;
+
 	if (_workThread.joinable()) {
 		_workThread.join();
 	}
+	//After this point, we have stopped doing updates, 
+	//so it's safe to cancel the status timer and stop the Io service
+	suitStatusTimer.cancel();
+
 	io->Stop();
-	//todo: NEED TO SEND SUIT DISCONNECTED MESSAGE
+
+	//Send one last update 
+	_encoder.AquireEncodingLock();
+	_encoder.Finalize(_encoder.Encode(NullSpace::Communication::SuitStatus::SuitStatus_Disconnected),
+		[&](uint8_t* data, int size) {
+		Wire::sendTo(server_updates, data, size);
+	});
+	_encoder.ReleaseEncodingLock();
 	return true;
 }
 void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket_t* socket)
