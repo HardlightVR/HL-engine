@@ -44,13 +44,15 @@ NSEngine::NSEngine():
 	//The parameter for RCVHWM may arbitrarily map to an amount of messages, not sure. See ZMQ docs. 
 	//Also, it must be set before binding (see docs)
 	haptic_requests.setsockopt(ZMQ_RCVHWM, 16);
+	haptic_requests.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+
 	haptic_requests.bind("tcp://127.0.0.1:9452");
 	//Since it's a sub socket, we need a topic to subscribe to. Since we don't use multiple topics, we use "".
-	haptic_requests.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
 	//We don't want server updates buffered at all. Might get stale IMU data, disconnections, reconnections, etc. Also,
 	//say the application froze - we don't want them to receive a bunch of junk data, just the most recent.
 	int confl = 1;
+
 	server_updates.bind("tcp://127.0.0.1:9453");
 	server_updates.setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
 
@@ -73,6 +75,7 @@ void NSEngine::StartThread()
 
 
 void NSEngine::Update() {
+	
 	typedef std::chrono::duration<float, std::ratio<1, 1>> duration;
 	auto timeNow = std::chrono::high_resolution_clock::now();
 	duration elapsed = timeNow - lastFrameTime;
@@ -121,6 +124,8 @@ void NSEngine::Update() {
 
 	engine.Update(elapsed.count());
 }
+	
+}
 bool NSEngine::Shutdown()
 {
 	_running = false;
@@ -145,6 +150,7 @@ bool NSEngine::Shutdown()
 }
 void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket_t* socket)
 {
+	
 	NullSpace::Communication::SuitStatus status = engine.SuitConnected() ?
 		NullSpace::Communication::SuitStatus::SuitStatus_Connected :
 		NullSpace::Communication::SuitStatus::SuitStatus_Disconnected;
@@ -156,6 +162,8 @@ void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket
 	_encoder.ReleaseEncodingLock();
 	suitStatusTimer.expires_at(suitStatusTimer.expires_at() + suit_status_update_interval);
 	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg, this, boost::asio::placeholders::error, socket));
+}
+	
 }
 
 void NSEngine::_UpdateLoop()

@@ -104,7 +104,7 @@ function BumpVersion($file_path, $contents)
     $chimera_installer_path = ($public_chimera_path + '/' + "NullSpaceVR Service Installer")
     Copy-Item $path $chimera_unitypackage_path -force
     Remove-Item -Recurse -Force $chimera_installer_path
-    Copy-Item ($installer_path + '/' + "Release") $chimera_installer_path -Recurse
+    Copy-Item ($installer_path + '/' + "Release") $chimera_installer_path -Recurse -force
     #precondition: the version info has been built into the installer
     # 3 components needed: 
     # the installer output
