@@ -40,6 +40,7 @@ public:
 	void ClearAll();
 private:
 	boost::hash<boost::uuids::uuid> uuid_hasher;
+	boost::uuids::random_generator _uuidGen;
 	std::shared_ptr<InstructionSet> _iset;
 	std::unique_ptr<SuitHardwareInterface> _suit;
 	std::unordered_map<std::size_t, std::unique_ptr<IPlayable>> _effects;

@@ -20,7 +20,8 @@ HapticsExecutor::~HapticsExecutor()
 }
 void HapticsExecutor::Create(HapticHandle h, std::unique_ptr<IPlayable> playable)
 {
-	auto id = boost::uuids::random_generator()();
+	auto id = _uuidGen();
+
 	_outsideHandleToUUID[h] = id;
 	_effects[uuid_hasher(id)] = std::move(playable);
 }
