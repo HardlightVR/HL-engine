@@ -10,7 +10,7 @@ class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapte
 public:
 	bool Connect() override;
 	void Disconnect() override;
-	void Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(boost::system::error_code, std::size_t)> cb) override;
+	void Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(const boost::system::error_code&, std::size_t)> cb) override;
 	void Write(std::shared_ptr<uint8_t*> bytes, std::size_t length) override;
 	void BeginRead() override;
 	bool Connect(std::string name);
@@ -24,6 +24,7 @@ public:
 	void DoReset() override;
 
 private:
+	
 	handler_allocator _allocator;
 	std::shared_ptr<IoService> _ioService;
 	std::shared_ptr<boost::asio::io_service> _io;
@@ -40,6 +41,7 @@ private:
 	void doSuitRead();
 	void suitReadCancel(boost::system::error_code ec);
 	void read_handler(boost::system::error_code ec, std::size_t length);
+
 	void write_handler(boost::system::error_code ec, std::size_t length);
 	boost::asio::deadline_timer _keepaliveTimer;
 	boost::posix_time::milliseconds _keepaliveTimeout = boost::posix_time::milliseconds(20); //was 20

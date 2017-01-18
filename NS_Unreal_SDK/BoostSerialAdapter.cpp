@@ -16,7 +16,7 @@ void BoostSerialAdapter::Disconnect()
 		port->close();
 	}
 }
-void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(boost::system::error_code, std::size_t)> cb)
+void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(const boost::system::error_code&, std::size_t)> cb)
 {
 	if (this->port && this->port->is_open()) {
 		this->port->async_write_some(boost::asio::buffer(*bytes, length), cb);
@@ -198,7 +198,6 @@ bool BoostSerialAdapter::doHandshake( std::string portName) {
 	if (this->createPort(portName)) {
 		auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
 		this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code, const std::size_t bytes_transferred) {});
-
 		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
 		//(suit takes about 30ms first ping)
 		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE), boost::asio::use_future);
