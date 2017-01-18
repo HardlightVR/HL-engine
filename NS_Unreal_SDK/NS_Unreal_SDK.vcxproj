@@ -79,6 +79,7 @@
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>IS_ENGINE;NS_UNREAL_SDK_EXPORTS;BOOST_THREAD_USE_LIB;ZMQ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\Win32\Debug\v140\static;C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

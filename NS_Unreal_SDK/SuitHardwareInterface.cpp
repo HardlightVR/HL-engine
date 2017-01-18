@@ -125,7 +125,7 @@ void SuitHardwareInterface::HaltAllEffects()
 {
 	//must reimplement
 }
-#define BATCH_SIZE 64
+#define BATCH_SIZE 20
 
 void SuitHardwareInterface::writeBuffer() {
 	const std::size_t avail = _lfQueue.read_available();
@@ -135,19 +135,19 @@ void SuitHardwareInterface::writeBuffer() {
 	}
 	else if (avail > 0 && avail < BATCH_SIZE) {
 		if (_isBatching) {
-			//std::cout << "psst! I'm waiting for a batch of cookies!" << '\n';
+			std::cout << "psst! I'm waiting for a batch of cookies!" << '\n';
 			_writeTimer.expires_from_now(_writeInterval);
 			_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
 			return;
 		}
-		//std::cout << "Okay, we need to cook a new batch\n";
+		std::cout << "Okay, we need to cook a new batch\n";
 		_isBatching = true;
 		_batchingDeadline.expires_from_now(_batchingTimeout);
 		_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
 			if (!ec) {
 				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 				const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
-				//std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
+				std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
 
 				this->adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
 					
@@ -158,7 +158,7 @@ void SuitHardwareInterface::writeBuffer() {
 				_isBatching = false;
 			}
 		});
-		//std::cout << "Some avail, waiting" << '\n';
+		std::cout << "Some avail, waiting" << '\n';
 	}
 	else {
 		_isBatching = false;
@@ -172,7 +172,7 @@ void SuitHardwareInterface::writeBuffer() {
 		);
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&SuitHardwareInterface::writeBuffer, this));
-		//std::cout << "Got a FULL BATCH!" << '\n';
+		std::cout << "Got a FULL BATCH!" << '\n';
 	}
 	
 	
@@ -187,7 +187,7 @@ void SuitHardwareInterface::UseDeferredMode() {
 
 
 
-void SuitHardwareInterface::executeImmediately(Packet packet)
+void SuitHardwareInterface::executeImmediately(const Packet& packet)
 {
 	//grab the bytes out of the packet, and copy them into a new shared pointer
 	auto a = std::make_shared<uint8_t*>(new uint8_t[packet.Length]);
@@ -195,7 +195,7 @@ void SuitHardwareInterface::executeImmediately(Packet packet)
 	this->adapter->Write(a, packet.Length);
 }
 
-void SuitHardwareInterface::executeLater(Packet packet)
+void SuitHardwareInterface::executeLater(const Packet& packet)
 {
 	//todo: evaluate if we actually need a lock free queue here. 
 	//Thoughts: executeLater always called from one thread? Or can be called from two at once?
@@ -207,7 +207,7 @@ void SuitHardwareInterface::executeLater(Packet packet)
 	
 }
 
-void SuitHardwareInterface::chooseExecutionStrategy(Packet  packet)
+void SuitHardwareInterface::chooseExecutionStrategy(const Packet&  packet)
 {
 	if (_useDeferredWriting) {
 		this->executeLater(packet);

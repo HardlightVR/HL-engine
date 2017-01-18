@@ -26,9 +26,9 @@ public:
 private:
 	std::shared_ptr<boost::asio::io_service> _io;
 	std::shared_ptr<ICommunicationAdapter> adapter;
-	void executeImmediately(Packet packet);
-	void executeLater( Packet packet);
-	void chooseExecutionStrategy( Packet packet);
+	void executeImmediately(const Packet& packet);
+	void executeLater(const Packet& packet);
+	void chooseExecutionStrategy(const Packet& packet);
 	InstructionBuilder builder;
 	bool _useDeferredWriting;
 	std::queue<uint8_t> _preWriteBuffer;
@@ -36,7 +36,7 @@ private:
 	boost::asio::deadline_timer _writeTimer;
 	boost::asio::deadline_timer _batchingDeadline;
 	boost::posix_time::milliseconds _batchingTimeout = boost::posix_time::milliseconds(20);
-	boost::posix_time::milliseconds _writeInterval = boost::posix_time::milliseconds(10);
+	boost::posix_time::milliseconds _writeInterval = boost::posix_time::milliseconds(60);
 	void writeBuffer();
 	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
 	std::mutex _needsFlushMutex;
