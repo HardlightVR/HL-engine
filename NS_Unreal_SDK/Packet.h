@@ -9,6 +9,6 @@ public:
 	std::size_t Length;
 	uint8_t* Data;
 	Packet(const Packet& b);
-	
+	Packet& operator=(const Packet& other);
 };
 
