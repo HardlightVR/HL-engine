@@ -23,7 +23,7 @@ boost::optional<Quaternion> ImuConsumer::GetOrientation(Imu imu)
 			return boost::none;
 		}
 	}
-	catch (std::exception& e) {
+	catch (std::exception&) {
 		std::cout << "EXCEPTION while attempting to get quaternion data!\n";
 		return boost::none;
 	}
