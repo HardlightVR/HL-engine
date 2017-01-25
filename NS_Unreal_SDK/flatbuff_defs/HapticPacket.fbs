@@ -2,6 +2,7 @@ include "Sequence.fbs";
 include "Pattern.fbs";
 include "Experience.fbs";
 include "HapticEffect.fbs";
+include "TinyEffectArray.fbs";
 include "Node.fbs";
 
 namespace NullSpace.HapticFiles;
@@ -26,7 +27,7 @@ table HandleCommand {
 	command:Command;
 }
 
-union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking, HandleCommand, EngineCommandData, Node}
+union FileType {Experience, Pattern, Sequence, HapticEffect, Tracking, HandleCommand, EngineCommandData, Node, TinyEffectArray}
 
 table HapticPacket {
 	name:string;
