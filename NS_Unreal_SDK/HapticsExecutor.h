@@ -5,6 +5,7 @@
 #include "HapticClasses.h"
 #include "IPlayable.h"
 #include "PriorityModel.h"
+#include "HapticEventGenerator.h"
 typedef unsigned int HapticHandle;
 class HapticsExecutor
 {
@@ -25,7 +26,7 @@ public:
 	void Pause(HapticHandle h);
 	void Reset(HapticHandle h);
 	void Release(HapticHandle h);
-	void Create(HapticHandle h, std::unique_ptr<IPlayable> playable);
+	void Create(HapticHandle h, std::vector<TinyEffect>);
 
 	void Play(boost::uuids::uuid);
 	void Pause(boost::uuids::uuid);
@@ -38,13 +39,16 @@ public:
 	void PlayAll();
 	void PauseAll();
 	void ClearAll();
+	
 private:
 	boost::hash<boost::uuids::uuid> uuid_hasher;
 	boost::uuids::random_generator _uuidGen;
 	std::shared_ptr<InstructionSet> _iset;
 	std::unique_ptr<SuitHardwareInterface> _suit;
 	std::unordered_map<std::size_t, std::unique_ptr<IPlayable>> _effects;
-	PriorityModel _model;
+	PriorityModel _model; //order dependency (1)
+	HapticEffectGenerator _generator; //order dependency (2)
+
 	std::vector<Released> _releasedEffects;
 	std::unordered_map<HapticHandle, boost::uuids::uuid> _outsideHandleToUUID;
 	std::vector<std::size_t> _frozenEffects;

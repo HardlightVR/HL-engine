@@ -3,6 +3,7 @@
 #include "HapticEvent.h"
 #include <boost/range/algorithm.hpp>
 #include <boost/range/adaptors.hpp>
+#include "PlayableEffect.h"
 using namespace std;
 
 
@@ -10,20 +11,14 @@ HapticsExecutor::HapticsExecutor(std::shared_ptr<InstructionSet> iset, std::uniq
 	_suit(std::move(s)), 
 	_model(_suit), 
 	_iset(iset),
-	_paused(false)
+	_paused(false),
+	_generator(_model)
 {
 	
 }
 
 HapticsExecutor::~HapticsExecutor()
 {
-}
-void HapticsExecutor::Create(HapticHandle h, std::unique_ptr<IPlayable> playable)
-{
-	auto id = _uuidGen();
-
-	_outsideHandleToUUID[h] = id;
-	_effects[uuid_hasher(id)] = std::move(playable);
 }
 
 void HapticsExecutor::Play(HapticHandle hh)
@@ -70,6 +65,16 @@ void HapticsExecutor::Release(HapticHandle hh)
 
 	_outsideHandleToUUID.erase(_outsideHandleToUUID.find(hh));
 }
+
+void HapticsExecutor::Create(HapticHandle h, std::vector<TinyEffect> decoded)
+{
+	auto id = _uuidGen();
+
+	_outsideHandleToUUID[h] = id;
+	_effects[uuid_hasher(id)] = std::unique_ptr<IPlayable>(new PlayableEffect(decoded, _generator));
+}
+
+
 
 bool EffectIsExpired(const std::unique_ptr<IPlayable> &p, bool isGlobalPause) {
 

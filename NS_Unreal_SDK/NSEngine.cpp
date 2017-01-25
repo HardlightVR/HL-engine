@@ -37,7 +37,6 @@ NSEngine::NSEngine():
 
 {
 
-
 	//The ZMQ sockets require some tweaking. For haptic_requests, we want the "high water mark" to be fairly small. Meaning,
 	//if we receive more messages than the HWM, we discard them. This is because we don't want old haptics. 
 	//Alternatively, we could use ZMQ_CONFLATE, which only keeps one message, but if we don't process it fast enough it's gone. 
@@ -91,20 +90,12 @@ void NSEngine::Update() {
 		if (NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier)) {
 			auto packet = NullSpace::HapticFiles::GetHapticPacket(data);
 			switch (packet->packet_type()) {
-			case NullSpace::HapticFiles::FileType::FileType_Sequence:
-				engine.PlaySequence(*packet);
-				break;
-			case NullSpace::HapticFiles::FileType::FileType_Node:
-				engine.Play(*packet);
-				break;
-			case NullSpace::HapticFiles::FileType::FileType_Pattern:
-				engine.PlayPattern(*packet);
-				break;
-			case NullSpace::HapticFiles::FileType::FileType_Experience:
-				engine.PlayExperience(*packet);
-				break;
+			
 			case NullSpace::HapticFiles::FileType::FileType_Tracking:
 				engine.EnableOrDisableTracking(*packet);
+				break;
+			case NullSpace::HapticFiles::FileType::FileType_TinyEffectArray:
+				engine.PlayEffect(*packet);
 				break;
 				//Commands like Stop, Start, Play, Reset, Pause, etc.
 			case NullSpace::HapticFiles::FileType::FileType_HandleCommand:
