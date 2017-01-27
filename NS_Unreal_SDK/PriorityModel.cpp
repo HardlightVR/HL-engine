@@ -3,7 +3,7 @@
 #include "SuitHardwareInterface.h"
 #include "HapticEvent.h"
 
-PriorityModel::PriorityModel(std::unique_ptr<SuitHardwareInterface>& h):_hardware(h)
+PriorityModel::PriorityModel()
 {
 }
 

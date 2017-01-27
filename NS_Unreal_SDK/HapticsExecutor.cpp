@@ -9,7 +9,7 @@ using namespace std;
 
 HapticsExecutor::HapticsExecutor(std::shared_ptr<InstructionSet> iset, std::unique_ptr<SuitHardwareInterface> s):
 	_suit(std::move(s)), 
-	_model(_suit), 
+	_model(), 
 	_iset(iset),
 	_paused(false),
 	_generator(_model)
