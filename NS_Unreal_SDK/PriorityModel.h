@@ -2,8 +2,7 @@
 #include <unordered_map>
 #include "HapticQueue.h"
 #include "IntermediateHapticFormats.h"
-
-class SuitHardwareInterface;
+#include "SuitHardwareInterface.h"
 class PriorityModel
 {
 public:
