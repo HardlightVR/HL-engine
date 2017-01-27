@@ -102,16 +102,7 @@
     <ClCompile Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\IntermediateHapticFormats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayableSequence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PriorityModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayablePattern.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayableExperience.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NSEngine.cpp">
@@ -136,6 +127,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SuitDiagnostics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayableEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HapticEventGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -266,16 +263,7 @@
     <ClInclude Include="..\..\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire\IntermediateHapticFormats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayableSequence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PriorityModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayablePattern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayableExperience.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NSEngineApi.h">
@@ -303,6 +291,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ExportedStructures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayableEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HapticEventGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

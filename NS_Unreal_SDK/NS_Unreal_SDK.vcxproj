@@ -75,14 +75,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Program Files %28x86%29\flatbuffers\include;C:\Program Files %28x86%29\libzmq\include;C:\Program Files\boost\boost_1_61_0;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Program Files %28x86%29\flatbuffers\include;C:\Program Files %28x86%29\libzmq\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK;D:\Libraries\boost\boost_1_61_0</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PreprocessorDefinitions>IS_ENGINE;NS_UNREAL_SDK_EXPORTS;BOOST_THREAD_USE_LIB;ZMQ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\Win32\Debug\v140\static;C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;C:\Program Files %28x86%29\libzmq\bin\Win32\Debug\v140\static;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;Iphlpapi.lib;libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerbose</ShowProgress>
       <Profile>true</Profile>
@@ -103,12 +103,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Program Files %28x86%29\libzmq\include;C:\Program Files\boost\boost_1_61_0;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Program Files %28x86%29\libzmq\include;C:\Program Files\boost\boost_1_61_0;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK;D:\Libraries\boost\boost_1_61_0</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>IS_ENGINE;NS_UNREAL_SDK_EXPORTS;BOOST_THREAD_USE_LIB;ZMQ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\x64\Debug\v140\static;C:\Program Files\boost\boost_1_61_0\stage\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\x64\lib;C:\Program Files %28x86%29\libzmq\bin\x64\Debug\v140\static;C:\Program Files\boost\boost_1_61_0\stage\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;Iphlpapi.lib;libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
@@ -120,14 +120,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\libzmq\include;C:\Program Files %28x86%29\flatbuffers\include;C:\Program Files\boost\boost_1_61_0;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files (x86)\libzmq\include;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK;D:\Libraries\boost\boost_1_61_0</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS /Zm300  %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>IS_ENGINE;NS_UNREAL_SDK_EXPORTS;BOOST_THREAD_USE_LIB;ZMQ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\Win32\Release\v140\static;C:\Program Files\boost\boost_1_61_0\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;C:\Program Files %28x86%29\libzmq\bin\Win32\Release\v140\static;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;Iphlpapi.lib;libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
@@ -139,14 +139,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files %28x86%29\libzmq\include;C:\Program Files\boost\boost_1_61_0;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files %28x86%29\libzmq\include;C:\Program Files\boost\boost_1_61_0;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK;D:\Libraries\boost\boost_1_61_0</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS /Zm200 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>IS_ENGINE;NS_UNREAL_SDK_EXPORTS;BOOST_THREAD_USE_LIB;ZMQ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\libzmq\bin\x64\Release\v140\static;C:\Program Files\boost\boost_1_61_0\stage\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\x64\lib;C:\Program Files %28x86%29\libzmq\bin\x64\Release\v140\static;C:\Program Files\boost\boost_1_61_0\stage\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wsock32.lib;ws2_32.lib;Iphlpapi.lib;libzmq.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
@@ -205,6 +205,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="HapticEventGenerator.cpp" />
     <ClCompile Include="HapticQueue.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -285,24 +286,7 @@
     <ClCompile Include="Parser.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="PlayableExperience.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="PlayablePattern.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="PlayableSequence.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="PlayableEffect.cpp" />
     <ClCompile Include="PriorityModel.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -368,6 +352,7 @@
     <ClInclude Include="enumser.h" />
     <ClInclude Include="EnumTranslator.h" />
     <ClInclude Include="HapticEvent.h" />
+    <ClInclude Include="HapticEventGenerator.h" />
     <ClInclude Include="HapticQueue.h" />
     <ClInclude Include="HapticsExecutor.h" />
     <ClInclude Include="HexUtils.h" />
@@ -387,9 +372,7 @@
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="PlayableExperience.h" />
-    <ClInclude Include="PlayablePattern.h" />
-    <ClInclude Include="PlayableSequence.h" />
+    <ClInclude Include="PlayableEffect.h" />
     <ClInclude Include="PriorityModel.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="SuitDiagnostics.h" />
