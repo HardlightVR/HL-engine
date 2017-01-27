@@ -21,8 +21,9 @@ private:
 		HapticEvent Event;
 		AreaFlag Area;
 		bool Paused;
-		GeneratedEvent(HapticEvent e, AreaFlag a) : Event(e), Area(a), Paused(false) {}
-		GeneratedEvent() :Event(), Area(AreaFlag::None), Paused() {}
+		bool NeedsDeletion;
+		GeneratedEvent(HapticEvent e, AreaFlag a) : Event(e), Area(a), Paused(false), NeedsDeletion(false) {}
+		GeneratedEvent() :Event(), Area(AreaFlag::None), Paused(), NeedsDeletion(false) {}
 	};
 	PriorityModel& _model;
 	std::unordered_map<std::size_t, std::vector<GeneratedEvent>> _events;

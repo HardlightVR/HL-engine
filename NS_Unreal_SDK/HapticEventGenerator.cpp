@@ -40,14 +40,24 @@ void HapticEventGenerator::Resume(boost::uuids::uuid id)
 void HapticEventGenerator::Pause(boost::uuids::uuid id)
 {
 	if (_events.find(uuid_hasher(id)) != _events.end()) {
-		for (auto& generatedEvent : _events.at(uuid_hasher(id))) {
+		auto& eventList = _events.at(uuid_hasher(id));
+
+		for (auto& generatedEvent : eventList) {
 			if (auto optionalEv = _model.Remove(generatedEvent.Area, id)) {
 				HapticEvent removedEvent = optionalEv.get();
 				generatedEvent.Event.Duration = removedEvent.Duration - removedEvent.TimeElapsed;
 				
 			}
+			else {
+				//mark for removal
+				generatedEvent.NeedsDeletion = true;
+			}
 			
 		}
+
+		//remove in one go
+		auto toRemove = std::remove_if(eventList.begin(), eventList.end(), [](const GeneratedEvent& e) {return e.NeedsDeletion; });
+		eventList.erase(toRemove, eventList.end());
 	}
 }
 
