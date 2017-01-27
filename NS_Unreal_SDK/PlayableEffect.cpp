@@ -4,10 +4,11 @@
 #include <iostream>
 #include "PriorityModel.h"
 #include <iterator>
-PlayableEffect::PlayableEffect(std::vector<TinyEffect> effects, HapticEventGenerator& gen):_effects(effects), _paused(true), _gen(gen)
+PlayableEffect::PlayableEffect(std::vector<TinyEffect> effects, HapticEventGenerator& gen) :_effects(effects), _state(PlaybackState::IDLE), _gen(gen),
+_id(boost::uuids::random_generator()())
 {
 	assert(!_effects.empty());
-	_lastExecutedEffect = _effects.begin();
+
 }
 
 
@@ -17,50 +18,98 @@ PlayableEffect::~PlayableEffect()
 
 void PlayableEffect::Play()
 {
-	_paused = false;
-	for (const auto& id : _activeEffects) {
-		_gen.ResumeEvent(id);
+	switch (_state) {
+	case PlaybackState::IDLE:
+		reset();
+		_state = PlaybackState::PLAYING;
+		break;
+	case PlaybackState::PAUSED:
+		resume();
+		_state = PlaybackState::PLAYING;
+		break;
+	case PlaybackState::PLAYING:
+		//remain in playing state
+		break;
+	default:
+		break;
 	}
+	
 }
 
-void PlayableEffect::Reset()
+void PlayableEffect::Stop()
 {
-	_time = 0;
-	_paused = true;
-	_lastExecutedEffect = _effects.begin();
-	for (const auto& id : _activeEffects) {
-		_gen.RemoveEvent(id);
-	}
-	_activeEffects.clear();
 
+	switch (_state) {
+		case PlaybackState::IDLE:
+			//remain in idle state
+			break;
+		case PlaybackState::PAUSED:
+			reset();
+			_state = PlaybackState::IDLE;
+			break;
+		case PlaybackState::PLAYING:
+			reset();
+			_state = PlaybackState::IDLE;
+			break;
+		default:
+			break;
+	}
 }
 
 void PlayableEffect::Pause()
 {
-	_paused = true;
-	for (const auto& id : _activeEffects) {
-		_gen.PauseEvent(id);
+	switch (_state) {
+	case PlaybackState::IDLE:
+		//remain in idle state
+		break;
+	case PlaybackState::PAUSED:
+		//remain in paused state
+		break;
+	case PlaybackState::PLAYING:
+		pause();
+		_state = PlaybackState::PAUSED;
+		break;
+	default:
+		break;
 	}
 	
+	
+}
+
+
+void PlayableEffect::Restart()
+{
+	switch (_state) {
+	case PlaybackState::IDLE:
+		_state = PlaybackState::PLAYING;
+		break;
+	case PlaybackState::PAUSED:
+		reset();
+		_state = PlaybackState::PLAYING;
+		break;
+	case PlaybackState::PLAYING:
+		reset();
+		_state = PlaybackState::PLAYING;
+		break;
+	default:
+		break;
+	}
 }
 
 void PlayableEffect::Update(float dt, const std::unordered_map<std::string, Atom>& atoms)
 {
-	if (_paused) {
+	if (_state == PlaybackState::IDLE || _state == PlaybackState::PAUSED) {
 		return;
 	}
 
 	_time += dt;
-	
 	
 	std::vector<TinyEffect>::iterator current(_lastExecutedEffect);
 	while (current != _effects.end()) {
 
 		if (current->Time <= _time) {
 			auto a = atoms.at(Locator::getTranslator().ToString(current->Effect)).GetEffect(current->Strength);
-			if (auto optionalId = _gen.NewEvent((AreaFlag)current->Area, current->Duration, a)) {
-				_activeEffects.push_back(optionalId.get());
-			}
+			_gen.NewEvent((AreaFlag)current->Area, current->Duration, a, _id);
 			
 			
 			std::advance(current, 1);
@@ -74,13 +123,13 @@ void PlayableEffect::Update(float dt, const std::unordered_map<std::string, Atom
 		}
 	}
 
+	if (_time >= GetTotalPlayTime()) {
+		_state = PlaybackState::IDLE;
+	}
 
 } 
 
-uint32_t PlayableEffect::GetHandle() const
-{
-	return uint32_t();
-}
+
 
 float PlayableEffect::GetTotalPlayTime() const
 {
@@ -94,15 +143,28 @@ float PlayableEffect::CurrentTime() const
 
 bool PlayableEffect::IsPlaying() const
 {
-	return !_paused;
+	return _state == PlaybackState::PLAYING;
 }
 
 void PlayableEffect::Release() const
 {
 }
 
-void PlayableEffect::PlayFromStart() 
+void PlayableEffect::reset()
 {
-	//this->Reset(;
-	this->Play();
+	_time = 0;
+	_lastExecutedEffect = _effects.begin();
+	_gen.Remove(_id);
 }
+
+void PlayableEffect::pause()
+{
+	_gen.Pause(_id);
+}
+
+void PlayableEffect::resume() {
+	_gen.Resume(_id);
+}
+
+
+
