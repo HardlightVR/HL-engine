@@ -38,7 +38,6 @@ std::vector<PriorityModel::ExecutionCommand> PriorityModel::Update(float dt)
 			continue;
 		}
 		else {
-			//BUG: Need to not send continuous play repeatedly 
 
 			if (!effect->Sent) {
 				effect->Sent = true;
