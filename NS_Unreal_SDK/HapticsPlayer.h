@@ -18,10 +18,10 @@ public:
 	};
 
 	
-	HapticsPlayer(std::shared_ptr<InstructionSet>,std::unique_ptr<SuitHardwareInterface>);
+	HapticsPlayer(std::shared_ptr<InstructionSet>);
 	~HapticsPlayer();
 
-	void Update(float dt);
+	std::vector<PriorityModel::ExecutionCommand> Update(float dt);
 	void Play(HapticHandle h);
 	void Pause(HapticHandle h);
 	void Restart(HapticHandle h);
@@ -29,14 +29,8 @@ public:
 	void Release(HapticHandle h);
 	void Create(HapticHandle h, std::vector<TinyEffect>);
 
-	/*
-	void Play(boost::uuids::uuid);
-	void Pause(boost::uuids::uuid);
-	void Reset(boost::uuids::uuid);
-	void Release(boost::uuids::uuid);
-	void Create(boost::uuids::uuid, std::unique_ptr<IPlayable>);
-	*/
-	const std::unique_ptr<SuitHardwareInterface>& Hardware();
+	PriorityModel& GetModel();
+
 	
 
 	void PlayAll();
@@ -47,7 +41,6 @@ private:
 	boost::hash<boost::uuids::uuid> uuid_hasher;
 	boost::uuids::random_generator _uuidGen;
 	std::shared_ptr<InstructionSet> _iset;
-	std::unique_ptr<SuitHardwareInterface> _suit;
 	std::unordered_map<std::size_t, std::unique_ptr<IPlayable>> _effects;
 	PriorityModel _model; //order dependency (1)
 	HapticEventGenerator _generator; //order dependency (2)
@@ -55,10 +48,10 @@ private:
 	std::vector<Released> _releasedEffects;
 	std::unordered_map<HapticHandle, boost::uuids::uuid> _outsideHandleToUUID;
 	std::vector<std::size_t> _frozenEffects;
-	void updateLocationModels(float dt);
 
 	bool _paused;
 
-	boost::optional<const std::unique_ptr<IPlayable>&>  findEffect(HapticHandle hh);
+	
+	boost::optional<const std::unique_ptr<IPlayable>&>  toInternalUUID(HapticHandle hh);
 };
 

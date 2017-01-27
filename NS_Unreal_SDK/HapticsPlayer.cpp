@@ -7,8 +7,7 @@
 using namespace std;
 
 
-HapticsPlayer::HapticsPlayer(std::shared_ptr<InstructionSet> iset, std::unique_ptr<SuitHardwareInterface> s):
-	_suit(std::move(s)), 
+HapticsPlayer::HapticsPlayer(std::shared_ptr<InstructionSet> iset):
 	_model(), 
 	_iset(iset),
 	_paused(false),
@@ -23,28 +22,28 @@ HapticsPlayer::~HapticsPlayer()
 
 void HapticsPlayer::Play(HapticHandle hh)
 {
-	if (auto effect = findEffect(hh)) {
+	if (auto effect = toInternalUUID(hh)) {
 		effect.get()->Play();
 	}
 }
 
 void HapticsPlayer::Pause(HapticHandle hh)
 {
-	if (auto effect = findEffect(hh)) {
+	if (auto effect = toInternalUUID(hh)) {
 		effect.get()->Pause();
 	}
 }
 
 void HapticsPlayer::Restart(HapticHandle hh)
 {
-	if (auto effect = findEffect(hh)) {
+	if (auto effect = toInternalUUID(hh)) {
 		effect.get()->Restart();
 	}
 }
 
 void HapticsPlayer::Stop(HapticHandle hh)
 {
-	if (auto effect = findEffect(hh)) {
+	if (auto effect = toInternalUUID(hh)) {
 		effect.get()->Stop();
 	}
 }
@@ -75,6 +74,13 @@ void HapticsPlayer::Create(HapticHandle h, std::vector<TinyEffect> decoded)
 	_effects[uuid_hasher(id)] = std::unique_ptr<IPlayable>(new PlayableEffect(decoded, _generator));
 }
 
+PriorityModel & HapticsPlayer::GetModel()
+{
+	return _model;
+}
+
+
+
 
 
 bool EffectIsExpired(const std::unique_ptr<IPlayable> &p, bool isGlobalPause) {
@@ -87,14 +93,14 @@ bool EffectIsExpired(const std::unique_ptr<IPlayable> &p, bool isGlobalPause) {
 	}
 }
 
-void HapticsPlayer::Update(float dt)
+std::vector<PriorityModel::ExecutionCommand> HapticsPlayer::Update(float dt)
 {
-	updateLocationModels(dt);
+	//updateLocationModels(dt);
 
 	for (auto& effect : _effects) {
 		effect.second->Update(dt, _iset->Atoms());
 	}
-	
+
 	//mark & erase from _effects
 
 	for (auto& released : _releasedEffects) {
@@ -102,7 +108,7 @@ void HapticsPlayer::Update(float dt)
 			released.NeedsSweep = true;
 			_effects.at(uuid_hasher(released.ID))->Release();
 			_effects.erase(uuid_hasher(released.ID));
-		//	std::cout << "Hey, found an expired released handle, deleting from effects\n";
+			//	std::cout << "Hey, found an expired released handle, deleting from effects\n";
 		}
 	}
 
@@ -113,14 +119,9 @@ void HapticsPlayer::Update(float dt)
 	});
 	_releasedEffects.erase(toRemove, _releasedEffects.end());
 
-	
-
+	return _model.Update(dt);
 }
 
-const std::unique_ptr<SuitHardwareInterface>& HapticsPlayer::Hardware()
-{
-	return _suit;
-}
 
 void HapticsPlayer::PlayAll()
 {
@@ -166,41 +167,7 @@ void HapticsPlayer::ClearAll()
 
 
 
-void HapticsPlayer::updateLocationModels(float deltaTime)
-{
-	
-	
-
-	_suit->UseDeferredMode();
-
-	auto commands = _model.Update(deltaTime);
-	
-	for (auto& command : commands)
-	{
-		switch (command.Command) {
-		case PriorityModel::Command::HALT:
-			_suit->HaltEffect(command.Location);
-			break;
-		case PriorityModel::Command::PLAY:
-			switch (command.Duration) {
-			case Duration::Infinite:
-			case Duration::Variable:
-				_suit->PlayEffectContinuous(command.Location, command.Effect);
-				break;
-			case Duration::OneShot:
-				_suit->HaltEffect(command.Location);
-				_suit->PlayEffect(command.Location, command.Effect);
-				_model.Clean(command.Location);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-}
-
-boost::optional<const std::unique_ptr<IPlayable>&> HapticsPlayer::findEffect(HapticHandle hh)
+boost::optional<const std::unique_ptr<IPlayable>&> HapticsPlayer::toInternalUUID(HapticHandle hh)
 {
 	auto h = uuid_hasher(_outsideHandleToUUID[hh]);
 	if (_effects.find(h) != _effects.end()) {

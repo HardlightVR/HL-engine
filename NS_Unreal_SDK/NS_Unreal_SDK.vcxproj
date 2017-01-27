@@ -188,6 +188,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="HapticClasses.cpp" />
+    <ClCompile Include="HapticCommandExecutor.cpp" />
     <ClCompile Include="HapticDirectoryTools.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -347,6 +348,7 @@
     <ClInclude Include="handler_allocator.h" />
     <ClInclude Include="HapticCache2.h" />
     <ClInclude Include="HapticClasses.h" />
+    <ClInclude Include="HapticCommandExecutor.h" />
     <ClInclude Include="HapticDirectoryTools.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />

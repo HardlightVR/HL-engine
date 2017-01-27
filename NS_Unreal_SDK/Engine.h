@@ -31,7 +31,7 @@ private:
 
 	std::shared_ptr<PacketDispatcher> _packetDispatcher; //order dependency
 	Synchronizer _streamSynchronizer; //order dependency
-	HapticsPlayer _executor;//order dependency
+	HapticsPlayer _hapticsPlayer;//order dependency
 
 	std::shared_ptr<ImuConsumer> _imuConsumer;
 	boost::asio::deadline_timer _trackingUpdateTimer;
@@ -44,7 +44,7 @@ private:
 	//todo: App Sessions
 	bool _userRequestsTracking;
 	SuitDiagnostics _diagnostics;
-
+	SuitHardwareInterface _hardware;
 	void handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v);
 };
 
