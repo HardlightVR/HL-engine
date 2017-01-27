@@ -4,7 +4,8 @@
 class HapticEvent
 {
 public:
-	HapticEvent(Effect effect, float duration);
+	HapticEvent(Effect effect, float duration, boost::uuids::uuid handle);
+	HapticEvent() {}
 	~HapticEvent();
 	boost::uuids::uuid Handle;
 	bool Dirty;

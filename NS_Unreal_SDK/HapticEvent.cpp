@@ -2,8 +2,8 @@
 #include "HapticEvent.h"
 
 
-HapticEvent::HapticEvent(::Effect effect, float duration):Dirty(false), Effect(effect), Duration(duration), TimeElapsed(0), Sent(false),
-Handle(boost::uuids::random_generator()())
+HapticEvent::HapticEvent(::Effect effect, float duration, boost::uuids::uuid handle):Dirty(false), Effect(effect), Duration(duration), TimeElapsed(0), Sent(false),
+Handle(handle)
 {
 }
 
