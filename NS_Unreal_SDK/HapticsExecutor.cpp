@@ -23,31 +23,32 @@ HapticsExecutor::~HapticsExecutor()
 
 void HapticsExecutor::Play(HapticHandle hh)
 {
-
-	auto h = _outsideHandleToUUID[hh];
-	if (_effects.find(uuid_hasher(h)) != _effects.end()) {
-		_effects.at(uuid_hasher(h))->Play();
+	if (auto effect = findEffect(hh)) {
+		effect.get()->Play();
 	}
 }
 
 void HapticsExecutor::Pause(HapticHandle hh)
 {
-	
-	auto h = _outsideHandleToUUID[hh];
-
-	if (_effects.find(uuid_hasher(h)) != _effects.end()) {
-		_effects.at(uuid_hasher(h))->Pause(_model);
+	if (auto effect = findEffect(hh)) {
+		effect.get()->Pause();
 	}
 }
 
-void HapticsExecutor::Reset(HapticHandle hh)
+void HapticsExecutor::Restart(HapticHandle hh)
 {
-	auto h = _outsideHandleToUUID[hh];
-
-	if (_effects.find(uuid_hasher(h)) != _effects.end()) {
-		_effects.at(uuid_hasher(h))->Reset(_model);
+	if (auto effect = findEffect(hh)) {
+		effect.get()->Restart();
 	}
 }
+
+void HapticsExecutor::Stop(HapticHandle hh)
+{
+	if (auto effect = findEffect(hh)) {
+		effect.get()->Stop();
+	}
+}
+
 
 void HapticsExecutor::Release(HapticHandle hh)
 {
@@ -91,7 +92,7 @@ void HapticsExecutor::Update(float dt)
 	updateLocationModels(dt);
 
 	for (auto& effect : _effects) {
-		effect.second->Update(dt, _model, _iset->Atoms());
+		effect.second->Update(dt, _iset->Atoms());
 	}
 	
 	//mark & erase from _effects
@@ -144,7 +145,7 @@ void HapticsExecutor::PauseAll()
 
 	for (auto& effect : _effects) {
 		if (effect.second->IsPlaying()) {
-			effect.second->Pause(_model);
+			effect.second->Pause();
 			_frozenEffects.push_back(effect.first);
 		}
 	}
@@ -153,50 +154,14 @@ void HapticsExecutor::PauseAll()
 void HapticsExecutor::ClearAll()
 {
 	for (auto& effect : _effects) {
-		effect.second->Pause(_model);
+		effect.second->Pause();
 	}
 	_outsideHandleToUUID.clear();
 	_effects.clear();
 	_releasedEffects.clear();
 }
-void HapticsExecutor::Play(boost::uuids::uuid h)
-{
-	if (_effects.find(uuid_hasher(h)) != _effects.end()) {
-		_effects.at(uuid_hasher(h))->Play();
-	}
-}
-
-void HapticsExecutor::Pause(boost::uuids::uuid h)
-{
-
-	if (_effects.find(uuid_hasher(h)) != _effects.end()) {
-		_effects.at(uuid_hasher(h))->Pause(_model);
-	}
-}
 
 
-
-void HapticsExecutor::Reset(boost::uuids::uuid h)
-{
-	if (_effects.find(uuid_hasher(h)) != _effects.end()) {
-		_effects.at(uuid_hasher(h))->Reset(_model);
-	}
-}
-
-void HapticsExecutor::Release(boost::uuids::uuid h)
-{
-	
-	auto it = _effects.find(uuid_hasher(h));
-	if (it != _effects.end()) {
-		it->second->Release();
-		_effects.erase(it);
-	}
-}
-
-void HapticsExecutor::Create(boost::uuids::uuid id, std::unique_ptr<IPlayable> playable)
-{
-	_effects[uuid_hasher(id)] = std::move(playable);
-}
 
 
 
@@ -233,4 +198,13 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 		}
 	}
 
+}
+
+boost::optional<const std::unique_ptr<IPlayable>&> HapticsExecutor::findEffect(HapticHandle hh)
+{
+	auto h = uuid_hasher(_outsideHandleToUUID[hh]);
+	if (_effects.find(h) != _effects.end()) {
+		return _effects.at(h);
+	}
+	return boost::optional<const std::unique_ptr<IPlayable>&>();
 }
