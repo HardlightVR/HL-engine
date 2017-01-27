@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "HapticsExecutor.h"
+#include "HapticsPlayer.h"
 #include "HapticEvent.h"
 #include <boost/range/algorithm.hpp>
 #include <boost/range/adaptors.hpp>
@@ -7,7 +7,7 @@
 using namespace std;
 
 
-HapticsExecutor::HapticsExecutor(std::shared_ptr<InstructionSet> iset, std::unique_ptr<SuitHardwareInterface> s):
+HapticsPlayer::HapticsPlayer(std::shared_ptr<InstructionSet> iset, std::unique_ptr<SuitHardwareInterface> s):
 	_suit(std::move(s)), 
 	_model(), 
 	_iset(iset),
@@ -17,32 +17,32 @@ HapticsExecutor::HapticsExecutor(std::shared_ptr<InstructionSet> iset, std::uniq
 	
 }
 
-HapticsExecutor::~HapticsExecutor()
+HapticsPlayer::~HapticsPlayer()
 {
 }
 
-void HapticsExecutor::Play(HapticHandle hh)
+void HapticsPlayer::Play(HapticHandle hh)
 {
 	if (auto effect = findEffect(hh)) {
 		effect.get()->Play();
 	}
 }
 
-void HapticsExecutor::Pause(HapticHandle hh)
+void HapticsPlayer::Pause(HapticHandle hh)
 {
 	if (auto effect = findEffect(hh)) {
 		effect.get()->Pause();
 	}
 }
 
-void HapticsExecutor::Restart(HapticHandle hh)
+void HapticsPlayer::Restart(HapticHandle hh)
 {
 	if (auto effect = findEffect(hh)) {
 		effect.get()->Restart();
 	}
 }
 
-void HapticsExecutor::Stop(HapticHandle hh)
+void HapticsPlayer::Stop(HapticHandle hh)
 {
 	if (auto effect = findEffect(hh)) {
 		effect.get()->Stop();
@@ -50,7 +50,7 @@ void HapticsExecutor::Stop(HapticHandle hh)
 }
 
 
-void HapticsExecutor::Release(HapticHandle hh)
+void HapticsPlayer::Release(HapticHandle hh)
 {
 	//std::cout << "Got a new handle to release\n";
 
@@ -67,7 +67,7 @@ void HapticsExecutor::Release(HapticHandle hh)
 	_outsideHandleToUUID.erase(_outsideHandleToUUID.find(hh));
 }
 
-void HapticsExecutor::Create(HapticHandle h, std::vector<TinyEffect> decoded)
+void HapticsPlayer::Create(HapticHandle h, std::vector<TinyEffect> decoded)
 {
 	auto id = _uuidGen();
 
@@ -87,7 +87,7 @@ bool EffectIsExpired(const std::unique_ptr<IPlayable> &p, bool isGlobalPause) {
 	}
 }
 
-void HapticsExecutor::Update(float dt)
+void HapticsPlayer::Update(float dt)
 {
 	updateLocationModels(dt);
 
@@ -117,12 +117,12 @@ void HapticsExecutor::Update(float dt)
 
 }
 
-const std::unique_ptr<SuitHardwareInterface>& HapticsExecutor::Hardware()
+const std::unique_ptr<SuitHardwareInterface>& HapticsPlayer::Hardware()
 {
 	return _suit;
 }
 
-void HapticsExecutor::PlayAll()
+void HapticsPlayer::PlayAll()
 {
 	_paused = false;
 
@@ -138,7 +138,7 @@ void HapticsExecutor::PlayAll()
 }
 //frozen vs paused
 
-void HapticsExecutor::PauseAll()
+void HapticsPlayer::PauseAll()
 {
 	_paused = true;
 
@@ -151,7 +151,7 @@ void HapticsExecutor::PauseAll()
 	}
 }
 
-void HapticsExecutor::ClearAll()
+void HapticsPlayer::ClearAll()
 {
 	for (auto& effect : _effects) {
 		effect.second->Pause();
@@ -166,7 +166,7 @@ void HapticsExecutor::ClearAll()
 
 
 
-void HapticsExecutor::updateLocationModels(float deltaTime)
+void HapticsPlayer::updateLocationModels(float deltaTime)
 {
 	
 	
@@ -200,7 +200,7 @@ void HapticsExecutor::updateLocationModels(float deltaTime)
 
 }
 
-boost::optional<const std::unique_ptr<IPlayable>&> HapticsExecutor::findEffect(HapticHandle hh)
+boost::optional<const std::unique_ptr<IPlayable>&> HapticsPlayer::findEffect(HapticHandle hh)
 {
 	auto h = uuid_hasher(_outsideHandleToUUID[hh]);
 	if (_effects.find(h) != _effects.end()) {

@@ -212,7 +212,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="HapticsExecutor.cpp">
+    <ClCompile Include="HapticsPlayer.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -354,7 +354,7 @@
     <ClInclude Include="HapticEvent.h" />
     <ClInclude Include="HapticEventGenerator.h" />
     <ClInclude Include="HapticQueue.h" />
-    <ClInclude Include="HapticsExecutor.h" />
+    <ClInclude Include="HapticsPlayer.h" />
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
     <ClInclude Include="IJsonSerializable.h" />

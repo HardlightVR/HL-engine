@@ -5,7 +5,7 @@
 #include "HapticCache2.h"
 #include "PacketDispatcher.h"
 #include "Synchronizer.h"
-#include "HapticsExecutor.h"
+#include "HapticsPlayer.h"
 #include "InstructionSet.h"
 #include "Consumers\ImuConsumer.h"
 #include "SuitDiagnostics.h"
@@ -31,7 +31,7 @@ private:
 
 	std::shared_ptr<PacketDispatcher> _packetDispatcher; //order dependency
 	Synchronizer _streamSynchronizer; //order dependency
-	HapticsExecutor _executor;//order dependency
+	HapticsPlayer _executor;//order dependency
 
 	std::shared_ptr<ImuConsumer> _imuConsumer;
 	boost::asio::deadline_timer _trackingUpdateTimer;

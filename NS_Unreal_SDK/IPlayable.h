@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include "Atom.h"
 #include "boost\uuid\uuid.hpp"
-class HapticsExecutor;
+class HapticsPlayer;
 class PriorityModel;
 class IPlayable {
 public:

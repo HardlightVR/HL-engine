@@ -7,7 +7,7 @@
 #include "PriorityModel.h"
 #include "HapticEventGenerator.h"
 typedef unsigned int HapticHandle;
-class HapticsExecutor
+class HapticsPlayer
 {
 public:
 	struct Released {
@@ -18,8 +18,8 @@ public:
 	};
 
 	
-	HapticsExecutor(std::shared_ptr<InstructionSet>,std::unique_ptr<SuitHardwareInterface>);
-	~HapticsExecutor();
+	HapticsPlayer(std::shared_ptr<InstructionSet>,std::unique_ptr<SuitHardwareInterface>);
+	~HapticsPlayer();
 
 	void Update(float dt);
 	void Play(HapticHandle h);
