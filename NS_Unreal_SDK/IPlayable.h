@@ -9,7 +9,6 @@ public:
 	virtual ~IPlayable() = default;
 	virtual void Play() = 0;
 	virtual void Stop() = 0;
-	virtual void Restart() = 0;
 	virtual void Pause() = 0;
 	virtual void Update(float dt, const std::unordered_map<std::string, Atom>&) = 0;
 	virtual float GetTotalPlayTime() const = 0;

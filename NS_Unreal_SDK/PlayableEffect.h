@@ -3,6 +3,12 @@
 #include "IntermediateHapticFormats.h"
 #include "HapticEvent.h"
 #include "HapticEventGenerator.h"
+
+namespace NS {
+	namespace Playable {
+		void Restart(const std::unique_ptr<IPlayable>&);
+	}
+}
 class PlayableEffect :
 	public IPlayable
 {
@@ -15,7 +21,6 @@ public:
 	void Play() override;
 	void Pause() override;
 	void Stop() override;
-	void Restart() override;
 	void Update(float dt,const std::unordered_map<std::string, Atom>&) override;
 	float GetTotalPlayTime() const override;
 	float CurrentTime() const override;

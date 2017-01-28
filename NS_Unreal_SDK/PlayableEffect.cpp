@@ -4,11 +4,20 @@
 #include <iostream>
 #include "PriorityModel.h"
 #include <iterator>
+
+namespace NS {
+	namespace Playable {
+		void Restart(const std::unique_ptr<IPlayable>& playable) {
+			playable->Stop();
+			playable->Play();
+		}
+	}
+}
 PlayableEffect::PlayableEffect(std::vector<TinyEffect> effects, HapticEventGenerator& gen) :_effects(effects), _state(PlaybackState::IDLE), _gen(gen),
 _id(boost::uuids::random_generator()())
 {
 	assert(!_effects.empty());
-
+	reset();
 }
 
 
@@ -20,7 +29,7 @@ void PlayableEffect::Play()
 {
 	switch (_state) {
 	case PlaybackState::IDLE:
-		reset();
+	//	reset();
 		_state = PlaybackState::PLAYING;
 		break;
 	case PlaybackState::PAUSED:
@@ -76,7 +85,7 @@ void PlayableEffect::Pause()
 	
 }
 
-
+/*
 void PlayableEffect::Restart()
 {
 	switch (_state) {
@@ -95,6 +104,7 @@ void PlayableEffect::Restart()
 		break;
 	}
 }
+*/
 
 void PlayableEffect::Update(float dt, const std::unordered_map<std::string, Atom>& atoms)
 {
@@ -124,7 +134,7 @@ void PlayableEffect::Update(float dt, const std::unordered_map<std::string, Atom
 	}
 
 	if (_time >= GetTotalPlayTime()) {
-		_state = PlaybackState::IDLE;
+		Stop();
 	}
 
 } 

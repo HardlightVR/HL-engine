@@ -37,7 +37,7 @@ void HapticsPlayer::Pause(HapticHandle hh)
 void HapticsPlayer::Restart(HapticHandle hh)
 {
 	if (auto effect = toInternalUUID(hh)) {
-		effect.get()->Restart();
+		NS::Playable::Restart(effect.get());
 	}
 }
 
