@@ -47,14 +47,14 @@ NSEngine::NSEngine():
 
 	haptic_requests.bind("tcp://127.0.0.1:9452");
 	//Since it's a sub socket, we need a topic to subscribe to. Since we don't use multiple topics, we use "".
-
+		
 	//We don't want server updates buffered at all. Might get stale IMU data, disconnections, reconnections, etc. Also,
 	//say the application froze - we don't want them to receive a bunch of junk data, just the most recent.
 	int confl = 1;
+	server_updates.setsockopt(ZMQ_SNDHWM, 1);
 
 	server_updates.bind("tcp://127.0.0.1:9453");
 	server_updates.setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
-
 	lastFrameTime = std::chrono::high_resolution_clock::now();
 
 	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg,this, boost::asio::placeholders::error, &server_updates));
@@ -145,6 +145,8 @@ void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket
 	NullSpace::Communication::SuitStatus status = engine.SuitConnected() ?
 		NullSpace::Communication::SuitStatus::SuitStatus_Connected :
 		NullSpace::Communication::SuitStatus::SuitStatus_Disconnected;
+
+	std::cout << "Suit is " << status << "\n";
 	_encoder.AquireEncodingLock();
 	_encoder.Finalize(_encoder.Encode(status),
 		[&](uint8_t* data, int size) {

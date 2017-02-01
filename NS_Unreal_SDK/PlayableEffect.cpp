@@ -85,26 +85,6 @@ void PlayableEffect::Pause()
 	
 }
 
-/*
-void PlayableEffect::Restart()
-{
-	switch (_state) {
-	case PlaybackState::IDLE:
-		_state = PlaybackState::PLAYING;
-		break;
-	case PlaybackState::PAUSED:
-		reset();
-		_state = PlaybackState::PLAYING;
-		break;
-	case PlaybackState::PLAYING:
-		reset();
-		_state = PlaybackState::PLAYING;
-		break;
-	default:
-		break;
-	}
-}
-*/
 
 void PlayableEffect::Update(float dt, const std::unordered_map<std::string, Atom>& atoms)
 {
@@ -156,8 +136,14 @@ bool PlayableEffect::IsPlaying() const
 	return _state == PlaybackState::PLAYING;
 }
 
-void PlayableEffect::Release() const
+PlayableInfo PlayableEffect::GetInfo() const
 {
+	return PlayableInfo(::GetTotalPlayTime(_effects), _time, _state == PlaybackState::PLAYING);
+}
+
+void PlayableEffect::Release()
+{
+	_gen.Remove(_id);
 }
 
 void PlayableEffect::reset()

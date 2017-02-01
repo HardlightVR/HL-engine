@@ -25,7 +25,8 @@ public:
 	float GetTotalPlayTime() const override;
 	float CurrentTime() const override;
 	bool IsPlaying() const override;
-	void Release() const override;
+	PlayableInfo GetInfo() const override;
+	void Release() override;
 
 	
 private:

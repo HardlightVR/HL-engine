@@ -84,13 +84,19 @@ PriorityModel & HapticsPlayer::GetModel()
 
 
 bool EffectIsExpired(const std::unique_ptr<IPlayable> &p, bool isGlobalPause) {
+	const auto& effectInfo = p->GetInfo();
+	return !effectInfo.Playing();
 
+	/*
 	if (isGlobalPause) {
-		return p->CurrentTime() >= p->GetTotalPlayTime();
+		return effectInfo.CurrentTime() >= effectInfo.Duration();
+		//return p->CurrentTime() >= p->GetTotalPlayTime();
 	}
 	else {
+		return !effectInfo.Playing() || effectInfo.CurrentTime() >= effectInfo.Duration();
 		return !p->IsPlaying() || p->CurrentTime() >= p->GetTotalPlayTime();
 	}
+	*/
 }
 
 std::vector<PriorityModel::ExecutionCommand> HapticsPlayer::Update(float dt)
