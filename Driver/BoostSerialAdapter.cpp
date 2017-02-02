@@ -20,22 +20,11 @@ BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
 }
 
 
-bool BoostSerialAdapter::Connect()
+void BoostSerialAdapter::Connect()
 {
-	/*
-	if (this->autoConnectPort()) {
-		this->beginRead();
-		return true;
-	}
-	else {
-		_resetIoTimer.expires_from_now(_resetIoTimeout);
-		_resetIoTimer.async_wait(boost::bind(&BoostSerialAdapter::reconnectSuit, this));
-		return false;
-	}
-	*/
+
 
 	this->testAllAsync();
-	return true;
 }
 
 void BoostSerialAdapter::Disconnect()

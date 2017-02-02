@@ -6,7 +6,7 @@
 class ICommunicationAdapter {
 public:
 	virtual ~ICommunicationAdapter() = default;
-	virtual bool Connect() = 0;
+	virtual void Connect() = 0;
 	virtual void Disconnect() = 0;
 	virtual bool IsConnected() const = 0;
 

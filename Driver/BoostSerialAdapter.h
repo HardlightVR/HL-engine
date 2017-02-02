@@ -14,7 +14,7 @@ public:
 	~BoostSerialAdapter();
 
 	//Connect to the hardware through serial port
-	bool Connect() override;
+	void Connect() override;
 	//Disconnect from hardware by closing the port
 	void Disconnect() override;
 	//Write bytes to the port, custom callback receives error codes and size written
