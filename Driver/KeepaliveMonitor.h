@@ -13,6 +13,7 @@ public:
 
 	//Tell monitor to begin pinging and waiting for responses
 	void BeginMonitoring();
+
 private:
 	//keep track of how many pings sent after initial connection loss
 	int _failedPingCount;

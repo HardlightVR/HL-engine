@@ -30,6 +30,10 @@ Messenger::Messenger():
 
 Messenger::~Messenger()
 {
+	_broadcastSocket.close();
+	_pollSocket.close();
+	
+	_context.close();
 }
 
 bool Messenger::Broadcast(void * data, std::size_t length)

@@ -12,12 +12,7 @@ HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
 {
 
 
-	if (_adapter->Connect()) {
-		Locator::Logger().Log("Hardware", "Adapter connected to suit");
-	}
-	else {
-		Locator::Logger().Log("Hardware", "Adapter could not connect to suit", LogLevel::Warning);
-	}
+	_adapter->Connect();
 	
 
 }
@@ -31,7 +26,3 @@ HardwareInterface::~HardwareInterface()
 	}
 }
 
-void HardwareInterface::Update()
-{
-	
-}

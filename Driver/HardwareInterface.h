@@ -8,7 +8,6 @@ class HardwareInterface
 public:
 	HardwareInterface(std::shared_ptr<IoService> io);
 	~HardwareInterface();
-	void Update();
 
 	boost::condition_variable& Cond() {
 		return _needToCheckAdapter;

@@ -2,15 +2,17 @@
 #include "BoostSerialAdapter.h"
 #include <iostream>
 #include <future>
+#include <boost/asio/use_future.hpp>
 #include "enumser.h"
 #include "Locator.h"
 BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
 	suitDataStream(std::make_shared<Buffer>(4096)), port(nullptr), _ioService(ioService),
 	_io(ioService->GetIOService()),
 	_resetIoTimeout(boost::posix_time::milliseconds(500)),
-	_initialConnectTimeout(std::chrono::milliseconds(100)),
+	_initialConnectTimeout(boost::posix_time::milliseconds(300)),
 	_resetIoTimer(_io),
-	_monitor(ioService->GetIOService(), port)
+	_monitor(ioService->GetIOService(), port),
+	_cancelIoTimer(_io)
 
 {
 	std::fill(_data, _data + INCOMING_DATA_BUFFER_SIZE, 0);
@@ -20,15 +22,20 @@ BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
 
 bool BoostSerialAdapter::Connect()
 {
+	/*
 	if (this->autoConnectPort()) {
 		this->beginRead();
 		return true;
 	}
 	else {
-		this->beginRead();
+		_resetIoTimer.expires_from_now(_resetIoTimeout);
+		_resetIoTimer.async_wait(boost::bind(&BoostSerialAdapter::reconnectSuit, this));
 		return false;
 	}
+	*/
 
+	this->testAllAsync();
+	return true;
 }
 
 void BoostSerialAdapter::Disconnect()
@@ -84,22 +91,13 @@ void BoostSerialAdapter::doSuitRead()
 
 
 void BoostSerialAdapter::handleIoResetCallback() {
-	Locator::Logger().Log("Adapter", "Attempting to auto-reconnect..", LogLevel::Info);
+//	Locator::Logger().Log("Adapter", "Attempting to auto-reconnect..", LogLevel::Info);
 
-	if (this->autoConnectPort()) {
-		this->beginRead();
-		Locator::Logger().Log("Adapter", "Auto reconnected!", LogLevel::Info);
-		_isResetting = false;
-	}
-	else {
-		_resetIoTimer.expires_from_now(_resetIoTimeout);
-		_resetIoTimer.async_wait(boost::bind(&BoostSerialAdapter::reconnectSuit, this));
-
-	}
+	this->testAllAsync();
 
 }
 void BoostSerialAdapter::reconnectSuit() {
-
+	Locator::Logger().Log("Adapter", "Reconnecting..");
 	_isResetting = true;
 	_ioService->RestartIOService(std::bind(&BoostSerialAdapter::handleIoResetCallback, this));
 	
@@ -139,82 +137,103 @@ BoostSerialAdapter::~BoostSerialAdapter()
 	Disconnect();
 }
 
-bool BoostSerialAdapter::autoConnectPort()
-{
 
+void BoostSerialAdapter::testAllAsync() {
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
 	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
 		Locator::Logger().Log("Adapter", "No ports available on system. Check Device Manager for available devices.", LogLevel::Warning);
-		return false;
 	}
+	std::vector<std::string> portNames;
 	for (std::size_t i = 0; i < ports.size(); ++i) {
-		std::string strname = "COM" + std::to_string(ports[i]);
-		if (this->doHandshake(strname)) {
-			return true;
-		}
+		portNames.push_back("COM" + std::to_string(ports[i]));
 	}
-	return false;
-
-}
-
-
-
-bool BoostSerialAdapter::doHandshake(std::string portName) {
-
-	//First, we attempt to create and connect to the port. 
-	//Then, we send a short ping and see if we receive a response.
-
-	if (this->openPort(portName)) {
-		auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
-		this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code, const std::size_t bytes_transferred) {});
-		//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
-		//(suit takes about 30ms first ping)
-		std::future<std::size_t> length = port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE), boost::asio::use_future);
-		auto status = length.wait_for(_initialConnectTimeout);
-		switch (status) {
-		case std::future_status::ready:
-			return true;
-		case std::future_status::timeout:
-			return false;
-		case std::future_status::deferred:
-			return false;
-		default:
-			return false;
-		}
-	}
-	return false;
-}
-
-bool BoostSerialAdapter::openPort(std::string name)
-{
-
-	//Need to close old port if it is open
 	
-	if (this->port && this->port->is_open()) {
+	
+	_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+	
+
+}
+void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
+	if (portNames.empty()) {
+		//have tested everything, all we can do is go back and try everything again
+		_io.post(boost::bind(&BoostSerialAdapter::testAllAsync, this));
+		return;
+	}
+
+	if (port && port->is_open()) {
 		try {
-			this->port->close();
-			if (this->port->is_open()) {
-				Locator::Logger().Log("Adapter", "Major error, but possibly recoverable: After closing port, the port was still open. Talk to casey@nullspacevr.com", LogLevel::Warning);
-			}
+			port->close();
 		}
-		catch (boost::system::system_error& e) {
-			Locator::Logger().Log("Adapter", "Failed to close a port", LogLevel::Error);
+		catch (const boost::system::system_error& ec) {
+
 		}
-		
 	}
 
 	this->port = std::make_unique<boost::asio::serial_port>(_io);
 
+	std::string portName = portNames.back();
+	portNames.pop_back();
+
 	try {
-		this->port->open(name);
-		return this->port->is_open();
+		port->open(portName);
+		if (!port->is_open()) {
+			_io.dispatch(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+		}
 	}
-	catch (boost::system::system_error& e) {
-		//This is the most likely case for failing when opening a port. If there is no device connected, we hit
-		//this case.
-		return false;
+	catch (boost::system::system_error& ec) {
+		this->reconnectSuit();
+		return;
+
 	}
 
+
+	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code, const std::size_t bytes_transferred) {});
+	//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
+	//(suit takes about 30ms first ping)
+
+	port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE),[this,portNames] (const boost::system::error_code ec, const std::size_t bytes_transferred) {
+		if (ec) {
+			std::cout << "I was cancelled, moving on to the next\n";
+			_io.dispatch(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+
+		}
+		else {
+			//connected
+			std::cout << "recd back " << bytes_transferred << " bytes\n";
+			_cancelIoTimer.cancel();
+			_io.post(boost::bind(&BoostSerialAdapter::beginRead, this));
+		}
+	});
+	
+	_cancelIoTimer.expires_from_now(_initialConnectTimeout);
+	_cancelIoTimer.async_wait([this](const boost::system::error_code& ec) {
+		if (ec) {
+			//we good
+		}
+		else {
+			if (port && port->is_open()) {
+				try {
+					port->close();
+					std::cout << "Failed to connect to this port within 50 ms, closed it\n";
+
+				}
+				catch (const boost::system::system_error& ec) {
+					std::cout << "Failed to connect to this port within 50 ms, and couldn't even close it..\n";
+
+				}
+			}
+			else {
+				std::cout << "Failed to connect to this port within 50 ms\n";
+
+			}
+			
+		}
+	});
+
 }
+
+
+
 

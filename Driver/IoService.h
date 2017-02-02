@@ -10,16 +10,15 @@ public:
 	//Return the underlying io_service object
 	boost::asio::io_service& GetIOService();
 
-	//Returns true if the service was started
-	//Calling while it is running is undefined
-	bool Start();
 
-	//Tell it to stop, but it is not necessarily stopped by the end of the call
-	void Stop();
+	//Tell it to shutdown
+	void Shutdown();
 
 	//Restart the IO service. Necessary for serial port resetting
 	void RestartIOService(std::function<void()> ioResetCallback);
 private:
+
+	void start();
 	bool _running;
 	bool _dataReady;
 
@@ -34,5 +33,9 @@ private:
 
 	boost::condition_variable _needToCheckAdapter;
 	boost::mutex _needToCheckMut;
+
+	boost::condition_variable _needWakeup, _doneResettingIO;
+	std::atomic_bool _shouldQuit, _wantsReset, _isReset;
+
 };
 

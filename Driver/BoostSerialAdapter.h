@@ -40,8 +40,6 @@ private:
 	void handleIoResetCallback();
 	void beginRead();
 
-	bool autoConnectPort();
-	bool openPort(std::string name);
 	void copyDataToBuffer(std::size_t length);
 
 	uint8_t _data[INCOMING_DATA_BUFFER_SIZE];
@@ -50,9 +48,8 @@ private:
 	void doSuitRead();
 	void read_handler(boost::system::error_code ec, std::size_t length);
 
-	std::chrono::milliseconds _initialConnectTimeout;
+	boost::posix_time::milliseconds _initialConnectTimeout;
 	void reconnectSuit();
-	bool doHandshake( std::string portname);
 
 	bool _isResetting = false;
 
@@ -60,5 +57,9 @@ private:
 	boost::posix_time::milliseconds _resetIoTimeout;
 	KeepaliveMonitor _monitor;
 
+	void testAllAsync();
+	void testOne(std::vector<std::string> portNames);
+
+	boost::asio::deadline_timer _cancelIoTimer;
 };
 
