@@ -1,6 +1,9 @@
 #pragma once
 #include "ICommunicationAdapter.h"
 #include <boost\thread\mutex.hpp>
+#include "FirmwareInterface.h"
+#include "ExecutionCommand_generated.h"
+#include "Messenger.h"
 class Synchronizer;
 class IoService;
 class HardwareInterface
@@ -8,16 +11,16 @@ class HardwareInterface
 public:
 	HardwareInterface(std::shared_ptr<IoService> io);
 	~HardwareInterface();
-
-	boost::condition_variable& Cond() {
-		return _needToCheckAdapter;
-	}
-	boost::mutex& Mut() {
-		return _needToCheckMut;
-	}
-
-	bool& DataReady() {
-		return _dataReady;
+	void ReceiveExecutionCommand(const ExecutionCommand& ec) {
+		if (ec.Command == NullSpace::HapticFiles::PlayCommand_HALT) {
+			_firmware.HaltEffect(Location(ec.Location));
+		}
+		else if (ec.Command == NullSpace::HapticFiles::PlayCommand_PLAY) {
+			_firmware.PlayEffect(Location(ec.Location), Effect(ec.Effect));
+		}
+		else if (ec.Command == NullSpace::HapticFiles::PlayCommand_PLAY_CONTINUOUS) {
+			_firmware.PlayEffectContinuous(Location(ec.Location), Effect(ec.Effect));
+		}
 	}
 private:
 	std::unique_ptr<ICommunicationAdapter> _adapter;
@@ -33,5 +36,8 @@ private:
 	boost::condition_variable _needToCheckAdapter;
 	boost::mutex _needToCheckMut;
 	bool _dataReady;
+
+	FirmwareInterface _firmware;
+
 };
 

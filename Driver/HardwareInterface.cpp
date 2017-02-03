@@ -8,7 +8,8 @@ HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
 	_synchronizer(std::make_unique<Synchronizer>(_adapter->GetDataStream(), nullptr, ioService->GetIOService())),
 	_adapterResetCheckTimer(ioService->GetIOService()),
 	_adapterResetCheckInterval(boost::posix_time::milliseconds(50)),
-	_running(true)
+	_running(true),
+	_firmware(_adapter, ioService->GetIOService())
 {
 
 

@@ -88,7 +88,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -106,7 +106,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -126,7 +126,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -147,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -164,11 +164,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoostSerialAdapter.h" />
+    <ClInclude Include="ClientMessenger.h" />
     <ClInclude Include="ConsoleLogger.h" />
     <ClInclude Include="Driver.h" />
+    <ClInclude Include="Encoder.h" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
+    <ClInclude Include="EnumTranslator.h" />
+    <ClInclude Include="FirmwareInterface.h" />
     <ClInclude Include="HardwareInterface.h" />
+    <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
+    <ClInclude Include="Instruction.h" />
+    <ClInclude Include="InstructionBuilder.h" />
+    <ClInclude Include="InstructionSet.h" />
     <ClInclude Include="IoService.h" />
     <ClInclude Include="KeepaliveMonitor.h" />
     <ClInclude Include="Locator.h" />
@@ -176,6 +185,7 @@
     <ClInclude Include="LoggingUtils.h" />
     <ClInclude Include="Messenger.h" />
     <ClInclude Include="NullLogger.h" />
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuitPacket.h" />
@@ -186,19 +196,33 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BoostSerialAdapter.cpp" />
+    <ClCompile Include="ClientMessenger.cpp" />
     <ClCompile Include="ConsoleLogger.cpp" />
     <ClCompile Include="Driver.cpp" />
     <ClCompile Include="enumser.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="EnumTranslator.cpp" />
+    <ClCompile Include="FirmwareInterface.cpp" />
     <ClCompile Include="HardwareInterface.cpp" />
+    <ClCompile Include="HexUtils.cpp" />
+    <ClCompile Include="Instruction.cpp" />
+    <ClCompile Include="InstructionBuilder.cpp" />
+    <ClCompile Include="InstructionSet.cpp" />
     <ClCompile Include="IoService.cpp" />
+    <ClCompile Include="jsoncpp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="KeepaliveMonitor.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="LoggingUtils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Messenger.cpp" />
     <ClCompile Include="NullLogger.cpp" />
+    <ClCompile Include="Packet.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

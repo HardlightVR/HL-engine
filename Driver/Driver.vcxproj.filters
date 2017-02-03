@@ -78,6 +78,36 @@
     <ClInclude Include="LoggingUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ClientMessenger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Encoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FirmwareInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Instruction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InstructionBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InstructionSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HexUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnumTranslator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -123,6 +153,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LoggingUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientMessenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FirmwareInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Instruction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InstructionBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InstructionSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HexUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnumTranslator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

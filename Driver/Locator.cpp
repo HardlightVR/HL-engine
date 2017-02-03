@@ -4,3 +4,5 @@
 NullLogger Locator::_nullLogger = NullLogger();
 
 ILogger *Locator::_logger;
+
+EnumTranslator* Locator::_translator;

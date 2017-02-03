@@ -3,7 +3,7 @@
 #include "Driver.h"
 #include "Locator.h"
 #include "ConsoleLogger.h"
-
+#include "EnumTranslator.h"
 
 int main()
 {
@@ -11,6 +11,8 @@ int main()
 	Locator::initialize();
 
 	Locator::provide(new ConsoleLogger());
+	Locator::provide(new EnumTranslator());
+
 
 	Driver driver;
 
