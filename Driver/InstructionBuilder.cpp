@@ -1,10 +1,15 @@
 #include "StdAfx.h"
 #include "InstructionBuilder.h"
 #include <iostream>
-
+#include "Locator.h"
 InstructionBuilder::InstructionBuilder(std::shared_ptr<InstructionSet> iset):_iset(iset)
 {
-	
+	//todo: make iset a member if no one else needs it
+	if (!_iset->LoadAll()) {
+		Locator::Logger().Log("InstructionBuilder", "Couldn't load the instruction set! Will exit after you hit [any key]");
+		std::cin.get();
+		exit(0);
+	}
 
 }
 

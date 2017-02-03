@@ -8,7 +8,7 @@ Driver::Driver() :
 	_io(new IoService()),
 	_running(false),
 	_pollTimer(_io->GetIOService()),
-	_pollInterval(1),
+	_pollInterval(50),
 	_hardware(_io)
 
 {
@@ -39,12 +39,12 @@ bool Driver::StartThread()
 {
 	
 	_running = true;
-	_workThread = std::thread(boost::bind(&Driver::_UpdateLoop, this));
+	//_workThread = std::thread(boost::bind(&Driver::_UpdateLoop, this));
 
 //	_pollTimer.expires_from_now(_pollInterval);
 	//_pollTimer.async_wait(boost::bind(&Driver::_PollHandler, this, boost::asio::placeholders::error));
 
-
+	
 	return true;
 }
 
@@ -67,9 +67,13 @@ void Driver::_UpdateLoop()
 {
 	ExecutionCommand c;
 	c.Command = NullSpace::HapticFiles::PlayCommand_PLAY;
-	c.Effect = 32;
-	c.Location = 13;
-
+	c.Effect = 0;
+	
+	c.Location = counter;
+	counter++;
+	if (counter > 15) {
+		counter = 1;
+	}
 	Encoder encoder;
 	ClientMessenger messenger;
 
@@ -88,16 +92,3 @@ void Driver::_UpdateLoop()
 
 }
 
-void Driver::_Update(void* data, std::size_t size)
-{
-	
-	
-
-}
-
-void Driver::_PollHandler(const boost::system::error_code & ec)
-{
-	//_messenger.Poll(boost::bind(&Driver::_Update, this, _1, _2));
-	_pollTimer.expires_from_now(_pollInterval);
-	_pollTimer.async_wait(boost::bind(&Driver::_PollHandler, this, boost::asio::placeholders::error));
-}

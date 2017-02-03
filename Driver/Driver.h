@@ -18,11 +18,10 @@ private:
 	std::thread _workThread;
 	std::thread _messengerThread;
 	void _UpdateLoop();
-	void _Update(void* data, std::size_t size);
-	void _PollHandler(const boost::system::error_code& ec);
+	
 	boost::asio::deadline_timer _pollTimer;
 	boost::posix_time::milliseconds _pollInterval;
-
+	int counter = 1;
 	Messenger _messenger;
 	HardwareInterface _hardware;
 	Encoder _encoder;
