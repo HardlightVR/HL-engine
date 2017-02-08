@@ -125,7 +125,7 @@ void SuitHardwareInterface::HaltAllEffects()
 {
 	//must reimplement
 }
-#define BATCH_SIZE 20
+#define BATCH_SIZE 64
 
 void SuitHardwareInterface::writeBuffer() {
 	const std::size_t avail = _lfQueue.read_available();

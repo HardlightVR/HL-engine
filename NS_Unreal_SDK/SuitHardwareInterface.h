@@ -36,7 +36,7 @@ private:
 	boost::asio::deadline_timer _writeTimer;
 	boost::asio::deadline_timer _batchingDeadline;
 	boost::posix_time::milliseconds _batchingTimeout = boost::posix_time::milliseconds(20);
-	boost::posix_time::milliseconds _writeInterval = boost::posix_time::milliseconds(60);
+	boost::posix_time::milliseconds _writeInterval = boost::posix_time::milliseconds(10);
 	void writeBuffer();
 	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
 	std::mutex _needsFlushMutex;
