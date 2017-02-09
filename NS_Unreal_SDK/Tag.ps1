@@ -42,6 +42,8 @@ function GetLatestRelease([string]$selected_product, [HashTable]$groups, [HashTa
 }
 
 function GetLatestTag([string]$prefix, [string]$repo_path) {
+    $cmd = "git config --global versionsort.prereleaseSuffix `"-rc`""
+    iex $cmd
     $cmd = "git tag -l --sort=-version:refname `"$($prefix)_v*`""
    # Write-Host "    Using command: $cmd"
     Set-Location $repo_path
