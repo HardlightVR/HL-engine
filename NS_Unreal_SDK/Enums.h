@@ -211,9 +211,10 @@ enum class JsonLocation
 };
 
 enum class Imu {
-	Chest = 0, //0 
-	Left_Forearm = 1, //6
-	Left_Upper_Arm = 2, //2
-	Right_Forearm = 3, //5
-	Right_Upper_Arm = 4 //1
+	Unknown = 0,
+	Chest = 1, //0 
+	Left_Forearm = 2, //6
+	Left_Upper_Arm = 3, //2
+	Right_Forearm = 4, //5
+	Right_Upper_Arm = 5 //1
 };

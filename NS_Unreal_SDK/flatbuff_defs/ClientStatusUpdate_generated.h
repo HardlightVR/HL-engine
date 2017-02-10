@@ -9,6 +9,7 @@ namespace NullSpace {
 namespace Communication {
 
 struct ClientStatusUpdate;
+struct ClientStatusUpdateT;
 
 enum Status {
   Status_Playing = 0,
@@ -25,6 +26,10 @@ inline const char **EnumNamesStatus() {
 
 inline const char *EnumNameStatus(Status e) { return EnumNamesStatus()[static_cast<int>(e)]; }
 
+struct ClientStatusUpdateT : public flatbuffers::NativeTable {
+  Status clientStatus;
+};
+
 struct ClientStatusUpdate FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_CLIENTSTATUS = 4
@@ -35,6 +40,7 @@ struct ClientStatusUpdate FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_CLIENTSTATUS) &&
            verifier.EndTable();
   }
+  ClientStatusUpdateT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct ClientStatusUpdateBuilder {
@@ -56,6 +62,21 @@ inline flatbuffers::Offset<ClientStatusUpdate> CreateClientStatusUpdate(flatbuff
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<ClientStatusUpdate> CreateClientStatusUpdate(flatbuffers::FlatBufferBuilder &_fbb, const ClientStatusUpdateT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline ClientStatusUpdateT *ClientStatusUpdate::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new ClientStatusUpdateT();
+  { auto _e = clientStatus(); _o->clientStatus = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<ClientStatusUpdate> CreateClientStatusUpdate(flatbuffers::FlatBufferBuilder &_fbb, const ClientStatusUpdateT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateClientStatusUpdate(_fbb,
+    _o->clientStatus);
+}
+
 inline const NullSpace::Communication::ClientStatusUpdate *GetClientStatusUpdate(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::Communication::ClientStatusUpdate>(buf);
 }
@@ -66,6 +87,10 @@ inline bool VerifyClientStatusUpdateBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishClientStatusUpdateBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::Communication::ClientStatusUpdate> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<ClientStatusUpdateT> UnPackClientStatusUpdate(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<ClientStatusUpdateT>(GetClientStatusUpdate(buf)->UnPack(resolver));
 }
 
 }  // namespace Communication

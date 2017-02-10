@@ -17,12 +17,16 @@ namespace NullSpace {
 namespace HapticFiles {
 
 struct Tracking;
+struct TrackingT;
 
 struct EngineCommandData;
+struct EngineCommandDataT;
 
 struct HandleCommand;
+struct HandleCommandT;
 
 struct HapticPacket;
+struct HapticPacketT;
 
 enum EngineCommand {
   EngineCommand_NO_COMMAND = 0,
@@ -72,6 +76,28 @@ enum FileType {
   FileType_MAX = FileType_Node
 };
 
+struct FileTypeUnion {
+  FileType type;
+
+  flatbuffers::NativeTable *table;
+  FileTypeUnion() : type(FileType_NONE), table(nullptr) {}
+  FileTypeUnion(const FileTypeUnion &);
+  FileTypeUnion &operator=(const FileTypeUnion &);
+  ~FileTypeUnion();
+
+  static flatbuffers::NativeTable *UnPack(const void *union_obj, FileType type, const flatbuffers::resolver_function_t *resolver);
+  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *rehasher = nullptr) const;
+
+  NullSpace::HapticFiles::ExperienceT *AsExperience() { return type == FileType_Experience ? reinterpret_cast<NullSpace::HapticFiles::ExperienceT *>(table) : nullptr; }
+  NullSpace::HapticFiles::PatternT *AsPattern() { return type == FileType_Pattern ? reinterpret_cast<NullSpace::HapticFiles::PatternT *>(table) : nullptr; }
+  NullSpace::HapticFiles::SequenceT *AsSequence() { return type == FileType_Sequence ? reinterpret_cast<NullSpace::HapticFiles::SequenceT *>(table) : nullptr; }
+  NullSpace::HapticFiles::HapticEffectT *AsHapticEffect() { return type == FileType_HapticEffect ? reinterpret_cast<NullSpace::HapticFiles::HapticEffectT *>(table) : nullptr; }
+  TrackingT *AsTracking() { return type == FileType_Tracking ? reinterpret_cast<TrackingT *>(table) : nullptr; }
+  HandleCommandT *AsHandleCommand() { return type == FileType_HandleCommand ? reinterpret_cast<HandleCommandT *>(table) : nullptr; }
+  EngineCommandDataT *AsEngineCommandData() { return type == FileType_EngineCommandData ? reinterpret_cast<EngineCommandDataT *>(table) : nullptr; }
+  NullSpace::HapticFiles::NodeT *AsNode() { return type == FileType_Node ? reinterpret_cast<NullSpace::HapticFiles::NodeT *>(table) : nullptr; }
+};
+
 inline const char **EnumNamesFileType() {
   static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", "EngineCommandData", "Node", nullptr };
   return names;
@@ -117,6 +143,10 @@ template<> struct FileTypeTraits<NullSpace::HapticFiles::Node> {
 
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type);
 
+struct TrackingT : public flatbuffers::NativeTable {
+  bool enable;
+};
+
 struct Tracking FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_ENABLE = 4
@@ -127,6 +157,7 @@ struct Tracking FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint8_t>(verifier, VT_ENABLE) &&
            verifier.EndTable();
   }
+  TrackingT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct TrackingBuilder {
@@ -148,6 +179,12 @@ inline flatbuffers::Offset<Tracking> CreateTracking(flatbuffers::FlatBufferBuild
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<Tracking> CreateTracking(flatbuffers::FlatBufferBuilder &_fbb, const TrackingT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+struct EngineCommandDataT : public flatbuffers::NativeTable {
+  EngineCommand command;
+};
+
 struct EngineCommandData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_COMMAND = 4
@@ -158,6 +195,7 @@ struct EngineCommandData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_COMMAND) &&
            verifier.EndTable();
   }
+  EngineCommandDataT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct EngineCommandDataBuilder {
@@ -179,6 +217,13 @@ inline flatbuffers::Offset<EngineCommandData> CreateEngineCommandData(flatbuffer
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<EngineCommandData> CreateEngineCommandData(flatbuffers::FlatBufferBuilder &_fbb, const EngineCommandDataT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+struct HandleCommandT : public flatbuffers::NativeTable {
+  uint64_t handle;
+  Command command;
+};
+
 struct HandleCommand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_HANDLE = 4,
@@ -192,6 +237,7 @@ struct HandleCommand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_COMMAND) &&
            verifier.EndTable();
   }
+  HandleCommandT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct HandleCommandBuilder {
@@ -216,6 +262,14 @@ inline flatbuffers::Offset<HandleCommand> CreateHandleCommand(flatbuffers::FlatB
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<HandleCommand> CreateHandleCommand(flatbuffers::FlatBufferBuilder &_fbb, const HandleCommandT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+struct HapticPacketT : public flatbuffers::NativeTable {
+  std::string name;
+  FileTypeUnion packet;
+  uint64_t handle;
+};
+
 struct HapticPacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_NAME = 4,
@@ -237,6 +291,7 @@ struct HapticPacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint64_t>(verifier, VT_HANDLE) &&
            verifier.EndTable();
   }
+  HapticPacketT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct HapticPacketBuilder {
@@ -275,6 +330,68 @@ inline flatbuffers::Offset<HapticPacket> CreateHapticPacketDirect(flatbuffers::F
   return CreateHapticPacket(_fbb, name ? _fbb.CreateString(name) : 0, packet_type, packet, handle);
 }
 
+inline flatbuffers::Offset<HapticPacket> CreateHapticPacket(flatbuffers::FlatBufferBuilder &_fbb, const HapticPacketT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline TrackingT *Tracking::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new TrackingT();
+  { auto _e = enable(); _o->enable = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<Tracking> CreateTracking(flatbuffers::FlatBufferBuilder &_fbb, const TrackingT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateTracking(_fbb,
+    _o->enable);
+}
+
+inline EngineCommandDataT *EngineCommandData::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new EngineCommandDataT();
+  { auto _e = command(); _o->command = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<EngineCommandData> CreateEngineCommandData(flatbuffers::FlatBufferBuilder &_fbb, const EngineCommandDataT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateEngineCommandData(_fbb,
+    _o->command);
+}
+
+inline HandleCommandT *HandleCommand::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new HandleCommandT();
+  { auto _e = handle(); _o->handle = _e; };
+  { auto _e = command(); _o->command = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<HandleCommand> CreateHandleCommand(flatbuffers::FlatBufferBuilder &_fbb, const HandleCommandT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateHandleCommand(_fbb,
+    _o->handle,
+    _o->command);
+}
+
+inline HapticPacketT *HapticPacket::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new HapticPacketT();
+  { auto _e = name(); if (_e) _o->name = _e->str(); };
+  { auto _e = packet_type(); _o->packet.type = _e; };
+  { auto _e = packet(); if (_e) _o->packet.table = FileTypeUnion::UnPack(_e, packet_type(), resolver); };
+  { auto _e = handle(); _o->handle = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<HapticPacket> CreateHapticPacket(flatbuffers::FlatBufferBuilder &_fbb, const HapticPacketT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateHapticPacket(_fbb,
+    _o->name.size() ? _fbb.CreateString(_o->name) : 0,
+    _o->packet.type,
+    _o->packet.Pack(_fbb),
+    _o->handle);
+}
+
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type) {
   switch (type) {
     case FileType_NONE: return true;
@@ -290,6 +407,50 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
   }
 }
 
+inline flatbuffers::NativeTable *FileTypeUnion::UnPack(const void *union_obj, FileType type, const flatbuffers::resolver_function_t *resolver) {
+  switch (type) {
+    case FileType_NONE: return nullptr;
+    case FileType_Experience: return reinterpret_cast<const NullSpace::HapticFiles::Experience *>(union_obj)->UnPack(resolver);
+    case FileType_Pattern: return reinterpret_cast<const NullSpace::HapticFiles::Pattern *>(union_obj)->UnPack(resolver);
+    case FileType_Sequence: return reinterpret_cast<const NullSpace::HapticFiles::Sequence *>(union_obj)->UnPack(resolver);
+    case FileType_HapticEffect: return reinterpret_cast<const NullSpace::HapticFiles::HapticEffect *>(union_obj)->UnPack(resolver);
+    case FileType_Tracking: return reinterpret_cast<const Tracking *>(union_obj)->UnPack(resolver);
+    case FileType_HandleCommand: return reinterpret_cast<const HandleCommand *>(union_obj)->UnPack(resolver);
+    case FileType_EngineCommandData: return reinterpret_cast<const EngineCommandData *>(union_obj)->UnPack(resolver);
+    case FileType_Node: return reinterpret_cast<const NullSpace::HapticFiles::Node *>(union_obj)->UnPack(resolver);
+    default: return nullptr;
+  }
+}
+
+inline flatbuffers::Offset<void> FileTypeUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *rehasher) const {
+  switch (type) {
+    case FileType_NONE: return 0;
+    case FileType_Experience: return CreateExperience(_fbb, reinterpret_cast<const NullSpace::HapticFiles::ExperienceT *>(table), rehasher).Union();
+    case FileType_Pattern: return CreatePattern(_fbb, reinterpret_cast<const NullSpace::HapticFiles::PatternT *>(table), rehasher).Union();
+    case FileType_Sequence: return CreateSequence(_fbb, reinterpret_cast<const NullSpace::HapticFiles::SequenceT *>(table), rehasher).Union();
+    case FileType_HapticEffect: return CreateHapticEffect(_fbb, reinterpret_cast<const NullSpace::HapticFiles::HapticEffectT *>(table), rehasher).Union();
+    case FileType_Tracking: return CreateTracking(_fbb, reinterpret_cast<const TrackingT *>(table), rehasher).Union();
+    case FileType_HandleCommand: return CreateHandleCommand(_fbb, reinterpret_cast<const HandleCommandT *>(table), rehasher).Union();
+    case FileType_EngineCommandData: return CreateEngineCommandData(_fbb, reinterpret_cast<const EngineCommandDataT *>(table), rehasher).Union();
+    case FileType_Node: return CreateNode(_fbb, reinterpret_cast<const NullSpace::HapticFiles::NodeT *>(table), rehasher).Union();
+    default: return 0;
+  }
+}
+
+inline FileTypeUnion::~FileTypeUnion() {
+  switch (type) {
+    case FileType_Experience: delete reinterpret_cast<NullSpace::HapticFiles::ExperienceT *>(table); break;
+    case FileType_Pattern: delete reinterpret_cast<NullSpace::HapticFiles::PatternT *>(table); break;
+    case FileType_Sequence: delete reinterpret_cast<NullSpace::HapticFiles::SequenceT *>(table); break;
+    case FileType_HapticEffect: delete reinterpret_cast<NullSpace::HapticFiles::HapticEffectT *>(table); break;
+    case FileType_Tracking: delete reinterpret_cast<TrackingT *>(table); break;
+    case FileType_HandleCommand: delete reinterpret_cast<HandleCommandT *>(table); break;
+    case FileType_EngineCommandData: delete reinterpret_cast<EngineCommandDataT *>(table); break;
+    case FileType_Node: delete reinterpret_cast<NullSpace::HapticFiles::NodeT *>(table); break;
+    default:;
+  }
+}
+
 inline const NullSpace::HapticFiles::HapticPacket *GetHapticPacket(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::HapticFiles::HapticPacket>(buf);
 }
@@ -300,6 +461,10 @@ inline bool VerifyHapticPacketBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishHapticPacketBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::HapticPacket> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<HapticPacketT> UnPackHapticPacket(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<HapticPacketT>(GetHapticPacket(buf)->UnPack(resolver));
 }
 
 }  // namespace HapticFiles

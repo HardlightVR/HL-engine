@@ -9,8 +9,17 @@ namespace NullSpace {
 namespace Configuration {
 
 struct Instruction;
+struct InstructionT;
 
 struct InstructionList;
+struct InstructionListT;
+
+struct InstructionT : public flatbuffers::NativeTable {
+  std::string id;
+  std::string name;
+  std::string purpose;
+  std::vector<std::string> parameters;
+};
 
 struct Instruction FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -36,6 +45,7 @@ struct Instruction FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfStrings(parameters()) &&
            verifier.EndTable();
   }
+  InstructionT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct InstructionBuilder {
@@ -74,6 +84,12 @@ inline flatbuffers::Offset<Instruction> CreateInstructionDirect(flatbuffers::Fla
   return CreateInstruction(_fbb, id ? _fbb.CreateString(id) : 0, name ? _fbb.CreateString(name) : 0, purpose ? _fbb.CreateString(purpose) : 0, parameters ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*parameters) : 0);
 }
 
+inline flatbuffers::Offset<Instruction> CreateInstruction(flatbuffers::FlatBufferBuilder &_fbb, const InstructionT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+struct InstructionListT : public flatbuffers::NativeTable {
+  std::vector<std::unique_ptr<InstructionT>> instructions;
+};
+
 struct InstructionList FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_INSTRUCTIONS = 4
@@ -86,6 +102,7 @@ struct InstructionList FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(instructions()) &&
            verifier.EndTable();
   }
+  InstructionListT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct InstructionListBuilder {
@@ -112,6 +129,40 @@ inline flatbuffers::Offset<InstructionList> CreateInstructionListDirect(flatbuff
   return CreateInstructionList(_fbb, instructions ? _fbb.CreateVector<flatbuffers::Offset<Instruction>>(*instructions) : 0);
 }
 
+inline flatbuffers::Offset<InstructionList> CreateInstructionList(flatbuffers::FlatBufferBuilder &_fbb, const InstructionListT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline InstructionT *Instruction::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new InstructionT();
+  { auto _e = id(); if (_e) _o->id = _e->str(); };
+  { auto _e = name(); if (_e) _o->name = _e->str(); };
+  { auto _e = purpose(); if (_e) _o->purpose = _e->str(); };
+  { auto _e = parameters(); if (_e) { for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->parameters.push_back(_e->Get(_i)->str()); } } };
+  return _o;
+}
+
+inline flatbuffers::Offset<Instruction> CreateInstruction(flatbuffers::FlatBufferBuilder &_fbb, const InstructionT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateInstruction(_fbb,
+    _o->id.size() ? _fbb.CreateString(_o->id) : 0,
+    _o->name.size() ? _fbb.CreateString(_o->name) : 0,
+    _o->purpose.size() ? _fbb.CreateString(_o->purpose) : 0,
+    _o->parameters.size() ? _fbb.CreateVectorOfStrings(_o->parameters) : 0);
+}
+
+inline InstructionListT *InstructionList::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new InstructionListT();
+  { auto _e = instructions(); if (_e) { for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->instructions.push_back(std::unique_ptr<InstructionT>(_e->Get(_i)->UnPack(resolver))); } } };
+  return _o;
+}
+
+inline flatbuffers::Offset<InstructionList> CreateInstructionList(flatbuffers::FlatBufferBuilder &_fbb, const InstructionListT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateInstructionList(_fbb,
+    _o->instructions.size() ? _fbb.CreateVector<flatbuffers::Offset<Instruction>>(_o->instructions.size(), [&](size_t i) { return CreateInstruction(_fbb, _o->instructions[i].get(), rehasher); }) : 0);
+}
+
 inline const NullSpace::Configuration::InstructionList *GetInstructionList(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::Configuration::InstructionList>(buf);
 }
@@ -122,6 +173,10 @@ inline bool VerifyInstructionListBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishInstructionListBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::Configuration::InstructionList> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<InstructionListT> UnPackInstructionList(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<InstructionListT>(GetInstructionList(buf)->UnPack(resolver));
 }
 
 }  // namespace Configuration

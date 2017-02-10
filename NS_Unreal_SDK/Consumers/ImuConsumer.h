@@ -16,5 +16,7 @@ private:
 	std::unordered_map<Imu, Quaternion> _quaternions;
 	Quaternion parseQuaternion(const uint8_t* rec) const;
 	std::unordered_map<uint32_t, Imu> _mapping;
+	std::chrono::milliseconds _dur;
+	std::chrono::time_point<std::chrono::steady_clock> _lastTime;
 };
 

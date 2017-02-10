@@ -69,11 +69,17 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 }
 
 void Engine::sendTrackingUpdate() {
-	if (boost::optional<Quaternion> q = _imuConsumer->GetOrientation(Imu::Chest)) {
-		_encoder.AquireEncodingLock();
-		_encoder.Finalize(_encoder.Encode(q.get()), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
-		_encoder.ReleaseEncodingLock();
+	std::vector<std::tuple<Imu, Quaternion>> quats;
+	std::vector<Imu> which = { Imu::Chest, Imu::Left_Upper_Arm, Imu::Right_Upper_Arm, Imu::Left_Forearm, Imu::Right_Forearm };
+	for (const auto& imu : which) {
+		if (boost::optional<Quaternion> q = _imuConsumer->GetOrientation(imu)) {
+			quats.push_back(std::make_tuple(imu, q.get()));
+		}
 	}
+	;	_encoder.AquireEncodingLock();
+	_encoder.Finalize(_encoder.Encode(quats), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
+	_encoder.ReleaseEncodingLock();
+	
 	_trackingUpdateTimer.expires_from_now(_trackingUpdateInterval);
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
 }
@@ -87,6 +93,12 @@ void Engine::handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v)
 	}
 	else if (v.Major == 2 && v.Minor == 3) {
 		_imuConsumer->AssignMapping(0, Imu::Chest);
+	}
+	else if (v.Major == 2 && v.Minor == 5) {
+		_imuConsumer->AssignMapping(1, Imu::Left_Upper_Arm);
+		_imuConsumer->AssignMapping(3, Imu::Right_Upper_Arm);
+		_imuConsumer->AssignMapping(0, Imu::Chest);
+
 	}
 }
 

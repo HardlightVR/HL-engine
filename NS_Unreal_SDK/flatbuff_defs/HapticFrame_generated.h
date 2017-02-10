@@ -12,6 +12,14 @@ namespace NullSpace {
 namespace HapticFiles {
 
 struct HapticFrame;
+struct HapticFrameT;
+
+struct HapticFrameT : public flatbuffers::NativeTable {
+  float time;
+  std::unique_ptr<NullSpace::HapticFiles::SequenceT> sequence;
+  uint32_t area;
+  float strength;
+};
 
 struct HapticFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -33,6 +41,7 @@ struct HapticFrame FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<float>(verifier, VT_STRENGTH) &&
            verifier.EndTable();
   }
+  HapticFrameT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct HapticFrameBuilder {
@@ -63,6 +72,27 @@ inline flatbuffers::Offset<HapticFrame> CreateHapticFrame(flatbuffers::FlatBuffe
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<HapticFrame> CreateHapticFrame(flatbuffers::FlatBufferBuilder &_fbb, const HapticFrameT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline HapticFrameT *HapticFrame::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new HapticFrameT();
+  { auto _e = time(); _o->time = _e; };
+  { auto _e = sequence(); if (_e) _o->sequence = std::unique_ptr<NullSpace::HapticFiles::SequenceT>(_e->UnPack(resolver)); };
+  { auto _e = area(); _o->area = _e; };
+  { auto _e = strength(); _o->strength = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<HapticFrame> CreateHapticFrame(flatbuffers::FlatBufferBuilder &_fbb, const HapticFrameT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateHapticFrame(_fbb,
+    _o->time,
+    _o->sequence ? CreateSequence(_fbb, _o->sequence.get(), rehasher) : 0,
+    _o->area,
+    _o->strength);
+}
+
 inline const NullSpace::HapticFiles::HapticFrame *GetHapticFrame(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::HapticFiles::HapticFrame>(buf);
 }
@@ -73,6 +103,10 @@ inline bool VerifyHapticFrameBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishHapticFrameBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::HapticFrame> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<HapticFrameT> UnPackHapticFrame(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<HapticFrameT>(GetHapticFrame(buf)->UnPack(resolver));
 }
 
 }  // namespace HapticFiles

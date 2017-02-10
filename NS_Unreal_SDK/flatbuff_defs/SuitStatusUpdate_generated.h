@@ -9,6 +9,7 @@ namespace NullSpace {
 namespace Communication {
 
 struct SuitStatusUpdate;
+struct SuitStatusUpdateT;
 
 enum SuitStatus {
   SuitStatus_Disconnected = 0,
@@ -25,6 +26,10 @@ inline const char **EnumNamesSuitStatus() {
 
 inline const char *EnumNameSuitStatus(SuitStatus e) { return EnumNamesSuitStatus()[static_cast<int>(e)]; }
 
+struct SuitStatusUpdateT : public flatbuffers::NativeTable {
+  SuitStatus status;
+};
+
 struct SuitStatusUpdate FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_STATUS = 4
@@ -35,6 +40,7 @@ struct SuitStatusUpdate FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int16_t>(verifier, VT_STATUS) &&
            verifier.EndTable();
   }
+  SuitStatusUpdateT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct SuitStatusUpdateBuilder {
@@ -56,6 +62,21 @@ inline flatbuffers::Offset<SuitStatusUpdate> CreateSuitStatusUpdate(flatbuffers:
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<SuitStatusUpdate> CreateSuitStatusUpdate(flatbuffers::FlatBufferBuilder &_fbb, const SuitStatusUpdateT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline SuitStatusUpdateT *SuitStatusUpdate::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new SuitStatusUpdateT();
+  { auto _e = status(); _o->status = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<SuitStatusUpdate> CreateSuitStatusUpdate(flatbuffers::FlatBufferBuilder &_fbb, const SuitStatusUpdateT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateSuitStatusUpdate(_fbb,
+    _o->status);
+}
+
 inline const NullSpace::Communication::SuitStatusUpdate *GetSuitStatusUpdate(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::Communication::SuitStatusUpdate>(buf);
 }
@@ -66,6 +87,10 @@ inline bool VerifySuitStatusUpdateBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishSuitStatusUpdateBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::Communication::SuitStatusUpdate> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<SuitStatusUpdateT> UnPackSuitStatusUpdate(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<SuitStatusUpdateT>(GetSuitStatusUpdate(buf)->UnPack(resolver));
 }
 
 }  // namespace Communication

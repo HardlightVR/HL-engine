@@ -12,6 +12,7 @@ namespace NullSpace {
 namespace Communication {
 
 struct EnginePacket;
+struct EnginePacketT;
 
 enum PacketType {
   PacketType_NONE = 0,
@@ -19,6 +20,22 @@ enum PacketType {
   PacketType_TrackingUpdate = 2,
   PacketType_MIN = PacketType_NONE,
   PacketType_MAX = PacketType_TrackingUpdate
+};
+
+struct PacketTypeUnion {
+  PacketType type;
+
+  flatbuffers::NativeTable *table;
+  PacketTypeUnion() : type(PacketType_NONE), table(nullptr) {}
+  PacketTypeUnion(const PacketTypeUnion &);
+  PacketTypeUnion &operator=(const PacketTypeUnion &);
+  ~PacketTypeUnion();
+
+  static flatbuffers::NativeTable *UnPack(const void *union_obj, PacketType type, const flatbuffers::resolver_function_t *resolver);
+  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *rehasher = nullptr) const;
+
+  NullSpace::Communication::SuitStatusUpdateT *AsSuitStatusUpdate() { return type == PacketType_SuitStatusUpdate ? reinterpret_cast<NullSpace::Communication::SuitStatusUpdateT *>(table) : nullptr; }
+  NullSpace::Communication::TrackingUpdateT *AsTrackingUpdate() { return type == PacketType_TrackingUpdate ? reinterpret_cast<NullSpace::Communication::TrackingUpdateT *>(table) : nullptr; }
 };
 
 inline const char **EnumNamesPacketType() {
@@ -42,6 +59,10 @@ template<> struct PacketTypeTraits<NullSpace::Communication::TrackingUpdate> {
 
 inline bool VerifyPacketType(flatbuffers::Verifier &verifier, const void *union_obj, PacketType type);
 
+struct EnginePacketT : public flatbuffers::NativeTable {
+  PacketTypeUnion packet;
+};
+
 struct EnginePacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_PACKET_TYPE = 4,
@@ -56,6 +77,7 @@ struct EnginePacket FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyPacketType(verifier, packet(), packet_type()) &&
            verifier.EndTable();
   }
+  EnginePacketT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct EnginePacketBuilder {
@@ -80,12 +102,55 @@ inline flatbuffers::Offset<EnginePacket> CreateEnginePacket(flatbuffers::FlatBuf
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<EnginePacket> CreateEnginePacket(flatbuffers::FlatBufferBuilder &_fbb, const EnginePacketT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline EnginePacketT *EnginePacket::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new EnginePacketT();
+  { auto _e = packet_type(); _o->packet.type = _e; };
+  { auto _e = packet(); if (_e) _o->packet.table = PacketTypeUnion::UnPack(_e, packet_type(), resolver); };
+  return _o;
+}
+
+inline flatbuffers::Offset<EnginePacket> CreateEnginePacket(flatbuffers::FlatBufferBuilder &_fbb, const EnginePacketT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateEnginePacket(_fbb,
+    _o->packet.type,
+    _o->packet.Pack(_fbb));
+}
+
 inline bool VerifyPacketType(flatbuffers::Verifier &verifier, const void *union_obj, PacketType type) {
   switch (type) {
     case PacketType_NONE: return true;
     case PacketType_SuitStatusUpdate: return verifier.VerifyTable(reinterpret_cast<const NullSpace::Communication::SuitStatusUpdate *>(union_obj));
     case PacketType_TrackingUpdate: return verifier.VerifyTable(reinterpret_cast<const NullSpace::Communication::TrackingUpdate *>(union_obj));
     default: return false;
+  }
+}
+
+inline flatbuffers::NativeTable *PacketTypeUnion::UnPack(const void *union_obj, PacketType type, const flatbuffers::resolver_function_t *resolver) {
+  switch (type) {
+    case PacketType_NONE: return nullptr;
+    case PacketType_SuitStatusUpdate: return reinterpret_cast<const NullSpace::Communication::SuitStatusUpdate *>(union_obj)->UnPack(resolver);
+    case PacketType_TrackingUpdate: return reinterpret_cast<const NullSpace::Communication::TrackingUpdate *>(union_obj)->UnPack(resolver);
+    default: return nullptr;
+  }
+}
+
+inline flatbuffers::Offset<void> PacketTypeUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *rehasher) const {
+  switch (type) {
+    case PacketType_NONE: return 0;
+    case PacketType_SuitStatusUpdate: return CreateSuitStatusUpdate(_fbb, reinterpret_cast<const NullSpace::Communication::SuitStatusUpdateT *>(table), rehasher).Union();
+    case PacketType_TrackingUpdate: return CreateTrackingUpdate(_fbb, reinterpret_cast<const NullSpace::Communication::TrackingUpdateT *>(table), rehasher).Union();
+    default: return 0;
+  }
+}
+
+inline PacketTypeUnion::~PacketTypeUnion() {
+  switch (type) {
+    case PacketType_SuitStatusUpdate: delete reinterpret_cast<NullSpace::Communication::SuitStatusUpdateT *>(table); break;
+    case PacketType_TrackingUpdate: delete reinterpret_cast<NullSpace::Communication::TrackingUpdateT *>(table); break;
+    default:;
   }
 }
 
@@ -99,6 +164,10 @@ inline bool VerifyEnginePacketBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishEnginePacketBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::Communication::EnginePacket> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<EnginePacketT> UnPackEnginePacket(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<EnginePacketT>(GetEnginePacket(buf)->UnPack(resolver));
 }
 
 }  // namespace Communication

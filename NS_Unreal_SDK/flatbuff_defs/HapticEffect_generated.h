@@ -9,6 +9,15 @@ namespace NullSpace {
 namespace HapticFiles {
 
 struct HapticEffect;
+struct HapticEffectT;
+
+struct HapticEffectT : public flatbuffers::NativeTable {
+  float time;
+  std::string effect;
+  float strength;
+  float duration;
+  int32_t repeat;
+};
 
 struct HapticEffect FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -33,6 +42,7 @@ struct HapticEffect FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int32_t>(verifier, VT_REPEAT) &&
            verifier.EndTable();
   }
+  HapticEffectT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct HapticEffectBuilder {
@@ -75,6 +85,29 @@ inline flatbuffers::Offset<HapticEffect> CreateHapticEffectDirect(flatbuffers::F
   return CreateHapticEffect(_fbb, time, effect ? _fbb.CreateString(effect) : 0, strength, duration, repeat);
 }
 
+inline flatbuffers::Offset<HapticEffect> CreateHapticEffect(flatbuffers::FlatBufferBuilder &_fbb, const HapticEffectT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline HapticEffectT *HapticEffect::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new HapticEffectT();
+  { auto _e = time(); _o->time = _e; };
+  { auto _e = effect(); if (_e) _o->effect = _e->str(); };
+  { auto _e = strength(); _o->strength = _e; };
+  { auto _e = duration(); _o->duration = _e; };
+  { auto _e = repeat(); _o->repeat = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<HapticEffect> CreateHapticEffect(flatbuffers::FlatBufferBuilder &_fbb, const HapticEffectT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateHapticEffect(_fbb,
+    _o->time,
+    _o->effect.size() ? _fbb.CreateString(_o->effect) : 0,
+    _o->strength,
+    _o->duration,
+    _o->repeat);
+}
+
 inline const NullSpace::HapticFiles::HapticEffect *GetHapticEffect(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::HapticFiles::HapticEffect>(buf);
 }
@@ -85,6 +118,10 @@ inline bool VerifyHapticEffectBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishHapticEffectBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::HapticEffect> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<HapticEffectT> UnPackHapticEffect(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<HapticEffectT>(GetHapticEffect(buf)->UnPack(resolver));
 }
 
 }  // namespace HapticFiles

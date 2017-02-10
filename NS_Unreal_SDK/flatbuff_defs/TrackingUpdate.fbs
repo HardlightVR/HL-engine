@@ -1,7 +1,9 @@
 namespace NullSpace.Communication;
 
+enum ImuId: short {Unknown = 0, Chest = 1, Left_Forearm = 2, Left_Upper_Arm = 3, Right_Forearm = 4, Right_Upper_Arm = 5}
 
 struct Quaternion {
+	id: ImuId;
 	x: float;
 	y: float;
 	z: float; 
@@ -9,7 +11,8 @@ struct Quaternion {
 }
 
 table TrackingUpdate {
-	chest:Quaternion;
+	quaternions:[Quaternion];
+
 }
 
 root_type TrackingUpdate;

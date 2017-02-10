@@ -13,6 +13,11 @@ namespace NullSpace {
 namespace HapticFiles {
 
 struct Pattern;
+struct PatternT;
+
+struct PatternT : public flatbuffers::NativeTable {
+  std::vector<std::unique_ptr<NullSpace::HapticFiles::HapticFrameT>> items;
+};
 
 struct Pattern FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -26,6 +31,7 @@ struct Pattern FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(items()) &&
            verifier.EndTable();
   }
+  PatternT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct PatternBuilder {
@@ -52,6 +58,21 @@ inline flatbuffers::Offset<Pattern> CreatePatternDirect(flatbuffers::FlatBufferB
   return CreatePattern(_fbb, items ? _fbb.CreateVector<flatbuffers::Offset<NullSpace::HapticFiles::HapticFrame>>(*items) : 0);
 }
 
+inline flatbuffers::Offset<Pattern> CreatePattern(flatbuffers::FlatBufferBuilder &_fbb, const PatternT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline PatternT *Pattern::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new PatternT();
+  { auto _e = items(); if (_e) { for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->items.push_back(std::unique_ptr<NullSpace::HapticFiles::HapticFrameT>(_e->Get(_i)->UnPack(resolver))); } } };
+  return _o;
+}
+
+inline flatbuffers::Offset<Pattern> CreatePattern(flatbuffers::FlatBufferBuilder &_fbb, const PatternT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreatePattern(_fbb,
+    _o->items.size() ? _fbb.CreateVector<flatbuffers::Offset<HapticFrame>>(_o->items.size(), [&](size_t i) { return CreateHapticFrame(_fbb, _o->items[i].get(), rehasher); }) : 0);
+}
+
 inline const NullSpace::HapticFiles::Pattern *GetPattern(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::HapticFiles::Pattern>(buf);
 }
@@ -62,6 +83,10 @@ inline bool VerifyPatternBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishPatternBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::Pattern> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<PatternT> UnPackPattern(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<PatternT>(GetPattern(buf)->UnPack(resolver));
 }
 
 }  // namespace HapticFiles

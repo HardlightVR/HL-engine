@@ -14,6 +14,12 @@ namespace NullSpace {
 namespace HapticFiles {
 
 struct HapticSample;
+struct HapticSampleT;
+
+struct HapticSampleT : public flatbuffers::NativeTable {
+  float time;
+  std::unique_ptr<NullSpace::HapticFiles::PatternT> pattern;
+};
 
 struct HapticSample FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -29,6 +35,7 @@ struct HapticSample FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyTable(pattern()) &&
            verifier.EndTable();
   }
+  HapticSampleT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct HapticSampleBuilder {
@@ -53,6 +60,23 @@ inline flatbuffers::Offset<HapticSample> CreateHapticSample(flatbuffers::FlatBuf
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<HapticSample> CreateHapticSample(flatbuffers::FlatBufferBuilder &_fbb, const HapticSampleT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline HapticSampleT *HapticSample::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new HapticSampleT();
+  { auto _e = time(); _o->time = _e; };
+  { auto _e = pattern(); if (_e) _o->pattern = std::unique_ptr<NullSpace::HapticFiles::PatternT>(_e->UnPack(resolver)); };
+  return _o;
+}
+
+inline flatbuffers::Offset<HapticSample> CreateHapticSample(flatbuffers::FlatBufferBuilder &_fbb, const HapticSampleT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateHapticSample(_fbb,
+    _o->time,
+    _o->pattern ? CreatePattern(_fbb, _o->pattern.get(), rehasher) : 0);
+}
+
 inline const NullSpace::HapticFiles::HapticSample *GetHapticSample(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::HapticFiles::HapticSample>(buf);
 }
@@ -63,6 +87,10 @@ inline bool VerifyHapticSampleBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishHapticSampleBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::HapticSample> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<HapticSampleT> UnPackHapticSample(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<HapticSampleT>(GetHapticSample(buf)->UnPack(resolver));
 }
 
 }  // namespace HapticFiles

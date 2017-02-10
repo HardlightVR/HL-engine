@@ -12,10 +12,13 @@ namespace HapticFiles {
 namespace Mixed {
 
 struct ListOfHapticEffects;
+struct ListOfHapticEffectsT;
 
 struct SeqRef;
+struct SeqRefT;
 
 struct Sequence;
+struct SequenceT;
 
 enum EffectValuesOrNameReference {
   EffectValuesOrNameReference_NONE = 0,
@@ -23,6 +26,22 @@ enum EffectValuesOrNameReference {
   EffectValuesOrNameReference_SeqRef = 2,
   EffectValuesOrNameReference_MIN = EffectValuesOrNameReference_NONE,
   EffectValuesOrNameReference_MAX = EffectValuesOrNameReference_SeqRef
+};
+
+struct EffectValuesOrNameReferenceUnion {
+  EffectValuesOrNameReference type;
+
+  flatbuffers::NativeTable *table;
+  EffectValuesOrNameReferenceUnion() : type(EffectValuesOrNameReference_NONE), table(nullptr) {}
+  EffectValuesOrNameReferenceUnion(const EffectValuesOrNameReferenceUnion &);
+  EffectValuesOrNameReferenceUnion &operator=(const EffectValuesOrNameReferenceUnion &);
+  ~EffectValuesOrNameReferenceUnion();
+
+  static flatbuffers::NativeTable *UnPack(const void *union_obj, EffectValuesOrNameReference type, const flatbuffers::resolver_function_t *resolver);
+  flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *rehasher = nullptr) const;
+
+  ListOfHapticEffectsT *AsListOfHapticEffects() { return type == EffectValuesOrNameReference_ListOfHapticEffects ? reinterpret_cast<ListOfHapticEffectsT *>(table) : nullptr; }
+  SeqRefT *AsSeqRef() { return type == EffectValuesOrNameReference_SeqRef ? reinterpret_cast<SeqRefT *>(table) : nullptr; }
 };
 
 inline const char **EnumNamesEffectValuesOrNameReference() {
@@ -46,6 +65,10 @@ template<> struct EffectValuesOrNameReferenceTraits<SeqRef> {
 
 inline bool VerifyEffectValuesOrNameReference(flatbuffers::Verifier &verifier, const void *union_obj, EffectValuesOrNameReference type);
 
+struct ListOfHapticEffectsT : public flatbuffers::NativeTable {
+  std::vector<std::unique_ptr<NullSpace::HapticFiles::HapticEffectT>> items;
+};
+
 struct ListOfHapticEffects FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_ITEMS = 4
@@ -58,6 +81,7 @@ struct ListOfHapticEffects FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table 
            verifier.VerifyVectorOfTables(items()) &&
            verifier.EndTable();
   }
+  ListOfHapticEffectsT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct ListOfHapticEffectsBuilder {
@@ -84,6 +108,12 @@ inline flatbuffers::Offset<ListOfHapticEffects> CreateListOfHapticEffectsDirect(
   return CreateListOfHapticEffects(_fbb, items ? _fbb.CreateVector<flatbuffers::Offset<NullSpace::HapticFiles::HapticEffect>>(*items) : 0);
 }
 
+inline flatbuffers::Offset<ListOfHapticEffects> CreateListOfHapticEffects(flatbuffers::FlatBufferBuilder &_fbb, const ListOfHapticEffectsT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+struct SeqRefT : public flatbuffers::NativeTable {
+  std::string symbol;
+};
+
 struct SeqRef FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_SYMBOL = 4
@@ -95,6 +125,7 @@ struct SeqRef FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.Verify(symbol()) &&
            verifier.EndTable();
   }
+  SeqRefT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct SeqRefBuilder {
@@ -121,6 +152,13 @@ inline flatbuffers::Offset<SeqRef> CreateSeqRefDirect(flatbuffers::FlatBufferBui
   return CreateSeqRef(_fbb, symbol ? _fbb.CreateString(symbol) : 0);
 }
 
+inline flatbuffers::Offset<SeqRef> CreateSeqRef(flatbuffers::FlatBufferBuilder &_fbb, const SeqRefT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+struct SequenceT : public flatbuffers::NativeTable {
+  uint32_t location;
+  EffectValuesOrNameReferenceUnion effect;
+};
+
 struct Sequence FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_LOCATION = 4,
@@ -138,6 +176,7 @@ struct Sequence FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyEffectValuesOrNameReference(verifier, effect(), effect_type()) &&
            verifier.EndTable();
   }
+  SequenceT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct SequenceBuilder {
@@ -165,12 +204,83 @@ inline flatbuffers::Offset<Sequence> CreateSequence(flatbuffers::FlatBufferBuild
   return builder_.Finish();
 }
 
+inline flatbuffers::Offset<Sequence> CreateSequence(flatbuffers::FlatBufferBuilder &_fbb, const SequenceT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline ListOfHapticEffectsT *ListOfHapticEffects::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new ListOfHapticEffectsT();
+  { auto _e = items(); if (_e) { for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->items.push_back(std::unique_ptr<NullSpace::HapticFiles::HapticEffectT>(_e->Get(_i)->UnPack(resolver))); } } };
+  return _o;
+}
+
+inline flatbuffers::Offset<ListOfHapticEffects> CreateListOfHapticEffects(flatbuffers::FlatBufferBuilder &_fbb, const ListOfHapticEffectsT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateListOfHapticEffects(_fbb,
+    _o->items.size() ? _fbb.CreateVector<flatbuffers::Offset<HapticEffect>>(_o->items.size(), [&](size_t i) { return CreateHapticEffect(_fbb, _o->items[i].get(), rehasher); }) : 0);
+}
+
+inline SeqRefT *SeqRef::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new SeqRefT();
+  { auto _e = symbol(); if (_e) _o->symbol = _e->str(); };
+  return _o;
+}
+
+inline flatbuffers::Offset<SeqRef> CreateSeqRef(flatbuffers::FlatBufferBuilder &_fbb, const SeqRefT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateSeqRef(_fbb,
+    _o->symbol.size() ? _fbb.CreateString(_o->symbol) : 0);
+}
+
+inline SequenceT *Sequence::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new SequenceT();
+  { auto _e = location(); _o->location = _e; };
+  { auto _e = effect_type(); _o->effect.type = _e; };
+  { auto _e = effect(); if (_e) _o->effect.table = EffectValuesOrNameReferenceUnion::UnPack(_e, effect_type(), resolver); };
+  return _o;
+}
+
+inline flatbuffers::Offset<Sequence> CreateSequence(flatbuffers::FlatBufferBuilder &_fbb, const SequenceT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateSequence(_fbb,
+    _o->location,
+    _o->effect.type,
+    _o->effect.Pack(_fbb));
+}
+
 inline bool VerifyEffectValuesOrNameReference(flatbuffers::Verifier &verifier, const void *union_obj, EffectValuesOrNameReference type) {
   switch (type) {
     case EffectValuesOrNameReference_NONE: return true;
     case EffectValuesOrNameReference_ListOfHapticEffects: return verifier.VerifyTable(reinterpret_cast<const ListOfHapticEffects *>(union_obj));
     case EffectValuesOrNameReference_SeqRef: return verifier.VerifyTable(reinterpret_cast<const SeqRef *>(union_obj));
     default: return false;
+  }
+}
+
+inline flatbuffers::NativeTable *EffectValuesOrNameReferenceUnion::UnPack(const void *union_obj, EffectValuesOrNameReference type, const flatbuffers::resolver_function_t *resolver) {
+  switch (type) {
+    case EffectValuesOrNameReference_NONE: return nullptr;
+    case EffectValuesOrNameReference_ListOfHapticEffects: return reinterpret_cast<const ListOfHapticEffects *>(union_obj)->UnPack(resolver);
+    case EffectValuesOrNameReference_SeqRef: return reinterpret_cast<const SeqRef *>(union_obj)->UnPack(resolver);
+    default: return nullptr;
+  }
+}
+
+inline flatbuffers::Offset<void> EffectValuesOrNameReferenceUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *rehasher) const {
+  switch (type) {
+    case EffectValuesOrNameReference_NONE: return 0;
+    case EffectValuesOrNameReference_ListOfHapticEffects: return CreateListOfHapticEffects(_fbb, reinterpret_cast<const ListOfHapticEffectsT *>(table), rehasher).Union();
+    case EffectValuesOrNameReference_SeqRef: return CreateSeqRef(_fbb, reinterpret_cast<const SeqRefT *>(table), rehasher).Union();
+    default: return 0;
+  }
+}
+
+inline EffectValuesOrNameReferenceUnion::~EffectValuesOrNameReferenceUnion() {
+  switch (type) {
+    case EffectValuesOrNameReference_ListOfHapticEffects: delete reinterpret_cast<ListOfHapticEffectsT *>(table); break;
+    case EffectValuesOrNameReference_SeqRef: delete reinterpret_cast<SeqRefT *>(table); break;
+    default:;
   }
 }
 
@@ -184,6 +294,10 @@ inline bool VerifySequenceBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishSequenceBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::Mixed::Sequence> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<SequenceT> UnPackSequence(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<SequenceT>(GetSequence(buf)->UnPack(resolver));
 }
 
 }  // namespace Mixed

@@ -11,9 +11,30 @@ namespace Communication {
 struct Quaternion;
 
 struct TrackingUpdate;
+struct TrackingUpdateT;
+
+enum ImuId {
+  ImuId_Unknown = 0,
+  ImuId_Chest = 1,
+  ImuId_Left_Forearm = 2,
+  ImuId_Left_Upper_Arm = 3,
+  ImuId_Right_Forearm = 4,
+  ImuId_Right_Upper_Arm = 5,
+  ImuId_MIN = ImuId_Unknown,
+  ImuId_MAX = ImuId_Right_Upper_Arm
+};
+
+inline const char **EnumNamesImuId() {
+  static const char *names[] = { "Unknown", "Chest", "Left_Forearm", "Left_Upper_Arm", "Right_Forearm", "Right_Upper_Arm", nullptr };
+  return names;
+}
+
+inline const char *EnumNameImuId(ImuId e) { return EnumNamesImuId()[static_cast<int>(e)]; }
 
 MANUALLY_ALIGNED_STRUCT(4) Quaternion FLATBUFFERS_FINAL_CLASS {
  private:
+  int16_t id_;
+  int16_t __padding0;
   float x_;
   float y_;
   float z_;
@@ -22,32 +43,39 @@ MANUALLY_ALIGNED_STRUCT(4) Quaternion FLATBUFFERS_FINAL_CLASS {
  public:
   Quaternion() { memset(this, 0, sizeof(Quaternion)); }
   Quaternion(const Quaternion &_o) { memcpy(this, &_o, sizeof(Quaternion)); }
-  Quaternion(float _x, float _y, float _z, float _w)
-    : x_(flatbuffers::EndianScalar(_x)), y_(flatbuffers::EndianScalar(_y)), z_(flatbuffers::EndianScalar(_z)), w_(flatbuffers::EndianScalar(_w)) { }
+  Quaternion(ImuId _id, float _x, float _y, float _z, float _w)
+    : id_(flatbuffers::EndianScalar(static_cast<int16_t>(_id))), __padding0(0), x_(flatbuffers::EndianScalar(_x)), y_(flatbuffers::EndianScalar(_y)), z_(flatbuffers::EndianScalar(_z)), w_(flatbuffers::EndianScalar(_w)) { (void)__padding0; }
 
+  ImuId id() const { return static_cast<ImuId>(flatbuffers::EndianScalar(id_)); }
   float x() const { return flatbuffers::EndianScalar(x_); }
   float y() const { return flatbuffers::EndianScalar(y_); }
   float z() const { return flatbuffers::EndianScalar(z_); }
   float w() const { return flatbuffers::EndianScalar(w_); }
 };
-STRUCT_END(Quaternion, 16);
+STRUCT_END(Quaternion, 20);
+
+struct TrackingUpdateT : public flatbuffers::NativeTable {
+  std::vector<Quaternion> quaternions;
+};
 
 struct TrackingUpdate FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_CHEST = 4
+    VT_QUATERNIONS = 4
   };
-  const Quaternion *chest() const { return GetStruct<const Quaternion *>(VT_CHEST); }
+  const flatbuffers::Vector<const Quaternion *> *quaternions() const { return GetPointer<const flatbuffers::Vector<const Quaternion *> *>(VT_QUATERNIONS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<Quaternion>(verifier, VT_CHEST) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, VT_QUATERNIONS) &&
+           verifier.Verify(quaternions()) &&
            verifier.EndTable();
   }
+  TrackingUpdateT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct TrackingUpdateBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_chest(const Quaternion *chest) { fbb_.AddStruct(TrackingUpdate::VT_CHEST, chest); }
+  void add_quaternions(flatbuffers::Offset<flatbuffers::Vector<const Quaternion *>> quaternions) { fbb_.AddOffset(TrackingUpdate::VT_QUATERNIONS, quaternions); }
   TrackingUpdateBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   TrackingUpdateBuilder &operator=(const TrackingUpdateBuilder &);
   flatbuffers::Offset<TrackingUpdate> Finish() {
@@ -57,10 +85,30 @@ struct TrackingUpdateBuilder {
 };
 
 inline flatbuffers::Offset<TrackingUpdate> CreateTrackingUpdate(flatbuffers::FlatBufferBuilder &_fbb,
-    const Quaternion *chest = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<const Quaternion *>> quaternions = 0) {
   TrackingUpdateBuilder builder_(_fbb);
-  builder_.add_chest(chest);
+  builder_.add_quaternions(quaternions);
   return builder_.Finish();
+}
+
+inline flatbuffers::Offset<TrackingUpdate> CreateTrackingUpdateDirect(flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<const Quaternion *> *quaternions = nullptr) {
+  return CreateTrackingUpdate(_fbb, quaternions ? _fbb.CreateVector<const Quaternion *>(*quaternions) : 0);
+}
+
+inline flatbuffers::Offset<TrackingUpdate> CreateTrackingUpdate(flatbuffers::FlatBufferBuilder &_fbb, const TrackingUpdateT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline TrackingUpdateT *TrackingUpdate::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new TrackingUpdateT();
+  { auto _e = quaternions(); if (_e) { for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->quaternions.push_back(*_e->Get(_i)); } } };
+  return _o;
+}
+
+inline flatbuffers::Offset<TrackingUpdate> CreateTrackingUpdate(flatbuffers::FlatBufferBuilder &_fbb, const TrackingUpdateT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateTrackingUpdate(_fbb,
+    _o->quaternions.size() ? _fbb.CreateVectorOfStructs(_o->quaternions) : 0);
 }
 
 inline const NullSpace::Communication::TrackingUpdate *GetTrackingUpdate(const void *buf) {
@@ -73,6 +121,10 @@ inline bool VerifyTrackingUpdateBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishTrackingUpdateBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::Communication::TrackingUpdate> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<TrackingUpdateT> UnPackTrackingUpdate(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<TrackingUpdateT>(GetTrackingUpdate(buf)->UnPack(resolver));
 }
 
 }  // namespace Communication

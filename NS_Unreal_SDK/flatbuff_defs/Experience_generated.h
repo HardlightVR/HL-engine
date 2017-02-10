@@ -15,6 +15,11 @@ namespace NullSpace {
 namespace HapticFiles {
 
 struct Experience;
+struct ExperienceT;
+
+struct ExperienceT : public flatbuffers::NativeTable {
+  std::vector<std::unique_ptr<NullSpace::HapticFiles::HapticSampleT>> items;
+};
 
 struct Experience FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -28,6 +33,7 @@ struct Experience FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(items()) &&
            verifier.EndTable();
   }
+  ExperienceT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct ExperienceBuilder {
@@ -54,6 +60,21 @@ inline flatbuffers::Offset<Experience> CreateExperienceDirect(flatbuffers::FlatB
   return CreateExperience(_fbb, items ? _fbb.CreateVector<flatbuffers::Offset<NullSpace::HapticFiles::HapticSample>>(*items) : 0);
 }
 
+inline flatbuffers::Offset<Experience> CreateExperience(flatbuffers::FlatBufferBuilder &_fbb, const ExperienceT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline ExperienceT *Experience::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new ExperienceT();
+  { auto _e = items(); if (_e) { for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->items.push_back(std::unique_ptr<NullSpace::HapticFiles::HapticSampleT>(_e->Get(_i)->UnPack(resolver))); } } };
+  return _o;
+}
+
+inline flatbuffers::Offset<Experience> CreateExperience(flatbuffers::FlatBufferBuilder &_fbb, const ExperienceT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateExperience(_fbb,
+    _o->items.size() ? _fbb.CreateVector<flatbuffers::Offset<HapticSample>>(_o->items.size(), [&](size_t i) { return CreateHapticSample(_fbb, _o->items[i].get(), rehasher); }) : 0);
+}
+
 inline const NullSpace::HapticFiles::Experience *GetExperience(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::HapticFiles::Experience>(buf);
 }
@@ -64,6 +85,10 @@ inline bool VerifyExperienceBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishExperienceBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::Experience> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<ExperienceT> UnPackExperience(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<ExperienceT>(GetExperience(buf)->UnPack(resolver));
 }
 
 }  // namespace HapticFiles

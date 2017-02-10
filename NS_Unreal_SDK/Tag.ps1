@@ -52,6 +52,8 @@ function GetLatestTag([string]$prefix, [string]$repo_path) {
     return $latest_tag
 }
 
+
+
 function FormatTag([string]$tag) {
     $index_of_v = $tag.IndexOf("_v")
     return $tag.Substring($index_of_v+1)
@@ -87,6 +89,7 @@ function BumpVersion($file_path, $contents)
     $confirm = Read-Host "Pull just in case someone updated the wiki. [enter]"
     $confirm = Read-Host "Make sure that the version file is updated for the installer. [enter]"
     $confirm = Read-Host "Make sure that the version info is updated within the release notes dialog in the GUI. [enter]"
+    $confirm = Read-Host "Make sure the DLLs are compiled in RELEASE mode! [enter]"
     $confirm = Read-Host "Rebuild the installer and do your testing. [enter]"
     $confirm = Read-Host "Update the readme [enter]"
     $package_name = Read-Host "Build the Unity Package and put in the sdk repo root path. Write the name of the package [enter]"

@@ -9,6 +9,7 @@ namespace NullSpace {
 namespace HapticFiles {
 
 struct Node;
+struct NodeT;
 
 enum NodeType {
   NodeType_Effect = 0,
@@ -25,6 +26,16 @@ inline const char **EnumNamesNodeType() {
 }
 
 inline const char *EnumNameNodeType(NodeType e) { return EnumNamesNodeType()[static_cast<int>(e)]; }
+
+struct NodeT : public flatbuffers::NativeTable {
+  NodeType type;
+  std::vector<std::unique_ptr<NodeT>> children;
+  float time;
+  std::string effect;
+  float strength;
+  float duration;
+  uint32_t area;
+};
 
 struct Node FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -57,6 +68,7 @@ struct Node FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_AREA) &&
            verifier.EndTable();
   }
+  NodeT *UnPack(const flatbuffers::resolver_function_t *resolver = nullptr) const;
 };
 
 struct NodeBuilder {
@@ -107,6 +119,33 @@ inline flatbuffers::Offset<Node> CreateNodeDirect(flatbuffers::FlatBufferBuilder
   return CreateNode(_fbb, type, children ? _fbb.CreateVector<flatbuffers::Offset<Node>>(*children) : 0, time, effect ? _fbb.CreateString(effect) : 0, strength, duration, area);
 }
 
+inline flatbuffers::Offset<Node> CreateNode(flatbuffers::FlatBufferBuilder &_fbb, const NodeT *_o, const flatbuffers::rehasher_function_t *rehasher = nullptr);
+
+inline NodeT *Node::UnPack(const flatbuffers::resolver_function_t *resolver) const {
+  (void)resolver;
+  auto _o = new NodeT();
+  { auto _e = type(); _o->type = _e; };
+  { auto _e = children(); if (_e) { for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->children.push_back(std::unique_ptr<NodeT>(_e->Get(_i)->UnPack(resolver))); } } };
+  { auto _e = time(); _o->time = _e; };
+  { auto _e = effect(); if (_e) _o->effect = _e->str(); };
+  { auto _e = strength(); _o->strength = _e; };
+  { auto _e = duration(); _o->duration = _e; };
+  { auto _e = area(); _o->area = _e; };
+  return _o;
+}
+
+inline flatbuffers::Offset<Node> CreateNode(flatbuffers::FlatBufferBuilder &_fbb, const NodeT *_o, const flatbuffers::rehasher_function_t *rehasher) {
+  (void)rehasher;
+  return CreateNode(_fbb,
+    _o->type,
+    _o->children.size() ? _fbb.CreateVector<flatbuffers::Offset<Node>>(_o->children.size(), [&](size_t i) { return CreateNode(_fbb, _o->children[i].get(), rehasher); }) : 0,
+    _o->time,
+    _o->effect.size() ? _fbb.CreateString(_o->effect) : 0,
+    _o->strength,
+    _o->duration,
+    _o->area);
+}
+
 inline const NullSpace::HapticFiles::Node *GetNode(const void *buf) {
   return flatbuffers::GetRoot<NullSpace::HapticFiles::Node>(buf);
 }
@@ -117,6 +156,10 @@ inline bool VerifyNodeBuffer(flatbuffers::Verifier &verifier) {
 
 inline void FinishNodeBuffer(flatbuffers::FlatBufferBuilder &fbb, flatbuffers::Offset<NullSpace::HapticFiles::Node> root) {
   fbb.Finish(root);
+}
+
+inline std::unique_ptr<NodeT> UnPackNode(const void *buf, const flatbuffers::resolver_function_t *resolver = nullptr) {
+  return std::unique_ptr<NodeT>(GetNode(buf)->UnPack(resolver));
 }
 
 }  // namespace HapticFiles
