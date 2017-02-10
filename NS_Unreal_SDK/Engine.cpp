@@ -28,7 +28,7 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	//released.
 	_executor(_instructionSet, std::make_unique<SuitHardwareInterface>(_adapter, _instructionSet, io->GetIOService())),
 	//Since we want IMU data, we need an ImuConsumer to parse those packets into quaternions
-	_imuConsumer(std::make_shared<ImuConsumer>()),
+	_imuConsumer(),
 	//Since we only receive IMU data at a fixed rate, we should only dispatch it to the plugin at a fixed rate
 	_trackingUpdateTimer(*io->GetIOService(), _trackingUpdateInterval),
 	//Need an encoder to actually create the binary data that we send over the wire to the plugin
@@ -59,10 +59,10 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	
 	//Kickoff the communication adapter
 	_adapter->BeginRead();
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, _imuConsumer);
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, _diagnostics.OverflowConsumer());
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitVersion, _diagnostics.InfoConsumer());
-	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitStatus, _diagnostics.StatusConsumer());
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::ImuData, &_imuConsumer);
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::FifoOverflow, _diagnostics.OverflowConsumer().get());
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitVersion, _diagnostics.InfoConsumer().get());
+	_packetDispatcher->AddConsumer(SuitPacket::PacketType::SuitStatus, _diagnostics.StatusConsumer().get());
 
 	_trackingUpdateTimer.async_wait(boost::bind(&Engine::sendTrackingUpdate, this));
 
@@ -72,7 +72,7 @@ void Engine::sendTrackingUpdate() {
 	std::vector<std::tuple<Imu, Quaternion>> quats;
 	std::vector<Imu> which = { Imu::Chest, Imu::Left_Upper_Arm, Imu::Right_Upper_Arm, Imu::Left_Forearm, Imu::Right_Forearm };
 	for (const auto& imu : which) {
-		if (boost::optional<Quaternion> q = _imuConsumer->GetOrientation(imu)) {
+		if (boost::optional<Quaternion> q = _imuConsumer.GetOrientation(imu)) {
 			quats.push_back(std::make_tuple(imu, q.get()));
 		}
 	}
@@ -89,15 +89,15 @@ void Engine::handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v)
 {
 	std::cout << "Major version: " << v.Major << "\nMinor version: " << v.Minor << "\n";
 	if (v.Major == 2 && v.Minor == 4) {
-		_imuConsumer->AssignMapping(3, Imu::Chest);
+		_imuConsumer.AssignMapping(3, Imu::Chest);
 	}
 	else if (v.Major == 2 && v.Minor == 3) {
-		_imuConsumer->AssignMapping(0, Imu::Chest);
+		_imuConsumer.AssignMapping(0, Imu::Chest);
 	}
 	else if (v.Major == 2 && v.Minor == 5) {
-		_imuConsumer->AssignMapping(1, Imu::Left_Upper_Arm);
-		_imuConsumer->AssignMapping(3, Imu::Right_Upper_Arm);
-		_imuConsumer->AssignMapping(0, Imu::Chest);
+		_imuConsumer.AssignMapping(1, Imu::Left_Upper_Arm);
+		_imuConsumer.AssignMapping(3, Imu::Right_Upper_Arm);
+		_imuConsumer.AssignMapping(0, Imu::Chest);
 
 	}
 }

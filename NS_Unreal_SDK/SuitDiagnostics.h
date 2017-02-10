@@ -4,7 +4,7 @@
 class SuitStatusConsumer;
 class SuitInfoConsumer;
 class FifoConsumer;
-
+class IPacketConsumer;
 class SuitDiagnostics
 {
 public:
@@ -52,9 +52,9 @@ public:
 	void ReceiveVersion(const VersionInfo& info);
 	//todo: badly named
 	//status is only received on suit connection, whereas info could be received at any time
-	std::shared_ptr<SuitStatusConsumer> StatusConsumer();
-	std::shared_ptr<SuitInfoConsumer> InfoConsumer();
-	std::shared_ptr<FifoConsumer> OverflowConsumer();
+	const std::unique_ptr<IPacketConsumer>& StatusConsumer();
+	const std::unique_ptr<IPacketConsumer>& InfoConsumer();
+	const std::unique_ptr<IPacketConsumer>& OverflowConsumer();
 
 	void OnReceiveVersion(SuitVersionCallback);
 
@@ -62,9 +62,9 @@ public:
 private:
 	SuitDiagnosticsCallback _receiveDiagnostics;
 
-	std::shared_ptr<SuitStatusConsumer> _statusConsumer;
-	std::shared_ptr<SuitInfoConsumer> _versionConsumer;
-	std::shared_ptr<FifoConsumer> _fifoConsumer;
+	std::unique_ptr<IPacketConsumer> _statusConsumer;
+	std::unique_ptr<IPacketConsumer> _infoConsumer;
+	std::unique_ptr<IPacketConsumer> _fifoConsumer;
 
 	SuitVersionCallback _callback;
 };
