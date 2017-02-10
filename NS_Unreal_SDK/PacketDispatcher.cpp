@@ -13,8 +13,7 @@ PacketDispatcher::~PacketDispatcher()
 
 void PacketDispatcher::Dispatch(packet packet)
 {
-	SuitPacket p(packet);
-	auto packetType = p.Type();
+	SuitPacket::PacketType packetType = SuitPacket::Type(packet);
 	
 	if (_consumers.find(packetType) != _consumers.end())
 	{
@@ -25,15 +24,8 @@ void PacketDispatcher::Dispatch(packet packet)
 	}
 }
 
-void PacketDispatcher::AddConsumer(SuitPacket::PacketType ptype, std::shared_ptr<IPacketConsumer> consumer)
+void PacketDispatcher::AddConsumer(SuitPacket::PacketType ptype, IPacketConsumer* consumer)
 {
 	_consumers[ptype].push_back(consumer);
-	//if (_consumers.find(ptype) != _consumers.end()) {
-	//	_consumers[ptype].push_back(consumer);
-	//}
-	//else {
-	//	_consumers[ptype] = std::vector<std::shared_ptr<IPacketConsumer>>();
-	//	_consumers[ptype].push_back(consumer);
-
-	//}
+	
 }

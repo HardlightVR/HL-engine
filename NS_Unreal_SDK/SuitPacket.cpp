@@ -3,6 +3,11 @@
 
 
 
+SuitPacket::PacketType SuitPacket::Type(const packet & raw)
+{
+	return PacketType(raw.raw[2]);
+}
+
 SuitPacket::PacketType SuitPacket::Type() const
 {
 	return _packetType;

@@ -12,6 +12,7 @@ public:
 		FifoOverflow = 0x34,
 		Undefined
 	};
+	static PacketType Type(const packet& raw);
 	PacketType Type() const;
 	packet Packet() const;
 	SuitPacket(packet p);

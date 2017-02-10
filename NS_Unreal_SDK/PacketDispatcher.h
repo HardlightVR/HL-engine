@@ -11,9 +11,9 @@ public:
 	PacketDispatcher();
 	~PacketDispatcher();
 	void Dispatch(packet packet);
-	void AddConsumer(SuitPacket::PacketType ptype, std::shared_ptr<IPacketConsumer> consumer);
+	void AddConsumer(SuitPacket::PacketType ptype, IPacketConsumer* consumer);
 private:
 	unsigned int _dispatchLimit;
-	unordered_map<SuitPacket::PacketType, std::vector<std::shared_ptr<IPacketConsumer>>> _consumers;
+	unordered_map<SuitPacket::PacketType, std::vector<IPacketConsumer*>> _consumers;
 };
 
