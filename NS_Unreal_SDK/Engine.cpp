@@ -76,7 +76,7 @@ void Engine::sendTrackingUpdate() {
 			quats.push_back(std::make_tuple(imu, q.get()));
 		}
 	}
-	;	_encoder.AquireEncodingLock();
+	_encoder.AquireEncodingLock();
 	_encoder.Finalize(_encoder.Encode(quats), [&](uint8_t* data, int size) {Wire::sendTo(_socket, data, size); });
 	_encoder.ReleaseEncodingLock();
 	

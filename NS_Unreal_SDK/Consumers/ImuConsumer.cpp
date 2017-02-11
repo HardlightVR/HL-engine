@@ -34,11 +34,11 @@ void ImuConsumer::ConsumePacket(const packet& packet)
 	//std::cout << "Got Imu  packet: " << int(packet.raw[13]) << " in the fifo" << '\n';
 
 	Imu id = _mapping[packet.raw[11]];
-	if (id == Imu::Left_Upper_Arm) {
-		auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - _lastTime);
-		_lastTime = std::chrono::high_resolution_clock::now();
-		std::cout << now.count() << '\n';
-	}
+	//if (id == Imu::Chest) {
+		//auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - _lastTime);
+		//_lastTime = std::chrono::high_resolution_clock::now();
+		//std::cout << "Time for left upper arm: " << now.count() << '\n';
+	//}
 
 	if (id != Imu::Unknown) {
 		_quaternions[id] = parseQuaternion(packet.raw);
