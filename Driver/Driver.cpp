@@ -9,10 +9,12 @@ Driver::Driver() :
 	_running(false),
 	_pollTimer(_io->GetIOService()),
 	_pollInterval(50),
-	_hardware(_io)
+	_hardware(_io),
+	_messenger(_io->GetIOService()),
+	_cMessenger(_io->GetIOService())
 
 {
-	_messenger.Receive([this](void const* data, std::size_t size) { 
+/*	_messenger.Receive([this](void const* data, std::size_t size) { 
 		flatbuffers::Verifier verifier(reinterpret_cast<uint8_t const*>(data), size);
 		if (NullSpace::HapticFiles::VerifyExecutionCommandBuffer(verifier)) {
 			auto packet = NullSpace::HapticFiles::GetExecutionCommand(data);
@@ -22,7 +24,7 @@ Driver::Driver() :
 	
 	
 	});
-
+	*/
 	_pollTimer.expires_from_now(_pollInterval);
 	_pollTimer.async_wait(boost::bind(&Driver::_UpdateLoop, this));
 
@@ -51,7 +53,7 @@ bool Driver::StartThread()
 bool Driver::Shutdown()
 {
 	_running.store(false);
-	_messenger.Disconnect();
+//	_messenger.Disconnect();
 	
 	if (_messengerThread.joinable()) {
 		_messengerThread.join();
@@ -74,21 +76,20 @@ void Driver::_UpdateLoop()
 	if (counter > 15) {
 		counter = 1;
 	}
-	Encoder encoder;
-	ClientMessenger messenger;
+	//Encoder encoder;
 
-	encoder.AquireEncodingLock();
-	auto offset = encoder.Encode(c);
+	//encoder.AquireEncodingLock();
+//	auto offset = encoder.Encode(c);
 
-	encoder._finalize(offset, [&messenger, &encoder, this](uint8_t* data, int size) {
-		messenger.Send(data, size);
-		encoder.ReleaseEncodingLock();
+	//encoder._finalize(offset, [&messenger, &encoder, this](uint8_t* data, int size) {
+	//	messenger.Send(data, size);
+		//encoder.ReleaseEncodingLock();
 
-		_pollTimer.expires_from_now(_pollInterval);
-		_pollTimer.async_wait(boost::bind(&Driver::_UpdateLoop, this));
+	//	_pollTimer.expires_from_now(_pollInterval);
+	//	_pollTimer.async_wait(boost::bind(&Driver::_UpdateLoop, this));
 
 
-	});
+	//});
 
 }
 

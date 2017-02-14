@@ -1,5 +1,6 @@
 #pragma once
-#include "Messenger.h"
+#include "DriverMessenger.h"
+#include "ClientMessenger.h"
 #include "HardwareInterface.h"
 #include "FirmwareInterface.h"
 #include "Encoder.h"
@@ -22,7 +23,8 @@ private:
 	boost::asio::deadline_timer _pollTimer;
 	boost::posix_time::milliseconds _pollInterval;
 	int counter = 1;
-	Messenger _messenger;
+	DriverMessenger _messenger;
+	ClientMessenger _cMessenger;
 	HardwareInterface _hardware;
 	Encoder _encoder;
 };

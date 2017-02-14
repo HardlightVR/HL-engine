@@ -183,10 +183,16 @@
     <ClInclude Include="Locator.h" />
     <ClInclude Include="ILogger.h" />
     <ClInclude Include="LoggingUtils.h" />
-    <ClInclude Include="Messenger.h" />
+    <ClInclude Include="DriverMessenger.h" />
     <ClInclude Include="NullLogger.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
+    <ClInclude Include="SharedCommunication\OwnedReadableSharedQueue.h" />
+    <ClInclude Include="SharedCommunication\ReadableSharedObject.h" />
+    <ClInclude Include="SharedCommunication\ReadableSharedQueue.h" />
+    <ClInclude Include="SharedCommunication\shared_data.h" />
+    <ClInclude Include="SharedCommunication\WritableSharedObject.h" />
+    <ClInclude Include="SharedCommunication\WritableSharedQueue.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuitPacket.h" />
     <ClInclude Include="Synchronizer.h" />
@@ -220,7 +226,7 @@
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="LoggingUtils.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Messenger.cpp" />
+    <ClCompile Include="DriverMessenger.cpp" />
     <ClCompile Include="NullLogger.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="stdafx.cpp">

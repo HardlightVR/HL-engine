@@ -3,7 +3,7 @@
 #include <boost\thread\mutex.hpp>
 #include "FirmwareInterface.h"
 #include "ExecutionCommand_generated.h"
-#include "Messenger.h"
+#include "DriverMessenger.h"
 class Synchronizer;
 class IoService;
 class HardwareInterface
