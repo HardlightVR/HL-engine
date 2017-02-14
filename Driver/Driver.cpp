@@ -25,9 +25,8 @@ Driver::Driver() :
 	
 	});
 	*/
-	_pollTimer.expires_from_now(_pollInterval);
-	_pollTimer.async_wait(boost::bind(&Driver::_UpdateLoop, this));
-
+//	_pollTimer.expires_from_now(_pollInterval);
+	//_pollTimer.async_wait(boost::bind(&Driver::_UpdateLoop, this));
 }
 
 Driver::~Driver()
@@ -39,15 +38,66 @@ Driver::~Driver()
 
 bool Driver::StartThread()
 {
-	
 	_running = true;
+
+	_workThread = std::thread([this]() {
+
+		while (_running.load()) {
+			counter++;
+			if (counter % 1000 == 0) {
+				SuitsConnectionInfo info;
+				info.SuitsFound[1] = true;
+				info.Suits[1] = SuitInfo();
+				info.Suits[1].Id = counter+5;
+				info.Suits[1].Status = SuitStatus::Connected;
+				_messenger.WriteSuits(info);
+			}
+			if (counter % 2500 == 0) {
+				SuitsConnectionInfo info;
+				info.SuitsFound[1] = true;
+				info.SuitsFound[2] = true;
+				info.Suits[1] = SuitInfo();
+				info.Suits[1].Id = counter + 5;
+				info.Suits[1].Status = SuitStatus::Connected;
+				info.Suits[2] = SuitInfo();
+				info.Suits[2].Id = counter + 5;
+				info.Suits[2].Status = SuitStatus::Disconnected;
+				_messenger.WriteSuits(info);
+			}
+			TrackingUpdate t;
+			t.a = Quaternion();
+			t.b = Quaternion();
+			t.a.x = counter;
+			t.b.x = counter + 14;
+			_messenger.WriteTracking(t);
+
+			if (auto optionalCommand = _messenger.ReadHaptics()) {
+				auto c = optionalCommand.get();
+				std::cout << "Command loication: " << c.Location << '\n';
+			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	});
+
 //	_workThread = std::thread(boost::bind(&Driver::_UpdateLoop, this));
-	//_clientThread = std::thread([this]() {
-		//while (_running.load()) {
-		//	auto tracking = _cMessenger.ReadTracking();
-		//	std::cout << tracking.a.x << ", " << tracking.b.x << '\n';
-		//}
-	//});
+	_clientThread = std::thread([this]() {
+		while (_running.load()) {
+			auto tracking = _cMessenger.ReadTracking();
+			auto suits = _cMessenger.ReadSuits();
+			for (int i = 0; i < 4; i++) {
+			//	if (suits.SuitsFound[i]) {
+				//	std::cout << "Suit id: " << suits.Suits[i].Id << ", status = " << suits.Suits[i].Status << '\n';
+			//	}
+			}
+			//std::cout << tracking.a.x << ", " << tracking.b.x << '\n';
+			ExecutionCommand e;
+			e.Command = 0;
+			e.Effect = 124;
+			e.Location = counter;
+			_cMessenger.WriteHaptics(e);
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		}
+	});
 //	_pollTimer.expires_from_now(_pollInterval);
 	//_pollTimer.async_wait(boost::bind(&Driver::_PollHandler, this, boost::asio::placeholders::error));
 
@@ -72,25 +122,7 @@ bool Driver::Shutdown()
 
 void Driver::_UpdateLoop()
 {
-	while (_running.load()) {
-		counter++;
-		/*	ExecutionCommand c;
-			c.Command = NullSpace::HapticFiles::PlayCommand_PLAY;
-			c.Effect = 0;
 
-			c.Location = counter;
-			
-			if (counter > 15) {
-				counter = 1;
-			}
-			*/
-		TrackingUpdate t;
-		t.a = Quaternion();
-		t.b = Quaternion();
-		t.a.x = counter;
-		t.b.x = counter + 124;
-		_messenger.WriteTracking(t);
-	}
 	//Encoder encoder;
 
 	//encoder.AquireEncodingLock();

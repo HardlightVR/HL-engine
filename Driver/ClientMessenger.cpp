@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ClientMessenger.h"
 #include "Locator.h"
-
 ClientMessenger::ClientMessenger(boost::asio::io_service& io):
 
 	m_sentinalTimer(io),
@@ -17,19 +16,40 @@ ClientMessenger::~ClientMessenger()
 {
 }
 
-TrackingUpdate ClientMessenger::ReadTracking()
+boost::optional<TrackingUpdate> ClientMessenger::ReadTracking()
 {
-	if (m_trackingData != nullptr) {
+	if (m_trackingData) {
 		return m_trackingData->Read();
 	}
-	else {
-		TrackingUpdate t;
-		t.a = Quaternion();
-		t.b = Quaternion();
-		t.a.x = 0;
-		t.b.x = 0;
-		return t;
+	return boost::optional<TrackingUpdate>();
+}
+
+boost::optional<SuitsConnectionInfo> ClientMessenger::ReadSuits()
+{
+	if (m_suitConnectionInfo) {
+		return m_suitConnectionInfo->Read();
 	}
+
+	return boost::optional<SuitsConnectionInfo>();
+}
+
+void ClientMessenger::WriteHaptics(ExecutionCommand e)
+{
+	m_encoder.AquireEncodingLock();
+	auto encoded = m_encoder.Encode(e);
+	m_encoder.ReleaseEncodingLock();
+
+	m_encoder._finalize(encoded, [this](void* data, int size) {
+		if (m_hapticsStream) {
+			try {
+				m_hapticsStream->Push(data, size);
+			}
+			catch (const boost::interprocess::interprocess_exception& ec) {
+				//probably full queue, which means the server isn't reading fast enough!
+				//should log
+			}
+		}
+	});
 }
 
 
@@ -61,7 +81,14 @@ void ClientMessenger::attemptEstablishConnection(const boost::system::error_code
 
 		m_hapticsStream = std::make_unique<WritableSharedQueue>("ns-haptics-data");
 		m_trackingData = std::make_unique<ReadableSharedObject<TrackingUpdate>>("ns-tracking-data");
-		m_suitConnectionInfo = std::make_unique<ReadableSharedObject<int>>("ns-suit-data");
+		m_suitConnectionInfo = std::make_unique<ReadableSharedObject<SuitsConnectionInfo>>("ns-suit-data");
+		try {
+			m_logStream = std::make_unique<ReadableSharedQueue>("ns-logging-data");
+		}
+		catch (const boost::interprocess::interprocess_exception& ec) {
+			//we don't care if we can't instantiate the logger.
+			//The engine may not create it if it is not in debug mode
+		}
 
 		//Everything setup successfully? Monitor the connection!
 		startMonitorConnection();

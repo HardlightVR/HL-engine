@@ -2,6 +2,7 @@
 #include "IntermediateHapticFormats.h"
 #include "flatbuffers\flatbuffers.h"
 #include "ExecutionCommand_generated.h"
+#include "SharedCommunication\SharedTypes.h"
 #include <mutex>
 class Encoder {
 public: 
@@ -12,7 +13,7 @@ public:
 	void ReleaseEncodingLock() {
 		_encodingLock.unlock();
 	}
-	flatbuffers::Offset<NullSpace::HapticFiles::ExecutionCommand> Encode(const ExecutionCommand& ec) {
+	flatbuffers::Offset<NullSpace::HapticFiles::ExecutionCommand> Encode(const NullSpace::SharedMemory::ExecutionCommand& ec) {
 		
 		NullSpace::HapticFiles::ExecutionCommandBuilder effectBuilder(_builder);
 		effectBuilder.add_command(NullSpace::HapticFiles::PlayCommand(ec.Command));
@@ -36,8 +37,8 @@ public:
 		return NullSpace::HapticFiles::VerifyExecutionCommandBuffer(verifier);
 	}
 
-	static ExecutionCommand Decode(const NullSpace::HapticFiles::ExecutionCommand* effect) {
-		ExecutionCommand c;
+	static NullSpace::SharedMemory::ExecutionCommand Decode(const NullSpace::HapticFiles::ExecutionCommand* effect) {
+		NullSpace::SharedMemory::ExecutionCommand c;
 		c.Command = effect->command();
 		c.Effect = effect->effect();
 		c.Location = effect->location();

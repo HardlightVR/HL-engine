@@ -188,6 +188,7 @@
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
     <ClInclude Include="SharedCommunication\OwnedReadableSharedQueue.h" />
+    <ClInclude Include="SharedCommunication\OwnedWritableSharedQueue.h" />
     <ClInclude Include="SharedCommunication\ReadableSharedObject.h" />
     <ClInclude Include="SharedCommunication\ReadableSharedQueue.h" />
     <ClInclude Include="SharedCommunication\SharedTypes.h" />

@@ -2,16 +2,13 @@
 
 #include "SharedCommunication\WritableSharedObject.h"
 #include "SharedCommunication\OwnedReadableSharedQueue.h"
-
+#include "SharedCommunication\OwnedWritableSharedQueue.h"
 #include "SharedCommunication\SharedTypes.h"
-struct ExecutionCommand {
-	int Location;
-	int Effect;
-	short Command;
-};
 
 
 using namespace boost::interprocess;
+using namespace NullSpace::SharedMemory;
+
 class DriverMessenger
 {
 public:
@@ -19,6 +16,8 @@ public:
 	DriverMessenger(boost::asio::io_service& io);
 	~DriverMessenger();
 	void WriteTracking(TrackingUpdate t);
+	void WriteSuits(SuitsConnectionInfo s);
+	boost::optional<ExecutionCommand> ReadHaptics();
 	void Disconnect();
 private:
 	std::function<void(void const* data, std::size_t length)> _process;
@@ -27,10 +26,13 @@ private:
 	WritableSharedObject<TrackingUpdate> m_trackingData;
 
 	//Write suit connection data here (which suits connected, etc)
-	WritableSharedObject<int> m_suitConnectionInfo;
+	WritableSharedObject<SuitsConnectionInfo> m_suitConnectionInfo;
 
 	//Write haptics data here
 	OwnedReadableSharedQueue m_hapticsData;
+
+	//If logging, write data here
+	OwnedWritableSharedQueue m_loggingStream;
 
 	//Write a timestamp here every so often to signify that this driver is alive
 	WritableSharedObject<std::time_t> m_sentinal;

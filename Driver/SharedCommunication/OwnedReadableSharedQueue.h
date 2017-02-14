@@ -20,13 +20,24 @@ public:
 	}
 
 	std::vector<uint8_t> Pop() {
-		std::vector<uint8_t> data;
-		data.reserve(m_queue.get_max_msg_size());
+		//std::vector<char> myData;
+		//myData.reserve(m_queue.get_max_msg_size());
+		std::vector<uint8_t> otherData;
+		otherData.resize(m_queue.get_max_msg_size());
+	//	assert(otherData.data() != nullptr);
 		unsigned int actualLen = 0;
 		unsigned int priority = 0;
-		m_queue.try_receive(data.data(), data.size(), actualLen, priority);
-		assert(actualLen <= data.size());
-		return data;
+		try {
+			if (m_queue.try_receive(otherData.data(), m_queue.get_max_msg_size(), actualLen, priority)) {
+				otherData.resize(actualLen);
+				return otherData;
+			}
+		}
+		catch (const boost::interprocess::interprocess_exception& e) {
+			std::cout << e.what();
+		}
+		//assert(actualLen <= data.size());
+		return std::vector<uint8_t>();
 	}
 
 	

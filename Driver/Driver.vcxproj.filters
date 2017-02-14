@@ -129,6 +129,9 @@
     <ClInclude Include="SharedCommunication\SharedTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SharedCommunication\OwnedWritableSharedQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
