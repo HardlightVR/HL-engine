@@ -14,7 +14,7 @@ public:
 	bool Shutdown();
 private:
 	std::shared_ptr<IoService> _io;
-
+	std::thread _clientThread;
 	std::atomic<bool> _running;
 	std::thread _workThread;
 	std::thread _messengerThread;

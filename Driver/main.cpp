@@ -4,7 +4,7 @@
 #include "Locator.h"
 #include "ConsoleLogger.h"
 #include "EnumTranslator.h"
-
+#include <boost\interprocess\interprocess_fwd.hpp>
 int main()
 {
 	
@@ -14,11 +14,12 @@ int main()
 	Locator::provide(new EnumTranslator());
 
 
-	Driver driver;
+		Driver driver;
 
-	driver.StartThread();
-	std::cin.get();
-	driver.Shutdown();
+		driver.StartThread();
+		std::cin.get();
+		driver.Shutdown();
+
 	return 0;
 }
 

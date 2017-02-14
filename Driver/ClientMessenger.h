@@ -4,19 +4,20 @@
 #include "SharedCommunication\ReadableSharedQueue.h"
 #include "SharedCommunication\ReadableSharedObject.h"
 #include "SharedCommunication\WritableSharedQueue.h"
+#include "SharedCommunication\SharedTypes.h"
 using namespace boost::interprocess;
 class ClientMessenger
 {
 public:
 	ClientMessenger(boost::asio::io_service&);
 	~ClientMessenger();
-	
+	TrackingUpdate ReadTracking();
 private:
 	//Wite haptics to the suit using this shared queue
 	std::unique_ptr<WritableSharedQueue> m_hapticsStream;
 
 	//Read the most up-to-date tracking data from this object
-	std::unique_ptr<ReadableSharedObject<int>> m_trackingData;
+	std::unique_ptr<ReadableSharedObject<TrackingUpdate>> m_trackingData;
 
 	//Read the most up-to-date suit connection information from this object
 	std::unique_ptr<ReadableSharedObject<int>> m_suitConnectionInfo;

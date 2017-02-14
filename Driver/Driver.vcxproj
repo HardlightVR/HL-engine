@@ -190,6 +190,7 @@
     <ClInclude Include="SharedCommunication\OwnedReadableSharedQueue.h" />
     <ClInclude Include="SharedCommunication\ReadableSharedObject.h" />
     <ClInclude Include="SharedCommunication\ReadableSharedQueue.h" />
+    <ClInclude Include="SharedCommunication\SharedTypes.h" />
     <ClInclude Include="SharedCommunication\shared_data.h" />
     <ClInclude Include="SharedCommunication\WritableSharedObject.h" />
     <ClInclude Include="SharedCommunication\WritableSharedQueue.h" />

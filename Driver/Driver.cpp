@@ -41,8 +41,13 @@ bool Driver::StartThread()
 {
 	
 	_running = true;
-	//_workThread = std::thread(boost::bind(&Driver::_UpdateLoop, this));
-
+//	_workThread = std::thread(boost::bind(&Driver::_UpdateLoop, this));
+	//_clientThread = std::thread([this]() {
+		//while (_running.load()) {
+		//	auto tracking = _cMessenger.ReadTracking();
+		//	std::cout << tracking.a.x << ", " << tracking.b.x << '\n';
+		//}
+	//});
 //	_pollTimer.expires_from_now(_pollInterval);
 	//_pollTimer.async_wait(boost::bind(&Driver::_PollHandler, this, boost::asio::placeholders::error));
 
@@ -67,20 +72,29 @@ bool Driver::Shutdown()
 
 void Driver::_UpdateLoop()
 {
-	ExecutionCommand c;
-	c.Command = NullSpace::HapticFiles::PlayCommand_PLAY;
-	c.Effect = 0;
-	
-	c.Location = counter;
-	counter++;
-	if (counter > 15) {
-		counter = 1;
+	while (_running.load()) {
+		counter++;
+		/*	ExecutionCommand c;
+			c.Command = NullSpace::HapticFiles::PlayCommand_PLAY;
+			c.Effect = 0;
+
+			c.Location = counter;
+			
+			if (counter > 15) {
+				counter = 1;
+			}
+			*/
+		TrackingUpdate t;
+		t.a = Quaternion();
+		t.b = Quaternion();
+		t.a.x = counter;
+		t.b.x = counter + 124;
+		_messenger.WriteTracking(t);
 	}
 	//Encoder encoder;
 
 	//encoder.AquireEncodingLock();
 //	auto offset = encoder.Encode(c);
-
 	//encoder._finalize(offset, [&messenger, &encoder, this](uint8_t* data, int size) {
 	//	messenger.Send(data, size);
 		//encoder.ReleaseEncodingLock();

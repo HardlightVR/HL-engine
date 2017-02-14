@@ -43,7 +43,8 @@ void KeepaliveMonitor::ReceivePing()
 
 void KeepaliveMonitor::BeginMonitoring()
 {
-	scheduleResponseTimer();
+	//scheduleResponseTimer();
+	schedulePingTimer();
 }
 
 

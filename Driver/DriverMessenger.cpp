@@ -38,16 +38,13 @@ DriverMessenger::~DriverMessenger()
 
 }
 
-
-void DriverMessenger::Receive(const std::function<void(void const* data, std::size_t length)> processData)
+void DriverMessenger::WriteTracking(TrackingUpdate t)
 {
-	_process = processData;
+	m_trackingData.Write(t);
 }
 
-bool DriverMessenger::Poll(const std::function<void(void const *data, std::size_t length)>& processData)
-{
-	return true;
-}
+
+
 
 void DriverMessenger::Disconnect()
 {

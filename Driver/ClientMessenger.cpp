@@ -17,6 +17,21 @@ ClientMessenger::~ClientMessenger()
 {
 }
 
+TrackingUpdate ClientMessenger::ReadTracking()
+{
+	if (m_trackingData != nullptr) {
+		return m_trackingData->Read();
+	}
+	else {
+		TrackingUpdate t;
+		t.a = Quaternion();
+		t.b = Quaternion();
+		t.a.x = 0;
+		t.b.x = 0;
+		return t;
+	}
+}
+
 
 void ClientMessenger::startAttemptEstablishConnection()
 {
@@ -45,8 +60,12 @@ void ClientMessenger::attemptEstablishConnection(const boost::system::error_code
 		Locator::Logger().Log("ClientMessenger", "Attempting to create all the other shared objects");
 
 		m_hapticsStream = std::make_unique<WritableSharedQueue>("ns-haptics-data");
-		m_trackingData = std::make_unique<ReadableSharedObject<int>>("ns-tracking-data");
+		m_trackingData = std::make_unique<ReadableSharedObject<TrackingUpdate>>("ns-tracking-data");
 		m_suitConnectionInfo = std::make_unique<ReadableSharedObject<int>>("ns-suit-data");
+
+		//Everything setup successfully? Monitor the connection!
+		startMonitorConnection();
+
 	}
 	catch (const boost::interprocess::interprocess_exception& ec) {
 		Locator::Logger().Log("ClientMessenger", "Failed to create all the other shared objects", LogLevel::Error);
@@ -58,8 +77,7 @@ void ClientMessenger::attemptEstablishConnection(const boost::system::error_code
 	}
 
 
-	//Everything setup successfully? Monitor the connection!
-	startMonitorConnection();
+	
 }
 
 void ClientMessenger::startMonitorConnection()

@@ -2,6 +2,8 @@
 
 #include "SharedCommunication\WritableSharedObject.h"
 #include "SharedCommunication\OwnedReadableSharedQueue.h"
+
+#include "SharedCommunication\SharedTypes.h"
 struct ExecutionCommand {
 	int Location;
 	int Effect;
@@ -13,16 +15,16 @@ using namespace boost::interprocess;
 class DriverMessenger
 {
 public:
+	typedef std::function<void(void const* data, std::size_t length)> DataCallback;
 	DriverMessenger(boost::asio::io_service& io);
 	~DriverMessenger();
-	void Receive(const std::function<void(void const* data, std::size_t length)>);
-	bool Poll(const std::function<void(void const * data, std::size_t length)>&);
+	void WriteTracking(TrackingUpdate t);
 	void Disconnect();
 private:
 	std::function<void(void const* data, std::size_t length)> _process;
 	
 	//Write tracking data here
-	WritableSharedObject<int> m_trackingData;
+	WritableSharedObject<TrackingUpdate> m_trackingData;
 
 	//Write suit connection data here (which suits connected, etc)
 	WritableSharedObject<int> m_suitConnectionInfo;
