@@ -45,8 +45,18 @@ void Synchronizer::TryReadPacket()
 
 void Synchronizer::BeginSync()
 {
-	
+	scheduleSync();
 }
+void Synchronizer::scheduleSync()
+{
+	_syncTimer.expires_from_now(_syncInterval);
+	_syncTimer.async_wait(boost::bind(&Synchronizer::handleReadPacket, this, boost::asio::placeholders::error));
+}
+void Synchronizer::handleReadPacket(const boost::system::error_code& ec) {
+	this->TryReadPacket();
+	scheduleSync();
+}
+
 
 std::size_t Synchronizer::PossiblePacketsAvailable()
 {
@@ -164,5 +174,6 @@ bool Synchronizer::packetIsWellFormed(const packet possiblePacket) const
 		possiblePacket.raw[14] == packetFooter[0] &&
 		possiblePacket.raw[15] == packetFooter[1];
 }
+
 
 

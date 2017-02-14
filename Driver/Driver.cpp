@@ -39,7 +39,7 @@ Driver::~Driver()
 bool Driver::StartThread()
 {
 	_running = true;
-
+	/*
 	_workThread = std::thread([this]() {
 
 		while (_running.load()) {
@@ -78,8 +78,9 @@ bool Driver::StartThread()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	});
-
+	*/
 //	_workThread = std::thread(boost::bind(&Driver::_UpdateLoop, this));
+	/*
 	_clientThread = std::thread([this]() {
 		while (_running.load()) {
 			auto tracking = _cMessenger.ReadTracking();
@@ -98,6 +99,7 @@ bool Driver::StartThread()
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		}
 	});
+	*/
 //	_pollTimer.expires_from_now(_pollInterval);
 	//_pollTimer.async_wait(boost::bind(&Driver::_PollHandler, this, boost::asio::placeholders::error));
 

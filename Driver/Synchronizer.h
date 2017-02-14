@@ -45,6 +45,9 @@ private:
 	boost::asio::deadline_timer _syncTimer;
 	boost::posix_time::milliseconds _syncInterval;
 
+	void scheduleSync();
+	void handleReadPacket(const boost::system::error_code& ec);
+
 };
 
 /*

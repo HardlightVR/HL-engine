@@ -4,6 +4,7 @@
 #include "HardwareInterface.h"
 #include "FirmwareInterface.h"
 #include "Encoder.h"
+#include "PacketDispatcher.h"
 class IoService;
 
 class Driver {
@@ -27,4 +28,7 @@ private:
 	ClientMessenger _cMessenger;
 	HardwareInterface _hardware;
 	Encoder _encoder;
+
+	PacketDispatcher m_dispatcher;
+
 };

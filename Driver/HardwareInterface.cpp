@@ -14,7 +14,7 @@ HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
 
 
 	_adapter->Connect();
-	
+	_synchronizer->BeginSync();
 
 }
 
