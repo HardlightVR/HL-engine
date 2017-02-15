@@ -17,6 +17,7 @@ public:
 	boost::optional<TrackingUpdate> ReadTracking();
 	boost::optional<SuitsConnectionInfo> ReadSuits();
 	void WriteHaptics(ExecutionCommand e);
+
 private:
 	//Wite haptics to the suit using this shared queue
 	std::unique_ptr<WritableSharedQueue> m_hapticsStream;

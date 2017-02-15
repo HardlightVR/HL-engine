@@ -132,6 +132,9 @@
     <ClInclude Include="SharedCommunication\OwnedWritableSharedQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IPacketConsumer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -204,6 +207,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DriverMessenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketDispatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

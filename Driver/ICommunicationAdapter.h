@@ -14,4 +14,5 @@ public:
 	virtual void Write(std::shared_ptr<uint8_t*> bytes, std::size_t length) = 0;
 
 	virtual std::shared_ptr<Buffer> GetDataStream() = 0;
+
 };

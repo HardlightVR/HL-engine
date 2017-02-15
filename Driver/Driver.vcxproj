@@ -179,6 +179,7 @@
     <ClInclude Include="InstructionBuilder.h" />
     <ClInclude Include="InstructionSet.h" />
     <ClInclude Include="IoService.h" />
+    <ClInclude Include="IPacketConsumer.h" />
     <ClInclude Include="KeepaliveMonitor.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="ILogger.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="DriverMessenger.cpp" />
     <ClCompile Include="NullLogger.cpp" />
     <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="PacketDispatcher.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

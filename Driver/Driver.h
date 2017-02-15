@@ -25,10 +25,11 @@ private:
 	boost::posix_time::milliseconds _pollInterval;
 	int counter = 1;
 	DriverMessenger _messenger;
-	ClientMessenger _cMessenger;
+//	ClientMessenger _cMessenger;
 	HardwareInterface _hardware;
 	Encoder _encoder;
 
 	PacketDispatcher m_dispatcher;
 
+	
 };

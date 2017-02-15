@@ -22,6 +22,7 @@ public:
 			_firmware.PlayEffectContinuous(Location(ec.Location), Effect(ec.Effect));
 		}
 	}
+
 private:
 	std::unique_ptr<ICommunicationAdapter> _adapter;
 	std::unique_ptr<Synchronizer> _synchronizer;
