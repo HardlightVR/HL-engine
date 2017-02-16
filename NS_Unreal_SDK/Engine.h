@@ -5,7 +5,7 @@
 #include "HapticCache2.h"
 #include "PacketDispatcher.h"
 #include "Synchronizer.h"
-#include "HapticsPlayer.h"
+#include "HapticsExecutor.h"
 #include "InstructionSet.h"
 #include "Consumers\ImuConsumer.h"
 #include "SuitDiagnostics.h"
@@ -16,10 +16,12 @@ class Engine
 {
 public:
 	Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket);
-	
+	void PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet);
+	void PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet);
+	void PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet);
 	void HandleCommand(const NullSpace::HapticFiles::HapticPacket& packet);
 	void EngineCommand(const NullSpace::HapticFiles::HapticPacket& packet);
-	void PlayEffect(const NullSpace::HapticFiles::HapticPacket& packet);
+	void Play(const NullSpace::HapticFiles::HapticPacket& packet);
 	void EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket& packet);
 	void Update(float dt);
 	bool SuitConnected() const;
@@ -28,14 +30,18 @@ private:
 	//Be very careful if you reorder these parameters. 
 	std::shared_ptr<InstructionSet> _instructionSet; //order dependency
 	std::shared_ptr<ICommunicationAdapter> _adapter; //order dependency
-
+	HapticCache2<
+		std::vector<JsonSequenceAtom>, 
+		std::vector<HapticFrame>, 
+		std::vector<JsonSequenceAtom>> 
+	_hapticCache;
 	std::shared_ptr<PacketDispatcher> _packetDispatcher; //order dependency
 	Synchronizer _streamSynchronizer; //order dependency
-	HapticsPlayer _hapticsPlayer;//order dependency
+	HapticsExecutor _executor;//order dependency
 
-	std::shared_ptr<ImuConsumer> _imuConsumer;
+	ImuConsumer _imuConsumer;
 	boost::asio::deadline_timer _trackingUpdateTimer;
-	boost::posix_time::milliseconds _trackingUpdateInterval = boost::posix_time::milliseconds(100);
+	boost::posix_time::milliseconds _trackingUpdateInterval = boost::posix_time::milliseconds(24);
 
 	EncodingOperations& _encoder;
 	zmq::socket_t& _socket;
@@ -44,7 +50,7 @@ private:
 	//todo: App Sessions
 	bool _userRequestsTracking;
 	SuitDiagnostics _diagnostics;
-	SuitHardwareInterface _hardware;
+
 	void handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v);
 };
 
