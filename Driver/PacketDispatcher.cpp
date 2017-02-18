@@ -30,8 +30,3 @@ void PacketDispatcher::AddConsumer(SuitPacket::PacketType ptype, OnReceivePacket
 	_consumers[ptype].push_back(packetFunc);
 }
 
-//void PacketDispatcher::AddConsumer(SuitPacket::PacketType ptype, IPacketConsumer* consumer)
-//{
-//	_consumers[ptype].push_back(consumer);
-
-//}

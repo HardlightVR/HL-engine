@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "DriverMessenger.h"
-
 #include "Encoder.h"
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 _running{true},
@@ -9,7 +8,7 @@ _running{true},
 	m_trackingData("ns-tracking-data"),
 	m_suitConnectionInfo("ns-suit-data"),
 	m_loggingStream("ns-logging-data", 500, 512),
-	m_sentinal("ns-sentinal"),
+	m_sentinal("ns-sentinel"),
 
 	m_sentinalTimer(io),
 	m_sentinalInterval(1000)
@@ -19,7 +18,7 @@ _running{true},
 	SuitsConnectionInfo nullSuits = {};
 	m_trackingData.Write(nullTracking);
 	m_suitConnectionInfo.Write(nullSuits);
-
+	
 	startSentinal();
 }
 
@@ -53,16 +52,19 @@ void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
 	m_suitConnectionInfo.Write(s);
 }
 
-boost::optional<ExecutionCommand> DriverMessenger::ReadHaptics()
+boost::optional<NullSpaceIPC::EffectCommand> DriverMessenger::ReadHaptics()
 {
-	auto data = m_hapticsData.Pop();
-	flatbuffers::Verifier verifier(reinterpret_cast<uint8_t const*>(data.data()), data.size());
-	if (NullSpace::HapticFiles::VerifyExecutionCommandBuffer(verifier)) {
-		auto packet = NullSpace::HapticFiles::GetExecutionCommand(data.data());
-		return Encoder::Decode(packet);
-	}
 
-	return boost::optional<ExecutionCommand>();
+	if (auto data = m_hapticsData.Pop()) {
+		NullSpaceIPC::EffectCommand command;
+		if (command.ParseFromArray(data->data(), data->size())) {
+			return command;
+		}
+	}
+	
+	//implement with protobuf
+
+	return boost::optional<NullSpaceIPC::EffectCommand>();
 }
 
 

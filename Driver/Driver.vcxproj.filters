@@ -75,9 +75,6 @@
     <ClInclude Include="LoggingUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ClientMessenger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Encoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,40 +96,19 @@
     <ClInclude Include="HexUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Enums.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="EnumTranslator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedCommunication\ReadableSharedObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedCommunication\shared_data.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedCommunication\WritableSharedObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedCommunication\WritableSharedQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedCommunication\ReadableSharedQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DriverMessenger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SharedCommunication\OwnedReadableSharedQueue.h">
+    <ClInclude Include="Enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SharedCommunication\SharedTypes.h">
+    <ClInclude Include="..\NS_Unreal_SDK\protobuff_defs\EffectCommand.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SharedCommunication\OwnedWritableSharedQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IPacketConsumer.h">
+    <ClInclude Include="Atom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -179,9 +155,6 @@
     <ClCompile Include="LoggingUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ClientMessenger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FirmwareInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -212,5 +185,16 @@
     <ClCompile Include="PacketDispatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\NS_Unreal_SDK\protobuff_defs\EffectCommand.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Atom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Atoms.json">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

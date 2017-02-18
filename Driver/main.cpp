@@ -13,13 +13,12 @@ int main()
 	Locator::provide(new ConsoleLogger());
 	Locator::provide(new EnumTranslator());
 
-
-		Driver driver;
-
+	
+	Driver driver;
 		driver.StartThread();
 		std::cin.get();
 		driver.Shutdown();
-
+	
 	return 0;
 }
 

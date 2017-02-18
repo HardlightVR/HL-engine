@@ -13,7 +13,18 @@ public:
 		m_maxElementSizeBytes(maxElementSizeBytes),
 		m_name(name),
 		m_queue(boost::interprocess::open_or_create, m_name.c_str(), maxElements, maxElementSizeBytes)
-	{}
+	{
+		auto size = m_queue.get_num_msg();
+		std::vector<char> tempBuffer;
+		tempBuffer.resize(m_queue.get_max_msg_size());
+		unsigned int x = 0;
+		unsigned int y = 0;
+		for (int i = 0; i < size; ++i) {
+			if (!m_queue.try_receive(tempBuffer.data(), tempBuffer.size(), x, y)) {
+				break;
+			}
+		}
+	}
 
 	~OwnedWritableSharedQueue() {
 		boost::interprocess::message_queue::remove(m_name.c_str());

@@ -7,28 +7,13 @@
 Driver::Driver() :
 	_io(new IoService()),
 	_running(false),
-	_pollTimer(_io->GetIOService()),
-	_pollInterval(50),
+	m_hapticsPollTimer(_io->GetIOService()),
+	m_hapticsPollInterval(10),
 	_hardware(_io),
 	_messenger(_io->GetIOService()),
 	m_dispatcher()
 
 {
-	
-//	m_dispatcher.AddConsumer(SuitPacket::PacketType::ImuData, std::bind(&Driver::imuDataHandler, this));
-/*	_messenger.Receive([this](void const* data, std::size_t size) { 
-		flatbuffers::Verifier verifier(reinterpret_cast<uint8_t const*>(data), size);
-		if (NullSpace::HapticFiles::VerifyExecutionCommandBuffer(verifier)) {
-			auto packet = NullSpace::HapticFiles::GetExecutionCommand(data);
-			_hardware.ReceiveExecutionCommand(_encoder.Decode(packet));
-		}
-	
-	
-	
-	});
-	*/
-//	_pollTimer.expires_from_now(_pollInterval);
-	//_pollTimer.async_wait(boost::bind(&Driver::_UpdateLoop, this));
 }
 
 Driver::~Driver()
@@ -41,7 +26,8 @@ Driver::~Driver()
 bool Driver::StartThread()
 {
 	_running = true;
-	
+	scheduleHapticsPoll();
+
 	
 
 	return true;
@@ -50,21 +36,25 @@ bool Driver::StartThread()
 bool Driver::Shutdown()
 {
 	_running.store(false);
+	m_hapticsPollTimer.cancel();
 //	_messenger.Disconnect();
 	
-	if (_messengerThread.joinable()) {
-		_messengerThread.join();
-	}
-	//_pollTimer.cancel();
+	_messenger.Disconnect();
 	
 	_io->Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	return true;
 }
 
-void Driver::_UpdateLoop()
+void Driver::handleHaptics(const boost::system::error_code& ec)
 {
-
+	if (!ec) {
+		if (auto command = _messenger.ReadHaptics()) {
+			std::cout << "Got command!" << command->command() << '\n';
+			_hardware.ReceiveExecutionCommand(*command);
+		}
+		scheduleHapticsPoll();
+	}
 	//Encoder encoder;
 
 	//encoder.AquireEncodingLock();
@@ -79,6 +69,12 @@ void Driver::_UpdateLoop()
 
 	//});
 
+}
+
+void Driver::scheduleHapticsPoll()
+{
+	m_hapticsPollTimer.expires_from_now(m_hapticsPollInterval);
+	m_hapticsPollTimer.async_wait(boost::bind(&Driver::handleHaptics, this, boost::asio::placeholders::error));
 }
 
 

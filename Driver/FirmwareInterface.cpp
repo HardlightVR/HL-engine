@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "FirmwareInterface.h"
 #include "Locator.h"
-
+#include "InstructionSet.h"
 FirmwareInterface::FirmwareInterface(std::unique_ptr<ICommunicationAdapter>& adapter, boost::asio::io_service& io):
+m_instructionSet(std::make_shared<InstructionSet>()),
 _adapter(adapter),
-_builder(std::make_shared<InstructionSet>()),
+_builder(m_instructionSet),
 _writeTimer(io),
 _batchingDeadline(io),
 _writeInterval(10),
@@ -72,8 +73,14 @@ void FirmwareInterface::writeBuffer() {
 	}
 
 }
-void FirmwareInterface::PlayEffect(Location location, Effect effect) {
+void FirmwareInterface::PlayEffect(Location location, std::string effectString, float strength) {
+	
+	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
+		std::cout << "Failed to find atom in instruction set: " << effectString << '\n';
+		return;
+	}
 
+	auto effect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 	if (_builder.UseInstruction("PLAY_EFFECT")
 		.WithParam("zone", Locator::Translator().ToString(location))
 		.WithParam("effect", Locator::Translator().ToString(effect))
@@ -88,8 +95,14 @@ void FirmwareInterface::PlayEffect(Location location, Effect effect) {
 	}
 }
 
-void FirmwareInterface::PlayEffectContinuous(Location location, Effect effect)
+void FirmwareInterface::PlayEffectContinuous(Location location, std::string effectString, float strength)
 {
+	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
+		std::cout << "Failed to find atom in instruction set: " << effectString << '\n';
+		return;
+	}
+
+	auto effect = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 	if (_builder.UseInstruction("PLAY_CONTINUOUS")
 		.WithParam("effect", Locator::Translator().ToString(effect))
 		.WithParam("zone", Locator::Translator().ToString(location))

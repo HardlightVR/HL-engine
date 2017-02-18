@@ -4,6 +4,7 @@
 #include "SharedCommunication\OwnedReadableSharedQueue.h"
 #include "SharedCommunication\OwnedWritableSharedQueue.h"
 #include "SharedCommunication\SharedTypes.h"
+#include "EffectCommand.pb.h"
 
 
 using namespace boost::interprocess;
@@ -17,7 +18,7 @@ public:
 	~DriverMessenger();
 	void WriteTracking(TrackingUpdate t);
 	void WriteSuits(SuitsConnectionInfo s);
-	boost::optional<ExecutionCommand> ReadHaptics();
+	boost::optional<NullSpaceIPC::EffectCommand> ReadHaptics();
 	void Disconnect();
 private:
 	std::function<void(void const* data, std::size_t length)> _process;

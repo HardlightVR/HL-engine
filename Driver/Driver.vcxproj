@@ -88,14 +88,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\protobuff_defs;D:\protobuf-3.0.0\cmake\build\solution\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\Win32\Debug\v140\static</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libzmq.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Debug;C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\Win32\Debug\v140\static</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobufd.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
@@ -106,14 +106,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\protobuff_defs;D:\protobuf-3.0.0\cmake\build\solution\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\x64\Debug\v140\static</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libzmq.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Debug;C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\x64\Debug\v140\static</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobufd.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
@@ -126,7 +126,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\protobuff_defs;D:\protobuf-3.0.0\cmake\build\solution\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -134,8 +134,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\Win32\Release\v140\static;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libzmq.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Release;C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\Win32\Release\v140\static;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,7 +147,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;ZMQ_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\protobuff_defs;D:\protobuf-3.0.0\cmake\build\solution\include;C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\NSLoader\Wire;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\json;C:\Program Files %28x86%29\flatbuffers\include;C:\Users\NullSpace Team\Documents\NS_Unreal_SDK\NS_Unreal_SDK\flatbuff_defs;C:\Program Files\boost\boost_1_61_0;C:\Program Files %28x86%29\libzmq\include</AdditionalIncludeDirectories>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -155,18 +155,20 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\x64\Release\v140\static;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libzmq.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Release;C:\Program Files\boost\boost_1_61_0\stage\lib;C:\Program Files %28x86%29\libzmq\bin\x64\Release\v140\static;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf.lib;wsock32.lib;ws2_32.lib;Iphlpapi.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NS_Unreal_SDK\protobuff_defs\EffectCommand.pb.h" />
+    <ClInclude Include="Atom.h" />
     <ClInclude Include="BoostSerialAdapter.h" />
-    <ClInclude Include="ClientMessenger.h" />
     <ClInclude Include="ConsoleLogger.h" />
     <ClInclude Include="Driver.h" />
+    <ClInclude Include="DriverMessenger.h" />
     <ClInclude Include="Encoder.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="enumser.h" />
@@ -179,23 +181,13 @@
     <ClInclude Include="InstructionBuilder.h" />
     <ClInclude Include="InstructionSet.h" />
     <ClInclude Include="IoService.h" />
-    <ClInclude Include="IPacketConsumer.h" />
     <ClInclude Include="KeepaliveMonitor.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="ILogger.h" />
     <ClInclude Include="LoggingUtils.h" />
-    <ClInclude Include="DriverMessenger.h" />
     <ClInclude Include="NullLogger.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
-    <ClInclude Include="SharedCommunication\OwnedReadableSharedQueue.h" />
-    <ClInclude Include="SharedCommunication\OwnedWritableSharedQueue.h" />
-    <ClInclude Include="SharedCommunication\ReadableSharedObject.h" />
-    <ClInclude Include="SharedCommunication\ReadableSharedQueue.h" />
-    <ClInclude Include="SharedCommunication\SharedTypes.h" />
-    <ClInclude Include="SharedCommunication\shared_data.h" />
-    <ClInclude Include="SharedCommunication\WritableSharedObject.h" />
-    <ClInclude Include="SharedCommunication\WritableSharedQueue.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuitPacket.h" />
     <ClInclude Include="Synchronizer.h" />
@@ -204,10 +196,17 @@
     <ClInclude Include="zmq_addon.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\NS_Unreal_SDK\protobuff_defs\EffectCommand.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Atom.cpp" />
     <ClCompile Include="BoostSerialAdapter.cpp" />
-    <ClCompile Include="ClientMessenger.cpp" />
     <ClCompile Include="ConsoleLogger.cpp" />
     <ClCompile Include="Driver.cpp" />
+    <ClCompile Include="DriverMessenger.cpp" />
     <ClCompile Include="enumser.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -229,7 +228,6 @@
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="LoggingUtils.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="DriverMessenger.cpp" />
     <ClCompile Include="NullLogger.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketDispatcher.cpp" />
@@ -241,6 +239,9 @@
     </ClCompile>
     <ClCompile Include="SuitPacket.cpp" />
     <ClCompile Include="Synchronizer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Atoms.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,15 +8,16 @@ public:
 	FirmwareInterface(std::unique_ptr<ICommunicationAdapter>& adapter, boost::asio::io_service& io);
 	~FirmwareInterface();
 
-	void PlayEffect(Location location, Effect effect);
+	void PlayEffect(Location location, std::string effect, float strength);
 	void HaltEffect(Location location);
 	//void RequestSuitVersion();
-	void PlayEffectContinuous(Location location, Effect effect);
+	void PlayEffectContinuous(Location location, std::string effect, float strength);
 	//void HaltAllEffects();
 	//void PingSuit();
 	//void EnableIMUs();
 	//void DisableIMUs();
 private:
+	std::shared_ptr<InstructionSet> m_instructionSet;
 	void chooseExecutionStrategy(const Packet&  packet);
 	std::unique_ptr<ICommunicationAdapter>& _adapter;
 	InstructionBuilder _builder;

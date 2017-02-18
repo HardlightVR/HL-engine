@@ -1,0 +1,160 @@
+[{
+	"id" : "click",
+	"levels":[
+		
+		
+		"Strong_Click_30",
+		"Medium_Click_60",
+		
+		"Strong_Click_60",
+		"Strong_Click_100"
+	]
+
+},
+{
+	"id" : "sharp_click",
+	"levels":[
+		"Sharp_Click_30",
+		"Sharp_Click_60",
+		"Sharp_Click_100"
+	]
+
+},
+{
+	"id" : "bump",
+	"levels":[
+		"Soft_Bump_30",
+		"Soft_Bump_60",
+		"Soft_Bump_100"
+	]
+
+},
+{
+	"id" : "double_click",
+	"levels":[
+		"Double_Click_60",
+		"Double_Click_100"
+	]
+
+},
+{
+	"id" : "triple_click",
+	"levels":[
+		"Triple_Click"
+	]
+
+},
+{
+	"id" : "fuzz",
+	"levels":[
+		"Soft_Fuzz"
+	]
+
+},
+{
+	"id" : "sharp_tick",
+	"levels":[
+		"Sharp_Tick_60",
+		"Sharp_Tick_80",
+		"Sharp_Tick_100"
+	]
+
+},
+{
+	"id" : "short_double_click",
+	"levels":[
+		"Short_Double_Click_Medium_60",
+		"Short_Double_Click_Medium_80",
+		"Short_Double_Click_Medium_100",
+		"Short_Double_Click_Strong_30",
+		"Short_Double_Click_Strong_60",
+		"Short_Double_Click_Strong_80",
+		"Short_Double_Click_Strong_100"
+	]
+
+},
+{
+	"id" : "short_double_sharp_tick",
+	"levels":[
+		"Short_Double_Sharp_Tick_60",
+		"Short_Double_Sharp_Tick_80",
+		"Short_Double_Sharp_Tick_100"
+	]
+
+},
+{
+	"id" : "long_double_sharp_tick",
+	"levels":[
+		"Long_Double_Sharp_Tick_60",
+		"Long_Double_Sharp_Tick_80",
+		"Long_Double_Sharp_Tick_100"
+	]
+
+},
+{
+	"id" : "buzz",
+	"levels":[
+		"Buzz_20",
+		"Buzz_40",
+		"Buzz_60",
+		"Buzz_80",
+		"Buzz_100"
+	]
+
+},
+{
+	"id" : "pulse",
+	"levels":[
+		"Pulsing_Medium_60",
+		"Pulsing_Medium_100",
+		"Pulsing_Strong_60",
+		"Pulsing_Strong_100"
+	]
+
+},
+{
+	"id" : "pulse_sharp",
+	"levels":[
+		"Pulsing_Sharp_60",
+		"Pulsing_Sharp_100"
+	]
+
+},
+{
+	"id" : "hum",
+	"levels":[
+		"Smooth_Hum_10",
+		"Smooth_Hum_20",
+		"Smooth_Hum_30",
+		"Smooth_Hum_40",
+		"Smooth_Hum_50"
+	]
+
+},
+{
+	"id" : "transition_click",
+	"levels":[
+		"Transition_Click_10",
+		"Transition_Click_20",
+		"Transition_Click_40",
+		"Transition_Click_60",
+		"Transition_Click_80"
+	]
+
+},
+{
+	"id" : "transition_hum",
+	"levels":[
+		"Transition_Hum_10",
+		"Transition_Hum_20",
+		"Transition_Hum_40",
+		"Transition_Hum_60",
+		"Transition_Hum_80",
+		"Transition_Hum_100"
+	]
+
+}
+]
+
+
+

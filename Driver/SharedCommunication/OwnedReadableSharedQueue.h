@@ -13,18 +13,29 @@ public:
 		m_maxElementSizeBytes(maxElementSizeBytes),
 		m_name(name),
 		m_queue(boost::interprocess::open_or_create, m_name.c_str(), maxElements, maxElementSizeBytes)
-	{}
+	{
+	
+		auto size = m_queue.get_num_msg();
+		std::vector<char> tempBuffer;
+		tempBuffer.resize(m_queue.get_max_msg_size());
+		unsigned int x = 0;
+		unsigned int y = 0;
+		for (int i = 0; i < size; ++i) {
+			if (!m_queue.try_receive(tempBuffer.data(), tempBuffer.size(), x, y)) {
+				break;
+			}
+		}
+		
+	}
 
 	~OwnedReadableSharedQueue() {
 		boost::interprocess::message_queue::remove(m_name.c_str());
 	}
-
-	std::vector<uint8_t> Pop() {
-		//std::vector<char> myData;
-		//myData.reserve(m_queue.get_max_msg_size());
+	
+	boost::optional<std::vector<uint8_t>> Pop() {
+		
 		std::vector<uint8_t> otherData;
 		otherData.resize(m_queue.get_max_msg_size());
-	//	assert(otherData.data() != nullptr);
 		unsigned int actualLen = 0;
 		unsigned int priority = 0;
 		try {
@@ -37,7 +48,7 @@ public:
 			std::cout << e.what();
 		}
 		//assert(actualLen <= data.size());
-		return std::vector<uint8_t>();
+		return boost::optional<std::vector<uint8_t>>();
 	}
 
 	

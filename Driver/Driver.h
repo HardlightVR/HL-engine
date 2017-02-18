@@ -19,10 +19,10 @@ private:
 	std::atomic<bool> _running;
 	std::thread _workThread;
 	std::thread _messengerThread;
-	void _UpdateLoop();
+	void handleHaptics(const boost::system::error_code&);
 	
-	boost::asio::deadline_timer _pollTimer;
-	boost::posix_time::milliseconds _pollInterval;
+	boost::asio::deadline_timer m_hapticsPollTimer;
+	boost::posix_time::milliseconds m_hapticsPollInterval;
 	int counter = 1;
 	DriverMessenger _messenger;
 //	ClientMessenger _cMessenger;
@@ -31,5 +31,6 @@ private:
 
 	PacketDispatcher m_dispatcher;
 
+	void scheduleHapticsPoll();
 	
 };
