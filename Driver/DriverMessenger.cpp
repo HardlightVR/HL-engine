@@ -52,19 +52,26 @@ void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
 	m_suitConnectionInfo.Write(s);
 }
 
-boost::optional<NullSpaceIPC::EffectCommand> DriverMessenger::ReadHaptics()
+boost::optional<std::vector<NullSpaceIPC::EffectCommand>> DriverMessenger::ReadHaptics()
 {
-
-	if (auto data = m_hapticsData.Pop()) {
-		NullSpaceIPC::EffectCommand command;
-		if (command.ParseFromArray(data->data(), data->size())) {
-			return command;
+	std::vector<NullSpaceIPC::EffectCommand> commands;
+	std::size_t numMsgs = m_hapticsData.GetNumMessageAvailable();
+	for (std::size_t i = 0; i < numMsgs; i++) {
+		if (auto data = m_hapticsData.Pop()) {
+			NullSpaceIPC::EffectCommand command;
+			if (command.ParseFromArray(data->data(), data->size())) {
+				commands.push_back(command);
+			}
+		}
+		else {
+			break;
 		}
 	}
 	
+
 	//implement with protobuf
 
-	return boost::optional<NullSpaceIPC::EffectCommand>();
+	return commands;
 }
 
 

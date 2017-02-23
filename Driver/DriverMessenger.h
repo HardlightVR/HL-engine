@@ -18,7 +18,7 @@ public:
 	~DriverMessenger();
 	void WriteTracking(TrackingUpdate t);
 	void WriteSuits(SuitsConnectionInfo s);
-	boost::optional<NullSpaceIPC::EffectCommand> ReadHaptics();
+	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	void Disconnect();
 private:
 	std::function<void(void const* data, std::size_t length)> _process;

@@ -8,10 +8,10 @@ _adapter(adapter),
 _builder(m_instructionSet),
 _writeTimer(io),
 _batchingDeadline(io),
-_writeInterval(10),
+_writeInterval(20),
 _batchingTimeout(20),
 BATCH_SIZE(64),
-_lfQueue(512)
+_lfQueue(1024)
 
 {
 

@@ -32,6 +32,9 @@ public:
 		boost::interprocess::message_queue::remove(m_name.c_str());
 	}
 	
+	std::size_t GetNumMessageAvailable() {
+		return m_queue.get_num_msg();
+	}
 	boost::optional<std::vector<uint8_t>> Pop() {
 		
 		std::vector<uint8_t> otherData;

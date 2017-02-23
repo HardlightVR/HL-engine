@@ -8,7 +8,7 @@ Driver::Driver() :
 	_io(new IoService()),
 	_running(false),
 	m_hapticsPollTimer(_io->GetIOService()),
-	m_hapticsPollInterval(10),
+	m_hapticsPollInterval(1),
 	_hardware(_io),
 	_messenger(_io->GetIOService()),
 	m_dispatcher()
@@ -49,9 +49,11 @@ bool Driver::Shutdown()
 void Driver::handleHaptics(const boost::system::error_code& ec)
 {
 	if (!ec) {
-		if (auto command = _messenger.ReadHaptics()) {
-			std::cout << "Got command!" << command->command() << '\n';
-			_hardware.ReceiveExecutionCommand(*command);
+		if (auto commands = _messenger.ReadHaptics()) {
+		//	std::cout << "Got command!" << command->command() << '\n';
+			for (const auto& command : *commands) {
+				_hardware.ReceiveExecutionCommand(command);
+			}
 		}
 		scheduleHapticsPoll();
 	}

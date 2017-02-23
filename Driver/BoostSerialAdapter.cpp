@@ -22,7 +22,7 @@ BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
 
 void BoostSerialAdapter::Connect()
 {
-
+	
 
 	this->testAllAsync();
 }

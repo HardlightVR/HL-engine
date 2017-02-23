@@ -20,7 +20,7 @@ public:
 	std::vector<uint8_t> Pop() {
 		std::vector<uint8_t> data;
 		data.reserve(m_queue.get_max_msg_size());
-		unsigned int actualLen = 0;
+		boost::interprocess::message_queue::size_type actualLen = 0;
 		unsigned int priority = 0;
 		m_queue.try_receive(data.data(), data.size(), actualLen, priority);
 		assert(actualLen <= data.size());
