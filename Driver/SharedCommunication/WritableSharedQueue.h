@@ -10,6 +10,8 @@ class WritableSharedQueue
 {
 
 public:
+	typedef boost::interprocess::message_queue_t<boost::interprocess::offset_ptr<void, boost::int32_t, boost::uint64_t>> my_message_queue;
+
 	WritableSharedQueue(std::string name) :
 
 		m_name(name),
@@ -27,7 +29,7 @@ public:
 private:
 	std::string m_name;
 	std::size_t m_maxElementSizeBytes;
-	boost::interprocess::message_queue m_queue;
+	my_message_queue m_queue;
 
 };
 

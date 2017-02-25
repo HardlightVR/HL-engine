@@ -9,6 +9,8 @@
 class OwnedReadableSharedQueue
 {
 public:
+	typedef boost::interprocess::message_queue_t<boost::interprocess::offset_ptr<void, boost::int32_t, boost::uint64_t>> my_message_queue;
+
 	OwnedReadableSharedQueue(std::string name, std::size_t maxElements, std::size_t maxElementSizeBytes) :
 		m_maxElementSizeBytes(maxElementSizeBytes),
 		m_name(name),
@@ -18,9 +20,9 @@ public:
 		auto size = m_queue.get_num_msg();
 		std::vector<char> tempBuffer;
 		tempBuffer.resize(m_queue.get_max_msg_size());
-		unsigned int x = 0;
+		boost::interprocess::message_queue::size_type x = 0;
 		unsigned int y = 0;
-		for (int i = 0; i < size; ++i) {
+		for (std::size_t i = 0; i < size; ++i) {
 			if (!m_queue.try_receive(tempBuffer.data(), tempBuffer.size(), x, y)) {
 				break;
 			}
@@ -39,7 +41,7 @@ public:
 		
 		std::vector<uint8_t> otherData;
 		otherData.resize(m_queue.get_max_msg_size());
-		unsigned int actualLen = 0;
+		boost::interprocess::message_queue::size_type actualLen = 0;
 		unsigned int priority = 0;
 		try {
 			if (m_queue.try_receive(otherData.data(), m_queue.get_max_msg_size(), actualLen, priority)) {
@@ -58,6 +60,6 @@ public:
 private:
 	std::string m_name;
 	std::size_t m_maxElementSizeBytes;
-	boost::interprocess::message_queue m_queue;
+	my_message_queue m_queue;
 };
 
