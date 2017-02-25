@@ -5,9 +5,9 @@
 KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, std::unique_ptr<boost::asio::serial_port>& port) :
 	_port(port),
 	_responseTimer(io), 
-	_responseTimeout(boost::posix_time::milliseconds(20)),
+	_responseTimeout(boost::posix_time::milliseconds(50)),
 	_pingTimer(io),
-	_pingInterval(boost::posix_time::milliseconds(150)),
+	_pingInterval(boost::posix_time::milliseconds(250)),
 	_MAX_FAILED_PINGS(2)
 {
 }
@@ -54,6 +54,7 @@ void KeepaliveMonitor::doKeepAlivePing()
 	if (_port && _port->is_open()) {
 		//only thing special about this packet is the packet type, which is set to ping
 		auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+		Locator::Logger().Log("Keepalive", "Doing ping", LogLevel::Info);
 
 		_port->async_write_some(boost::asio::buffer(*pingData, 7), 
 			//pass ping data pointer by value to the lambda to ensure it 
