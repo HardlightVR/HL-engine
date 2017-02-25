@@ -4,7 +4,7 @@
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 _running{true},
 	_process([](void const*, std::size_t) {}),
-	m_hapticsData("ns-haptics-data", 100, 256),
+	m_hapticsData("ns-haptics-data", 1024, 256),
 	m_trackingData("ns-tracking-data"),
 	m_suitConnectionInfo("ns-suit-data"),
 	m_loggingStream("ns-logging-data", 500, 512),
@@ -56,7 +56,8 @@ boost::optional<std::vector<NullSpaceIPC::EffectCommand>> DriverMessenger::ReadH
 {
 	std::vector<NullSpaceIPC::EffectCommand> commands;
 	std::size_t numMsgs = m_hapticsData.GetNumMessageAvailable();
-	for (std::size_t i = 0; i < numMsgs; i++) {
+	std::size_t toRead = std::min<std::size_t>(numMsgs, 100);
+	for (std::size_t i = 0; i < toRead; i++) {
 		if (auto data = m_hapticsData.Pop()) {
 			NullSpaceIPC::EffectCommand command;
 			if (command.ParseFromArray(data->data(), data->size())) {
