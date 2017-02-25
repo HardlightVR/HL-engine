@@ -8,7 +8,7 @@ Driver::Driver() :
 	_io(new IoService()),
 	_running(false),
 	m_hapticsPollTimer(_io->GetIOService()),
-	m_hapticsPollInterval(1),
+	m_hapticsPollInterval(5),
 	_hardware(_io),
 	_messenger(_io->GetIOService()),
 	m_dispatcher()

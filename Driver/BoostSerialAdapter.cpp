@@ -155,7 +155,7 @@ void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 			port->close();
 		}
 		catch (const boost::system::system_error& ec) {
-
+			std::cout << "Failed to close this port " << '\n';
 		}
 	}
 
@@ -167,7 +167,7 @@ void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 	try {
 		port->open(portName);
 		if (!port->is_open()) {
-			_io.dispatch(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+			_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
 		}
 	}
 	catch (boost::system::system_error& ec) {
@@ -179,33 +179,20 @@ void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 
 	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
 	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code, const std::size_t bytes_transferred) {});
-	//Don't want to deal with more async handlers here, so use a std::future to wait for a couple hundred millis
-	//(suit takes about 30ms first ping)
 
-	port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE),[this,portNames] (const boost::system::error_code ec, const std::size_t bytes_transferred) {
-		if (ec) {
-			std::cout << "I was cancelled, moving on to the next\n";
-			_io.dispatch(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
-
-		}
-		else {
-			//connected
-			std::cout << "recd back " << bytes_transferred << " bytes\n";
-			_cancelIoTimer.cancel();
-			_io.post(boost::bind(&BoostSerialAdapter::beginRead, this));
-		}
-	});
-	
 	_cancelIoTimer.expires_from_now(_initialConnectTimeout);
+
 	_cancelIoTimer.async_wait([this](const boost::system::error_code& ec) {
 		if (ec) {
-			//we good
+			std::cout << "From cancel timer: " << ec.message() << '\n';
 		}
 		else {
 			if (port && port->is_open()) {
 				try {
-					port->close();
-					std::cout << "Failed to connect to this port within 50 ms, closed it\n";
+						port->close();
+						std::cout << "Failed to connect to this port within 50 ms, closed it\n";
+					
+					
 
 				}
 				catch (const boost::system::system_error& ec) {
@@ -217,10 +204,33 @@ void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 				std::cout << "Failed to connect to this port within 50 ms\n";
 
 			}
-			
+
 		}
 	});
+	port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE),[this,portNames] 
+	(const boost::system::error_code ec, const std::size_t bytes_transferred) {
+		if (ec) {
 
+			int num_canceled = _cancelIoTimer.cancel();
+			assert(num_canceled == 0);
+			std::cout << "I was canceled, moving on to the next\n";
+			_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+
+
+		}
+		else {
+			//connected
+
+			int num_canceled = _cancelIoTimer.cancel();
+			assert(bytes_transferred == 16);
+			//assert(num_canceled==1);
+			assert(port && port->is_open());
+			std::cout << "recd back " << bytes_transferred << " bytes\n";
+			_io.post(boost::bind(&BoostSerialAdapter::beginRead, this));
+		}
+	});
+	
+	
 }
 
 
