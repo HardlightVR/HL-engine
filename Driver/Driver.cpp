@@ -9,7 +9,7 @@ Driver::Driver() :
 	m_running(false),
 	m_hapticsPollTimer(_io->GetIOService()),
 	m_hapticsPollInterval(5),
-	_hardware(_io),
+	m_hardware(_io),
 	m_messenger(_io->GetIOService()),
 	m_dispatcher(),
 	m_statusPushTimer(_io->GetIOService()),
@@ -53,7 +53,7 @@ void Driver::handleHaptics(const boost::system::error_code& ec)
 	if (!ec) {
 		if (auto commands = m_messenger.ReadHaptics()) {
 			for (const auto& command : *commands) {
-				_hardware.ReceiveExecutionCommand(command);
+				m_hardware.ReceiveExecutionCommand(command);
 			}
 		}
 		scheduleHapticsPoll();
@@ -65,7 +65,7 @@ void Driver::handleHaptics(const boost::system::error_code& ec)
 void Driver::handleStatus(const boost::system::error_code &ec)
 {
 	if (!ec) {
-		m_messenger.WriteSuits(_hardware.PollDevices());
+		m_messenger.WriteSuits(m_hardware.PollDevices());
 		scheduleStatusPush();
 	}
 	

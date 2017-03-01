@@ -28,7 +28,7 @@ private:
 	boost::posix_time::milliseconds m_statusPushInterval;
 
 	DriverMessenger m_messenger;
-	HardwareInterface _hardware;
+	HardwareInterface m_hardware;
 	Encoder _encoder;
 
 	PacketDispatcher m_dispatcher;
