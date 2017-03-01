@@ -38,6 +38,7 @@ namespace NullSpace {
 		};
 
 		struct SuitsConnectionInfo {
+			std::time_t timestamp;
 			bool SuitsFound[4] = { false };
 			SuitInfo Suits[4];
 			

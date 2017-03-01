@@ -30,6 +30,7 @@ HardwareInterface::~HardwareInterface()
 SuitsConnectionInfo HardwareInterface::PollDevices()
 {
 	SuitsConnectionInfo info = {};
+	info.timestamp = std::time(nullptr);
 	info.SuitsFound[0] = true;
 	info.Suits[0].Id = 1;
 	info.Suits[0].Status = _adapter->IsConnected() ? 
