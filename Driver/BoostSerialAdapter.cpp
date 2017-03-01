@@ -94,6 +94,7 @@ void BoostSerialAdapter::reconnectSuit() {
 }
 void BoostSerialAdapter::beginRead()
 {
+	_isResetting = false;
 	_monitor.BeginMonitoring();
 	doSuitRead();
 
@@ -222,7 +223,7 @@ void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 			//connected
 
 			int num_canceled = _cancelIoTimer.cancel();
-			assert(bytes_transferred == 16);
+		//	assert(bytes_transferred == 16);
 			//assert(num_canceled==1);
 			assert(port && port->is_open());
 			std::cout << "recd back " << bytes_transferred << " bytes\n";

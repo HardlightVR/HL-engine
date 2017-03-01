@@ -6,12 +6,14 @@
 #include "Encoder.h"
 Driver::Driver() :
 	_io(new IoService()),
-	_running(false),
+	m_running(false),
 	m_hapticsPollTimer(_io->GetIOService()),
 	m_hapticsPollInterval(5),
 	_hardware(_io),
-	_messenger(_io->GetIOService()),
-	m_dispatcher()
+	m_messenger(_io->GetIOService()),
+	m_dispatcher(),
+	m_statusPushTimer(_io->GetIOService()),
+	m_statusPushInterval(250)
 
 {
 }
@@ -25,9 +27,9 @@ Driver::~Driver()
 
 bool Driver::StartThread()
 {
-	_running = true;
+	m_running = true;
 	scheduleHapticsPoll();
-
+	scheduleStatusPush();
 	
 
 	return true;
@@ -35,11 +37,11 @@ bool Driver::StartThread()
 
 bool Driver::Shutdown()
 {
-	_running.store(false);
+	m_running.store(false);
 	m_hapticsPollTimer.cancel();
-//	_messenger.Disconnect();
+	m_statusPushTimer.cancel();
 	
-	_messenger.Disconnect();
+	m_messenger.Disconnect();
 	
 	_io->Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -49,28 +51,24 @@ bool Driver::Shutdown()
 void Driver::handleHaptics(const boost::system::error_code& ec)
 {
 	if (!ec) {
-		if (auto commands = _messenger.ReadHaptics()) {
-		//	std::cout << "Got command!" << command->command() << '\n';
+		if (auto commands = m_messenger.ReadHaptics()) {
 			for (const auto& command : *commands) {
 				_hardware.ReceiveExecutionCommand(command);
 			}
 		}
 		scheduleHapticsPoll();
 	}
-	//Encoder encoder;
-
-	//encoder.AquireEncodingLock();
-//	auto offset = encoder.Encode(c);
-	//encoder._finalize(offset, [&messenger, &encoder, this](uint8_t* data, int size) {
-	//	messenger.Send(data, size);
-		//encoder.ReleaseEncodingLock();
-
-	//	_pollTimer.expires_from_now(_pollInterval);
-	//	_pollTimer.async_wait(boost::bind(&Driver::_UpdateLoop, this));
 
 
-	//});
+}
 
+void Driver::handleStatus(const boost::system::error_code &ec)
+{
+	if (!ec) {
+		m_messenger.WriteSuits(_hardware.PollDevices());
+		scheduleStatusPush();
+	}
+	
 }
 
 void Driver::scheduleHapticsPoll()
@@ -79,4 +77,9 @@ void Driver::scheduleHapticsPoll()
 	m_hapticsPollTimer.async_wait(boost::bind(&Driver::handleHaptics, this, boost::asio::placeholders::error));
 }
 
+void Driver::scheduleStatusPush()
+{
+	m_statusPushTimer.expires_from_now(m_statusPushInterval);
+	m_statusPushTimer.async_wait(boost::bind(&Driver::handleStatus, this, boost::asio::placeholders::error));
+}
 

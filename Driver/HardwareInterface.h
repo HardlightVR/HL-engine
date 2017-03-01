@@ -25,6 +25,7 @@ public:
 		}
 	}
 
+	SuitsConnectionInfo PollDevices();
 private:
 	std::unique_ptr<ICommunicationAdapter> _adapter;
 	std::unique_ptr<Synchronizer> _synchronizer;
