@@ -116,8 +116,10 @@ function Main() {
     $release_groups = @{
         "Service" = "installer", "engine";
         "Plugin" = @("plugin");
+        "AssetTool" = @("asset_tool");
+        "DiagnosticTool" = @("diagnostic_tool");
         "Unity_SDK" = "csharp_wrapper", "unity_sdk";
-        "Chimera" = "unity_sdk", "engine", "installer", "csharp_wrapper", "plugin";
+        "Chimera" = "unity_sdk", "engine", "installer", "csharp_wrapper", "plugin", "asset_tool";
     }
 
     $repo_directories = @{
@@ -127,6 +129,8 @@ function Main() {
         "csharp_wrapper" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSLoaderWrapper";
         "plugin" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSLoader";
         "public_chimera" = "$Env:USERPROFILE\Documents\NullSpace-Chimera-SDK";
+        "asset_tool" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\HapticAssetTools";
+        "diagnostic_tool" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\DiagnosticsTool";
 
     }
 
@@ -135,6 +139,8 @@ function Main() {
         "Plugin" = "Plugin $tag";
         "Unity_SDK" = "Unity SDK $tag";
         "Chimera" = "Chimera SDK $tag";
+        "AssetTool" = "Haptic Asset Tool $tag";
+        "DiagnosticTool" = "NullSpace Diagnostics $tag";
     }
 
     if ($product) {
@@ -165,6 +171,7 @@ function Main() {
         $latest_service_release = FormatTag (GetLatestRelease "Service" $release_groups $repo_directories)
         $latest_plugin_release = FormatTag (GetLatestRelease "Plugin" $release_groups $repo_directories)
         $latest_unitysdk_release = FormatTag (GetLatestRelease "Unity_SDK" $release_groups $repo_directories)
+        $latest_assettool_release = FormatTag (GetLatestRelease "DiagnosticTool" $release_groups $repo_directories)
 
         Write-Host "Creating version string"
         Write-Host "Chimera SDK $tag"
@@ -172,12 +179,16 @@ function Main() {
         Write-Host "Service = $latest_service_release"
         Write-Host "Plugin = $latest_plugin_release"
         Write-Host "Unity SDK = $latest_unitysdk_release"
+        Write-Host "Asset Tool = $latest_assettool_release"
 
         $output_str = "Chimera SDK $tag`n"
         $output_str += "------------------------`n"
         $output_str += "Service = $latest_service_release`n"
         $output_str += "Plugin = $latest_plugin_release`n"
-        $output_str += "Unity SDK = $latest_unitysdk_release`n`n"
+        $output_str += "Unity SDK = $latest_unitysdk_release`n"
+        $output_str += "Asset Tool = $latest_assettool_release`n"
+        $output_str += "`n"
+
         # BumpVersion ($repo_directories["installer"] + "\versions.txt")
         AssembleChimera $latest_unitysdk_release $repo_directories["unity_sdk"] ($repo_directories["installer"] + '/' + "NSVRServiceSetup") $repo_directories["public_chimera"]
         Write-Host "`nDone."
