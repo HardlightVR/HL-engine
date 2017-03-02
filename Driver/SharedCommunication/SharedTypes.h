@@ -20,12 +20,17 @@ namespace NullSpace {
 		
 		struct Quaternion {
 			float x;
-			Quaternion() : x(0) {}
+			float y;
+			float z;
+			float w;
+			Quaternion() : x(0), y(0), z(0), w(0) {}
+			Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 		};
 
 		struct TrackingUpdate {
-			Quaternion a;
-			Quaternion b;
+			Quaternion chest;
+			Quaternion left_upper_arm;
+			Quaternion right_upper_arm;
 		};
 
 		enum SuitStatus { Unknown, Connected, Disconnected };
