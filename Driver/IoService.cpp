@@ -48,34 +48,7 @@ void IoService::start() {
 		}
 
 	});
-	/*
-	_adapterResetLoop = std::thread([&]() {
-		
-		while (_running) {
-			boost::unique_lock<boost::mutex> lock(_needToCheckMut);
-			while (!_dataReady && _running) {
-				_needToCheckAdapter.wait(lock);
-				
-			}
-			
-			if (_running) {
-				_dataReady = false;
-				_io.stop();
-				_readyToResumeIO.wait();
-				_resetIOCallback();
-			}
-			else {
-				_io.stop();
-				break;
-			}
-		
-		}
-
 	
-	});
-	*/
-//	_work = std::make_unique<boost::asio::io_service::work>(_io);
-
 	_ioLoop = std::thread([&]() {
 		//Keep running as long as we haven't signaled to quit, but this is only checked after .run returns.
 		//.run will block until it is stopped
@@ -98,23 +71,7 @@ void IoService::start() {
 
 		}
 	});
-	/*
-	_ioLoop = std::thread([&]() {
-		while (_running) {
-			_io.run();
-			_io.reset();
-
-			if (!_running) {
-				break;
-			}
-			else {
-				//wait for the reset checker thread here 
-				_readyToResumeIO.wait();
-			}
-		
-		} 
-	});
-	*/
+	
 	
 }
 void IoService::Shutdown()

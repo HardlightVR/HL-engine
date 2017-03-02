@@ -139,15 +139,14 @@ void BoostSerialAdapter::testAllAsync() {
 		portNames.push_back("COM" + std::to_string(ports[i]));
 	}
 	
-	
-	_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+	_io.post([this, portNames]() {testOne(portNames); });
 	
 
 }
 void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 	if (portNames.empty()) {
 		//have tested everything, all we can do is go back and try everything again
-		_io.post(boost::bind(&BoostSerialAdapter::testAllAsync, this));
+		_io.post([this]() {testAllAsync(); });
 		return;
 	}
 

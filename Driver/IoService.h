@@ -20,7 +20,6 @@ private:
 
 	void start();
 	bool _running;
-	bool _dataReady;
 
 	std::thread _ioLoop;
 	boost::asio::io_service _io;
