@@ -153,6 +153,12 @@
 		"Transition_Hum_100"
 	]
 
+},
+{
+	"id" : "doom_buzz",
+	"levels" : [
+		"Long_Buzz_for_Program_Stop_100"
+	]
 }
 ]
 
