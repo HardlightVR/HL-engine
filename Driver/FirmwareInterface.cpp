@@ -73,6 +73,27 @@ void FirmwareInterface::writeBuffer() {
 	}
 
 }
+
+void FirmwareInterface::EnableTracking()
+{
+	if (_builder.UseInstruction("IMU_ENABLE").Verify()) {
+		chooseExecutionStrategy(_builder.Build());
+	}
+	else {
+		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+	}
+}
+
+void FirmwareInterface::DisableTracking()
+{
+	if (_builder.UseInstruction("IMU_DISABLE").Verify()) {
+		chooseExecutionStrategy(_builder.Build());
+	}
+	else {
+		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+	}
+}
+
 void FirmwareInterface::PlayEffect(Location location, std::string effectString, float strength) {
 	
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {

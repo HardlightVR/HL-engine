@@ -5,13 +5,13 @@
 #include "Locator.h"
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
 	_adapter(std::make_unique<BoostSerialAdapter>(ioService)),
-	_synchronizer(std::make_unique<Synchronizer>(_adapter->GetDataStream(), nullptr, ioService->GetIOService())),
+	_synchronizer(std::make_unique<Synchronizer>(_adapter->GetDataStream(), _dispatcher, ioService->GetIOService())),
 	_adapterResetCheckTimer(ioService->GetIOService()),
 	_adapterResetCheckInterval(boost::posix_time::milliseconds(50)),
 	_running(true),
 	_firmware(_adapter, ioService->GetIOService())
 {
-
+	
 
 	_adapter->Connect();
 	_synchronizer->BeginSync();
@@ -27,7 +27,7 @@ HardwareInterface::~HardwareInterface()
 	}
 }
 
-SuitsConnectionInfo HardwareInterface::PollDevices()
+SuitsConnectionInfo HardwareInterface::PollDevice()
 {
 	SuitsConnectionInfo info = {};
 	info.timestamp = std::time(nullptr);
@@ -38,5 +38,20 @@ SuitsConnectionInfo HardwareInterface::PollDevices()
 		NullSpace::SharedMemory::Disconnected;
 
 	return info;
+}
+
+void HardwareInterface::EnableTracking()
+{
+	_firmware.EnableTracking();
+}
+
+void HardwareInterface::DisableTracking()
+{
+	_firmware.DisableTracking();
+}
+
+void HardwareInterface::RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)> func)
+{
+	_dispatcher.AddConsumer(p, func);
 }
 
