@@ -8,6 +8,8 @@ _running{true},
 	m_trackingData("ns-tracking-data"),
 	m_suitConnectionInfo("ns-suit-data"),
 	m_loggingStream("ns-logging-data", 500, 512),
+	m_commandStream("ns-command-data", 512, 256),
+
 	m_sentinal("ns-sentinel"),
 
 	m_sentinalTimer(io),
@@ -54,25 +56,13 @@ void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
 
 boost::optional<std::vector<NullSpaceIPC::EffectCommand>> DriverMessenger::ReadHaptics()
 {
-	std::vector<NullSpaceIPC::EffectCommand> commands;
-	std::size_t numMsgs = m_hapticsData.GetNumMessageAvailable();
-	std::size_t toRead = std::min<std::size_t>(numMsgs, 100);
-	for (std::size_t i = 0; i < toRead; i++) {
-		if (auto data = m_hapticsData.Pop()) {
-			NullSpaceIPC::EffectCommand command;
-			if (command.ParseFromArray(data->data(), data->size())) {
-				commands.push_back(command);
-			}
-		}
-		else {
-			break;
-		}
-	}
-	
+	return readFromStream<NullSpaceIPC::EffectCommand, OwnedReadableSharedQueue>(m_hapticsData, 100);
+}
 
-	//implement with protobuf
+boost::optional<std::vector<NullSpaceIPC::DriverCommand>> DriverMessenger::ReadCommands()
+{
 
-	return commands;
+	return readFromStream<NullSpaceIPC::DriverCommand, OwnedReadableSharedQueue>(m_commandStream, 100);
 }
 
 

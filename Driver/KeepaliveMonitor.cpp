@@ -54,7 +54,7 @@ void KeepaliveMonitor::doKeepAlivePing()
 	if (_port && _port->is_open()) {
 		//only thing special about this packet is the packet type, which is set to ping
 		auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
-		Locator::Logger().Log("Keepalive", "Doing ping", LogLevel::Info);
+	//	Locator::Logger().Log("Keepalive", "Doing ping", LogLevel::Info);
 
 		_port->async_write_some(boost::asio::buffer(*pingData, 7), 
 			//pass ping data pointer by value to the lambda to ensure it 

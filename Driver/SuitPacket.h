@@ -1,5 +1,5 @@
 #pragma once
-#include "Synchronizer.h"
+#include "suit_packet.h"
 class SuitPacket
 {
 public:
@@ -13,10 +13,10 @@ public:
 		FifoOverflow = 0x34,
 		Undefined
 	};
-	static PacketType Type(const packet& p) {
-		return PacketType(p.raw[11]);
+	static SuitPacket::PacketType Type(const packet& p) {
+		return SuitPacket::PacketType(p.raw[2]);
 	}
-	PacketType Type() const;
+	SuitPacket::PacketType Type() const;
 	packet Packet() const;
 	SuitPacket() = delete;
 	~SuitPacket() = delete;

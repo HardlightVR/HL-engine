@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package NullSpaceIPC;
+
+
+message DriverCommand {
+	enum Command {
+		UNKNOWN = 0;
+		ENABLE_TRACKING = 1;
+		DISABLE_TRACKING = 2;
+	}
+	Command command = 1;
+}

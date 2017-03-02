@@ -4,7 +4,8 @@
 #include "HardwareInterface.h"
 #include "FirmwareInterface.h"
 #include "Encoder.h"
-#include "PacketDispatcher.h"
+#include "ScheduledEvent.h"
+#include "ImuConsumer.h"
 class IoService;
 
 class Driver {
@@ -14,26 +15,25 @@ public:
 	bool StartThread();
 	bool Shutdown();
 private:
-	std::shared_ptr<IoService> _io;
-	std::thread _clientThread;
 	std::atomic<bool> m_running;
-	std::thread _workThread;
-	std::thread _messengerThread;
-	void handleHaptics(const boost::system::error_code&);
-	void handleStatus(const boost::system::error_code&);
-	boost::asio::deadline_timer m_hapticsPollTimer;
-	boost::posix_time::milliseconds m_hapticsPollInterval;
 
-	boost::asio::deadline_timer m_statusPushTimer;
-	boost::posix_time::milliseconds m_statusPushInterval;
-
+	std::shared_ptr<IoService> _io;
 	DriverMessenger m_messenger;
 	HardwareInterface m_hardware;
 	Encoder _encoder;
 
-	PacketDispatcher m_dispatcher;
+	
+	ImuConsumer m_imus;
 
-	void scheduleHapticsPoll();
-	void scheduleStatusPush();
+	ScheduledEvent m_hapticsPull;
+	ScheduledEvent m_statusPush;
+	ScheduledEvent m_commandPull;
+
+	void handleHaptics();
+	void handleStatus();
+	void handleCommands();
+
+	
+
 	
 };

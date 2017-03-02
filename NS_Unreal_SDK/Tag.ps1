@@ -81,7 +81,7 @@ function BumpVersion($file_path, $contents)
     }
  }
 
- function AssembleChimera([string]$service_version, [string]$unity_package_path, [string]$installer_path, [string]$public_chimera_path) {
+ function AssembleChimera([string]$service_version, [string]$unity_package_path, [string]$installer_path, [string]$public_chimera_path, [string] $asset_tool_path) {
     $confirm = Read-Host "Pull just in case someone updated the wiki. [enter]"
     $confirm = Read-Host "Make sure that the version file is updated for the installer. [enter]"
     $confirm = Read-Host "Make sure that the version info is updated within the release notes dialog in the GUI. [enter]"
@@ -190,7 +190,7 @@ function Main() {
         $output_str += "`n"
 
         # BumpVersion ($repo_directories["installer"] + "\versions.txt")
-        AssembleChimera $latest_unitysdk_release $repo_directories["unity_sdk"] ($repo_directories["installer"] + '/' + "NSVRServiceSetup") $repo_directories["public_chimera"]
+        AssembleChimera $latest_unitysdk_release $repo_directories["unity_sdk"] ($repo_directories["installer"] + '/' + "NSVRServiceSetup") $repo_directories["public_chimera"] $repo_directories["asset_tool"] + '/' + "/Release"
         Write-Host "`nDone."
     }
 

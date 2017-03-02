@@ -163,6 +163,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NS_Unreal_SDK\protobuff_defs\DriverCommand.pb.h" />
     <ClInclude Include="..\NS_Unreal_SDK\protobuff_defs\EffectCommand.pb.h" />
     <ClInclude Include="Atom.h" />
     <ClInclude Include="BoostSerialAdapter.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="HardwareInterface.h" />
     <ClInclude Include="HexUtils.h" />
     <ClInclude Include="ICommunicationAdapter.h" />
+    <ClInclude Include="ImuConsumer.h" />
     <ClInclude Include="Instruction.h" />
     <ClInclude Include="InstructionBuilder.h" />
     <ClInclude Include="InstructionSet.h" />
@@ -188,14 +190,22 @@
     <ClInclude Include="NullLogger.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
+    <ClInclude Include="ScheduledEvent.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuitPacket.h" />
+    <ClInclude Include="suit_packet.h" />
     <ClInclude Include="Synchronizer.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="zmq.hpp" />
     <ClInclude Include="zmq_addon.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\NS_Unreal_SDK\protobuff_defs\DriverCommand.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\NS_Unreal_SDK\protobuff_defs\EffectCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -214,6 +224,7 @@
     <ClCompile Include="FirmwareInterface.cpp" />
     <ClCompile Include="HardwareInterface.cpp" />
     <ClCompile Include="HexUtils.cpp" />
+    <ClCompile Include="ImuConsumer.cpp" />
     <ClCompile Include="Instruction.cpp" />
     <ClCompile Include="InstructionBuilder.cpp" />
     <ClCompile Include="InstructionSet.cpp" />
@@ -231,6 +242,7 @@
     <ClCompile Include="NullLogger.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketDispatcher.cpp" />
+    <ClCompile Include="ScheduledEvent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

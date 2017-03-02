@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "Synchronizer.h"
 #include <iostream>
-#include "PacketDispatcher.h"
 
 bool Synchronizer::Synchronized()
 {
@@ -65,7 +64,7 @@ std::size_t Synchronizer::PossiblePacketsAvailable()
 
 
 
-Synchronizer::Synchronizer(std::shared_ptr<Buffer> dataStream, std::shared_ptr<PacketDispatcher> dispatcher, boost::asio::io_service& io) :
+Synchronizer::Synchronizer(std::shared_ptr<Buffer> dataStream, PacketDispatcher& dispatcher, boost::asio::io_service& io) :
 	_dispatcher(dispatcher),
 	_dataStream(dataStream),
 	packetDelimiter('$'),
@@ -125,8 +124,8 @@ void Synchronizer::monitorSync()
 {
 	packet possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
-	//todo:Reimplement
-	//	this->_dispatcher->Dispatch(possiblePacket);
+		_dispatcher.Dispatch(possiblePacket);
+
 	}
 	else {
 		this->badSyncCounter = 1;
