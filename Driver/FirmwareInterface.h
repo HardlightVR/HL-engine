@@ -32,5 +32,6 @@ private:
 public:
 	void EnableTracking();
 	void DisableTracking();
+	void RequestSuitVersion();
 };
 

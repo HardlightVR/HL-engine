@@ -42,12 +42,19 @@ SuitsConnectionInfo HardwareInterface::PollDevice()
 
 void HardwareInterface::EnableTracking()
 {
+	_firmware.RequestSuitVersion();
 	_firmware.EnableTracking();
+	
 }
 
 void HardwareInterface::DisableTracking()
 {
 	_firmware.DisableTracking();
+}
+
+void HardwareInterface::RequestSuitVersion()
+{
+	_firmware.RequestSuitVersion();
 }
 
 void HardwareInterface::RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)> func)

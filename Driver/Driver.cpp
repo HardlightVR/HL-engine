@@ -6,6 +6,7 @@
 #include "Encoder.h"
 #include <functional>
 #include "DriverCommand.pb.h"
+#include "SuitVersionInfo.h"
 Driver::Driver() :
 	_io(new IoService()),
 	m_running(false),
@@ -20,6 +21,21 @@ Driver::Driver() :
 
 	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::ImuData, [this](auto packet) {
 		m_imus.ConsumePacket(packet); 
+	});
+
+	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
+		SuitVersionInfo version(packet);
+		if (version.Major == 2 && version.Minor == 5) {
+			m_imus.AssignMapping(1, Imu::Left_Upper_Arm);
+			m_imus.AssignMapping(3, Imu::Right_Upper_Arm);
+			m_imus.AssignMapping(0, Imu::Chest);
+		}
+		else if (version.Major == 2 && version.Minor == 3) {
+			m_imus.AssignMapping(0, Imu::Chest);
+		}
+		else if (version.Major == 2 && version.Minor == 4) {
+			m_imus.AssignMapping(3, Imu::Chest);
+		}
 	});
 }
 

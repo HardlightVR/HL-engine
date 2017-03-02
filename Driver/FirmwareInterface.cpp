@@ -94,6 +94,16 @@ void FirmwareInterface::DisableTracking()
 	}
 }
 
+void FirmwareInterface::RequestSuitVersion()
+{
+	if (_builder.UseInstruction("GET_VERSION").Verify()) {
+		chooseExecutionStrategy(_builder.Build());
+	}
+	else {
+		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+	}
+}
+
 void FirmwareInterface::PlayEffect(Location location, std::string effectString, float strength) {
 	
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {

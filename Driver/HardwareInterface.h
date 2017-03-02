@@ -31,7 +31,7 @@ public:
 
 	void EnableTracking();
 	void DisableTracking();
-
+	void RequestSuitVersion();
 	void RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)>);
 
 private:
