@@ -4,7 +4,7 @@
 #include "HardwareInterface.h"
 #include "FirmwareInterface.h"
 #include "Encoder.h"
-#include "ScheduledEvent.h"
+#include "SharedCommunication/ScheduledEvent.h"
 #include "ImuConsumer.h"
 class IoService;
 
@@ -15,7 +15,6 @@ public:
 	bool StartThread();
 	bool Shutdown();
 private:
-	std::atomic<bool> m_running;
 
 	std::shared_ptr<IoService> _io;
 	DriverMessenger m_messenger;
@@ -34,7 +33,9 @@ private:
 	void handleStatus();
 	void handleCommands();
 
+	NullSpace::SharedMemory::TrackingUpdate m_cachedTracking;
 	
 
 	
+	void handleTracking();
 };

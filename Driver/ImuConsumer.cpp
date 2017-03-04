@@ -33,7 +33,7 @@ void ImuConsumer::ConsumePacket(packet packet)
 	Imu id = _mapping[packet.raw[11]];
 	if (id != Imu::Unknown) {
 		_quaternions[id] = parseQuaternion(packet.raw);
-		std::cout << _quaternions[id].w << ", " << _quaternions[id].x << ", " << _quaternions[id].y << '\n';
+		//std::cout << _quaternions[id].w << ", " << _quaternions[id].x << ", " << _quaternions[id].y << '\n';
 	}
 
 }

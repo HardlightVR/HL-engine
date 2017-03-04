@@ -15,7 +15,6 @@ PacketDispatcher::~PacketDispatcher()
 void PacketDispatcher::Dispatch(packet packet)
 {
 	SuitPacket::PacketType packetType = SuitPacket::Type(packet);
-	std::cout << "Received a packet of type " << int(packetType) << '\n';
 	if (_consumers.find(packetType) != _consumers.end())
 	{
 		for (auto monitor : _consumers.at(packetType))

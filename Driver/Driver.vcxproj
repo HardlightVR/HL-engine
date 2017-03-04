@@ -190,7 +190,7 @@
     <ClInclude Include="NullLogger.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
-    <ClInclude Include="ScheduledEvent.h" />
+    <ClInclude Include="SharedCommunication\ScheduledEvent.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="SuitPacket.h" />
     <ClInclude Include="SuitVersionInfo.h" />
@@ -243,7 +243,7 @@
     <ClCompile Include="NullLogger.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketDispatcher.cpp" />
-    <ClCompile Include="ScheduledEvent.cpp" />
+    <ClCompile Include="SharedCommunication\ScheduledEvent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

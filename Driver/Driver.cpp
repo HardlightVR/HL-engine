@@ -9,14 +9,14 @@
 #include "SuitVersionInfo.h"
 Driver::Driver() :
 	_io(new IoService()),
-	m_running(false),
 	m_hardware(_io),
 	m_messenger(_io->GetIOService()),
 	m_statusPush(_io->GetIOService(), boost::posix_time::millisec(250)),
 	m_hapticsPull(_io->GetIOService(), boost::posix_time::millisec(5)),
 	m_commandPull(_io->GetIOService(), boost::posix_time::millisec(50)),
 	m_trackingPush(_io->GetIOService(), boost::posix_time::millisec(16)),
-	m_imus()
+	m_imus(),
+	m_cachedTracking({})
 
 {
 
@@ -46,27 +46,28 @@ Driver::~Driver()
 
 bool Driver::StartThread()
 {
-	m_running = true;
 
-	m_hapticsPull.SetEvent(std::bind(&Driver::handleHaptics, this));
+	m_hapticsPull.SetEvent([this]() { handleHaptics(); });
 	m_hapticsPull.Start();
 
-	m_statusPush.SetEvent(std::bind(&Driver::handleStatus, this));
+	m_statusPush.SetEvent([this]() { handleStatus(); });
 	m_statusPush.Start();
 
-	m_commandPull.SetEvent(std::bind(&Driver::handleCommands, this));
+	m_commandPull.SetEvent([this]() {handleCommands(); });
 	m_commandPull.Start();
+
+	m_trackingPush.SetEvent([this]() {handleTracking(); });
+	m_trackingPush.Start();
 	return true;
 }
 
 bool Driver::Shutdown()
 {
-	m_running.store(false);
 
 	m_statusPush.Stop();
 	m_hapticsPull.Stop();
 	m_commandPull.Stop();
-
+	m_trackingPush.Stop();
 	m_messenger.Disconnect();
 	
 	_io->Shutdown();
@@ -106,4 +107,24 @@ void Driver::handleCommands()
 	}
 }
 
+void Driver::handleTracking()
+{
+	NullSpace::SharedMemory::TrackingUpdate update = m_cachedTracking;
+
+	if (auto quat = m_imus.GetOrientation(Imu::Chest)) {
+		update.chest = *quat;
+	}
+
+	if (auto quat = m_imus.GetOrientation(Imu::Left_Upper_Arm)) {
+		update.left_upper_arm = *quat;
+	}
+
+	if (auto quat = m_imus.GetOrientation(Imu::Right_Upper_Arm)) {
+		update.right_upper_arm = *quat;
+	}
+	
+	m_cachedTracking = update;
+
+	m_messenger.WriteTracking(update);
+}
 
