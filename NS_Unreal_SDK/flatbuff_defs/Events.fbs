@@ -5,7 +5,7 @@ table BasicHapticEvent {
 	strength:float;
 	duration:float;
 	area:uint;
-	effect:string;
+	effect:uint;
 }
 
 union SuitEventType {BasicHapticEvent}
@@ -19,3 +19,4 @@ table SuitEventList {
 }
 
 root_type SuitEventList;
+

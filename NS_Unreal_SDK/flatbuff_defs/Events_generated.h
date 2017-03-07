@@ -50,15 +50,14 @@ struct BasicHapticEvent FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   float strength() const { return GetField<float>(VT_STRENGTH, 0.0f); }
   float duration() const { return GetField<float>(VT_DURATION, 0.0f); }
   uint32_t area() const { return GetField<uint32_t>(VT_AREA, 0); }
-  const flatbuffers::String *effect() const { return GetPointer<const flatbuffers::String *>(VT_EFFECT); }
+  uint32_t effect() const { return GetField<uint32_t>(VT_EFFECT, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<float>(verifier, VT_TIME) &&
            VerifyField<float>(verifier, VT_STRENGTH) &&
            VerifyField<float>(verifier, VT_DURATION) &&
            VerifyField<uint32_t>(verifier, VT_AREA) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_EFFECT) &&
-           verifier.Verify(effect()) &&
+           VerifyField<uint32_t>(verifier, VT_EFFECT) &&
            verifier.EndTable();
   }
 };
@@ -70,7 +69,7 @@ struct BasicHapticEventBuilder {
   void add_strength(float strength) { fbb_.AddElement<float>(BasicHapticEvent::VT_STRENGTH, strength, 0.0f); }
   void add_duration(float duration) { fbb_.AddElement<float>(BasicHapticEvent::VT_DURATION, duration, 0.0f); }
   void add_area(uint32_t area) { fbb_.AddElement<uint32_t>(BasicHapticEvent::VT_AREA, area, 0); }
-  void add_effect(flatbuffers::Offset<flatbuffers::String> effect) { fbb_.AddOffset(BasicHapticEvent::VT_EFFECT, effect); }
+  void add_effect(uint32_t effect) { fbb_.AddElement<uint32_t>(BasicHapticEvent::VT_EFFECT, effect, 0); }
   BasicHapticEventBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   BasicHapticEventBuilder &operator=(const BasicHapticEventBuilder &);
   flatbuffers::Offset<BasicHapticEvent> Finish() {
@@ -84,7 +83,7 @@ inline flatbuffers::Offset<BasicHapticEvent> CreateBasicHapticEvent(flatbuffers:
     float strength = 0.0f,
     float duration = 0.0f,
     uint32_t area = 0,
-    flatbuffers::Offset<flatbuffers::String> effect = 0) {
+    uint32_t effect = 0) {
   BasicHapticEventBuilder builder_(_fbb);
   builder_.add_effect(effect);
   builder_.add_area(area);
@@ -92,15 +91,6 @@ inline flatbuffers::Offset<BasicHapticEvent> CreateBasicHapticEvent(flatbuffers:
   builder_.add_strength(strength);
   builder_.add_time(time);
   return builder_.Finish();
-}
-
-inline flatbuffers::Offset<BasicHapticEvent> CreateBasicHapticEventDirect(flatbuffers::FlatBufferBuilder &_fbb,
-    float time = 0.0f,
-    float strength = 0.0f,
-    float duration = 0.0f,
-    uint32_t area = 0,
-    const char *effect = nullptr) {
-  return CreateBasicHapticEvent(_fbb, time, strength, duration, area, effect ? _fbb.CreateString(effect) : 0);
 }
 
 struct SuitEvent FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
