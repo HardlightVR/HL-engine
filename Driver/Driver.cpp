@@ -14,7 +14,7 @@ Driver::Driver() :
 	m_statusPush(_io->GetIOService(), boost::posix_time::millisec(250)),
 	m_hapticsPull(_io->GetIOService(), boost::posix_time::millisec(5)),
 	m_commandPull(_io->GetIOService(), boost::posix_time::millisec(50)),
-	m_trackingPush(_io->GetIOService(), boost::posix_time::millisec(16)),
+	m_trackingPush(_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_imus(),
 	m_cachedTracking({})
 
