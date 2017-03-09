@@ -54,6 +54,11 @@ void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
 	m_suitConnectionInfo.Write(s);
 }
 
+void DriverMessenger::WriteLog(std::string s)
+{
+	m_loggingStream.Push(s.data(), s.length());
+}
+
 boost::optional<std::vector<NullSpaceIPC::EffectCommand>> DriverMessenger::ReadHaptics()
 {
 	return readFromStream<NullSpaceIPC::EffectCommand, OwnedReadableSharedQueue>(m_hapticsData, 100);

@@ -88,7 +88,8 @@ void BoostSerialAdapter::handleIoResetCallback() {
 void BoostSerialAdapter::reconnectSuit() {
 	Locator::Logger().Log("Adapter", "Reconnecting..");
 	_isResetting = true;
-	_ioService->RestartIOService(std::bind(&BoostSerialAdapter::handleIoResetCallback, this));
+	//_ioService->RestartIOService(std::bind(&BoostSerialAdapter::handleIoResetCallback, this));
+	_io.post([this]() {testAllAsync(); });
 	
 	
 }
@@ -127,22 +128,41 @@ BoostSerialAdapter::~BoostSerialAdapter()
 	Disconnect();
 }
 
+/*
+This method kicks off the connection to the serial ports. It's async, but also has to
+deal with resetting the IO service because of a bug in windows serial ports/boost implementation.
+This makes it necessarily complicated. 
 
+It attempts to check all available ports, sending a ping to each. If it receives the magic response,
+it will use that port. 
+*/
 void BoostSerialAdapter::testAllAsync() {
+
+	//First, we retrieve all the available ports. This is windows-only. 
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
 	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
 		Locator::Logger().Log("Adapter", "No ports available on system. Check Device Manager for available devices.", LogLevel::Warning);
 	}
+
+	//Then, we append "COM" to each of them.
 	std::vector<std::string> portNames;
 	for (std::size_t i = 0; i < ports.size(); ++i) {
 		portNames.push_back("COM" + std::to_string(ports[i]));
+		Locator::Logger().Log("Adapter", portNames.back());
 	}
 	
-	_io.post([this, portNames]() {testOne(portNames); });
+	//Finally, we post the testOne method to the IO service. This method will test each port
+	//sequentially until it finds the correct port or runs out of ports, in which case it will
+	//start over again after resetting the IO service (which happens from the main thread instead of 
+	//an event handler)
+	_io.post([this, portNames]() { testOne(portNames); });
 	
 
 }
+
+
+
 void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 	if (portNames.empty()) {
 		//have tested everything, all we can do is go back and try everything again
@@ -165,13 +185,18 @@ void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
 	portNames.pop_back();
 
 	try {
+		Locator::Logger().Log("Adapter", "About to try and open port, let's see if it throws..");
 		port->open(portName);
 		if (!port->is_open()) {
+			Locator::Logger().Log("Adapter", "It didn't throw but it's not open. Calling testone again");
 			_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
 		}
+		Locator::Logger().Log("Adapter", "It opened successfully");
 	}
 	catch (boost::system::system_error& ec) {
-		this->reconnectSuit();
+		Locator::Logger().Log("Adapter", std::string("Yup it threw this error: ") + ec.what());
+		_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+
 		return;
 
 	}

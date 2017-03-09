@@ -187,6 +187,7 @@
     <ClInclude Include="Locator.h" />
     <ClInclude Include="ILogger.h" />
     <ClInclude Include="LoggingUtils.h" />
+    <ClInclude Include="MessengerLogger.h" />
     <ClInclude Include="NullLogger.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketDispatcher.h" />
@@ -240,6 +241,7 @@
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="LoggingUtils.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MessengerLogger.cpp" />
     <ClCompile Include="NullLogger.cpp" />
     <ClCompile Include="Packet.cpp" />
     <ClCompile Include="PacketDispatcher.cpp" />

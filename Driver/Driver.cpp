@@ -38,6 +38,7 @@ Driver::Driver() :
 			m_imus.AssignMapping(3, Imu::Chest);
 		}
 	});
+
 }
 
 Driver::~Driver()

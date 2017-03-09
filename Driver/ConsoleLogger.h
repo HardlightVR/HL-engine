@@ -3,6 +3,7 @@
 #include "LoggingUtils.h"
 #include <iostream>
 #include <iomanip>
+
 class ConsoleLogger : public ILogger
 {
 public:

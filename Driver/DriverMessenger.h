@@ -6,7 +6,6 @@
 #include "SharedCommunication\SharedTypes.h"
 #include "EffectCommand.pb.h"
 #include "DriverCommand.pb.h"
-
 using namespace boost::interprocess;
 using namespace NullSpace::SharedMemory;
 
@@ -18,6 +17,7 @@ public:
 	~DriverMessenger();
 	void WriteTracking(TrackingUpdate t);
 	void WriteSuits(SuitsConnectionInfo s);
+	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();
 	void Disconnect();
