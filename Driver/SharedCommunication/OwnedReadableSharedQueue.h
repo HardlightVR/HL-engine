@@ -14,8 +14,15 @@ public:
 	OwnedReadableSharedQueue(std::string name, std::size_t maxElements, std::size_t maxElementSizeBytes) :
 		m_maxElementSizeBytes(maxElementSizeBytes),
 		m_name(name),
-		m_queue(boost::interprocess::open_or_create, m_name.c_str(), maxElements, maxElementSizeBytes)
+
+		m_queue(boost::interprocess::open_or_create, m_name.c_str(), maxElements, maxElementSizeBytes,  [&]() {
+			boost::interprocess::permissions perm; 
+			perm.set_unrestricted(); 
+			return perm;
+		}())
 	{
+
+	
 	
 		auto size = m_queue.get_num_msg();
 		std::vector<char> tempBuffer;

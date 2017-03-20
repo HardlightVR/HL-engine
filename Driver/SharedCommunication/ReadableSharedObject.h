@@ -13,7 +13,10 @@ public:
 
 	ReadableSharedObject(std::string name){
 		using namespace boost::interprocess;
+		//permissions perms;
+	//	perms.set_unrestricted();
 		m_object = shared_memory_object(open_only, name.c_str(), read_write);
+	
 		m_region = mapped_region(m_object, read_write);
 		m_data = static_cast<shared_data<T>*>(m_region.get_address());
 	}
