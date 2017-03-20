@@ -129,6 +129,9 @@
     <ClInclude Include="MessengerLogger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NSDriverApi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -219,6 +222,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MessengerLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NSDriverApi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
