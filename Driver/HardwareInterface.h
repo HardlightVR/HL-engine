@@ -17,13 +17,13 @@ public:
 	//these all will eventually either be parameterized over each device, or take a device id
 	void ReceiveExecutionCommand(const NullSpaceIPC::EffectCommand& ec) {
 		if (ec.command() == NullSpaceIPC::EffectCommand_Command_HALT) {
-			_firmware.HaltEffect(Location(ec.area()));
+			m_firmware.HaltEffect(Location(ec.area()));
 		}
 		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_PLAY) {
-			_firmware.PlayEffect(Location(ec.area()), ec.effect(), ec.strength());
+			m_firmware.PlayEffect(Location(ec.area()), ec.effect(), ec.strength());
 		}
 		else if (ec.command()== NullSpaceIPC::EffectCommand_Command_PLAY_CONTINUOUS) {
-			_firmware.PlayEffectContinuous(Location(ec.area()), ec.effect(), ec.strength());
+			m_firmware.PlayEffectContinuous(Location(ec.area()), ec.effect(), ec.strength());
 		}
 	}
 
@@ -35,21 +35,21 @@ public:
 	void RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)>);
 
 private:
-	PacketDispatcher _dispatcher;
+	PacketDispatcher m_dispatcher;
 
-	std::unique_ptr<ICommunicationAdapter> _adapter;
-	std::unique_ptr<Synchronizer> _synchronizer;
+	std::unique_ptr<ICommunicationAdapter> m_adapter;
+	std::unique_ptr<Synchronizer> m_synchronizer;
 
-	boost::asio::deadline_timer _adapterResetCheckTimer;
-	boost::posix_time::milliseconds _adapterResetCheckInterval;
-	std::thread _adapterResetChecker;
+	boost::asio::deadline_timer m_adapterResetCheckTimer;
+	boost::posix_time::milliseconds m_adapterResetCheckInterval;
+	std::thread m_adapterResetChecker;
 
-	bool _running;
+	bool m_running;
 
 	boost::condition_variable _needToCheckAdapter;
 	boost::mutex _needToCheckMut;
 
-	FirmwareInterface _firmware;
+	FirmwareInterface m_firmware;
 
 };
 

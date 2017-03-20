@@ -4,26 +4,25 @@
 #include "IoService.h"
 #include "Locator.h"
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
-	_adapter(std::make_unique<BoostSerialAdapter>(ioService)),
-	_synchronizer(std::make_unique<Synchronizer>(_adapter->GetDataStream(), _dispatcher, ioService->GetIOService())),
-	_adapterResetCheckTimer(ioService->GetIOService()),
-	_adapterResetCheckInterval(boost::posix_time::milliseconds(50)),
-	_running(true),
-	_firmware(_adapter, ioService->GetIOService())
-{
 	
+	m_adapter(std::make_unique<BoostSerialAdapter>(ioService)),
+	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, ioService->GetIOService())),
+	m_adapterResetCheckTimer(ioService->GetIOService()),
+	m_adapterResetCheckInterval(boost::posix_time::milliseconds(50)),
+	m_running(true),
+	m_firmware(m_adapter, ioService->GetIOService())
 
-	_adapter->Connect();
-	_synchronizer->BeginSync();
-
+{
+	m_adapter->Connect();
+	m_synchronizer->BeginSync();
 }
 
 
 HardwareInterface::~HardwareInterface()
 {
-	_running = false;
-	if (_adapterResetChecker.joinable()) {
-		_adapterResetChecker.join();
+	m_running = false;
+	if (m_adapterResetChecker.joinable()) {
+		m_adapterResetChecker.join();
 	}
 }
 
@@ -33,7 +32,7 @@ SuitsConnectionInfo HardwareInterface::PollDevice()
 	info.timestamp = std::time(nullptr);
 	info.SuitsFound[0] = true;
 	info.Suits[0].Id = 1;
-	info.Suits[0].Status = _adapter->IsConnected() ? 
+	info.Suits[0].Status = m_adapter->IsConnected() ? 
 		NullSpace::SharedMemory::Connected : 
 		NullSpace::SharedMemory::Disconnected;
 
@@ -42,23 +41,23 @@ SuitsConnectionInfo HardwareInterface::PollDevice()
 
 void HardwareInterface::EnableTracking()
 {
-	_firmware.RequestSuitVersion();
-	_firmware.EnableTracking();
+	m_firmware.RequestSuitVersion();
+	m_firmware.EnableTracking();
 	
 }
 
 void HardwareInterface::DisableTracking()
 {
-	_firmware.DisableTracking();
+	m_firmware.DisableTracking();
 }
 
 void HardwareInterface::RequestSuitVersion()
 {
-	_firmware.RequestSuitVersion();
+	m_firmware.RequestSuitVersion();
 }
 
 void HardwareInterface::RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)> func)
 {
-	_dispatcher.AddConsumer(p, func);
+	m_dispatcher.AddConsumer(p, func);
 }
 
