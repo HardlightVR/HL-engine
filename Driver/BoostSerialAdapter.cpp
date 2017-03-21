@@ -5,34 +5,42 @@
 #include <boost/asio/use_future.hpp>
 #include "enumser.h"
 #include "Locator.h"
+#include "AsyncTimeout.h"
+
+
+uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
+
 BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
-	suitDataStream(std::make_shared<Buffer>(4096)), port(nullptr), _ioService(ioService),
+	suitDataStream(std::make_shared<Buffer>(4096)), 
+	port(nullptr),
 	_io(ioService->GetIOService()),
-	_resetIoTimeout(boost::posix_time::milliseconds(500)),
+	_suitReconnectionTimeout(boost::posix_time::milliseconds(50)),
 	_initialConnectTimeout(boost::posix_time::milliseconds(300)),
-	_resetIoTimer(_io),
-	_monitor(ioService->GetIOService(), port),
-	_cancelIoTimer(_io)
-
+	_suitReconnectionTimer(_io),
+	_monitor(ioService->GetIOService(), port)
 {
-	std::fill(_data, _data + INCOMING_DATA_BUFFER_SIZE, 0);
-	_monitor.SetDisconnectHandler(std::bind(&BoostSerialAdapter::reconnectSuit, this));
+	std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
+	_monitor.SetDisconnectHandler([this]() { beginReconnectionProcess(); });
 }
-
 
 void BoostSerialAdapter::Connect()
 {
-	
-
-	this->testAllAsync();
+	//When we first connect, we don't want any delays
+	scheduleImmediateSuitReconnect();
 }
 
 void BoostSerialAdapter::Disconnect()
 {
-	if (port->is_open()) {
-		port->close();
+	try {
+		if (port->is_open()) {
+			port->close();
+		}
+	}
+	catch (const boost::system::error_code& ec) {
+		//log this
 	}
 }
+
 void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(const boost::system::error_code&, std::size_t)> cb)
 {
 	if (this->port && this->port->is_open()) {
@@ -50,27 +58,33 @@ void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t leng
 		});
 	}
 }
-void BoostSerialAdapter::read_handler(boost::system::error_code ec, std::size_t length) {
-	if (!ec && length > 3) {
-		//todo: this is checking if it was a ping packet. Should be written better, maybe with a helper function
-		//in the NS namespace to check that it's a ping packet. 
-		if (_data[2] == 0x02) {
-			_monitor.ReceivePing();
-		}
-		
-		this->copyDataToBuffer(length);
-		doSuitRead();
-	}
-	
-	
-}
 
-void BoostSerialAdapter::doSuitRead()
+
+void BoostSerialAdapter::kickoffSuitReading()
 {
-	if (this->port && this->port->is_open()) {
-		this->port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE),
-			boost::bind(&BoostSerialAdapter::read_handler, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-	}	
+	if (!this->port || !this->port->is_open()) {
+		return;
+	}
+
+	this->port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this]
+		(auto error, auto bytes_transferred) {
+		
+			if (!error) {
+				
+				if (!isPingPacket(m_data, bytes_transferred)) {
+					//if it's not a ping packet, put it into the data stream. Don't want pings cluttering stuff up.
+					suitDataStream->push(m_data, bytes_transferred);
+					std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
+				}
+				else {
+					_monitor.ReceivePing();
+				}
+
+				kickoffSuitReading();
+			}	
+		}
+	);
+	
 }
 
 
@@ -79,33 +93,17 @@ void BoostSerialAdapter::doSuitRead()
 
 
 
-void BoostSerialAdapter::handleIoResetCallback() {
-//	Locator::Logger().Log("Adapter", "Attempting to auto-reconnect..", LogLevel::Info);
-
-	this->testAllAsync();
-
-}
-void BoostSerialAdapter::reconnectSuit() {
+void BoostSerialAdapter::beginReconnectionProcess() {
+	std::cout << "Disconnected..\n";
 	Locator::Logger().Log("Adapter", "Reconnecting..");
 	_isResetting = true;
-	//_ioService->RestartIOService(std::bind(&BoostSerialAdapter::handleIoResetCallback, this));
-	_io.post([this]() {testAllAsync(); });
-	
-	
+	scheduleImmediateSuitReconnect();
 }
-void BoostSerialAdapter::beginRead()
+void BoostSerialAdapter::endReconnectionProcess()
 {
 	_isResetting = false;
 	_monitor.BeginMonitoring();
-	doSuitRead();
-
-}
-void BoostSerialAdapter::copyDataToBuffer(std::size_t length) {
-
-	suitDataStream->push(_data, length);
-
-	//zero the buffer
-	std::fill(_data,_data + INCOMING_DATA_BUFFER_SIZE, 0);
+	kickoffSuitReading();
 }
 
 
@@ -129,15 +127,17 @@ BoostSerialAdapter::~BoostSerialAdapter()
 }
 
 /*
-This method kicks off the connection to the serial ports. It's async, but also has to
-deal with resetting the IO service because of a bug in windows serial ports/boost implementation.
-This makes it necessarily complicated. 
+This method kicks off the connection to the serial ports.
 
 It attempts to check all available ports, sending a ping to each. If it receives the magic response,
 it will use that port. 
 */
-void BoostSerialAdapter::testAllAsync() {
 
+void BoostSerialAdapter::testAllAsync(const boost::system::error_code& ec) {
+
+	if (ec) {
+		return;
+	}
 	//First, we retrieve all the available ports. This is windows-only. 
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
@@ -152,112 +152,132 @@ void BoostSerialAdapter::testAllAsync() {
 		Locator::Logger().Log("Adapter", portNames.back());
 	}
 	
-	//Finally, we post the testOne method to the IO service. This method will test each port
+	//Finally, we post the testOnePort method to the IO service. This method will test each port
 	//sequentially until it finds the correct port or runs out of ports, in which case it will
-	//start over again after resetting the IO service (which happens from the main thread instead of 
-	//an event handler)
-	_io.post([this, portNames]() { testOne(portNames); });
-	
+	//start over again after a short delay.
+	_io.post([this, portNames]() { testOnePort(portNames); });
 
 }
 
 
+//This is quite a large method. Not sure if splitting into two would 
+//help with understanding it, but if so then do it!
+//This method tries to connect to each port in the portNames list one after the other
+void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 
-void BoostSerialAdapter::testOne(std::vector<std::string> portNames) {
+	//If the list of ports is empty, we've exhausted all our options.
+	//Therefore, we must wait a bit and then try everything again
 	if (portNames.empty()) {
-		//have tested everything, all we can do is go back and try everything again
-		_io.post([this]() {testAllAsync(); });
+		scheduleDelayedSuitReconnect();
 		return;
 	}
 
-	if (port && port->is_open()) {
-		try {
-			port->close();
-		}
-		catch (const boost::system::system_error& ec) {
-			std::cout << "Failed to close this port " << '\n';
-		}
-	}
+	//Call the port's destructor and reinstantiate it
+	port = std::make_unique<boost::asio::serial_port>(_io);
 
-	this->port = std::make_unique<boost::asio::serial_port>(_io);
-
+	//Grab the next portname and remove it from the vector
 	std::string portName = portNames.back();
 	portNames.pop_back();
 
-	try {
-		Locator::Logger().Log("Adapter", "About to try and open port, let's see if it throws..");
-		port->open(portName);
-		if (!port->is_open()) {
-			Locator::Logger().Log("Adapter", "It didn't throw but it's not open. Calling testone again");
-			_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
+	//Attempt to simply open up the serial port. If that doesn't work, try the next..
+	if (!tryOpenPort(*port, portName)) {
+		_io.post([portNames, this] {testOnePort(portNames); }); 
+		return;
+	}
+
+	//Okay, the port is open. Now send a ping to it.
+	port->async_write_some(boost::asio::buffer(m_pingData, 7), [](auto ec, auto bytes_transferred) {});
+	
+	//Read from the port with a specified timeout (if the timeout is reached, we move on to the next) 
+	auto timedReader = std::make_shared<AsyncTimeout>(_io, boost::posix_time::millisec(_initialConnectTimeout));
+	
+	timedReader->OnTimeout([&](){
+		//if we end up timing out, we should close the port if it was opened
+		if (port && port->is_open()) {
+			try {
+				port->close();
+			}
+			catch (const boost::system::system_error& ec) {
+				//intentionally left blank
+			}
 		}
-		Locator::Logger().Log("Adapter", "It opened successfully");
+	});
+
+	//Begin the timeout countdown
+	timedReader->Go();
+	
+
+	port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this, portNames, timedReader] 
+		(auto ec, auto bytes_transferred) {
+		
+		//Stop the timed read from potentially expiring
+		timedReader->Cancel();
+
+		//Success case
+		if (!ec) {
+			assert(port && port->is_open());
+			if (isPingPacket(m_data, bytes_transferred)) {
+				std::cout << "Connected.\n";
+				_io.post([this] { endReconnectionProcess(); });
+				return;
+			}
+		}
+
+		//got some kind of error reading, or it wasn't a ping packet, so try the next
+		_io.post([portNames, this]() { testOnePort(portNames);});
+	});
+}
+
+bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string portName)
+{
+	Locator::Logger().Log("Adapter", "About to try and open port, let's see if it throws..");
+
+	try {
+		port.open(portName);
+		if (!port.is_open()) {
+			Locator::Logger().Log("Adapter", "It didn't throw but it's not open. Calling testOnePort again");
+
+			return false;
+		}
 	}
 	catch (boost::system::system_error& ec) {
 		Locator::Logger().Log("Adapter", std::string("Yup it threw this error: ") + ec.what());
-		_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
 
-		return;
-
+		return false;
 	}
 
+	Locator::Logger().Log("Adapter", "It opened successfully");
 
-	auto pingData = std::make_shared<uint8_t*>(new uint8_t[7]{ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
-	this->port->async_write_some(boost::asio::buffer(*pingData, 7), [pingData](const boost::system::error_code, const std::size_t bytes_transferred) {});
-
-	_cancelIoTimer.expires_from_now(_initialConnectTimeout);
-
-	_cancelIoTimer.async_wait([this](const boost::system::error_code& ec) {
-		if (ec) {
-			std::cout << "From cancel timer: " << ec.message() << '\n';
-		}
-		else {
-			if (port && port->is_open()) {
-				try {
-						port->close();
-						std::cout << "Failed to connect to this port within 50 ms, closed it\n";
-					
-					
-
-				}
-				catch (const boost::system::system_error& ec) {
-					std::cout << "Failed to connect to this port within 50 ms, and couldn't even close it..\n";
-
-				}
-			}
-			else {
-				std::cout << "Failed to connect to this port within 50 ms\n";
-
-			}
-
-		}
-	});
-	port->async_read_some(boost::asio::buffer(_data, INCOMING_DATA_BUFFER_SIZE),[this,portNames] 
-	(const boost::system::error_code ec, const std::size_t bytes_transferred) {
-		if (ec) {
-
-			int num_canceled = _cancelIoTimer.cancel();
-			assert(num_canceled == 0);
-			std::cout << "I was canceled, moving on to the next\n";
-			_io.post(boost::bind(&BoostSerialAdapter::testOne, this, portNames));
-
-
-		}
-		else {
-			//connected
-
-			int num_canceled = _cancelIoTimer.cancel();
-		//	assert(bytes_transferred == 16);
-			//assert(num_canceled==1);
-			assert(port && port->is_open());
-			std::cout << "recd back " << bytes_transferred << " bytes\n";
-			_io.post(boost::bind(&BoostSerialAdapter::beginRead, this));
-		}
-	});
-	
-	
+	return true;
 }
 
+void BoostSerialAdapter::scheduleImmediateSuitReconnect()
+{
+	_suitReconnectionTimer.expires_from_now(boost::posix_time::millisec(0));
+	_suitReconnectionTimer.async_wait([this](auto err) {testAllAsync(err); });
+}
+
+bool BoostSerialAdapter::isPingPacket(uint8_t* data, std::size_t length)
+{
+	if (length < 3) {
+		return false;
+	}
+
+	return (
+			data[0] == '$'
+		 && data[1] == 0x02
+		 && data[2] == 0x02
+	);
+		
+}
+
+void BoostSerialAdapter::scheduleDelayedSuitReconnect()
+{
+
+	_suitReconnectionTimer.expires_from_now(_suitReconnectionTimeout);
+	_suitReconnectionTimer.async_wait([this](auto err) {testAllAsync(err); });
+
+}
 
 
 

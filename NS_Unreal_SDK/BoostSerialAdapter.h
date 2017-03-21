@@ -20,7 +20,6 @@ public:
 	bool NeedsReset() const override {
 		return _needsReset;
 	}
-	void DoReset() override;
 
 private:
 	

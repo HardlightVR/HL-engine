@@ -107,16 +107,7 @@ void BoostSerialAdapter::suitReadCancel(boost::system::error_code ec)
 	
 }
 
-void BoostSerialAdapter::DoReset() {
-	//Part of the reset dance is locking the flag to reset, because I am not confident enough in the design 
-	//to guarantee that the suitReadCancel may not be called from another thread in the future.
-	//Currently it should not need the lock because we have only one IO thread, and all handlers are guarantee to run non concurrently.
-	_resetMutex.lock();
-	_needsReset = false;
-	_resetMutex.unlock();
-	this->reconnectSuit();
-	
-}
+
 void BoostSerialAdapter::reconnectSuit() {
 	//std::cout << "Attempting to auto reconnect.." << '\n';
 	_isResetting = true;

@@ -31,35 +31,69 @@ public:
 
 
 private:
+	/*General stuff*/
 
-	std::shared_ptr<IoService> _ioService;
+	//Our io_service, necessary for timers and ports
 	boost::asio::io_service& _io;
 
+	//our serial port
 	std::unique_ptr<boost::asio::serial_port> port;
-
-	void handleIoResetCallback();
-	void beginRead();
-
-	void copyDataToBuffer(std::size_t length);
-
-	uint8_t _data[INCOMING_DATA_BUFFER_SIZE];
+	
+	//our incoming data buffer 
+	uint8_t m_data[INCOMING_DATA_BUFFER_SIZE];
+	
+	//our outgoing data buffer. Is lockfree but probably doesn't need to be.
 	std::shared_ptr<Buffer> suitDataStream;
 
-	void doSuitRead();
-	void read_handler(boost::system::error_code ec, std::size_t length);
-
-	boost::posix_time::milliseconds _initialConnectTimeout;
-	void reconnectSuit();
-
+	//We flip this when resetting so that we can say the suit is "disconnected" in those periods
 	bool _isResetting = false;
 
-	boost::asio::deadline_timer _resetIoTimer;
-	boost::posix_time::milliseconds _resetIoTimeout;
+	//Handles pinging the suit 
 	KeepaliveMonitor _monitor;
 
-	void testAllAsync();
-	void testOne(std::vector<std::string> portNames);
+	//Starts reading data from the suit
+	void kickoffSuitReading();
 
-	boost::asio::deadline_timer _cancelIoTimer;
+	/* Testing port stuff */
+
+	//Responsible for gathering the port names and calling testOnPort 
+	void testAllPorts(const boost::system::error_code& ec);
+	
+	//Responsible for checking one port for the suit
+	void testOnePort(std::vector<std::string> portNames);
+
+	//Attempts to open a port with a given name
+	bool tryOpenPort(boost::asio::serial_port& port, std::string portname);
+	
+	//Holds the common ping data
+	static uint8_t m_pingData[7];
+
+	//Checks if a given buffer is a ping packet
+	bool isPingPacket(uint8_t* data, std::size_t length);
+
+	//How long we wait for the suit before aborting a connection attempt
+	boost::posix_time::milliseconds _initialConnectTimeout;
+
+	/* Reconnection stuff */
+
+	//Schedule a suit reconnection after the reconnect delay
+	void scheduleDelayedSuitReconnect();
+
+	//Schedule an immediate suit reconnection attempt
+	void scheduleImmediateSuitReconnect();
+	
+	//Responsible for scheduling a suit reconnection
+	void beginReconnectionProcess();
+
+	//Responsible for starting up the monitor & reading process
+	void endReconnectionProcess();
+
+	//A timer which allows us to delay reconnects 
+	boost::asio::deadline_timer _suitReconnectionTimer;
+
+	//The delay between port scanning & reconnection attempts
+	boost::posix_time::milliseconds _suitReconnectionTimeout;
+
+
 };
 
