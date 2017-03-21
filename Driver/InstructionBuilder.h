@@ -7,7 +7,7 @@ using std::string;
 class InstructionBuilder
 {
 public:
-	InstructionBuilder(std::shared_ptr<InstructionSet> iset);
+	explicit InstructionBuilder(std::shared_ptr<InstructionSet> iset);
 	~InstructionBuilder();
 	InstructionBuilder& UseInstruction(string name);
 	InstructionBuilder& WithParam(std::string key, std::string val);

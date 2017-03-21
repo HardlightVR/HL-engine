@@ -49,8 +49,9 @@ public:
 		std::vector<uint8_t> otherData;
 		otherData.resize(m_queue.get_max_msg_size());
 		boost::interprocess::message_queue::size_type actualLen = 0;
-		unsigned int priority = 0;
 		try {
+			unsigned int priority = 0;
+
 			if (m_queue.try_receive(otherData.data(), m_queue.get_max_msg_size(), actualLen, priority)) {
 				otherData.resize(actualLen);
 				return otherData;
