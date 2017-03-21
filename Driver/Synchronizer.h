@@ -36,7 +36,7 @@ private:
 	void monitorSync();
 	void confirmSyncLoss();
 	packet dequeuePacket() const;
-	bool packetIsWellFormed(const packet p) const;
+	bool packetIsWellFormed(const packet& p) const;
 	boost::asio::deadline_timer _syncTimer;
 	boost::posix_time::milliseconds _syncInterval;
 

@@ -27,7 +27,7 @@ private:
 	boost::posix_time::milliseconds _writeInterval;
 	void writeBuffer();
 	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
-	const int BATCH_SIZE;
+	const unsigned int BATCH_SIZE;
 	bool _isBatching;
 public:
 	void EnableTracking();

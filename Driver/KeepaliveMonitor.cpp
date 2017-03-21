@@ -8,7 +8,7 @@ KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, std::unique_ptr<
 	_responseTimeout(boost::posix_time::milliseconds(50)),
 	_pingTimer(io),
 	_pingInterval(boost::posix_time::milliseconds(250)),
-	_MAX_FAILED_PINGS(2)
+	MAX_FAILED_PINGS(2)
 {
 }
 
@@ -76,7 +76,7 @@ void KeepaliveMonitor::doKeepAlivePing()
 
 void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ec)
 {
-	assert(_failedPingCount <= _MAX_FAILED_PINGS);
+	assert(_failedPingCount <= MAX_FAILED_PINGS);
 
 
 	if (ec) {
@@ -97,7 +97,7 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ec)
 		//if it failed to receive a ping. 
 		_failedPingCount++;
 
-		if (_failedPingCount >= _MAX_FAILED_PINGS) {
+		if (_failedPingCount >= MAX_FAILED_PINGS) {
 			_failedPingCount = 0;
 			Locator::Logger().Log("Keepalive", "The suit is disconnected", LogLevel::Info);
 			_disconnectHandler();

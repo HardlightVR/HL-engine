@@ -167,7 +167,7 @@ packet Synchronizer::dequeuePacket() const
 
 }
 
-bool Synchronizer::packetIsWellFormed(const packet possiblePacket) const
+bool Synchronizer::packetIsWellFormed(const packet& possiblePacket) const
 {
 	return possiblePacket.raw[0] == packetDelimiter &&
 		possiblePacket.raw[14] == packetFooter[0] &&

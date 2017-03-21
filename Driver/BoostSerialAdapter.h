@@ -9,7 +9,7 @@ class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapte
 {
 public:
 
-	BoostSerialAdapter(std::shared_ptr<IoService> ioService);
+	explicit BoostSerialAdapter(boost::asio::io_service& io);
 	~BoostSerialAdapter();
 
 	//Connect to the hardware through serial port

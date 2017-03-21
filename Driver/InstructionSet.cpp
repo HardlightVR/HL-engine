@@ -31,7 +31,7 @@ const std::unordered_map<std::string, std::unordered_map<std::string, uint8_t>>&
 void InstructionSet::LoadAtoms(const Json::Value & json)
 {
 	std::size_t numAtoms = json.size();
-	for (int i = 0; i < numAtoms; ++i) {
+	for (std::size_t i = 0; i < numAtoms; ++i) {
 		Atom atom;
 		atom.Deserialize(json[i]);
 		_atoms[atom.Id()] = atom;
@@ -83,7 +83,7 @@ bool InstructionSet::LoadAll() {
 void InstructionSet::LoadInstructions(const Json::Value& json) {
 	
 		std::size_t numInstructions = json.size();
-		for (int i = 0; i < numInstructions; ++i) {
+		for (std::size_t i = 0; i < numInstructions; ++i) {
 			Instruction inst;
 			inst.Deserialize(json[i]);
 			_instructions[inst.Name] = inst;

@@ -10,14 +10,14 @@
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
-BoostSerialAdapter::BoostSerialAdapter(std::shared_ptr<IoService> ioService) :
+BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 	m_outputSuitData(std::make_shared<Buffer>(4096)), 
 	m_port(nullptr),
-	m_io(ioService->GetIOService()),
+	m_io(io),
 	m_suitReconnectionTimeout(boost::posix_time::milliseconds(50)),
 	m_initialConnectTimeout(boost::posix_time::milliseconds(300)),
-	m_suitReconnectionTimer(m_io),
-	m_keepaliveMonitor(ioService->GetIOService(), m_port)
+	m_suitReconnectionTimer(io),
+	m_keepaliveMonitor(io, m_port)
 {
 	std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
 	m_keepaliveMonitor.SetDisconnectHandler([this]() { beginReconnectionProcess(); });

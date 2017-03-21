@@ -5,7 +5,7 @@
 #include "Locator.h"
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
 	
-	m_adapter(std::make_unique<BoostSerialAdapter>(ioService)),
+	m_adapter(std::make_unique<BoostSerialAdapter>(ioService->GetIOService())),
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, ioService->GetIOService())),
 	m_adapterResetCheckTimer(ioService->GetIOService()),
 	m_adapterResetCheckInterval(boost::posix_time::milliseconds(50)),

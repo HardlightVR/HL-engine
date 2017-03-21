@@ -22,7 +22,7 @@ private:
 	long long _pingTime;
 
 	//total allowed ping failures before issuing a disconnect
-	const std::size_t _MAX_FAILED_PINGS;
+	const std::size_t MAX_FAILED_PINGS;
 
 	//Function which is called when monitor detects a disconnect
 	std::function<void()> _disconnectHandler;
