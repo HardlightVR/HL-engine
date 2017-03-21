@@ -4,7 +4,6 @@
 #include "IoService.h"
 #include "KeepaliveMonitor.h"
 
-const int INCOMING_DATA_BUFFER_SIZE = 128;
 
 class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapter>, public virtual ICommunicationAdapter
 {
@@ -31,25 +30,32 @@ public:
 
 
 private:
+
+	//Note: I believe this class will need another refactoring when we support multiple suits
+
 	/*General stuff*/
+	
 
 	//Our io_service, necessary for timers and ports
-	boost::asio::io_service& _io;
+	boost::asio::io_service& m_io;
 
 	//our serial port
-	std::unique_ptr<boost::asio::serial_port> port;
-	
+	std::unique_ptr<boost::asio::serial_port> m_port;
+
+	//Size of our incoming data buffer - should be tailored to the serial device
+	const static unsigned int INCOMING_DATA_BUFFER_SIZE = 128;
+
 	//our incoming data buffer 
 	uint8_t m_data[INCOMING_DATA_BUFFER_SIZE];
 	
 	//our outgoing data buffer. Is lockfree but probably doesn't need to be.
-	std::shared_ptr<Buffer> suitDataStream;
+	std::shared_ptr<Buffer> m_outputSuitData;
 
 	//We flip this when resetting so that we can say the suit is "disconnected" in those periods
 	bool _isResetting = false;
 
 	//Handles pinging the suit 
-	KeepaliveMonitor _monitor;
+	KeepaliveMonitor m_keepaliveMonitor;
 
 	//Starts reading data from the suit
 	void kickoffSuitReading();
@@ -72,7 +78,7 @@ private:
 	bool isPingPacket(uint8_t* data, std::size_t length);
 
 	//How long we wait for the suit before aborting a connection attempt
-	boost::posix_time::milliseconds _initialConnectTimeout;
+	boost::posix_time::milliseconds m_initialConnectTimeout;
 
 	/* Reconnection stuff */
 
@@ -89,10 +95,10 @@ private:
 	void endReconnectionProcess();
 
 	//A timer which allows us to delay reconnects 
-	boost::asio::deadline_timer _suitReconnectionTimer;
+	boost::asio::deadline_timer m_suitReconnectionTimer;
 
 	//The delay between port scanning & reconnection attempts
-	boost::posix_time::milliseconds _suitReconnectionTimeout;
+	boost::posix_time::milliseconds m_suitReconnectionTimeout;
 
 
 };
