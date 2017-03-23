@@ -32,7 +32,9 @@
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 
-namespace NullSpaceHaptics {
+namespace nsvr {
+namespace detail {
+namespace encoding {
 
 // Internal implementation detail -- do not call these.
 void protobuf_AddDesc_HapticEffect_2eproto();
@@ -100,7 +102,7 @@ inline bool RootEffect_Type_Parse(
 }
 // ===================================================================
 
-class Effect : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.Effect) */ {
+class Effect : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.Effect) */ {
  public:
   Effect();
   virtual ~Effect();
@@ -189,7 +191,7 @@ class Effect : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
   float duration() const;
   void set_duration(float value);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.Effect)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
@@ -208,7 +210,7 @@ class Effect : public ::google::protobuf::Message /* @@protoc_insertion_point(cl
 };
 // -------------------------------------------------------------------
 
-class Sequence : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.Sequence) */ {
+class Sequence : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.Sequence) */ {
  public:
   Sequence();
   virtual ~Sequence();
@@ -268,16 +270,16 @@ class Sequence : public ::google::protobuf::Message /* @@protoc_insertion_point(
 
   // accessors -------------------------------------------------------
 
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   int effects_size() const;
   void clear_effects();
   static const int kEffectsFieldNumber = 1;
-  const ::NullSpaceHaptics::Effect& effects(int index) const;
-  ::NullSpaceHaptics::Effect* mutable_effects(int index);
-  ::NullSpaceHaptics::Effect* add_effects();
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >*
+  const ::nsvr::detail::encoding::Effect& effects(int index) const;
+  ::nsvr::detail::encoding::Effect* mutable_effects(int index);
+  ::nsvr::detail::encoding::Effect* add_effects();
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >*
       mutable_effects();
-  const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >&
+  const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >&
       effects() const;
 
   // optional float time = 2;
@@ -298,12 +300,12 @@ class Sequence : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::uint32 area() const;
   void set_area(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.Sequence)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect > effects_;
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect > effects_;
   float time_;
   float strength_;
   ::google::protobuf::uint32 area_;
@@ -317,7 +319,7 @@ class Sequence : public ::google::protobuf::Message /* @@protoc_insertion_point(
 };
 // -------------------------------------------------------------------
 
-class Pattern : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.Pattern) */ {
+class Pattern : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.Pattern) */ {
  public:
   Pattern();
   virtual ~Pattern();
@@ -377,16 +379,16 @@ class Pattern : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 
   // accessors -------------------------------------------------------
 
-  // repeated .NullSpaceHaptics.Sequence sequences = 1;
+  // repeated .nsvr.detail.encoding.Sequence sequences = 1;
   int sequences_size() const;
   void clear_sequences();
   static const int kSequencesFieldNumber = 1;
-  const ::NullSpaceHaptics::Sequence& sequences(int index) const;
-  ::NullSpaceHaptics::Sequence* mutable_sequences(int index);
-  ::NullSpaceHaptics::Sequence* add_sequences();
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Sequence >*
+  const ::nsvr::detail::encoding::Sequence& sequences(int index) const;
+  ::nsvr::detail::encoding::Sequence* mutable_sequences(int index);
+  ::nsvr::detail::encoding::Sequence* add_sequences();
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Sequence >*
       mutable_sequences();
-  const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Sequence >&
+  const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Sequence >&
       sequences() const;
 
   // optional float time = 2;
@@ -401,12 +403,12 @@ class Pattern : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   float strength() const;
   void set_strength(float value);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.Pattern)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Sequence > sequences_;
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Sequence > sequences_;
   float time_;
   float strength_;
   mutable int _cached_size_;
@@ -419,7 +421,7 @@ class Pattern : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 };
 // -------------------------------------------------------------------
 
-class Experience : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.Experience) */ {
+class Experience : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.Experience) */ {
  public:
   Experience();
   virtual ~Experience();
@@ -479,16 +481,16 @@ class Experience : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   // accessors -------------------------------------------------------
 
-  // repeated .NullSpaceHaptics.Pattern patterns = 1;
+  // repeated .nsvr.detail.encoding.Pattern patterns = 1;
   int patterns_size() const;
   void clear_patterns();
   static const int kPatternsFieldNumber = 1;
-  const ::NullSpaceHaptics::Pattern& patterns(int index) const;
-  ::NullSpaceHaptics::Pattern* mutable_patterns(int index);
-  ::NullSpaceHaptics::Pattern* add_patterns();
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Pattern >*
+  const ::nsvr::detail::encoding::Pattern& patterns(int index) const;
+  ::nsvr::detail::encoding::Pattern* mutable_patterns(int index);
+  ::nsvr::detail::encoding::Pattern* add_patterns();
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Pattern >*
       mutable_patterns();
-  const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Pattern >&
+  const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Pattern >&
       patterns() const;
 
   // optional float time = 2;
@@ -503,12 +505,12 @@ class Experience : public ::google::protobuf::Message /* @@protoc_insertion_poin
   float strength() const;
   void set_strength(float value);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.Experience)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Pattern > patterns_;
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Pattern > patterns_;
   float time_;
   float strength_;
   mutable int _cached_size_;
@@ -521,7 +523,7 @@ class Experience : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
-class HapticFile : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.HapticFile) */ {
+class HapticFile : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.HapticFile) */ {
  public:
   HapticFile();
   virtual ~HapticFile();
@@ -611,47 +613,47 @@ class HapticFile : public ::google::protobuf::Message /* @@protoc_insertion_poin
 
   // accessors -------------------------------------------------------
 
-  // optional .NullSpaceHaptics.HapticFile.Type type = 1;
+  // optional .nsvr.detail.encoding.HapticFile.Type type = 1;
   void clear_type();
   static const int kTypeFieldNumber = 1;
-  ::NullSpaceHaptics::HapticFile_Type type() const;
-  void set_type(::NullSpaceHaptics::HapticFile_Type value);
+  ::nsvr::detail::encoding::HapticFile_Type type() const;
+  void set_type(::nsvr::detail::encoding::HapticFile_Type value);
 
-  // optional .NullSpaceHaptics.Sequence sequence = 2;
+  // optional .nsvr.detail.encoding.Sequence sequence = 2;
   bool has_sequence() const;
   void clear_sequence();
   static const int kSequenceFieldNumber = 2;
-  const ::NullSpaceHaptics::Sequence& sequence() const;
-  ::NullSpaceHaptics::Sequence* mutable_sequence();
-  ::NullSpaceHaptics::Sequence* release_sequence();
-  void set_allocated_sequence(::NullSpaceHaptics::Sequence* sequence);
+  const ::nsvr::detail::encoding::Sequence& sequence() const;
+  ::nsvr::detail::encoding::Sequence* mutable_sequence();
+  ::nsvr::detail::encoding::Sequence* release_sequence();
+  void set_allocated_sequence(::nsvr::detail::encoding::Sequence* sequence);
 
-  // optional .NullSpaceHaptics.Pattern pattern = 3;
+  // optional .nsvr.detail.encoding.Pattern pattern = 3;
   bool has_pattern() const;
   void clear_pattern();
   static const int kPatternFieldNumber = 3;
-  const ::NullSpaceHaptics::Pattern& pattern() const;
-  ::NullSpaceHaptics::Pattern* mutable_pattern();
-  ::NullSpaceHaptics::Pattern* release_pattern();
-  void set_allocated_pattern(::NullSpaceHaptics::Pattern* pattern);
+  const ::nsvr::detail::encoding::Pattern& pattern() const;
+  ::nsvr::detail::encoding::Pattern* mutable_pattern();
+  ::nsvr::detail::encoding::Pattern* release_pattern();
+  void set_allocated_pattern(::nsvr::detail::encoding::Pattern* pattern);
 
-  // optional .NullSpaceHaptics.Experience experience = 4;
+  // optional .nsvr.detail.encoding.Experience experience = 4;
   bool has_experience() const;
   void clear_experience();
   static const int kExperienceFieldNumber = 4;
-  const ::NullSpaceHaptics::Experience& experience() const;
-  ::NullSpaceHaptics::Experience* mutable_experience();
-  ::NullSpaceHaptics::Experience* release_experience();
-  void set_allocated_experience(::NullSpaceHaptics::Experience* experience);
+  const ::nsvr::detail::encoding::Experience& experience() const;
+  ::nsvr::detail::encoding::Experience* mutable_experience();
+  ::nsvr::detail::encoding::Experience* release_experience();
+  void set_allocated_experience(::nsvr::detail::encoding::Experience* experience);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.HapticFile)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::NullSpaceHaptics::Sequence* sequence_;
-  ::NullSpaceHaptics::Pattern* pattern_;
-  ::NullSpaceHaptics::Experience* experience_;
+  ::nsvr::detail::encoding::Sequence* sequence_;
+  ::nsvr::detail::encoding::Pattern* pattern_;
+  ::nsvr::detail::encoding::Experience* experience_;
   int type_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HapticEffect_2eproto();
@@ -663,7 +665,7 @@ class HapticFile : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
-class RootEffect : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.RootEffect) */ {
+class RootEffect : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.RootEffect) */ {
  public:
   RootEffect();
   virtual ~RootEffect();
@@ -764,13 +766,13 @@ class RootEffect : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_name();
   void set_allocated_name(::std::string* name);
 
-  // optional .NullSpaceHaptics.RootEffect.Type type = 2;
+  // optional .nsvr.detail.encoding.RootEffect.Type type = 2;
   void clear_type();
   static const int kTypeFieldNumber = 2;
-  ::NullSpaceHaptics::RootEffect_Type type() const;
-  void set_type(::NullSpaceHaptics::RootEffect_Type value);
+  ::nsvr::detail::encoding::RootEffect_Type type() const;
+  void set_type(::nsvr::detail::encoding::RootEffect_Type value);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.RootEffect)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
@@ -787,7 +789,7 @@ class RootEffect : public ::google::protobuf::Message /* @@protoc_insertion_poin
 };
 // -------------------------------------------------------------------
 
-class PatternNode : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.PatternNode) */ {
+class PatternNode : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.PatternNode) */ {
  public:
   PatternNode();
   virtual ~PatternNode();
@@ -876,7 +878,7 @@ class PatternNode : public ::google::protobuf::Message /* @@protoc_insertion_poi
   float strength() const;
   void set_strength(float value);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.PatternNode)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
@@ -895,7 +897,7 @@ class PatternNode : public ::google::protobuf::Message /* @@protoc_insertion_poi
 };
 // -------------------------------------------------------------------
 
-class ExperienceNode : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.ExperienceNode) */ {
+class ExperienceNode : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.ExperienceNode) */ {
  public:
   ExperienceNode();
   virtual ~ExperienceNode();
@@ -978,7 +980,7 @@ class ExperienceNode : public ::google::protobuf::Message /* @@protoc_insertion_
   float strength() const;
   void set_strength(float value);
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.ExperienceNode)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
@@ -996,7 +998,7 @@ class ExperienceNode : public ::google::protobuf::Message /* @@protoc_insertion_
 };
 // -------------------------------------------------------------------
 
-class SequenceDefinitions : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.SequenceDefinitions) */ {
+class SequenceDefinitions : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.SequenceDefinitions) */ {
  public:
   SequenceDefinitions();
   virtual ~SequenceDefinitions();
@@ -1056,24 +1058,24 @@ class SequenceDefinitions : public ::google::protobuf::Message /* @@protoc_inser
 
   // accessors -------------------------------------------------------
 
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   int effects_size() const;
   void clear_effects();
   static const int kEffectsFieldNumber = 1;
-  const ::NullSpaceHaptics::Effect& effects(int index) const;
-  ::NullSpaceHaptics::Effect* mutable_effects(int index);
-  ::NullSpaceHaptics::Effect* add_effects();
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >*
+  const ::nsvr::detail::encoding::Effect& effects(int index) const;
+  ::nsvr::detail::encoding::Effect* mutable_effects(int index);
+  ::nsvr::detail::encoding::Effect* add_effects();
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >*
       mutable_effects();
-  const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >&
+  const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >&
       effects() const;
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.SequenceDefinitions)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect > effects_;
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect > effects_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HapticEffect_2eproto();
   friend void protobuf_AssignDesc_HapticEffect_2eproto();
@@ -1084,7 +1086,7 @@ class SequenceDefinitions : public ::google::protobuf::Message /* @@protoc_inser
 };
 // -------------------------------------------------------------------
 
-class PatternDefinitions : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.PatternDefinitions) */ {
+class PatternDefinitions : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.PatternDefinitions) */ {
  public:
   PatternDefinitions();
   virtual ~PatternDefinitions();
@@ -1144,24 +1146,24 @@ class PatternDefinitions : public ::google::protobuf::Message /* @@protoc_insert
 
   // accessors -------------------------------------------------------
 
-  // repeated .NullSpaceHaptics.PatternNode pattern_nodes = 1;
+  // repeated .nsvr.detail.encoding.PatternNode pattern_nodes = 1;
   int pattern_nodes_size() const;
   void clear_pattern_nodes();
   static const int kPatternNodesFieldNumber = 1;
-  const ::NullSpaceHaptics::PatternNode& pattern_nodes(int index) const;
-  ::NullSpaceHaptics::PatternNode* mutable_pattern_nodes(int index);
-  ::NullSpaceHaptics::PatternNode* add_pattern_nodes();
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::PatternNode >*
+  const ::nsvr::detail::encoding::PatternNode& pattern_nodes(int index) const;
+  ::nsvr::detail::encoding::PatternNode* mutable_pattern_nodes(int index);
+  ::nsvr::detail::encoding::PatternNode* add_pattern_nodes();
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::PatternNode >*
       mutable_pattern_nodes();
-  const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::PatternNode >&
+  const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::PatternNode >&
       pattern_nodes() const;
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.PatternDefinitions)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::PatternNode > pattern_nodes_;
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::PatternNode > pattern_nodes_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HapticEffect_2eproto();
   friend void protobuf_AssignDesc_HapticEffect_2eproto();
@@ -1172,7 +1174,7 @@ class PatternDefinitions : public ::google::protobuf::Message /* @@protoc_insert
 };
 // -------------------------------------------------------------------
 
-class ExperienceDefinitions : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.ExperienceDefinitions) */ {
+class ExperienceDefinitions : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.ExperienceDefinitions) */ {
  public:
   ExperienceDefinitions();
   virtual ~ExperienceDefinitions();
@@ -1232,24 +1234,24 @@ class ExperienceDefinitions : public ::google::protobuf::Message /* @@protoc_ins
 
   // accessors -------------------------------------------------------
 
-  // repeated .NullSpaceHaptics.ExperienceNode experience_nodes = 1;
+  // repeated .nsvr.detail.encoding.ExperienceNode experience_nodes = 1;
   int experience_nodes_size() const;
   void clear_experience_nodes();
   static const int kExperienceNodesFieldNumber = 1;
-  const ::NullSpaceHaptics::ExperienceNode& experience_nodes(int index) const;
-  ::NullSpaceHaptics::ExperienceNode* mutable_experience_nodes(int index);
-  ::NullSpaceHaptics::ExperienceNode* add_experience_nodes();
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::ExperienceNode >*
+  const ::nsvr::detail::encoding::ExperienceNode& experience_nodes(int index) const;
+  ::nsvr::detail::encoding::ExperienceNode* mutable_experience_nodes(int index);
+  ::nsvr::detail::encoding::ExperienceNode* add_experience_nodes();
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::ExperienceNode >*
       mutable_experience_nodes();
-  const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::ExperienceNode >&
+  const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::ExperienceNode >&
       experience_nodes() const;
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.ExperienceDefinitions)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::ExperienceNode > experience_nodes_;
+  ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::ExperienceNode > experience_nodes_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HapticEffect_2eproto();
   friend void protobuf_AssignDesc_HapticEffect_2eproto();
@@ -1260,7 +1262,7 @@ class ExperienceDefinitions : public ::google::protobuf::Message /* @@protoc_ins
 };
 // -------------------------------------------------------------------
 
-class HapticDescriptionFile : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceHaptics.HapticDescriptionFile) */ {
+class HapticDescriptionFile : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:nsvr.detail.encoding.HapticDescriptionFile) */ {
  public:
   HapticDescriptionFile();
   virtual ~HapticDescriptionFile();
@@ -1321,78 +1323,78 @@ class HapticDescriptionFile : public ::google::protobuf::Message /* @@protoc_ins
 
   // accessors -------------------------------------------------------
 
-  // optional .NullSpaceHaptics.RootEffect effect = 1;
+  // optional .nsvr.detail.encoding.RootEffect effect = 1;
   bool has_effect() const;
   void clear_effect();
   static const int kEffectFieldNumber = 1;
-  const ::NullSpaceHaptics::RootEffect& effect() const;
-  ::NullSpaceHaptics::RootEffect* mutable_effect();
-  ::NullSpaceHaptics::RootEffect* release_effect();
-  void set_allocated_effect(::NullSpaceHaptics::RootEffect* effect);
+  const ::nsvr::detail::encoding::RootEffect& effect() const;
+  ::nsvr::detail::encoding::RootEffect* mutable_effect();
+  ::nsvr::detail::encoding::RootEffect* release_effect();
+  void set_allocated_effect(::nsvr::detail::encoding::RootEffect* effect);
 
-  // map<string, .NullSpaceHaptics.SequenceDefinitions> sequence_definitions = 2;
+  // map<string, .nsvr.detail.encoding.SequenceDefinitions> sequence_definitions = 2;
   int sequence_definitions_size() const;
   void clear_sequence_definitions();
   static const int kSequenceDefinitionsFieldNumber = 2;
-  const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >&
+  const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >&
       sequence_definitions() const;
-  ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >*
+  ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >*
       mutable_sequence_definitions();
 
-  // map<string, .NullSpaceHaptics.PatternDefinitions> pattern_definitions = 3;
+  // map<string, .nsvr.detail.encoding.PatternDefinitions> pattern_definitions = 3;
   int pattern_definitions_size() const;
   void clear_pattern_definitions();
   static const int kPatternDefinitionsFieldNumber = 3;
-  const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >&
+  const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >&
       pattern_definitions() const;
-  ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >*
+  ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >*
       mutable_pattern_definitions();
 
-  // map<string, .NullSpaceHaptics.ExperienceDefinitions> experience_definitions = 4;
+  // map<string, .nsvr.detail.encoding.ExperienceDefinitions> experience_definitions = 4;
   int experience_definitions_size() const;
   void clear_experience_definitions();
   static const int kExperienceDefinitionsFieldNumber = 4;
-  const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >&
+  const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >&
       experience_definitions() const;
-  ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >*
+  ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >*
       mutable_experience_definitions();
 
-  // @@protoc_insertion_point(class_scope:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(class_scope:nsvr.detail.encoding.HapticDescriptionFile)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::NullSpaceHaptics::RootEffect* effect_;
+  ::nsvr::detail::encoding::RootEffect* effect_;
   typedef ::google::protobuf::internal::MapEntryLite<
-      ::std::string, ::NullSpaceHaptics::SequenceDefinitions,
+      ::std::string, ::nsvr::detail::encoding::SequenceDefinitions,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 >
       HapticDescriptionFile_SequenceDefinitionsEntry;
   ::google::protobuf::internal::MapField<
-      ::std::string, ::NullSpaceHaptics::SequenceDefinitions,
+      ::std::string, ::nsvr::detail::encoding::SequenceDefinitions,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 > sequence_definitions_;
   typedef ::google::protobuf::internal::MapEntryLite<
-      ::std::string, ::NullSpaceHaptics::PatternDefinitions,
+      ::std::string, ::nsvr::detail::encoding::PatternDefinitions,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 >
       HapticDescriptionFile_PatternDefinitionsEntry;
   ::google::protobuf::internal::MapField<
-      ::std::string, ::NullSpaceHaptics::PatternDefinitions,
+      ::std::string, ::nsvr::detail::encoding::PatternDefinitions,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 > pattern_definitions_;
   typedef ::google::protobuf::internal::MapEntryLite<
-      ::std::string, ::NullSpaceHaptics::ExperienceDefinitions,
+      ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 >
       HapticDescriptionFile_ExperienceDefinitionsEntry;
   ::google::protobuf::internal::MapField<
-      ::std::string, ::NullSpaceHaptics::ExperienceDefinitions,
+      ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 > experience_definitions_;
@@ -1417,13 +1419,13 @@ inline void Effect::clear_time() {
   time_ = 0;
 }
 inline float Effect::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.time)
   return time_;
 }
 inline void Effect::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.time)
 }
 
 // optional string effect = 2;
@@ -1431,32 +1433,32 @@ inline void Effect::clear_effect() {
   effect_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Effect::effect() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.effect)
   return effect_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void Effect::set_effect(const ::std::string& value) {
   
   effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.effect)
 }
 inline void Effect::set_effect(const char* value) {
   
   effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.Effect.effect)
 }
 inline void Effect::set_effect(const char* value, size_t size) {
   
   effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.Effect.effect)
 }
 inline ::std::string* Effect::mutable_effect() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Effect.effect)
   return effect_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Effect::release_effect() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.Effect.effect)
   
   return effect_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1467,7 +1469,7 @@ inline void Effect::set_allocated_effect(::std::string* effect) {
     
   }
   effect_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), effect);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.Effect.effect)
 }
 
 // optional float strength = 3;
@@ -1475,13 +1477,13 @@ inline void Effect::clear_strength() {
   strength_ = 0;
 }
 inline float Effect::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.strength)
   return strength_;
 }
 inline void Effect::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.strength)
 }
 
 // optional float duration = 4;
@@ -1489,46 +1491,46 @@ inline void Effect::clear_duration() {
   duration_ = 0;
 }
 inline float Effect::duration() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.duration)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.duration)
   return duration_;
 }
 inline void Effect::set_duration(float value) {
   
   duration_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.duration)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.duration)
 }
 
 // -------------------------------------------------------------------
 
 // Sequence
 
-// repeated .NullSpaceHaptics.Effect effects = 1;
+// repeated .nsvr.detail.encoding.Effect effects = 1;
 inline int Sequence::effects_size() const {
   return effects_.size();
 }
 inline void Sequence::clear_effects() {
   effects_.Clear();
 }
-inline const ::NullSpaceHaptics::Effect& Sequence::effects(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.effects)
+inline const ::nsvr::detail::encoding::Effect& Sequence::effects(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.effects)
   return effects_.Get(index);
 }
-inline ::NullSpaceHaptics::Effect* Sequence::mutable_effects(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Sequence.effects)
+inline ::nsvr::detail::encoding::Effect* Sequence::mutable_effects(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Sequence.effects)
   return effects_.Mutable(index);
 }
-inline ::NullSpaceHaptics::Effect* Sequence::add_effects() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.Sequence.effects)
+inline ::nsvr::detail::encoding::Effect* Sequence::add_effects() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.Sequence.effects)
   return effects_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >*
+inline ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >*
 Sequence::mutable_effects() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.Sequence.effects)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.Sequence.effects)
   return &effects_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >&
+inline const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >&
 Sequence::effects() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.Sequence.effects)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.Sequence.effects)
   return effects_;
 }
 
@@ -1537,13 +1539,13 @@ inline void Sequence::clear_time() {
   time_ = 0;
 }
 inline float Sequence::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.time)
   return time_;
 }
 inline void Sequence::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Sequence.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Sequence.time)
 }
 
 // optional float strength = 3;
@@ -1551,13 +1553,13 @@ inline void Sequence::clear_strength() {
   strength_ = 0;
 }
 inline float Sequence::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.strength)
   return strength_;
 }
 inline void Sequence::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Sequence.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Sequence.strength)
 }
 
 // optional uint32 area = 4;
@@ -1565,46 +1567,46 @@ inline void Sequence::clear_area() {
   area_ = 0u;
 }
 inline ::google::protobuf::uint32 Sequence::area() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.area)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.area)
   return area_;
 }
 inline void Sequence::set_area(::google::protobuf::uint32 value) {
   
   area_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Sequence.area)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Sequence.area)
 }
 
 // -------------------------------------------------------------------
 
 // Pattern
 
-// repeated .NullSpaceHaptics.Sequence sequences = 1;
+// repeated .nsvr.detail.encoding.Sequence sequences = 1;
 inline int Pattern::sequences_size() const {
   return sequences_.size();
 }
 inline void Pattern::clear_sequences() {
   sequences_.Clear();
 }
-inline const ::NullSpaceHaptics::Sequence& Pattern::sequences(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Pattern.sequences)
+inline const ::nsvr::detail::encoding::Sequence& Pattern::sequences(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Pattern.sequences)
   return sequences_.Get(index);
 }
-inline ::NullSpaceHaptics::Sequence* Pattern::mutable_sequences(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Pattern.sequences)
+inline ::nsvr::detail::encoding::Sequence* Pattern::mutable_sequences(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Pattern.sequences)
   return sequences_.Mutable(index);
 }
-inline ::NullSpaceHaptics::Sequence* Pattern::add_sequences() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.Pattern.sequences)
+inline ::nsvr::detail::encoding::Sequence* Pattern::add_sequences() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.Pattern.sequences)
   return sequences_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Sequence >*
+inline ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Sequence >*
 Pattern::mutable_sequences() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.Pattern.sequences)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.Pattern.sequences)
   return &sequences_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Sequence >&
+inline const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Sequence >&
 Pattern::sequences() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.Pattern.sequences)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.Pattern.sequences)
   return sequences_;
 }
 
@@ -1613,13 +1615,13 @@ inline void Pattern::clear_time() {
   time_ = 0;
 }
 inline float Pattern::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Pattern.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Pattern.time)
   return time_;
 }
 inline void Pattern::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Pattern.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Pattern.time)
 }
 
 // optional float strength = 3;
@@ -1627,46 +1629,46 @@ inline void Pattern::clear_strength() {
   strength_ = 0;
 }
 inline float Pattern::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Pattern.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Pattern.strength)
   return strength_;
 }
 inline void Pattern::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Pattern.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Pattern.strength)
 }
 
 // -------------------------------------------------------------------
 
 // Experience
 
-// repeated .NullSpaceHaptics.Pattern patterns = 1;
+// repeated .nsvr.detail.encoding.Pattern patterns = 1;
 inline int Experience::patterns_size() const {
   return patterns_.size();
 }
 inline void Experience::clear_patterns() {
   patterns_.Clear();
 }
-inline const ::NullSpaceHaptics::Pattern& Experience::patterns(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Experience.patterns)
+inline const ::nsvr::detail::encoding::Pattern& Experience::patterns(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Experience.patterns)
   return patterns_.Get(index);
 }
-inline ::NullSpaceHaptics::Pattern* Experience::mutable_patterns(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Experience.patterns)
+inline ::nsvr::detail::encoding::Pattern* Experience::mutable_patterns(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Experience.patterns)
   return patterns_.Mutable(index);
 }
-inline ::NullSpaceHaptics::Pattern* Experience::add_patterns() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.Experience.patterns)
+inline ::nsvr::detail::encoding::Pattern* Experience::add_patterns() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.Experience.patterns)
   return patterns_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Pattern >*
+inline ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Pattern >*
 Experience::mutable_patterns() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.Experience.patterns)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.Experience.patterns)
   return &patterns_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Pattern >&
+inline const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Pattern >&
 Experience::patterns() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.Experience.patterns)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.Experience.patterns)
   return patterns_;
 }
 
@@ -1675,13 +1677,13 @@ inline void Experience::clear_time() {
   time_ = 0;
 }
 inline float Experience::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Experience.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Experience.time)
   return time_;
 }
 inline void Experience::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Experience.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Experience.time)
 }
 
 // optional float strength = 3;
@@ -1689,34 +1691,34 @@ inline void Experience::clear_strength() {
   strength_ = 0;
 }
 inline float Experience::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Experience.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Experience.strength)
   return strength_;
 }
 inline void Experience::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Experience.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Experience.strength)
 }
 
 // -------------------------------------------------------------------
 
 // HapticFile
 
-// optional .NullSpaceHaptics.HapticFile.Type type = 1;
+// optional .nsvr.detail.encoding.HapticFile.Type type = 1;
 inline void HapticFile::clear_type() {
   type_ = 0;
 }
-inline ::NullSpaceHaptics::HapticFile_Type HapticFile::type() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.type)
-  return static_cast< ::NullSpaceHaptics::HapticFile_Type >(type_);
+inline ::nsvr::detail::encoding::HapticFile_Type HapticFile::type() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.type)
+  return static_cast< ::nsvr::detail::encoding::HapticFile_Type >(type_);
 }
-inline void HapticFile::set_type(::NullSpaceHaptics::HapticFile_Type value) {
+inline void HapticFile::set_type(::nsvr::detail::encoding::HapticFile_Type value) {
   
   type_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.HapticFile.type)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.HapticFile.type)
 }
 
-// optional .NullSpaceHaptics.Sequence sequence = 2;
+// optional .nsvr.detail.encoding.Sequence sequence = 2;
 inline bool HapticFile::has_sequence() const {
   return !_is_default_instance_ && sequence_ != NULL;
 }
@@ -1724,26 +1726,26 @@ inline void HapticFile::clear_sequence() {
   if (GetArenaNoVirtual() == NULL && sequence_ != NULL) delete sequence_;
   sequence_ = NULL;
 }
-inline const ::NullSpaceHaptics::Sequence& HapticFile::sequence() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.sequence)
+inline const ::nsvr::detail::encoding::Sequence& HapticFile::sequence() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.sequence)
   return sequence_ != NULL ? *sequence_ : *default_instance_->sequence_;
 }
-inline ::NullSpaceHaptics::Sequence* HapticFile::mutable_sequence() {
+inline ::nsvr::detail::encoding::Sequence* HapticFile::mutable_sequence() {
   
   if (sequence_ == NULL) {
-    sequence_ = new ::NullSpaceHaptics::Sequence;
+    sequence_ = new ::nsvr::detail::encoding::Sequence;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticFile.sequence)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticFile.sequence)
   return sequence_;
 }
-inline ::NullSpaceHaptics::Sequence* HapticFile::release_sequence() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticFile.sequence)
+inline ::nsvr::detail::encoding::Sequence* HapticFile::release_sequence() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticFile.sequence)
   
-  ::NullSpaceHaptics::Sequence* temp = sequence_;
+  ::nsvr::detail::encoding::Sequence* temp = sequence_;
   sequence_ = NULL;
   return temp;
 }
-inline void HapticFile::set_allocated_sequence(::NullSpaceHaptics::Sequence* sequence) {
+inline void HapticFile::set_allocated_sequence(::nsvr::detail::encoding::Sequence* sequence) {
   delete sequence_;
   sequence_ = sequence;
   if (sequence) {
@@ -1751,10 +1753,10 @@ inline void HapticFile::set_allocated_sequence(::NullSpaceHaptics::Sequence* seq
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticFile.sequence)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticFile.sequence)
 }
 
-// optional .NullSpaceHaptics.Pattern pattern = 3;
+// optional .nsvr.detail.encoding.Pattern pattern = 3;
 inline bool HapticFile::has_pattern() const {
   return !_is_default_instance_ && pattern_ != NULL;
 }
@@ -1762,26 +1764,26 @@ inline void HapticFile::clear_pattern() {
   if (GetArenaNoVirtual() == NULL && pattern_ != NULL) delete pattern_;
   pattern_ = NULL;
 }
-inline const ::NullSpaceHaptics::Pattern& HapticFile::pattern() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.pattern)
+inline const ::nsvr::detail::encoding::Pattern& HapticFile::pattern() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.pattern)
   return pattern_ != NULL ? *pattern_ : *default_instance_->pattern_;
 }
-inline ::NullSpaceHaptics::Pattern* HapticFile::mutable_pattern() {
+inline ::nsvr::detail::encoding::Pattern* HapticFile::mutable_pattern() {
   
   if (pattern_ == NULL) {
-    pattern_ = new ::NullSpaceHaptics::Pattern;
+    pattern_ = new ::nsvr::detail::encoding::Pattern;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticFile.pattern)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticFile.pattern)
   return pattern_;
 }
-inline ::NullSpaceHaptics::Pattern* HapticFile::release_pattern() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticFile.pattern)
+inline ::nsvr::detail::encoding::Pattern* HapticFile::release_pattern() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticFile.pattern)
   
-  ::NullSpaceHaptics::Pattern* temp = pattern_;
+  ::nsvr::detail::encoding::Pattern* temp = pattern_;
   pattern_ = NULL;
   return temp;
 }
-inline void HapticFile::set_allocated_pattern(::NullSpaceHaptics::Pattern* pattern) {
+inline void HapticFile::set_allocated_pattern(::nsvr::detail::encoding::Pattern* pattern) {
   delete pattern_;
   pattern_ = pattern;
   if (pattern) {
@@ -1789,10 +1791,10 @@ inline void HapticFile::set_allocated_pattern(::NullSpaceHaptics::Pattern* patte
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticFile.pattern)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticFile.pattern)
 }
 
-// optional .NullSpaceHaptics.Experience experience = 4;
+// optional .nsvr.detail.encoding.Experience experience = 4;
 inline bool HapticFile::has_experience() const {
   return !_is_default_instance_ && experience_ != NULL;
 }
@@ -1800,26 +1802,26 @@ inline void HapticFile::clear_experience() {
   if (GetArenaNoVirtual() == NULL && experience_ != NULL) delete experience_;
   experience_ = NULL;
 }
-inline const ::NullSpaceHaptics::Experience& HapticFile::experience() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.experience)
+inline const ::nsvr::detail::encoding::Experience& HapticFile::experience() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.experience)
   return experience_ != NULL ? *experience_ : *default_instance_->experience_;
 }
-inline ::NullSpaceHaptics::Experience* HapticFile::mutable_experience() {
+inline ::nsvr::detail::encoding::Experience* HapticFile::mutable_experience() {
   
   if (experience_ == NULL) {
-    experience_ = new ::NullSpaceHaptics::Experience;
+    experience_ = new ::nsvr::detail::encoding::Experience;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticFile.experience)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticFile.experience)
   return experience_;
 }
-inline ::NullSpaceHaptics::Experience* HapticFile::release_experience() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticFile.experience)
+inline ::nsvr::detail::encoding::Experience* HapticFile::release_experience() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticFile.experience)
   
-  ::NullSpaceHaptics::Experience* temp = experience_;
+  ::nsvr::detail::encoding::Experience* temp = experience_;
   experience_ = NULL;
   return temp;
 }
-inline void HapticFile::set_allocated_experience(::NullSpaceHaptics::Experience* experience) {
+inline void HapticFile::set_allocated_experience(::nsvr::detail::encoding::Experience* experience) {
   delete experience_;
   experience_ = experience;
   if (experience) {
@@ -1827,7 +1829,7 @@ inline void HapticFile::set_allocated_experience(::NullSpaceHaptics::Experience*
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticFile.experience)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticFile.experience)
 }
 
 // -------------------------------------------------------------------
@@ -1839,32 +1841,32 @@ inline void RootEffect::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& RootEffect::name() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.RootEffect.name)
   return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void RootEffect::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.RootEffect.name)
 }
 inline void RootEffect::set_name(const char* value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.RootEffect.name)
 }
 inline void RootEffect::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.RootEffect.name)
 }
 inline ::std::string* RootEffect::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.RootEffect.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* RootEffect::release_name() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.RootEffect.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1875,21 +1877,21 @@ inline void RootEffect::set_allocated_name(::std::string* name) {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.RootEffect.name)
 }
 
-// optional .NullSpaceHaptics.RootEffect.Type type = 2;
+// optional .nsvr.detail.encoding.RootEffect.Type type = 2;
 inline void RootEffect::clear_type() {
   type_ = 0;
 }
-inline ::NullSpaceHaptics::RootEffect_Type RootEffect::type() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.RootEffect.type)
-  return static_cast< ::NullSpaceHaptics::RootEffect_Type >(type_);
+inline ::nsvr::detail::encoding::RootEffect_Type RootEffect::type() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.RootEffect.type)
+  return static_cast< ::nsvr::detail::encoding::RootEffect_Type >(type_);
 }
-inline void RootEffect::set_type(::NullSpaceHaptics::RootEffect_Type value) {
+inline void RootEffect::set_type(::nsvr::detail::encoding::RootEffect_Type value) {
   
   type_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.RootEffect.type)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.RootEffect.type)
 }
 
 // -------------------------------------------------------------------
@@ -1901,13 +1903,13 @@ inline void PatternNode::clear_time() {
   time_ = 0;
 }
 inline float PatternNode::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.time)
   return time_;
 }
 inline void PatternNode::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.time)
 }
 
 // optional string sequence = 2;
@@ -1915,32 +1917,32 @@ inline void PatternNode::clear_sequence() {
   sequence_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& PatternNode::sequence() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.sequence)
   return sequence_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void PatternNode::set_sequence(const ::std::string& value) {
   
   sequence_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.sequence)
 }
 inline void PatternNode::set_sequence(const char* value) {
   
   sequence_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.PatternNode.sequence)
 }
 inline void PatternNode::set_sequence(const char* value, size_t size) {
   
   sequence_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.PatternNode.sequence)
 }
 inline ::std::string* PatternNode::mutable_sequence() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.PatternNode.sequence)
   return sequence_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* PatternNode::release_sequence() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.PatternNode.sequence)
   
   return sequence_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1951,7 +1953,7 @@ inline void PatternNode::set_allocated_sequence(::std::string* sequence) {
     
   }
   sequence_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sequence);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.PatternNode.sequence)
 }
 
 // optional uint32 area = 3;
@@ -1959,13 +1961,13 @@ inline void PatternNode::clear_area() {
   area_ = 0u;
 }
 inline ::google::protobuf::uint32 PatternNode::area() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.area)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.area)
   return area_;
 }
 inline void PatternNode::set_area(::google::protobuf::uint32 value) {
   
   area_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.area)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.area)
 }
 
 // optional float strength = 4;
@@ -1973,13 +1975,13 @@ inline void PatternNode::clear_strength() {
   strength_ = 0;
 }
 inline float PatternNode::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.strength)
   return strength_;
 }
 inline void PatternNode::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.strength)
 }
 
 // -------------------------------------------------------------------
@@ -1991,13 +1993,13 @@ inline void ExperienceNode::clear_time() {
   time_ = 0;
 }
 inline float ExperienceNode::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceNode.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceNode.time)
   return time_;
 }
 inline void ExperienceNode::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.ExperienceNode.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.ExperienceNode.time)
 }
 
 // optional string pattern = 2;
@@ -2005,32 +2007,32 @@ inline void ExperienceNode::clear_pattern() {
   pattern_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& ExperienceNode::pattern() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceNode.pattern)
   return pattern_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void ExperienceNode::set_pattern(const ::std::string& value) {
   
   pattern_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.ExperienceNode.pattern)
 }
 inline void ExperienceNode::set_pattern(const char* value) {
   
   pattern_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.ExperienceNode.pattern)
 }
 inline void ExperienceNode::set_pattern(const char* value, size_t size) {
   
   pattern_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.ExperienceNode.pattern)
 }
 inline ::std::string* ExperienceNode::mutable_pattern() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.ExperienceNode.pattern)
   return pattern_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* ExperienceNode::release_pattern() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.ExperienceNode.pattern)
   
   return pattern_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -2041,7 +2043,7 @@ inline void ExperienceNode::set_allocated_pattern(::std::string* pattern) {
     
   }
   pattern_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), pattern);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.ExperienceNode.pattern)
 }
 
 // optional float strength = 3;
@@ -2049,46 +2051,46 @@ inline void ExperienceNode::clear_strength() {
   strength_ = 0;
 }
 inline float ExperienceNode::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceNode.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceNode.strength)
   return strength_;
 }
 inline void ExperienceNode::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.ExperienceNode.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.ExperienceNode.strength)
 }
 
 // -------------------------------------------------------------------
 
 // SequenceDefinitions
 
-// repeated .NullSpaceHaptics.Effect effects = 1;
+// repeated .nsvr.detail.encoding.Effect effects = 1;
 inline int SequenceDefinitions::effects_size() const {
   return effects_.size();
 }
 inline void SequenceDefinitions::clear_effects() {
   effects_.Clear();
 }
-inline const ::NullSpaceHaptics::Effect& SequenceDefinitions::effects(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.SequenceDefinitions.effects)
+inline const ::nsvr::detail::encoding::Effect& SequenceDefinitions::effects(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_.Get(index);
 }
-inline ::NullSpaceHaptics::Effect* SequenceDefinitions::mutable_effects(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.SequenceDefinitions.effects)
+inline ::nsvr::detail::encoding::Effect* SequenceDefinitions::mutable_effects(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_.Mutable(index);
 }
-inline ::NullSpaceHaptics::Effect* SequenceDefinitions::add_effects() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.SequenceDefinitions.effects)
+inline ::nsvr::detail::encoding::Effect* SequenceDefinitions::add_effects() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >*
+inline ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >*
 SequenceDefinitions::mutable_effects() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.SequenceDefinitions.effects)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.SequenceDefinitions.effects)
   return &effects_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >&
+inline const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >&
 SequenceDefinitions::effects() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.SequenceDefinitions.effects)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_;
 }
 
@@ -2096,33 +2098,33 @@ SequenceDefinitions::effects() const {
 
 // PatternDefinitions
 
-// repeated .NullSpaceHaptics.PatternNode pattern_nodes = 1;
+// repeated .nsvr.detail.encoding.PatternNode pattern_nodes = 1;
 inline int PatternDefinitions::pattern_nodes_size() const {
   return pattern_nodes_.size();
 }
 inline void PatternDefinitions::clear_pattern_nodes() {
   pattern_nodes_.Clear();
 }
-inline const ::NullSpaceHaptics::PatternNode& PatternDefinitions::pattern_nodes(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+inline const ::nsvr::detail::encoding::PatternNode& PatternDefinitions::pattern_nodes(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_.Get(index);
 }
-inline ::NullSpaceHaptics::PatternNode* PatternDefinitions::mutable_pattern_nodes(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+inline ::nsvr::detail::encoding::PatternNode* PatternDefinitions::mutable_pattern_nodes(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_.Mutable(index);
 }
-inline ::NullSpaceHaptics::PatternNode* PatternDefinitions::add_pattern_nodes() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+inline ::nsvr::detail::encoding::PatternNode* PatternDefinitions::add_pattern_nodes() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::PatternNode >*
+inline ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::PatternNode >*
 PatternDefinitions::mutable_pattern_nodes() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return &pattern_nodes_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::PatternNode >&
+inline const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::PatternNode >&
 PatternDefinitions::pattern_nodes() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_;
 }
 
@@ -2130,33 +2132,33 @@ PatternDefinitions::pattern_nodes() const {
 
 // ExperienceDefinitions
 
-// repeated .NullSpaceHaptics.ExperienceNode experience_nodes = 1;
+// repeated .nsvr.detail.encoding.ExperienceNode experience_nodes = 1;
 inline int ExperienceDefinitions::experience_nodes_size() const {
   return experience_nodes_.size();
 }
 inline void ExperienceDefinitions::clear_experience_nodes() {
   experience_nodes_.Clear();
 }
-inline const ::NullSpaceHaptics::ExperienceNode& ExperienceDefinitions::experience_nodes(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+inline const ::nsvr::detail::encoding::ExperienceNode& ExperienceDefinitions::experience_nodes(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_.Get(index);
 }
-inline ::NullSpaceHaptics::ExperienceNode* ExperienceDefinitions::mutable_experience_nodes(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+inline ::nsvr::detail::encoding::ExperienceNode* ExperienceDefinitions::mutable_experience_nodes(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_.Mutable(index);
 }
-inline ::NullSpaceHaptics::ExperienceNode* ExperienceDefinitions::add_experience_nodes() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+inline ::nsvr::detail::encoding::ExperienceNode* ExperienceDefinitions::add_experience_nodes() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_.Add();
 }
-inline ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::ExperienceNode >*
+inline ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::ExperienceNode >*
 ExperienceDefinitions::mutable_experience_nodes() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return &experience_nodes_;
 }
-inline const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::ExperienceNode >&
+inline const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::ExperienceNode >&
 ExperienceDefinitions::experience_nodes() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_;
 }
 
@@ -2164,7 +2166,7 @@ ExperienceDefinitions::experience_nodes() const {
 
 // HapticDescriptionFile
 
-// optional .NullSpaceHaptics.RootEffect effect = 1;
+// optional .nsvr.detail.encoding.RootEffect effect = 1;
 inline bool HapticDescriptionFile::has_effect() const {
   return !_is_default_instance_ && effect_ != NULL;
 }
@@ -2172,26 +2174,26 @@ inline void HapticDescriptionFile::clear_effect() {
   if (GetArenaNoVirtual() == NULL && effect_ != NULL) delete effect_;
   effect_ = NULL;
 }
-inline const ::NullSpaceHaptics::RootEffect& HapticDescriptionFile::effect() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticDescriptionFile.effect)
+inline const ::nsvr::detail::encoding::RootEffect& HapticDescriptionFile::effect() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticDescriptionFile.effect)
   return effect_ != NULL ? *effect_ : *default_instance_->effect_;
 }
-inline ::NullSpaceHaptics::RootEffect* HapticDescriptionFile::mutable_effect() {
+inline ::nsvr::detail::encoding::RootEffect* HapticDescriptionFile::mutable_effect() {
   
   if (effect_ == NULL) {
-    effect_ = new ::NullSpaceHaptics::RootEffect;
+    effect_ = new ::nsvr::detail::encoding::RootEffect;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticDescriptionFile.effect)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticDescriptionFile.effect)
   return effect_;
 }
-inline ::NullSpaceHaptics::RootEffect* HapticDescriptionFile::release_effect() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticDescriptionFile.effect)
+inline ::nsvr::detail::encoding::RootEffect* HapticDescriptionFile::release_effect() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticDescriptionFile.effect)
   
-  ::NullSpaceHaptics::RootEffect* temp = effect_;
+  ::nsvr::detail::encoding::RootEffect* temp = effect_;
   effect_ = NULL;
   return temp;
 }
-inline void HapticDescriptionFile::set_allocated_effect(::NullSpaceHaptics::RootEffect* effect) {
+inline void HapticDescriptionFile::set_allocated_effect(::nsvr::detail::encoding::RootEffect* effect) {
   delete effect_;
   effect_ = effect;
   if (effect) {
@@ -2199,60 +2201,60 @@ inline void HapticDescriptionFile::set_allocated_effect(::NullSpaceHaptics::Root
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticDescriptionFile.effect)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticDescriptionFile.effect)
 }
 
-// map<string, .NullSpaceHaptics.SequenceDefinitions> sequence_definitions = 2;
+// map<string, .nsvr.detail.encoding.SequenceDefinitions> sequence_definitions = 2;
 inline int HapticDescriptionFile::sequence_definitions_size() const {
   return sequence_definitions_.size();
 }
 inline void HapticDescriptionFile::clear_sequence_definitions() {
   sequence_definitions_.Clear();
 }
-inline const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >&
+inline const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >&
 HapticDescriptionFile::sequence_definitions() const {
-  // @@protoc_insertion_point(field_map:NullSpaceHaptics.HapticDescriptionFile.sequence_definitions)
+  // @@protoc_insertion_point(field_map:nsvr.detail.encoding.HapticDescriptionFile.sequence_definitions)
   return sequence_definitions_.GetMap();
 }
-inline ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >*
+inline ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >*
 HapticDescriptionFile::mutable_sequence_definitions() {
-  // @@protoc_insertion_point(field_mutable_map:NullSpaceHaptics.HapticDescriptionFile.sequence_definitions)
+  // @@protoc_insertion_point(field_mutable_map:nsvr.detail.encoding.HapticDescriptionFile.sequence_definitions)
   return sequence_definitions_.MutableMap();
 }
 
-// map<string, .NullSpaceHaptics.PatternDefinitions> pattern_definitions = 3;
+// map<string, .nsvr.detail.encoding.PatternDefinitions> pattern_definitions = 3;
 inline int HapticDescriptionFile::pattern_definitions_size() const {
   return pattern_definitions_.size();
 }
 inline void HapticDescriptionFile::clear_pattern_definitions() {
   pattern_definitions_.Clear();
 }
-inline const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >&
+inline const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >&
 HapticDescriptionFile::pattern_definitions() const {
-  // @@protoc_insertion_point(field_map:NullSpaceHaptics.HapticDescriptionFile.pattern_definitions)
+  // @@protoc_insertion_point(field_map:nsvr.detail.encoding.HapticDescriptionFile.pattern_definitions)
   return pattern_definitions_.GetMap();
 }
-inline ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >*
+inline ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >*
 HapticDescriptionFile::mutable_pattern_definitions() {
-  // @@protoc_insertion_point(field_mutable_map:NullSpaceHaptics.HapticDescriptionFile.pattern_definitions)
+  // @@protoc_insertion_point(field_mutable_map:nsvr.detail.encoding.HapticDescriptionFile.pattern_definitions)
   return pattern_definitions_.MutableMap();
 }
 
-// map<string, .NullSpaceHaptics.ExperienceDefinitions> experience_definitions = 4;
+// map<string, .nsvr.detail.encoding.ExperienceDefinitions> experience_definitions = 4;
 inline int HapticDescriptionFile::experience_definitions_size() const {
   return experience_definitions_.size();
 }
 inline void HapticDescriptionFile::clear_experience_definitions() {
   experience_definitions_.Clear();
 }
-inline const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >&
+inline const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >&
 HapticDescriptionFile::experience_definitions() const {
-  // @@protoc_insertion_point(field_map:NullSpaceHaptics.HapticDescriptionFile.experience_definitions)
+  // @@protoc_insertion_point(field_map:nsvr.detail.encoding.HapticDescriptionFile.experience_definitions)
   return experience_definitions_.GetMap();
 }
-inline ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >*
+inline ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >*
 HapticDescriptionFile::mutable_experience_definitions() {
-  // @@protoc_insertion_point(field_mutable_map:NullSpaceHaptics.HapticDescriptionFile.experience_definitions)
+  // @@protoc_insertion_point(field_mutable_map:nsvr.detail.encoding.HapticDescriptionFile.experience_definitions)
   return experience_definitions_.MutableMap();
 }
 
@@ -2282,21 +2284,23 @@ HapticDescriptionFile::mutable_experience_definitions() {
 
 // @@protoc_insertion_point(namespace_scope)
 
-}  // namespace NullSpaceHaptics
+}  // namespace encoding
+}  // namespace detail
+}  // namespace nsvr
 
 #ifndef SWIG
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::NullSpaceHaptics::HapticFile_Type> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::nsvr::detail::encoding::HapticFile_Type> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::NullSpaceHaptics::HapticFile_Type>() {
-  return ::NullSpaceHaptics::HapticFile_Type_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::nsvr::detail::encoding::HapticFile_Type>() {
+  return ::nsvr::detail::encoding::HapticFile_Type_descriptor();
 }
-template <> struct is_proto_enum< ::NullSpaceHaptics::RootEffect_Type> : ::google::protobuf::internal::true_type {};
+template <> struct is_proto_enum< ::nsvr::detail::encoding::RootEffect_Type> : ::google::protobuf::internal::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::NullSpaceHaptics::RootEffect_Type>() {
-  return ::NullSpaceHaptics::RootEffect_Type_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::nsvr::detail::encoding::RootEffect_Type>() {
+  return ::nsvr::detail::encoding::RootEffect_Type_descriptor();
 }
 
 }  // namespace protobuf

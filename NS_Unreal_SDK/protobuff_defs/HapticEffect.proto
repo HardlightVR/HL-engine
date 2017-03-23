@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package NullSpaceHaptics;
+package nsvr.detail.encoding;
 
 message Effect {
 	float time = 1;

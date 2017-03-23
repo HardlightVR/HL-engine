@@ -17,7 +17,9 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 
-namespace NullSpaceHaptics {
+namespace nsvr {
+namespace detail {
+namespace encoding {
 
 namespace {
 
@@ -321,7 +323,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
         HapticDescriptionFile_SequenceDefinitionsEntry_descriptor_,
         ::google::protobuf::internal::MapEntry<
             ::std::string,
-            ::NullSpaceHaptics::SequenceDefinitions,
+            ::nsvr::detail::encoding::SequenceDefinitions,
             ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
             ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
             0>::CreateDefaultInstance(
@@ -330,7 +332,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
         HapticDescriptionFile_PatternDefinitionsEntry_descriptor_,
         ::google::protobuf::internal::MapEntry<
             ::std::string,
-            ::NullSpaceHaptics::PatternDefinitions,
+            ::nsvr::detail::encoding::PatternDefinitions,
             ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
             ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
             0>::CreateDefaultInstance(
@@ -339,7 +341,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
         HapticDescriptionFile_ExperienceDefinitionsEntry_descriptor_,
         ::google::protobuf::internal::MapEntry<
             ::std::string,
-            ::NullSpaceHaptics::ExperienceDefinitions,
+            ::nsvr::detail::encoding::ExperienceDefinitions,
             ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
             ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
             0>::CreateDefaultInstance(
@@ -383,53 +385,55 @@ void protobuf_AddDesc_HapticEffect_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\022HapticEffect.proto\022\020NullSpaceHaptics\"J"
-    "\n\006Effect\022\014\n\004time\030\001 \001(\002\022\016\n\006effect\030\002 \001(\t\022\020"
-    "\n\010strength\030\003 \001(\002\022\020\n\010duration\030\004 \001(\002\"c\n\010Se"
-    "quence\022)\n\007effects\030\001 \003(\0132\030.NullSpaceHapti"
-    "cs.Effect\022\014\n\004time\030\002 \001(\002\022\020\n\010strength\030\003 \001("
-    "\002\022\014\n\004area\030\004 \001(\r\"X\n\007Pattern\022-\n\tsequences\030"
-    "\001 \003(\0132\032.NullSpaceHaptics.Sequence\022\014\n\004tim"
-    "e\030\002 \001(\002\022\020\n\010strength\030\003 \001(\002\"Y\n\nExperience\022"
-    "+\n\010patterns\030\001 \003(\0132\031.NullSpaceHaptics.Pat"
-    "tern\022\014\n\004time\030\002 \001(\002\022\020\n\010strength\030\003 \001(\002\"\211\002\n"
-    "\nHapticFile\022/\n\004type\030\001 \001(\0162!.NullSpaceHap"
-    "tics.HapticFile.Type\022,\n\010sequence\030\002 \001(\0132\032"
-    ".NullSpaceHaptics.Sequence\022*\n\007pattern\030\003 "
-    "\001(\0132\031.NullSpaceHaptics.Pattern\0220\n\nexperi"
-    "ence\030\004 \001(\0132\034.NullSpaceHaptics.Experience"
-    "\">\n\004Type\022\013\n\007UNKNOWN\020\000\022\014\n\010SEQUENCE\020\001\022\013\n\007P"
-    "ATTERN\020\002\022\016\n\nEXPERIENCE\020\003\"\213\001\n\nRootEffect\022"
-    "\014\n\004name\030\001 \001(\t\022/\n\004type\030\002 \001(\0162!.NullSpaceH"
-    "aptics.RootEffect.Type\">\n\004Type\022\013\n\007UNKNOW"
-    "N\020\000\022\014\n\010SEQUENCE\020\001\022\013\n\007PATTERN\020\002\022\016\n\nEXPERI"
-    "ENCE\020\003\"M\n\013PatternNode\022\014\n\004time\030\001 \001(\002\022\020\n\010s"
-    "equence\030\002 \001(\t\022\014\n\004area\030\003 \001(\r\022\020\n\010strength\030"
-    "\004 \001(\002\"A\n\016ExperienceNode\022\014\n\004time\030\001 \001(\002\022\017\n"
-    "\007pattern\030\002 \001(\t\022\020\n\010strength\030\003 \001(\002\"@\n\023Sequ"
-    "enceDefinitions\022)\n\007effects\030\001 \003(\0132\030.NullS"
-    "paceHaptics.Effect\"J\n\022PatternDefinitions"
-    "\0224\n\rpattern_nodes\030\001 \003(\0132\035.NullSpaceHapti"
-    "cs.PatternNode\"S\n\025ExperienceDefinitions\022"
-    ":\n\020experience_nodes\030\001 \003(\0132 .NullSpaceHap"
-    "tics.ExperienceNode\"\222\005\n\025HapticDescriptio"
-    "nFile\022,\n\006effect\030\001 \001(\0132\034.NullSpaceHaptics"
-    ".RootEffect\022^\n\024sequence_definitions\030\002 \003("
-    "\0132@.NullSpaceHaptics.HapticDescriptionFi"
-    "le.SequenceDefinitionsEntry\022\\\n\023pattern_d"
-    "efinitions\030\003 \003(\0132\?.NullSpaceHaptics.Hapt"
-    "icDescriptionFile.PatternDefinitionsEntr"
-    "y\022b\n\026experience_definitions\030\004 \003(\0132B.Null"
-    "SpaceHaptics.HapticDescriptionFile.Exper"
-    "ienceDefinitionsEntry\032a\n\030SequenceDefinit"
-    "ionsEntry\022\013\n\003key\030\001 \001(\t\0224\n\005value\030\002 \001(\0132%."
-    "NullSpaceHaptics.SequenceDefinitions:\0028\001"
-    "\032_\n\027PatternDefinitionsEntry\022\013\n\003key\030\001 \001(\t"
-    "\0223\n\005value\030\002 \001(\0132$.NullSpaceHaptics.Patte"
-    "rnDefinitions:\0028\001\032e\n\032ExperienceDefinitio"
-    "nsEntry\022\013\n\003key\030\001 \001(\t\0226\n\005value\030\002 \001(\0132\'.Nu"
-    "llSpaceHaptics.ExperienceDefinitions:\0028\001"
-    "b\006proto3", 1848);
+    "\n\022HapticEffect.proto\022\024nsvr.detail.encodi"
+    "ng\"J\n\006Effect\022\014\n\004time\030\001 \001(\002\022\016\n\006effect\030\002 \001"
+    "(\t\022\020\n\010strength\030\003 \001(\002\022\020\n\010duration\030\004 \001(\002\"g"
+    "\n\010Sequence\022-\n\007effects\030\001 \003(\0132\034.nsvr.detai"
+    "l.encoding.Effect\022\014\n\004time\030\002 \001(\002\022\020\n\010stren"
+    "gth\030\003 \001(\002\022\014\n\004area\030\004 \001(\r\"\\\n\007Pattern\0221\n\tse"
+    "quences\030\001 \003(\0132\036.nsvr.detail.encoding.Seq"
+    "uence\022\014\n\004time\030\002 \001(\002\022\020\n\010strength\030\003 \001(\002\"]\n"
+    "\nExperience\022/\n\010patterns\030\001 \003(\0132\035.nsvr.det"
+    "ail.encoding.Pattern\022\014\n\004time\030\002 \001(\002\022\020\n\010st"
+    "rength\030\003 \001(\002\"\231\002\n\nHapticFile\0223\n\004type\030\001 \001("
+    "\0162%.nsvr.detail.encoding.HapticFile.Type"
+    "\0220\n\010sequence\030\002 \001(\0132\036.nsvr.detail.encodin"
+    "g.Sequence\022.\n\007pattern\030\003 \001(\0132\035.nsvr.detai"
+    "l.encoding.Pattern\0224\n\nexperience\030\004 \001(\0132 "
+    ".nsvr.detail.encoding.Experience\">\n\004Type"
+    "\022\013\n\007UNKNOWN\020\000\022\014\n\010SEQUENCE\020\001\022\013\n\007PATTERN\020\002"
+    "\022\016\n\nEXPERIENCE\020\003\"\217\001\n\nRootEffect\022\014\n\004name\030"
+    "\001 \001(\t\0223\n\004type\030\002 \001(\0162%.nsvr.detail.encodi"
+    "ng.RootEffect.Type\">\n\004Type\022\013\n\007UNKNOWN\020\000\022"
+    "\014\n\010SEQUENCE\020\001\022\013\n\007PATTERN\020\002\022\016\n\nEXPERIENCE"
+    "\020\003\"M\n\013PatternNode\022\014\n\004time\030\001 \001(\002\022\020\n\010seque"
+    "nce\030\002 \001(\t\022\014\n\004area\030\003 \001(\r\022\020\n\010strength\030\004 \001("
+    "\002\"A\n\016ExperienceNode\022\014\n\004time\030\001 \001(\002\022\017\n\007pat"
+    "tern\030\002 \001(\t\022\020\n\010strength\030\003 \001(\002\"D\n\023Sequence"
+    "Definitions\022-\n\007effects\030\001 \003(\0132\034.nsvr.deta"
+    "il.encoding.Effect\"N\n\022PatternDefinitions"
+    "\0228\n\rpattern_nodes\030\001 \003(\0132!.nsvr.detail.en"
+    "coding.PatternNode\"W\n\025ExperienceDefiniti"
+    "ons\022>\n\020experience_nodes\030\001 \003(\0132$.nsvr.det"
+    "ail.encoding.ExperienceNode\"\256\005\n\025HapticDe"
+    "scriptionFile\0220\n\006effect\030\001 \001(\0132 .nsvr.det"
+    "ail.encoding.RootEffect\022b\n\024sequence_defi"
+    "nitions\030\002 \003(\0132D.nsvr.detail.encoding.Hap"
+    "ticDescriptionFile.SequenceDefinitionsEn"
+    "try\022`\n\023pattern_definitions\030\003 \003(\0132C.nsvr."
+    "detail.encoding.HapticDescriptionFile.Pa"
+    "tternDefinitionsEntry\022f\n\026experience_defi"
+    "nitions\030\004 \003(\0132F.nsvr.detail.encoding.Hap"
+    "ticDescriptionFile.ExperienceDefinitions"
+    "Entry\032e\n\030SequenceDefinitionsEntry\022\013\n\003key"
+    "\030\001 \001(\t\0228\n\005value\030\002 \001(\0132).nsvr.detail.enco"
+    "ding.SequenceDefinitions:\0028\001\032c\n\027PatternD"
+    "efinitionsEntry\022\013\n\003key\030\001 \001(\t\0227\n\005value\030\002 "
+    "\001(\0132(.nsvr.detail.encoding.PatternDefini"
+    "tions:\0028\001\032i\n\032ExperienceDefinitionsEntry\022"
+    "\013\n\003key\030\001 \001(\t\022:\n\005value\030\002 \001(\0132+.nsvr.detai"
+    "l.encoding.ExperienceDefinitions:\0028\001b\006pr"
+    "oto3", 1924);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "HapticEffect.proto", &protobuf_RegisterTypes);
   Effect::default_instance_ = new Effect();
@@ -478,7 +482,7 @@ const int Effect::kDurationFieldNumber;
 Effect::Effect()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.Effect)
 }
 
 void Effect::InitAsDefaultInstance() {
@@ -490,7 +494,7 @@ Effect::Effect(const Effect& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.Effect)
 }
 
 void Effect::SharedCtor() {
@@ -504,7 +508,7 @@ void Effect::SharedCtor() {
 }
 
 Effect::~Effect() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.Effect)
   SharedDtor();
 }
 
@@ -540,7 +544,7 @@ Effect* Effect::New(::google::protobuf::Arena* arena) const {
 }
 
 void Effect::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.Effect)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.Effect)
 #if defined(__clang__)
 #define ZR_HELPER_(f) \
   _Pragma("clang diagnostic push") \
@@ -569,7 +573,7 @@ bool Effect::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.Effect)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
@@ -598,7 +602,7 @@ bool Effect::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->effect().data(), this->effect().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "NullSpaceHaptics.Effect.effect"));
+            "nsvr.detail.encoding.Effect.effect"));
         } else {
           goto handle_unusual;
         }
@@ -649,17 +653,17 @@ bool Effect::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.Effect)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.Effect)
   return false;
 #undef DO_
 }
 
 void Effect::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.Effect)
   // optional float time = 1;
   if (this->time() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->time(), output);
@@ -670,7 +674,7 @@ void Effect::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->effect().data(), this->effect().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.Effect.effect");
+      "nsvr.detail.encoding.Effect.effect");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->effect(), output);
   }
@@ -685,12 +689,12 @@ void Effect::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->duration(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.Effect)
 }
 
 ::google::protobuf::uint8* Effect::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.Effect)
   // optional float time = 1;
   if (this->time() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->time(), target);
@@ -701,7 +705,7 @@ void Effect::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->effect().data(), this->effect().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.Effect.effect");
+      "nsvr.detail.encoding.Effect.effect");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->effect(), target);
@@ -717,12 +721,12 @@ void Effect::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->duration(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.Effect)
   return target;
 }
 
 int Effect::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.Effect)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.Effect)
   int total_size = 0;
 
   // optional float time = 1;
@@ -754,7 +758,7 @@ int Effect::ByteSize() const {
 }
 
 void Effect::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.Effect)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.Effect)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -762,16 +766,16 @@ void Effect::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const Effect>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.Effect)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.Effect)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.Effect)
     MergeFrom(*source);
   }
 }
 
 void Effect::MergeFrom(const Effect& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.Effect)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.Effect)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -791,14 +795,14 @@ void Effect::MergeFrom(const Effect& from) {
 }
 
 void Effect::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.Effect)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.Effect)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Effect::CopyFrom(const Effect& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.Effect)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.Effect)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -838,13 +842,13 @@ void Effect::clear_time() {
   time_ = 0;
 }
  float Effect::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.time)
   return time_;
 }
  void Effect::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.time)
 }
 
 // optional string effect = 2;
@@ -852,32 +856,32 @@ void Effect::clear_effect() {
   effect_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  const ::std::string& Effect::effect() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.effect)
   return effect_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  void Effect::set_effect(const ::std::string& value) {
   
   effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.effect)
 }
  void Effect::set_effect(const char* value) {
   
   effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.Effect.effect)
 }
  void Effect::set_effect(const char* value, size_t size) {
   
   effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.Effect.effect)
 }
  ::std::string* Effect::mutable_effect() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Effect.effect)
   return effect_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  ::std::string* Effect::release_effect() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.Effect.effect)
   
   return effect_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -888,7 +892,7 @@ void Effect::clear_effect() {
     
   }
   effect_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), effect);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.Effect.effect)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.Effect.effect)
 }
 
 // optional float strength = 3;
@@ -896,13 +900,13 @@ void Effect::clear_strength() {
   strength_ = 0;
 }
  float Effect::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.strength)
   return strength_;
 }
  void Effect::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.strength)
 }
 
 // optional float duration = 4;
@@ -910,13 +914,13 @@ void Effect::clear_duration() {
   duration_ = 0;
 }
  float Effect::duration() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Effect.duration)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Effect.duration)
   return duration_;
 }
  void Effect::set_duration(float value) {
   
   duration_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Effect.duration)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Effect.duration)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -933,7 +937,7 @@ const int Sequence::kAreaFieldNumber;
 Sequence::Sequence()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.Sequence)
 }
 
 void Sequence::InitAsDefaultInstance() {
@@ -945,7 +949,7 @@ Sequence::Sequence(const Sequence& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.Sequence)
 }
 
 void Sequence::SharedCtor() {
@@ -957,7 +961,7 @@ void Sequence::SharedCtor() {
 }
 
 Sequence::~Sequence() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.Sequence)
   SharedDtor();
 }
 
@@ -992,7 +996,7 @@ Sequence* Sequence::New(::google::protobuf::Arena* arena) const {
 }
 
 void Sequence::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.Sequence)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.Sequence)
 #if defined(__clang__)
 #define ZR_HELPER_(f) \
   _Pragma("clang diagnostic push") \
@@ -1021,13 +1025,13 @@ bool Sequence::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.Sequence)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .NullSpaceHaptics.Effect effects = 1;
+      // repeated .nsvr.detail.encoding.Effect effects = 1;
       case 1: {
         if (tag == 10) {
           DO_(input->IncrementRecursionDepth());
@@ -1101,18 +1105,18 @@ bool Sequence::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.Sequence)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.Sequence)
   return false;
 #undef DO_
 }
 
 void Sequence::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.Sequence)
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.Sequence)
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   for (unsigned int i = 0, n = this->effects_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->effects(i), output);
@@ -1133,13 +1137,13 @@ void Sequence::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->area(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.Sequence)
 }
 
 ::google::protobuf::uint8* Sequence::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.Sequence)
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.Sequence)
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   for (unsigned int i = 0, n = this->effects_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
@@ -1161,12 +1165,12 @@ void Sequence::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->area(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.Sequence)
   return target;
 }
 
 int Sequence::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.Sequence)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.Sequence)
   int total_size = 0;
 
   // optional float time = 2;
@@ -1186,7 +1190,7 @@ int Sequence::ByteSize() const {
         this->area());
   }
 
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   total_size += 1 * this->effects_size();
   for (int i = 0; i < this->effects_size(); i++) {
     total_size +=
@@ -1201,7 +1205,7 @@ int Sequence::ByteSize() const {
 }
 
 void Sequence::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.Sequence)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.Sequence)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -1209,16 +1213,16 @@ void Sequence::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const Sequence>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.Sequence)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.Sequence)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.Sequence)
     MergeFrom(*source);
   }
 }
 
 void Sequence::MergeFrom(const Sequence& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.Sequence)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.Sequence)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -1235,14 +1239,14 @@ void Sequence::MergeFrom(const Sequence& from) {
 }
 
 void Sequence::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.Sequence)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.Sequence)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Sequence::CopyFrom(const Sequence& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.Sequence)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.Sequence)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1277,33 +1281,33 @@ void Sequence::InternalSwap(Sequence* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Sequence
 
-// repeated .NullSpaceHaptics.Effect effects = 1;
+// repeated .nsvr.detail.encoding.Effect effects = 1;
 int Sequence::effects_size() const {
   return effects_.size();
 }
 void Sequence::clear_effects() {
   effects_.Clear();
 }
-const ::NullSpaceHaptics::Effect& Sequence::effects(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.effects)
+const ::nsvr::detail::encoding::Effect& Sequence::effects(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.effects)
   return effects_.Get(index);
 }
-::NullSpaceHaptics::Effect* Sequence::mutable_effects(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Sequence.effects)
+::nsvr::detail::encoding::Effect* Sequence::mutable_effects(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Sequence.effects)
   return effects_.Mutable(index);
 }
-::NullSpaceHaptics::Effect* Sequence::add_effects() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.Sequence.effects)
+::nsvr::detail::encoding::Effect* Sequence::add_effects() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.Sequence.effects)
   return effects_.Add();
 }
-::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >*
+::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >*
 Sequence::mutable_effects() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.Sequence.effects)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.Sequence.effects)
   return &effects_;
 }
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >&
+const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >&
 Sequence::effects() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.Sequence.effects)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.Sequence.effects)
   return effects_;
 }
 
@@ -1312,13 +1316,13 @@ void Sequence::clear_time() {
   time_ = 0;
 }
  float Sequence::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.time)
   return time_;
 }
  void Sequence::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Sequence.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Sequence.time)
 }
 
 // optional float strength = 3;
@@ -1326,13 +1330,13 @@ void Sequence::clear_strength() {
   strength_ = 0;
 }
  float Sequence::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.strength)
   return strength_;
 }
  void Sequence::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Sequence.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Sequence.strength)
 }
 
 // optional uint32 area = 4;
@@ -1340,13 +1344,13 @@ void Sequence::clear_area() {
   area_ = 0u;
 }
  ::google::protobuf::uint32 Sequence::area() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Sequence.area)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Sequence.area)
   return area_;
 }
  void Sequence::set_area(::google::protobuf::uint32 value) {
   
   area_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Sequence.area)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Sequence.area)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -1362,7 +1366,7 @@ const int Pattern::kStrengthFieldNumber;
 Pattern::Pattern()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.Pattern)
 }
 
 void Pattern::InitAsDefaultInstance() {
@@ -1374,7 +1378,7 @@ Pattern::Pattern(const Pattern& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.Pattern)
 }
 
 void Pattern::SharedCtor() {
@@ -1385,7 +1389,7 @@ void Pattern::SharedCtor() {
 }
 
 Pattern::~Pattern() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.Pattern)
   SharedDtor();
 }
 
@@ -1420,7 +1424,7 @@ Pattern* Pattern::New(::google::protobuf::Arena* arena) const {
 }
 
 void Pattern::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.Pattern)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.Pattern)
 #if defined(__clang__)
 #define ZR_HELPER_(f) \
   _Pragma("clang diagnostic push") \
@@ -1449,13 +1453,13 @@ bool Pattern::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.Pattern)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .NullSpaceHaptics.Sequence sequences = 1;
+      // repeated .nsvr.detail.encoding.Sequence sequences = 1;
       case 1: {
         if (tag == 10) {
           DO_(input->IncrementRecursionDepth());
@@ -1514,18 +1518,18 @@ bool Pattern::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.Pattern)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.Pattern)
   return false;
 #undef DO_
 }
 
 void Pattern::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.Pattern)
-  // repeated .NullSpaceHaptics.Sequence sequences = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.Pattern)
+  // repeated .nsvr.detail.encoding.Sequence sequences = 1;
   for (unsigned int i = 0, n = this->sequences_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->sequences(i), output);
@@ -1541,13 +1545,13 @@ void Pattern::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->strength(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.Pattern)
 }
 
 ::google::protobuf::uint8* Pattern::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.Pattern)
-  // repeated .NullSpaceHaptics.Sequence sequences = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.Pattern)
+  // repeated .nsvr.detail.encoding.Sequence sequences = 1;
   for (unsigned int i = 0, n = this->sequences_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
@@ -1564,12 +1568,12 @@ void Pattern::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->strength(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.Pattern)
   return target;
 }
 
 int Pattern::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.Pattern)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.Pattern)
   int total_size = 0;
 
   // optional float time = 2;
@@ -1582,7 +1586,7 @@ int Pattern::ByteSize() const {
     total_size += 1 + 4;
   }
 
-  // repeated .NullSpaceHaptics.Sequence sequences = 1;
+  // repeated .nsvr.detail.encoding.Sequence sequences = 1;
   total_size += 1 * this->sequences_size();
   for (int i = 0; i < this->sequences_size(); i++) {
     total_size +=
@@ -1597,7 +1601,7 @@ int Pattern::ByteSize() const {
 }
 
 void Pattern::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.Pattern)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.Pattern)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -1605,16 +1609,16 @@ void Pattern::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const Pattern>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.Pattern)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.Pattern)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.Pattern)
     MergeFrom(*source);
   }
 }
 
 void Pattern::MergeFrom(const Pattern& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.Pattern)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.Pattern)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -1628,14 +1632,14 @@ void Pattern::MergeFrom(const Pattern& from) {
 }
 
 void Pattern::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.Pattern)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.Pattern)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Pattern::CopyFrom(const Pattern& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.Pattern)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.Pattern)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1669,33 +1673,33 @@ void Pattern::InternalSwap(Pattern* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Pattern
 
-// repeated .NullSpaceHaptics.Sequence sequences = 1;
+// repeated .nsvr.detail.encoding.Sequence sequences = 1;
 int Pattern::sequences_size() const {
   return sequences_.size();
 }
 void Pattern::clear_sequences() {
   sequences_.Clear();
 }
-const ::NullSpaceHaptics::Sequence& Pattern::sequences(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Pattern.sequences)
+const ::nsvr::detail::encoding::Sequence& Pattern::sequences(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Pattern.sequences)
   return sequences_.Get(index);
 }
-::NullSpaceHaptics::Sequence* Pattern::mutable_sequences(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Pattern.sequences)
+::nsvr::detail::encoding::Sequence* Pattern::mutable_sequences(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Pattern.sequences)
   return sequences_.Mutable(index);
 }
-::NullSpaceHaptics::Sequence* Pattern::add_sequences() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.Pattern.sequences)
+::nsvr::detail::encoding::Sequence* Pattern::add_sequences() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.Pattern.sequences)
   return sequences_.Add();
 }
-::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Sequence >*
+::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Sequence >*
 Pattern::mutable_sequences() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.Pattern.sequences)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.Pattern.sequences)
   return &sequences_;
 }
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Sequence >&
+const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Sequence >&
 Pattern::sequences() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.Pattern.sequences)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.Pattern.sequences)
   return sequences_;
 }
 
@@ -1704,13 +1708,13 @@ void Pattern::clear_time() {
   time_ = 0;
 }
  float Pattern::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Pattern.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Pattern.time)
   return time_;
 }
  void Pattern::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Pattern.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Pattern.time)
 }
 
 // optional float strength = 3;
@@ -1718,13 +1722,13 @@ void Pattern::clear_strength() {
   strength_ = 0;
 }
  float Pattern::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Pattern.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Pattern.strength)
   return strength_;
 }
  void Pattern::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Pattern.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Pattern.strength)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -1740,7 +1744,7 @@ const int Experience::kStrengthFieldNumber;
 Experience::Experience()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.Experience)
 }
 
 void Experience::InitAsDefaultInstance() {
@@ -1752,7 +1756,7 @@ Experience::Experience(const Experience& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.Experience)
 }
 
 void Experience::SharedCtor() {
@@ -1763,7 +1767,7 @@ void Experience::SharedCtor() {
 }
 
 Experience::~Experience() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.Experience)
   SharedDtor();
 }
 
@@ -1798,7 +1802,7 @@ Experience* Experience::New(::google::protobuf::Arena* arena) const {
 }
 
 void Experience::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.Experience)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.Experience)
 #if defined(__clang__)
 #define ZR_HELPER_(f) \
   _Pragma("clang diagnostic push") \
@@ -1827,13 +1831,13 @@ bool Experience::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.Experience)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .NullSpaceHaptics.Pattern patterns = 1;
+      // repeated .nsvr.detail.encoding.Pattern patterns = 1;
       case 1: {
         if (tag == 10) {
           DO_(input->IncrementRecursionDepth());
@@ -1892,18 +1896,18 @@ bool Experience::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.Experience)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.Experience)
   return false;
 #undef DO_
 }
 
 void Experience::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.Experience)
-  // repeated .NullSpaceHaptics.Pattern patterns = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.Experience)
+  // repeated .nsvr.detail.encoding.Pattern patterns = 1;
   for (unsigned int i = 0, n = this->patterns_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->patterns(i), output);
@@ -1919,13 +1923,13 @@ void Experience::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->strength(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.Experience)
 }
 
 ::google::protobuf::uint8* Experience::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.Experience)
-  // repeated .NullSpaceHaptics.Pattern patterns = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.Experience)
+  // repeated .nsvr.detail.encoding.Pattern patterns = 1;
   for (unsigned int i = 0, n = this->patterns_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
@@ -1942,12 +1946,12 @@ void Experience::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->strength(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.Experience)
   return target;
 }
 
 int Experience::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.Experience)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.Experience)
   int total_size = 0;
 
   // optional float time = 2;
@@ -1960,7 +1964,7 @@ int Experience::ByteSize() const {
     total_size += 1 + 4;
   }
 
-  // repeated .NullSpaceHaptics.Pattern patterns = 1;
+  // repeated .nsvr.detail.encoding.Pattern patterns = 1;
   total_size += 1 * this->patterns_size();
   for (int i = 0; i < this->patterns_size(); i++) {
     total_size +=
@@ -1975,7 +1979,7 @@ int Experience::ByteSize() const {
 }
 
 void Experience::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.Experience)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.Experience)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -1983,16 +1987,16 @@ void Experience::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const Experience>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.Experience)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.Experience)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.Experience)
     MergeFrom(*source);
   }
 }
 
 void Experience::MergeFrom(const Experience& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.Experience)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.Experience)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -2006,14 +2010,14 @@ void Experience::MergeFrom(const Experience& from) {
 }
 
 void Experience::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.Experience)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.Experience)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Experience::CopyFrom(const Experience& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.Experience)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.Experience)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2047,33 +2051,33 @@ void Experience::InternalSwap(Experience* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // Experience
 
-// repeated .NullSpaceHaptics.Pattern patterns = 1;
+// repeated .nsvr.detail.encoding.Pattern patterns = 1;
 int Experience::patterns_size() const {
   return patterns_.size();
 }
 void Experience::clear_patterns() {
   patterns_.Clear();
 }
-const ::NullSpaceHaptics::Pattern& Experience::patterns(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Experience.patterns)
+const ::nsvr::detail::encoding::Pattern& Experience::patterns(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Experience.patterns)
   return patterns_.Get(index);
 }
-::NullSpaceHaptics::Pattern* Experience::mutable_patterns(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.Experience.patterns)
+::nsvr::detail::encoding::Pattern* Experience::mutable_patterns(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.Experience.patterns)
   return patterns_.Mutable(index);
 }
-::NullSpaceHaptics::Pattern* Experience::add_patterns() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.Experience.patterns)
+::nsvr::detail::encoding::Pattern* Experience::add_patterns() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.Experience.patterns)
   return patterns_.Add();
 }
-::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Pattern >*
+::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Pattern >*
 Experience::mutable_patterns() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.Experience.patterns)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.Experience.patterns)
   return &patterns_;
 }
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Pattern >&
+const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Pattern >&
 Experience::patterns() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.Experience.patterns)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.Experience.patterns)
   return patterns_;
 }
 
@@ -2082,13 +2086,13 @@ void Experience::clear_time() {
   time_ = 0;
 }
  float Experience::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Experience.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Experience.time)
   return time_;
 }
  void Experience::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Experience.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Experience.time)
 }
 
 // optional float strength = 3;
@@ -2096,13 +2100,13 @@ void Experience::clear_strength() {
   strength_ = 0;
 }
  float Experience::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.Experience.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.Experience.strength)
   return strength_;
 }
  void Experience::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.Experience.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.Experience.strength)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -2144,14 +2148,14 @@ const int HapticFile::kExperienceFieldNumber;
 HapticFile::HapticFile()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.HapticFile)
 }
 
 void HapticFile::InitAsDefaultInstance() {
   _is_default_instance_ = true;
-  sequence_ = const_cast< ::NullSpaceHaptics::Sequence*>(&::NullSpaceHaptics::Sequence::default_instance());
-  pattern_ = const_cast< ::NullSpaceHaptics::Pattern*>(&::NullSpaceHaptics::Pattern::default_instance());
-  experience_ = const_cast< ::NullSpaceHaptics::Experience*>(&::NullSpaceHaptics::Experience::default_instance());
+  sequence_ = const_cast< ::nsvr::detail::encoding::Sequence*>(&::nsvr::detail::encoding::Sequence::default_instance());
+  pattern_ = const_cast< ::nsvr::detail::encoding::Pattern*>(&::nsvr::detail::encoding::Pattern::default_instance());
+  experience_ = const_cast< ::nsvr::detail::encoding::Experience*>(&::nsvr::detail::encoding::Experience::default_instance());
 }
 
 HapticFile::HapticFile(const HapticFile& from)
@@ -2159,7 +2163,7 @@ HapticFile::HapticFile(const HapticFile& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.HapticFile)
 }
 
 void HapticFile::SharedCtor() {
@@ -2172,7 +2176,7 @@ void HapticFile::SharedCtor() {
 }
 
 HapticFile::~HapticFile() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.HapticFile)
   SharedDtor();
 }
 
@@ -2210,7 +2214,7 @@ HapticFile* HapticFile::New(::google::protobuf::Arena* arena) const {
 }
 
 void HapticFile::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.HapticFile)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.HapticFile)
   type_ = 0;
   if (GetArenaNoVirtual() == NULL && sequence_ != NULL) delete sequence_;
   sequence_ = NULL;
@@ -2224,20 +2228,20 @@ bool HapticFile::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.HapticFile)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .NullSpaceHaptics.HapticFile.Type type = 1;
+      // optional .nsvr.detail.encoding.HapticFile.Type type = 1;
       case 1: {
         if (tag == 8) {
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_type(static_cast< ::NullSpaceHaptics::HapticFile_Type >(value));
+          set_type(static_cast< ::nsvr::detail::encoding::HapticFile_Type >(value));
         } else {
           goto handle_unusual;
         }
@@ -2245,7 +2249,7 @@ bool HapticFile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .NullSpaceHaptics.Sequence sequence = 2;
+      // optional .nsvr.detail.encoding.Sequence sequence = 2;
       case 2: {
         if (tag == 18) {
          parse_sequence:
@@ -2258,7 +2262,7 @@ bool HapticFile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .NullSpaceHaptics.Pattern pattern = 3;
+      // optional .nsvr.detail.encoding.Pattern pattern = 3;
       case 3: {
         if (tag == 26) {
          parse_pattern:
@@ -2271,7 +2275,7 @@ bool HapticFile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .NullSpaceHaptics.Experience experience = 4;
+      // optional .nsvr.detail.encoding.Experience experience = 4;
       case 4: {
         if (tag == 34) {
          parse_experience:
@@ -2297,103 +2301,103 @@ bool HapticFile::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.HapticFile)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.HapticFile)
   return false;
 #undef DO_
 }
 
 void HapticFile::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.HapticFile)
-  // optional .NullSpaceHaptics.HapticFile.Type type = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.HapticFile)
+  // optional .nsvr.detail.encoding.HapticFile.Type type = 1;
   if (this->type() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->type(), output);
   }
 
-  // optional .NullSpaceHaptics.Sequence sequence = 2;
+  // optional .nsvr.detail.encoding.Sequence sequence = 2;
   if (this->has_sequence()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, *this->sequence_, output);
   }
 
-  // optional .NullSpaceHaptics.Pattern pattern = 3;
+  // optional .nsvr.detail.encoding.Pattern pattern = 3;
   if (this->has_pattern()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       3, *this->pattern_, output);
   }
 
-  // optional .NullSpaceHaptics.Experience experience = 4;
+  // optional .nsvr.detail.encoding.Experience experience = 4;
   if (this->has_experience()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       4, *this->experience_, output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.HapticFile)
 }
 
 ::google::protobuf::uint8* HapticFile::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.HapticFile)
-  // optional .NullSpaceHaptics.HapticFile.Type type = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.HapticFile)
+  // optional .nsvr.detail.encoding.HapticFile.Type type = 1;
   if (this->type() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->type(), target);
   }
 
-  // optional .NullSpaceHaptics.Sequence sequence = 2;
+  // optional .nsvr.detail.encoding.Sequence sequence = 2;
   if (this->has_sequence()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         2, *this->sequence_, false, target);
   }
 
-  // optional .NullSpaceHaptics.Pattern pattern = 3;
+  // optional .nsvr.detail.encoding.Pattern pattern = 3;
   if (this->has_pattern()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         3, *this->pattern_, false, target);
   }
 
-  // optional .NullSpaceHaptics.Experience experience = 4;
+  // optional .nsvr.detail.encoding.Experience experience = 4;
   if (this->has_experience()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         4, *this->experience_, false, target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.HapticFile)
   return target;
 }
 
 int HapticFile::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.HapticFile)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.HapticFile)
   int total_size = 0;
 
-  // optional .NullSpaceHaptics.HapticFile.Type type = 1;
+  // optional .nsvr.detail.encoding.HapticFile.Type type = 1;
   if (this->type() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
 
-  // optional .NullSpaceHaptics.Sequence sequence = 2;
+  // optional .nsvr.detail.encoding.Sequence sequence = 2;
   if (this->has_sequence()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->sequence_);
   }
 
-  // optional .NullSpaceHaptics.Pattern pattern = 3;
+  // optional .nsvr.detail.encoding.Pattern pattern = 3;
   if (this->has_pattern()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->pattern_);
   }
 
-  // optional .NullSpaceHaptics.Experience experience = 4;
+  // optional .nsvr.detail.encoding.Experience experience = 4;
   if (this->has_experience()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -2407,7 +2411,7 @@ int HapticFile::ByteSize() const {
 }
 
 void HapticFile::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.HapticFile)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.HapticFile)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -2415,16 +2419,16 @@ void HapticFile::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const HapticFile>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.HapticFile)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.HapticFile)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.HapticFile)
     MergeFrom(*source);
   }
 }
 
 void HapticFile::MergeFrom(const HapticFile& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.HapticFile)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.HapticFile)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -2432,25 +2436,25 @@ void HapticFile::MergeFrom(const HapticFile& from) {
     set_type(from.type());
   }
   if (from.has_sequence()) {
-    mutable_sequence()->::NullSpaceHaptics::Sequence::MergeFrom(from.sequence());
+    mutable_sequence()->::nsvr::detail::encoding::Sequence::MergeFrom(from.sequence());
   }
   if (from.has_pattern()) {
-    mutable_pattern()->::NullSpaceHaptics::Pattern::MergeFrom(from.pattern());
+    mutable_pattern()->::nsvr::detail::encoding::Pattern::MergeFrom(from.pattern());
   }
   if (from.has_experience()) {
-    mutable_experience()->::NullSpaceHaptics::Experience::MergeFrom(from.experience());
+    mutable_experience()->::nsvr::detail::encoding::Experience::MergeFrom(from.experience());
   }
 }
 
 void HapticFile::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.HapticFile)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.HapticFile)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void HapticFile::CopyFrom(const HapticFile& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.HapticFile)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.HapticFile)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2485,21 +2489,21 @@ void HapticFile::InternalSwap(HapticFile* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // HapticFile
 
-// optional .NullSpaceHaptics.HapticFile.Type type = 1;
+// optional .nsvr.detail.encoding.HapticFile.Type type = 1;
 void HapticFile::clear_type() {
   type_ = 0;
 }
- ::NullSpaceHaptics::HapticFile_Type HapticFile::type() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.type)
-  return static_cast< ::NullSpaceHaptics::HapticFile_Type >(type_);
+ ::nsvr::detail::encoding::HapticFile_Type HapticFile::type() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.type)
+  return static_cast< ::nsvr::detail::encoding::HapticFile_Type >(type_);
 }
- void HapticFile::set_type(::NullSpaceHaptics::HapticFile_Type value) {
+ void HapticFile::set_type(::nsvr::detail::encoding::HapticFile_Type value) {
   
   type_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.HapticFile.type)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.HapticFile.type)
 }
 
-// optional .NullSpaceHaptics.Sequence sequence = 2;
+// optional .nsvr.detail.encoding.Sequence sequence = 2;
 bool HapticFile::has_sequence() const {
   return !_is_default_instance_ && sequence_ != NULL;
 }
@@ -2507,26 +2511,26 @@ void HapticFile::clear_sequence() {
   if (GetArenaNoVirtual() == NULL && sequence_ != NULL) delete sequence_;
   sequence_ = NULL;
 }
-const ::NullSpaceHaptics::Sequence& HapticFile::sequence() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.sequence)
+const ::nsvr::detail::encoding::Sequence& HapticFile::sequence() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.sequence)
   return sequence_ != NULL ? *sequence_ : *default_instance_->sequence_;
 }
-::NullSpaceHaptics::Sequence* HapticFile::mutable_sequence() {
+::nsvr::detail::encoding::Sequence* HapticFile::mutable_sequence() {
   
   if (sequence_ == NULL) {
-    sequence_ = new ::NullSpaceHaptics::Sequence;
+    sequence_ = new ::nsvr::detail::encoding::Sequence;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticFile.sequence)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticFile.sequence)
   return sequence_;
 }
-::NullSpaceHaptics::Sequence* HapticFile::release_sequence() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticFile.sequence)
+::nsvr::detail::encoding::Sequence* HapticFile::release_sequence() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticFile.sequence)
   
-  ::NullSpaceHaptics::Sequence* temp = sequence_;
+  ::nsvr::detail::encoding::Sequence* temp = sequence_;
   sequence_ = NULL;
   return temp;
 }
-void HapticFile::set_allocated_sequence(::NullSpaceHaptics::Sequence* sequence) {
+void HapticFile::set_allocated_sequence(::nsvr::detail::encoding::Sequence* sequence) {
   delete sequence_;
   sequence_ = sequence;
   if (sequence) {
@@ -2534,10 +2538,10 @@ void HapticFile::set_allocated_sequence(::NullSpaceHaptics::Sequence* sequence) 
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticFile.sequence)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticFile.sequence)
 }
 
-// optional .NullSpaceHaptics.Pattern pattern = 3;
+// optional .nsvr.detail.encoding.Pattern pattern = 3;
 bool HapticFile::has_pattern() const {
   return !_is_default_instance_ && pattern_ != NULL;
 }
@@ -2545,26 +2549,26 @@ void HapticFile::clear_pattern() {
   if (GetArenaNoVirtual() == NULL && pattern_ != NULL) delete pattern_;
   pattern_ = NULL;
 }
-const ::NullSpaceHaptics::Pattern& HapticFile::pattern() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.pattern)
+const ::nsvr::detail::encoding::Pattern& HapticFile::pattern() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.pattern)
   return pattern_ != NULL ? *pattern_ : *default_instance_->pattern_;
 }
-::NullSpaceHaptics::Pattern* HapticFile::mutable_pattern() {
+::nsvr::detail::encoding::Pattern* HapticFile::mutable_pattern() {
   
   if (pattern_ == NULL) {
-    pattern_ = new ::NullSpaceHaptics::Pattern;
+    pattern_ = new ::nsvr::detail::encoding::Pattern;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticFile.pattern)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticFile.pattern)
   return pattern_;
 }
-::NullSpaceHaptics::Pattern* HapticFile::release_pattern() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticFile.pattern)
+::nsvr::detail::encoding::Pattern* HapticFile::release_pattern() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticFile.pattern)
   
-  ::NullSpaceHaptics::Pattern* temp = pattern_;
+  ::nsvr::detail::encoding::Pattern* temp = pattern_;
   pattern_ = NULL;
   return temp;
 }
-void HapticFile::set_allocated_pattern(::NullSpaceHaptics::Pattern* pattern) {
+void HapticFile::set_allocated_pattern(::nsvr::detail::encoding::Pattern* pattern) {
   delete pattern_;
   pattern_ = pattern;
   if (pattern) {
@@ -2572,10 +2576,10 @@ void HapticFile::set_allocated_pattern(::NullSpaceHaptics::Pattern* pattern) {
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticFile.pattern)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticFile.pattern)
 }
 
-// optional .NullSpaceHaptics.Experience experience = 4;
+// optional .nsvr.detail.encoding.Experience experience = 4;
 bool HapticFile::has_experience() const {
   return !_is_default_instance_ && experience_ != NULL;
 }
@@ -2583,26 +2587,26 @@ void HapticFile::clear_experience() {
   if (GetArenaNoVirtual() == NULL && experience_ != NULL) delete experience_;
   experience_ = NULL;
 }
-const ::NullSpaceHaptics::Experience& HapticFile::experience() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticFile.experience)
+const ::nsvr::detail::encoding::Experience& HapticFile::experience() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticFile.experience)
   return experience_ != NULL ? *experience_ : *default_instance_->experience_;
 }
-::NullSpaceHaptics::Experience* HapticFile::mutable_experience() {
+::nsvr::detail::encoding::Experience* HapticFile::mutable_experience() {
   
   if (experience_ == NULL) {
-    experience_ = new ::NullSpaceHaptics::Experience;
+    experience_ = new ::nsvr::detail::encoding::Experience;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticFile.experience)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticFile.experience)
   return experience_;
 }
-::NullSpaceHaptics::Experience* HapticFile::release_experience() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticFile.experience)
+::nsvr::detail::encoding::Experience* HapticFile::release_experience() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticFile.experience)
   
-  ::NullSpaceHaptics::Experience* temp = experience_;
+  ::nsvr::detail::encoding::Experience* temp = experience_;
   experience_ = NULL;
   return temp;
 }
-void HapticFile::set_allocated_experience(::NullSpaceHaptics::Experience* experience) {
+void HapticFile::set_allocated_experience(::nsvr::detail::encoding::Experience* experience) {
   delete experience_;
   experience_ = experience;
   if (experience) {
@@ -2610,7 +2614,7 @@ void HapticFile::set_allocated_experience(::NullSpaceHaptics::Experience* experi
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticFile.experience)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticFile.experience)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -2650,7 +2654,7 @@ const int RootEffect::kTypeFieldNumber;
 RootEffect::RootEffect()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.RootEffect)
 }
 
 void RootEffect::InitAsDefaultInstance() {
@@ -2662,7 +2666,7 @@ RootEffect::RootEffect(const RootEffect& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.RootEffect)
 }
 
 void RootEffect::SharedCtor() {
@@ -2674,7 +2678,7 @@ void RootEffect::SharedCtor() {
 }
 
 RootEffect::~RootEffect() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.RootEffect)
   SharedDtor();
 }
 
@@ -2710,7 +2714,7 @@ RootEffect* RootEffect::New(::google::protobuf::Arena* arena) const {
 }
 
 void RootEffect::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.RootEffect)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.RootEffect)
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   type_ = 0;
 }
@@ -2719,7 +2723,7 @@ bool RootEffect::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.RootEffect)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
@@ -2733,7 +2737,7 @@ bool RootEffect::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->name().data(), this->name().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "NullSpaceHaptics.RootEffect.name"));
+            "nsvr.detail.encoding.RootEffect.name"));
         } else {
           goto handle_unusual;
         }
@@ -2741,7 +2745,7 @@ bool RootEffect::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .NullSpaceHaptics.RootEffect.Type type = 2;
+      // optional .nsvr.detail.encoding.RootEffect.Type type = 2;
       case 2: {
         if (tag == 16) {
          parse_type:
@@ -2749,7 +2753,7 @@ bool RootEffect::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_type(static_cast< ::NullSpaceHaptics::RootEffect_Type >(value));
+          set_type(static_cast< ::nsvr::detail::encoding::RootEffect_Type >(value));
         } else {
           goto handle_unusual;
         }
@@ -2770,62 +2774,62 @@ bool RootEffect::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.RootEffect)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.RootEffect)
   return false;
 #undef DO_
 }
 
 void RootEffect::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.RootEffect)
   // optional string name = 1;
   if (this->name().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.RootEffect.name");
+      "nsvr.detail.encoding.RootEffect.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->name(), output);
   }
 
-  // optional .NullSpaceHaptics.RootEffect.Type type = 2;
+  // optional .nsvr.detail.encoding.RootEffect.Type type = 2;
   if (this->type() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       2, this->type(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.RootEffect)
 }
 
 ::google::protobuf::uint8* RootEffect::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.RootEffect)
   // optional string name = 1;
   if (this->name().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.RootEffect.name");
+      "nsvr.detail.encoding.RootEffect.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->name(), target);
   }
 
-  // optional .NullSpaceHaptics.RootEffect.Type type = 2;
+  // optional .nsvr.detail.encoding.RootEffect.Type type = 2;
   if (this->type() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       2, this->type(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.RootEffect)
   return target;
 }
 
 int RootEffect::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.RootEffect)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.RootEffect)
   int total_size = 0;
 
   // optional string name = 1;
@@ -2835,7 +2839,7 @@ int RootEffect::ByteSize() const {
         this->name());
   }
 
-  // optional .NullSpaceHaptics.RootEffect.Type type = 2;
+  // optional .nsvr.detail.encoding.RootEffect.Type type = 2;
   if (this->type() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
@@ -2848,7 +2852,7 @@ int RootEffect::ByteSize() const {
 }
 
 void RootEffect::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.RootEffect)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.RootEffect)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -2856,16 +2860,16 @@ void RootEffect::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const RootEffect>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.RootEffect)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.RootEffect)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.RootEffect)
     MergeFrom(*source);
   }
 }
 
 void RootEffect::MergeFrom(const RootEffect& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.RootEffect)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.RootEffect)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -2879,14 +2883,14 @@ void RootEffect::MergeFrom(const RootEffect& from) {
 }
 
 void RootEffect::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.RootEffect)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.RootEffect)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void RootEffect::CopyFrom(const RootEffect& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.RootEffect)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.RootEffect)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2924,32 +2928,32 @@ void RootEffect::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  const ::std::string& RootEffect::name() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.RootEffect.name)
   return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  void RootEffect::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.RootEffect.name)
 }
  void RootEffect::set_name(const char* value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.RootEffect.name)
 }
  void RootEffect::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.RootEffect.name)
 }
  ::std::string* RootEffect::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.RootEffect.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  ::std::string* RootEffect::release_name() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.RootEffect.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -2960,21 +2964,21 @@ void RootEffect::clear_name() {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.RootEffect.name)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.RootEffect.name)
 }
 
-// optional .NullSpaceHaptics.RootEffect.Type type = 2;
+// optional .nsvr.detail.encoding.RootEffect.Type type = 2;
 void RootEffect::clear_type() {
   type_ = 0;
 }
- ::NullSpaceHaptics::RootEffect_Type RootEffect::type() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.RootEffect.type)
-  return static_cast< ::NullSpaceHaptics::RootEffect_Type >(type_);
+ ::nsvr::detail::encoding::RootEffect_Type RootEffect::type() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.RootEffect.type)
+  return static_cast< ::nsvr::detail::encoding::RootEffect_Type >(type_);
 }
- void RootEffect::set_type(::NullSpaceHaptics::RootEffect_Type value) {
+ void RootEffect::set_type(::nsvr::detail::encoding::RootEffect_Type value) {
   
   type_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.RootEffect.type)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.RootEffect.type)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -2991,7 +2995,7 @@ const int PatternNode::kStrengthFieldNumber;
 PatternNode::PatternNode()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.PatternNode)
 }
 
 void PatternNode::InitAsDefaultInstance() {
@@ -3003,7 +3007,7 @@ PatternNode::PatternNode(const PatternNode& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.PatternNode)
 }
 
 void PatternNode::SharedCtor() {
@@ -3017,7 +3021,7 @@ void PatternNode::SharedCtor() {
 }
 
 PatternNode::~PatternNode() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.PatternNode)
   SharedDtor();
 }
 
@@ -3053,7 +3057,7 @@ PatternNode* PatternNode::New(::google::protobuf::Arena* arena) const {
 }
 
 void PatternNode::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.PatternNode)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.PatternNode)
 #if defined(__clang__)
 #define ZR_HELPER_(f) \
   _Pragma("clang diagnostic push") \
@@ -3082,7 +3086,7 @@ bool PatternNode::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.PatternNode)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
@@ -3111,7 +3115,7 @@ bool PatternNode::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->sequence().data(), this->sequence().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "NullSpaceHaptics.PatternNode.sequence"));
+            "nsvr.detail.encoding.PatternNode.sequence"));
         } else {
           goto handle_unusual;
         }
@@ -3162,17 +3166,17 @@ bool PatternNode::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.PatternNode)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.PatternNode)
   return false;
 #undef DO_
 }
 
 void PatternNode::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.PatternNode)
   // optional float time = 1;
   if (this->time() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->time(), output);
@@ -3183,7 +3187,7 @@ void PatternNode::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->sequence().data(), this->sequence().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.PatternNode.sequence");
+      "nsvr.detail.encoding.PatternNode.sequence");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->sequence(), output);
   }
@@ -3198,12 +3202,12 @@ void PatternNode::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->strength(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.PatternNode)
 }
 
 ::google::protobuf::uint8* PatternNode::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.PatternNode)
   // optional float time = 1;
   if (this->time() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->time(), target);
@@ -3214,7 +3218,7 @@ void PatternNode::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->sequence().data(), this->sequence().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.PatternNode.sequence");
+      "nsvr.detail.encoding.PatternNode.sequence");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->sequence(), target);
@@ -3230,12 +3234,12 @@ void PatternNode::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->strength(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.PatternNode)
   return target;
 }
 
 int PatternNode::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.PatternNode)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.PatternNode)
   int total_size = 0;
 
   // optional float time = 1;
@@ -3269,7 +3273,7 @@ int PatternNode::ByteSize() const {
 }
 
 void PatternNode::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.PatternNode)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.PatternNode)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -3277,16 +3281,16 @@ void PatternNode::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const PatternNode>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.PatternNode)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.PatternNode)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.PatternNode)
     MergeFrom(*source);
   }
 }
 
 void PatternNode::MergeFrom(const PatternNode& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.PatternNode)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.PatternNode)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -3306,14 +3310,14 @@ void PatternNode::MergeFrom(const PatternNode& from) {
 }
 
 void PatternNode::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.PatternNode)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.PatternNode)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void PatternNode::CopyFrom(const PatternNode& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.PatternNode)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.PatternNode)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3353,13 +3357,13 @@ void PatternNode::clear_time() {
   time_ = 0;
 }
  float PatternNode::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.time)
   return time_;
 }
  void PatternNode::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.time)
 }
 
 // optional string sequence = 2;
@@ -3367,32 +3371,32 @@ void PatternNode::clear_sequence() {
   sequence_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  const ::std::string& PatternNode::sequence() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.sequence)
   return sequence_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  void PatternNode::set_sequence(const ::std::string& value) {
   
   sequence_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.sequence)
 }
  void PatternNode::set_sequence(const char* value) {
   
   sequence_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.PatternNode.sequence)
 }
  void PatternNode::set_sequence(const char* value, size_t size) {
   
   sequence_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.PatternNode.sequence)
 }
  ::std::string* PatternNode::mutable_sequence() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.PatternNode.sequence)
   return sequence_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  ::std::string* PatternNode::release_sequence() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.PatternNode.sequence)
   
   return sequence_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3403,7 +3407,7 @@ void PatternNode::clear_sequence() {
     
   }
   sequence_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sequence);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.PatternNode.sequence)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.PatternNode.sequence)
 }
 
 // optional uint32 area = 3;
@@ -3411,13 +3415,13 @@ void PatternNode::clear_area() {
   area_ = 0u;
 }
  ::google::protobuf::uint32 PatternNode::area() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.area)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.area)
   return area_;
 }
  void PatternNode::set_area(::google::protobuf::uint32 value) {
   
   area_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.area)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.area)
 }
 
 // optional float strength = 4;
@@ -3425,13 +3429,13 @@ void PatternNode::clear_strength() {
   strength_ = 0;
 }
  float PatternNode::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternNode.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternNode.strength)
   return strength_;
 }
  void PatternNode::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.PatternNode.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.PatternNode.strength)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -3447,7 +3451,7 @@ const int ExperienceNode::kStrengthFieldNumber;
 ExperienceNode::ExperienceNode()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.ExperienceNode)
 }
 
 void ExperienceNode::InitAsDefaultInstance() {
@@ -3459,7 +3463,7 @@ ExperienceNode::ExperienceNode(const ExperienceNode& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.ExperienceNode)
 }
 
 void ExperienceNode::SharedCtor() {
@@ -3472,7 +3476,7 @@ void ExperienceNode::SharedCtor() {
 }
 
 ExperienceNode::~ExperienceNode() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.ExperienceNode)
   SharedDtor();
 }
 
@@ -3508,7 +3512,7 @@ ExperienceNode* ExperienceNode::New(::google::protobuf::Arena* arena) const {
 }
 
 void ExperienceNode::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.ExperienceNode)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.ExperienceNode)
 #if defined(__clang__)
 #define ZR_HELPER_(f) \
   _Pragma("clang diagnostic push") \
@@ -3537,7 +3541,7 @@ bool ExperienceNode::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.ExperienceNode)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
@@ -3566,7 +3570,7 @@ bool ExperienceNode::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->pattern().data(), this->pattern().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "NullSpaceHaptics.ExperienceNode.pattern"));
+            "nsvr.detail.encoding.ExperienceNode.pattern"));
         } else {
           goto handle_unusual;
         }
@@ -3602,17 +3606,17 @@ bool ExperienceNode::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.ExperienceNode)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.ExperienceNode)
   return false;
 #undef DO_
 }
 
 void ExperienceNode::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.ExperienceNode)
   // optional float time = 1;
   if (this->time() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->time(), output);
@@ -3623,7 +3627,7 @@ void ExperienceNode::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->pattern().data(), this->pattern().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.ExperienceNode.pattern");
+      "nsvr.detail.encoding.ExperienceNode.pattern");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->pattern(), output);
   }
@@ -3633,12 +3637,12 @@ void ExperienceNode::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->strength(), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.ExperienceNode)
 }
 
 ::google::protobuf::uint8* ExperienceNode::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.ExperienceNode)
   // optional float time = 1;
   if (this->time() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->time(), target);
@@ -3649,7 +3653,7 @@ void ExperienceNode::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->pattern().data(), this->pattern().length(),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "NullSpaceHaptics.ExperienceNode.pattern");
+      "nsvr.detail.encoding.ExperienceNode.pattern");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->pattern(), target);
@@ -3660,12 +3664,12 @@ void ExperienceNode::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->strength(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.ExperienceNode)
   return target;
 }
 
 int ExperienceNode::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.ExperienceNode)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.ExperienceNode)
   int total_size = 0;
 
   // optional float time = 1;
@@ -3692,7 +3696,7 @@ int ExperienceNode::ByteSize() const {
 }
 
 void ExperienceNode::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.ExperienceNode)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.ExperienceNode)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -3700,16 +3704,16 @@ void ExperienceNode::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const ExperienceNode>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.ExperienceNode)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.ExperienceNode)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.ExperienceNode)
     MergeFrom(*source);
   }
 }
 
 void ExperienceNode::MergeFrom(const ExperienceNode& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.ExperienceNode)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.ExperienceNode)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -3726,14 +3730,14 @@ void ExperienceNode::MergeFrom(const ExperienceNode& from) {
 }
 
 void ExperienceNode::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.ExperienceNode)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.ExperienceNode)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void ExperienceNode::CopyFrom(const ExperienceNode& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.ExperienceNode)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.ExperienceNode)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3772,13 +3776,13 @@ void ExperienceNode::clear_time() {
   time_ = 0;
 }
  float ExperienceNode::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceNode.time)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceNode.time)
   return time_;
 }
  void ExperienceNode::set_time(float value) {
   
   time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.ExperienceNode.time)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.ExperienceNode.time)
 }
 
 // optional string pattern = 2;
@@ -3786,32 +3790,32 @@ void ExperienceNode::clear_pattern() {
   pattern_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  const ::std::string& ExperienceNode::pattern() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceNode.pattern)
   return pattern_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  void ExperienceNode::set_pattern(const ::std::string& value) {
   
   pattern_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.ExperienceNode.pattern)
 }
  void ExperienceNode::set_pattern(const char* value) {
   
   pattern_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set_char:nsvr.detail.encoding.ExperienceNode.pattern)
 }
  void ExperienceNode::set_pattern(const char* value, size_t size) {
   
   pattern_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set_pointer:nsvr.detail.encoding.ExperienceNode.pattern)
 }
  ::std::string* ExperienceNode::mutable_pattern() {
   
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.ExperienceNode.pattern)
   return pattern_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
  ::std::string* ExperienceNode::release_pattern() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.ExperienceNode.pattern)
   
   return pattern_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -3822,7 +3826,7 @@ void ExperienceNode::clear_pattern() {
     
   }
   pattern_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), pattern);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.ExperienceNode.pattern)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.ExperienceNode.pattern)
 }
 
 // optional float strength = 3;
@@ -3830,13 +3834,13 @@ void ExperienceNode::clear_strength() {
   strength_ = 0;
 }
  float ExperienceNode::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceNode.strength)
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceNode.strength)
   return strength_;
 }
  void ExperienceNode::set_strength(float value) {
   
   strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceHaptics.ExperienceNode.strength)
+  // @@protoc_insertion_point(field_set:nsvr.detail.encoding.ExperienceNode.strength)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -3850,7 +3854,7 @@ const int SequenceDefinitions::kEffectsFieldNumber;
 SequenceDefinitions::SequenceDefinitions()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.SequenceDefinitions)
 }
 
 void SequenceDefinitions::InitAsDefaultInstance() {
@@ -3862,7 +3866,7 @@ SequenceDefinitions::SequenceDefinitions(const SequenceDefinitions& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.SequenceDefinitions)
 }
 
 void SequenceDefinitions::SharedCtor() {
@@ -3871,7 +3875,7 @@ void SequenceDefinitions::SharedCtor() {
 }
 
 SequenceDefinitions::~SequenceDefinitions() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.SequenceDefinitions)
   SharedDtor();
 }
 
@@ -3906,7 +3910,7 @@ SequenceDefinitions* SequenceDefinitions::New(::google::protobuf::Arena* arena) 
 }
 
 void SequenceDefinitions::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.SequenceDefinitions)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.SequenceDefinitions)
   effects_.Clear();
 }
 
@@ -3914,13 +3918,13 @@ bool SequenceDefinitions::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.SequenceDefinitions)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .NullSpaceHaptics.Effect effects = 1;
+      // repeated .nsvr.detail.encoding.Effect effects = 1;
       case 1: {
         if (tag == 10) {
           DO_(input->IncrementRecursionDepth());
@@ -3949,45 +3953,45 @@ bool SequenceDefinitions::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.SequenceDefinitions)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.SequenceDefinitions)
   return false;
 #undef DO_
 }
 
 void SequenceDefinitions::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.SequenceDefinitions)
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.SequenceDefinitions)
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   for (unsigned int i = 0, n = this->effects_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->effects(i), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.SequenceDefinitions)
 }
 
 ::google::protobuf::uint8* SequenceDefinitions::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.SequenceDefinitions)
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.SequenceDefinitions)
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   for (unsigned int i = 0, n = this->effects_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         1, this->effects(i), false, target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.SequenceDefinitions)
   return target;
 }
 
 int SequenceDefinitions::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.SequenceDefinitions)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.SequenceDefinitions)
   int total_size = 0;
 
-  // repeated .NullSpaceHaptics.Effect effects = 1;
+  // repeated .nsvr.detail.encoding.Effect effects = 1;
   total_size += 1 * this->effects_size();
   for (int i = 0; i < this->effects_size(); i++) {
     total_size +=
@@ -4002,7 +4006,7 @@ int SequenceDefinitions::ByteSize() const {
 }
 
 void SequenceDefinitions::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.SequenceDefinitions)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.SequenceDefinitions)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -4010,16 +4014,16 @@ void SequenceDefinitions::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const SequenceDefinitions>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.SequenceDefinitions)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.SequenceDefinitions)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.SequenceDefinitions)
     MergeFrom(*source);
   }
 }
 
 void SequenceDefinitions::MergeFrom(const SequenceDefinitions& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.SequenceDefinitions)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.SequenceDefinitions)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -4027,14 +4031,14 @@ void SequenceDefinitions::MergeFrom(const SequenceDefinitions& from) {
 }
 
 void SequenceDefinitions::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.SequenceDefinitions)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.SequenceDefinitions)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void SequenceDefinitions::CopyFrom(const SequenceDefinitions& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.SequenceDefinitions)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.SequenceDefinitions)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4066,33 +4070,33 @@ void SequenceDefinitions::InternalSwap(SequenceDefinitions* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // SequenceDefinitions
 
-// repeated .NullSpaceHaptics.Effect effects = 1;
+// repeated .nsvr.detail.encoding.Effect effects = 1;
 int SequenceDefinitions::effects_size() const {
   return effects_.size();
 }
 void SequenceDefinitions::clear_effects() {
   effects_.Clear();
 }
-const ::NullSpaceHaptics::Effect& SequenceDefinitions::effects(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.SequenceDefinitions.effects)
+const ::nsvr::detail::encoding::Effect& SequenceDefinitions::effects(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_.Get(index);
 }
-::NullSpaceHaptics::Effect* SequenceDefinitions::mutable_effects(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.SequenceDefinitions.effects)
+::nsvr::detail::encoding::Effect* SequenceDefinitions::mutable_effects(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_.Mutable(index);
 }
-::NullSpaceHaptics::Effect* SequenceDefinitions::add_effects() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.SequenceDefinitions.effects)
+::nsvr::detail::encoding::Effect* SequenceDefinitions::add_effects() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_.Add();
 }
-::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >*
+::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >*
 SequenceDefinitions::mutable_effects() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.SequenceDefinitions.effects)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.SequenceDefinitions.effects)
   return &effects_;
 }
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::Effect >&
+const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::Effect >&
 SequenceDefinitions::effects() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.SequenceDefinitions.effects)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.SequenceDefinitions.effects)
   return effects_;
 }
 
@@ -4107,7 +4111,7 @@ const int PatternDefinitions::kPatternNodesFieldNumber;
 PatternDefinitions::PatternDefinitions()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.PatternDefinitions)
 }
 
 void PatternDefinitions::InitAsDefaultInstance() {
@@ -4119,7 +4123,7 @@ PatternDefinitions::PatternDefinitions(const PatternDefinitions& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.PatternDefinitions)
 }
 
 void PatternDefinitions::SharedCtor() {
@@ -4128,7 +4132,7 @@ void PatternDefinitions::SharedCtor() {
 }
 
 PatternDefinitions::~PatternDefinitions() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.PatternDefinitions)
   SharedDtor();
 }
 
@@ -4163,7 +4167,7 @@ PatternDefinitions* PatternDefinitions::New(::google::protobuf::Arena* arena) co
 }
 
 void PatternDefinitions::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.PatternDefinitions)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.PatternDefinitions)
   pattern_nodes_.Clear();
 }
 
@@ -4171,13 +4175,13 @@ bool PatternDefinitions::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.PatternDefinitions)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .NullSpaceHaptics.PatternNode pattern_nodes = 1;
+      // repeated .nsvr.detail.encoding.PatternNode pattern_nodes = 1;
       case 1: {
         if (tag == 10) {
           DO_(input->IncrementRecursionDepth());
@@ -4206,45 +4210,45 @@ bool PatternDefinitions::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.PatternDefinitions)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.PatternDefinitions)
   return false;
 #undef DO_
 }
 
 void PatternDefinitions::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.PatternDefinitions)
-  // repeated .NullSpaceHaptics.PatternNode pattern_nodes = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.PatternDefinitions)
+  // repeated .nsvr.detail.encoding.PatternNode pattern_nodes = 1;
   for (unsigned int i = 0, n = this->pattern_nodes_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->pattern_nodes(i), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.PatternDefinitions)
 }
 
 ::google::protobuf::uint8* PatternDefinitions::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.PatternDefinitions)
-  // repeated .NullSpaceHaptics.PatternNode pattern_nodes = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.PatternDefinitions)
+  // repeated .nsvr.detail.encoding.PatternNode pattern_nodes = 1;
   for (unsigned int i = 0, n = this->pattern_nodes_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         1, this->pattern_nodes(i), false, target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.PatternDefinitions)
   return target;
 }
 
 int PatternDefinitions::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.PatternDefinitions)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.PatternDefinitions)
   int total_size = 0;
 
-  // repeated .NullSpaceHaptics.PatternNode pattern_nodes = 1;
+  // repeated .nsvr.detail.encoding.PatternNode pattern_nodes = 1;
   total_size += 1 * this->pattern_nodes_size();
   for (int i = 0; i < this->pattern_nodes_size(); i++) {
     total_size +=
@@ -4259,7 +4263,7 @@ int PatternDefinitions::ByteSize() const {
 }
 
 void PatternDefinitions::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.PatternDefinitions)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.PatternDefinitions)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -4267,16 +4271,16 @@ void PatternDefinitions::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const PatternDefinitions>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.PatternDefinitions)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.PatternDefinitions)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.PatternDefinitions)
     MergeFrom(*source);
   }
 }
 
 void PatternDefinitions::MergeFrom(const PatternDefinitions& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.PatternDefinitions)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.PatternDefinitions)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -4284,14 +4288,14 @@ void PatternDefinitions::MergeFrom(const PatternDefinitions& from) {
 }
 
 void PatternDefinitions::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.PatternDefinitions)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.PatternDefinitions)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void PatternDefinitions::CopyFrom(const PatternDefinitions& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.PatternDefinitions)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.PatternDefinitions)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4323,33 +4327,33 @@ void PatternDefinitions::InternalSwap(PatternDefinitions* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // PatternDefinitions
 
-// repeated .NullSpaceHaptics.PatternNode pattern_nodes = 1;
+// repeated .nsvr.detail.encoding.PatternNode pattern_nodes = 1;
 int PatternDefinitions::pattern_nodes_size() const {
   return pattern_nodes_.size();
 }
 void PatternDefinitions::clear_pattern_nodes() {
   pattern_nodes_.Clear();
 }
-const ::NullSpaceHaptics::PatternNode& PatternDefinitions::pattern_nodes(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+const ::nsvr::detail::encoding::PatternNode& PatternDefinitions::pattern_nodes(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_.Get(index);
 }
-::NullSpaceHaptics::PatternNode* PatternDefinitions::mutable_pattern_nodes(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+::nsvr::detail::encoding::PatternNode* PatternDefinitions::mutable_pattern_nodes(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_.Mutable(index);
 }
-::NullSpaceHaptics::PatternNode* PatternDefinitions::add_pattern_nodes() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+::nsvr::detail::encoding::PatternNode* PatternDefinitions::add_pattern_nodes() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_.Add();
 }
-::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::PatternNode >*
+::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::PatternNode >*
 PatternDefinitions::mutable_pattern_nodes() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return &pattern_nodes_;
 }
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::PatternNode >&
+const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::PatternNode >&
 PatternDefinitions::pattern_nodes() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.PatternDefinitions.pattern_nodes)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.PatternDefinitions.pattern_nodes)
   return pattern_nodes_;
 }
 
@@ -4364,7 +4368,7 @@ const int ExperienceDefinitions::kExperienceNodesFieldNumber;
 ExperienceDefinitions::ExperienceDefinitions()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.ExperienceDefinitions)
 }
 
 void ExperienceDefinitions::InitAsDefaultInstance() {
@@ -4376,7 +4380,7 @@ ExperienceDefinitions::ExperienceDefinitions(const ExperienceDefinitions& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.ExperienceDefinitions)
 }
 
 void ExperienceDefinitions::SharedCtor() {
@@ -4385,7 +4389,7 @@ void ExperienceDefinitions::SharedCtor() {
 }
 
 ExperienceDefinitions::~ExperienceDefinitions() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.ExperienceDefinitions)
   SharedDtor();
 }
 
@@ -4420,7 +4424,7 @@ ExperienceDefinitions* ExperienceDefinitions::New(::google::protobuf::Arena* are
 }
 
 void ExperienceDefinitions::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.ExperienceDefinitions)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.ExperienceDefinitions)
   experience_nodes_.Clear();
 }
 
@@ -4428,13 +4432,13 @@ bool ExperienceDefinitions::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.ExperienceDefinitions)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .NullSpaceHaptics.ExperienceNode experience_nodes = 1;
+      // repeated .nsvr.detail.encoding.ExperienceNode experience_nodes = 1;
       case 1: {
         if (tag == 10) {
           DO_(input->IncrementRecursionDepth());
@@ -4463,45 +4467,45 @@ bool ExperienceDefinitions::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.ExperienceDefinitions)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.ExperienceDefinitions)
   return false;
 #undef DO_
 }
 
 void ExperienceDefinitions::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.ExperienceDefinitions)
-  // repeated .NullSpaceHaptics.ExperienceNode experience_nodes = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.ExperienceDefinitions)
+  // repeated .nsvr.detail.encoding.ExperienceNode experience_nodes = 1;
   for (unsigned int i = 0, n = this->experience_nodes_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->experience_nodes(i), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.ExperienceDefinitions)
 }
 
 ::google::protobuf::uint8* ExperienceDefinitions::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.ExperienceDefinitions)
-  // repeated .NullSpaceHaptics.ExperienceNode experience_nodes = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.ExperienceDefinitions)
+  // repeated .nsvr.detail.encoding.ExperienceNode experience_nodes = 1;
   for (unsigned int i = 0, n = this->experience_nodes_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         1, this->experience_nodes(i), false, target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.ExperienceDefinitions)
   return target;
 }
 
 int ExperienceDefinitions::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.ExperienceDefinitions)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.ExperienceDefinitions)
   int total_size = 0;
 
-  // repeated .NullSpaceHaptics.ExperienceNode experience_nodes = 1;
+  // repeated .nsvr.detail.encoding.ExperienceNode experience_nodes = 1;
   total_size += 1 * this->experience_nodes_size();
   for (int i = 0; i < this->experience_nodes_size(); i++) {
     total_size +=
@@ -4516,7 +4520,7 @@ int ExperienceDefinitions::ByteSize() const {
 }
 
 void ExperienceDefinitions::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.ExperienceDefinitions)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.ExperienceDefinitions)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -4524,16 +4528,16 @@ void ExperienceDefinitions::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const ExperienceDefinitions>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.ExperienceDefinitions)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.ExperienceDefinitions)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.ExperienceDefinitions)
     MergeFrom(*source);
   }
 }
 
 void ExperienceDefinitions::MergeFrom(const ExperienceDefinitions& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.ExperienceDefinitions)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.ExperienceDefinitions)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -4541,14 +4545,14 @@ void ExperienceDefinitions::MergeFrom(const ExperienceDefinitions& from) {
 }
 
 void ExperienceDefinitions::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.ExperienceDefinitions)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.ExperienceDefinitions)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void ExperienceDefinitions::CopyFrom(const ExperienceDefinitions& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.ExperienceDefinitions)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.ExperienceDefinitions)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4580,33 +4584,33 @@ void ExperienceDefinitions::InternalSwap(ExperienceDefinitions* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // ExperienceDefinitions
 
-// repeated .NullSpaceHaptics.ExperienceNode experience_nodes = 1;
+// repeated .nsvr.detail.encoding.ExperienceNode experience_nodes = 1;
 int ExperienceDefinitions::experience_nodes_size() const {
   return experience_nodes_.size();
 }
 void ExperienceDefinitions::clear_experience_nodes() {
   experience_nodes_.Clear();
 }
-const ::NullSpaceHaptics::ExperienceNode& ExperienceDefinitions::experience_nodes(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+const ::nsvr::detail::encoding::ExperienceNode& ExperienceDefinitions::experience_nodes(int index) const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_.Get(index);
 }
-::NullSpaceHaptics::ExperienceNode* ExperienceDefinitions::mutable_experience_nodes(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+::nsvr::detail::encoding::ExperienceNode* ExperienceDefinitions::mutable_experience_nodes(int index) {
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_.Mutable(index);
 }
-::NullSpaceHaptics::ExperienceNode* ExperienceDefinitions::add_experience_nodes() {
-  // @@protoc_insertion_point(field_add:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+::nsvr::detail::encoding::ExperienceNode* ExperienceDefinitions::add_experience_nodes() {
+  // @@protoc_insertion_point(field_add:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_.Add();
 }
-::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::ExperienceNode >*
+::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::ExperienceNode >*
 ExperienceDefinitions::mutable_experience_nodes() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+  // @@protoc_insertion_point(field_mutable_list:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return &experience_nodes_;
 }
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceHaptics::ExperienceNode >&
+const ::google::protobuf::RepeatedPtrField< ::nsvr::detail::encoding::ExperienceNode >&
 ExperienceDefinitions::experience_nodes() const {
-  // @@protoc_insertion_point(field_list:NullSpaceHaptics.ExperienceDefinitions.experience_nodes)
+  // @@protoc_insertion_point(field_list:nsvr.detail.encoding.ExperienceDefinitions.experience_nodes)
   return experience_nodes_;
 }
 
@@ -4624,12 +4628,12 @@ const int HapticDescriptionFile::kExperienceDefinitionsFieldNumber;
 HapticDescriptionFile::HapticDescriptionFile()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(constructor:nsvr.detail.encoding.HapticDescriptionFile)
 }
 
 void HapticDescriptionFile::InitAsDefaultInstance() {
   _is_default_instance_ = true;
-  effect_ = const_cast< ::NullSpaceHaptics::RootEffect*>(&::NullSpaceHaptics::RootEffect::default_instance());
+  effect_ = const_cast< ::nsvr::detail::encoding::RootEffect*>(&::nsvr::detail::encoding::RootEffect::default_instance());
 }
 
 HapticDescriptionFile::HapticDescriptionFile(const HapticDescriptionFile& from)
@@ -4637,7 +4641,7 @@ HapticDescriptionFile::HapticDescriptionFile(const HapticDescriptionFile& from)
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(copy_constructor:nsvr.detail.encoding.HapticDescriptionFile)
 }
 
 void HapticDescriptionFile::SharedCtor() {
@@ -4648,19 +4652,19 @@ void HapticDescriptionFile::SharedCtor() {
   sequence_definitions_.SetAssignDescriptorCallback(
       protobuf_AssignDescriptorsOnce);
   sequence_definitions_.SetEntryDescriptor(
-      &::NullSpaceHaptics::HapticDescriptionFile_SequenceDefinitionsEntry_descriptor_);
+      &::nsvr::detail::encoding::HapticDescriptionFile_SequenceDefinitionsEntry_descriptor_);
   pattern_definitions_.SetAssignDescriptorCallback(
       protobuf_AssignDescriptorsOnce);
   pattern_definitions_.SetEntryDescriptor(
-      &::NullSpaceHaptics::HapticDescriptionFile_PatternDefinitionsEntry_descriptor_);
+      &::nsvr::detail::encoding::HapticDescriptionFile_PatternDefinitionsEntry_descriptor_);
   experience_definitions_.SetAssignDescriptorCallback(
       protobuf_AssignDescriptorsOnce);
   experience_definitions_.SetEntryDescriptor(
-      &::NullSpaceHaptics::HapticDescriptionFile_ExperienceDefinitionsEntry_descriptor_);
+      &::nsvr::detail::encoding::HapticDescriptionFile_ExperienceDefinitionsEntry_descriptor_);
 }
 
 HapticDescriptionFile::~HapticDescriptionFile() {
-  // @@protoc_insertion_point(destructor:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(destructor:nsvr.detail.encoding.HapticDescriptionFile)
   SharedDtor();
 }
 
@@ -4696,7 +4700,7 @@ HapticDescriptionFile* HapticDescriptionFile::New(::google::protobuf::Arena* are
 }
 
 void HapticDescriptionFile::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceHaptics.HapticDescriptionFile)
+// @@protoc_insertion_point(message_clear_start:nsvr.detail.encoding.HapticDescriptionFile)
   if (GetArenaNoVirtual() == NULL && effect_ != NULL) delete effect_;
   effect_ = NULL;
   sequence_definitions_.Clear();
@@ -4708,13 +4712,13 @@ bool HapticDescriptionFile::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(parse_start:nsvr.detail.encoding.HapticDescriptionFile)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .NullSpaceHaptics.RootEffect effect = 1;
+      // optional .nsvr.detail.encoding.RootEffect effect = 1;
       case 1: {
         if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
@@ -4726,24 +4730,24 @@ bool HapticDescriptionFile::MergePartialFromCodedStream(
         break;
       }
 
-      // map<string, .NullSpaceHaptics.SequenceDefinitions> sequence_definitions = 2;
+      // map<string, .nsvr.detail.encoding.SequenceDefinitions> sequence_definitions = 2;
       case 2: {
         if (tag == 18) {
          parse_sequence_definitions:
           DO_(input->IncrementRecursionDepth());
          parse_loop_sequence_definitions:
           HapticDescriptionFile_SequenceDefinitionsEntry::Parser< ::google::protobuf::internal::MapField<
-              ::std::string, ::NullSpaceHaptics::SequenceDefinitions,
+              ::std::string, ::nsvr::detail::encoding::SequenceDefinitions,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
               ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
               0 >,
-            ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions > > parser(&sequence_definitions_);
+            ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions > > parser(&sequence_definitions_);
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
               input, &parser));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             parser.key().data(), parser.key().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "NullSpaceHaptics.HapticDescriptionFile.SequenceDefinitionsEntry.key"));
+            "nsvr.detail.encoding.HapticDescriptionFile.SequenceDefinitionsEntry.key"));
         } else {
           goto handle_unusual;
         }
@@ -4753,23 +4757,23 @@ bool HapticDescriptionFile::MergePartialFromCodedStream(
         break;
       }
 
-      // map<string, .NullSpaceHaptics.PatternDefinitions> pattern_definitions = 3;
+      // map<string, .nsvr.detail.encoding.PatternDefinitions> pattern_definitions = 3;
       case 3: {
         if (tag == 26) {
           DO_(input->IncrementRecursionDepth());
          parse_loop_pattern_definitions:
           HapticDescriptionFile_PatternDefinitionsEntry::Parser< ::google::protobuf::internal::MapField<
-              ::std::string, ::NullSpaceHaptics::PatternDefinitions,
+              ::std::string, ::nsvr::detail::encoding::PatternDefinitions,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
               ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
               0 >,
-            ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions > > parser(&pattern_definitions_);
+            ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions > > parser(&pattern_definitions_);
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
               input, &parser));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             parser.key().data(), parser.key().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "NullSpaceHaptics.HapticDescriptionFile.PatternDefinitionsEntry.key"));
+            "nsvr.detail.encoding.HapticDescriptionFile.PatternDefinitionsEntry.key"));
         } else {
           goto handle_unusual;
         }
@@ -4779,23 +4783,23 @@ bool HapticDescriptionFile::MergePartialFromCodedStream(
         break;
       }
 
-      // map<string, .NullSpaceHaptics.ExperienceDefinitions> experience_definitions = 4;
+      // map<string, .nsvr.detail.encoding.ExperienceDefinitions> experience_definitions = 4;
       case 4: {
         if (tag == 34) {
           DO_(input->IncrementRecursionDepth());
          parse_loop_experience_definitions:
           HapticDescriptionFile_ExperienceDefinitionsEntry::Parser< ::google::protobuf::internal::MapField<
-              ::std::string, ::NullSpaceHaptics::ExperienceDefinitions,
+              ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions,
               ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
               ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
               0 >,
-            ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions > > parser(&experience_definitions_);
+            ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions > > parser(&experience_definitions_);
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
               input, &parser));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             parser.key().data(), parser.key().length(),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "NullSpaceHaptics.HapticDescriptionFile.ExperienceDefinitionsEntry.key"));
+            "nsvr.detail.encoding.HapticDescriptionFile.ExperienceDefinitionsEntry.key"));
         } else {
           goto handle_unusual;
         }
@@ -4818,26 +4822,26 @@ bool HapticDescriptionFile::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(parse_success:nsvr.detail.encoding.HapticDescriptionFile)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(parse_failure:nsvr.detail.encoding.HapticDescriptionFile)
   return false;
 #undef DO_
 }
 
 void HapticDescriptionFile::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceHaptics.HapticDescriptionFile)
-  // optional .NullSpaceHaptics.RootEffect effect = 1;
+  // @@protoc_insertion_point(serialize_start:nsvr.detail.encoding.HapticDescriptionFile)
+  // optional .nsvr.detail.encoding.RootEffect effect = 1;
   if (this->has_effect()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, *this->effect_, output);
   }
 
-  // map<string, .NullSpaceHaptics.SequenceDefinitions> sequence_definitions = 2;
+  // map<string, .nsvr.detail.encoding.SequenceDefinitions> sequence_definitions = 2;
   if (!this->sequence_definitions().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -4846,7 +4850,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "NullSpaceHaptics.HapticDescriptionFile.SequenceDefinitionsEntry.key");
+          "nsvr.detail.encoding.HapticDescriptionFile.SequenceDefinitionsEntry.key");
       }
     };
 
@@ -4854,9 +4858,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         this->sequence_definitions().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->sequence_definitions().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::const_iterator
           it = this->sequence_definitions().begin();
           it != this->sequence_definitions().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
@@ -4872,7 +4876,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
       }
     } else {
       ::google::protobuf::scoped_ptr<HapticDescriptionFile_SequenceDefinitionsEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::const_iterator
           it = this->sequence_definitions().begin();
           it != this->sequence_definitions().end(); ++it) {
         entry.reset(sequence_definitions_.NewEntryWrapper(
@@ -4884,9 +4888,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
     }
   }
 
-  // map<string, .NullSpaceHaptics.PatternDefinitions> pattern_definitions = 3;
+  // map<string, .nsvr.detail.encoding.PatternDefinitions> pattern_definitions = 3;
   if (!this->pattern_definitions().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -4895,7 +4899,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "NullSpaceHaptics.HapticDescriptionFile.PatternDefinitionsEntry.key");
+          "nsvr.detail.encoding.HapticDescriptionFile.PatternDefinitionsEntry.key");
       }
     };
 
@@ -4903,9 +4907,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         this->pattern_definitions().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->pattern_definitions().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::const_iterator
           it = this->pattern_definitions().begin();
           it != this->pattern_definitions().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
@@ -4921,7 +4925,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
       }
     } else {
       ::google::protobuf::scoped_ptr<HapticDescriptionFile_PatternDefinitionsEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::const_iterator
           it = this->pattern_definitions().begin();
           it != this->pattern_definitions().end(); ++it) {
         entry.reset(pattern_definitions_.NewEntryWrapper(
@@ -4933,9 +4937,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
     }
   }
 
-  // map<string, .NullSpaceHaptics.ExperienceDefinitions> experience_definitions = 4;
+  // map<string, .nsvr.detail.encoding.ExperienceDefinitions> experience_definitions = 4;
   if (!this->experience_definitions().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -4944,7 +4948,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "NullSpaceHaptics.HapticDescriptionFile.ExperienceDefinitionsEntry.key");
+          "nsvr.detail.encoding.HapticDescriptionFile.ExperienceDefinitionsEntry.key");
       }
     };
 
@@ -4952,9 +4956,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         this->experience_definitions().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->experience_definitions().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::const_iterator
           it = this->experience_definitions().begin();
           it != this->experience_definitions().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
@@ -4970,7 +4974,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
       }
     } else {
       ::google::protobuf::scoped_ptr<HapticDescriptionFile_ExperienceDefinitionsEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::const_iterator
           it = this->experience_definitions().begin();
           it != this->experience_definitions().end(); ++it) {
         entry.reset(experience_definitions_.NewEntryWrapper(
@@ -4982,22 +4986,22 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
     }
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(serialize_end:nsvr.detail.encoding.HapticDescriptionFile)
 }
 
 ::google::protobuf::uint8* HapticDescriptionFile::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceHaptics.HapticDescriptionFile)
-  // optional .NullSpaceHaptics.RootEffect effect = 1;
+  // @@protoc_insertion_point(serialize_to_array_start:nsvr.detail.encoding.HapticDescriptionFile)
+  // optional .nsvr.detail.encoding.RootEffect effect = 1;
   if (this->has_effect()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         1, *this->effect_, false, target);
   }
 
-  // map<string, .NullSpaceHaptics.SequenceDefinitions> sequence_definitions = 2;
+  // map<string, .nsvr.detail.encoding.SequenceDefinitions> sequence_definitions = 2;
   if (!this->sequence_definitions().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -5006,7 +5010,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "NullSpaceHaptics.HapticDescriptionFile.SequenceDefinitionsEntry.key");
+          "nsvr.detail.encoding.HapticDescriptionFile.SequenceDefinitionsEntry.key");
       }
     };
 
@@ -5014,9 +5018,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         this->sequence_definitions().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->sequence_definitions().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::const_iterator
           it = this->sequence_definitions().begin();
           it != this->sequence_definitions().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
@@ -5034,7 +5038,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
       }
     } else {
       ::google::protobuf::scoped_ptr<HapticDescriptionFile_SequenceDefinitionsEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::const_iterator
           it = this->sequence_definitions().begin();
           it != this->sequence_definitions().end(); ++it) {
         entry.reset(sequence_definitions_.NewEntryWrapper(
@@ -5048,9 +5052,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
     }
   }
 
-  // map<string, .NullSpaceHaptics.PatternDefinitions> pattern_definitions = 3;
+  // map<string, .nsvr.detail.encoding.PatternDefinitions> pattern_definitions = 3;
   if (!this->pattern_definitions().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -5059,7 +5063,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "NullSpaceHaptics.HapticDescriptionFile.PatternDefinitionsEntry.key");
+          "nsvr.detail.encoding.HapticDescriptionFile.PatternDefinitionsEntry.key");
       }
     };
 
@@ -5067,9 +5071,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         this->pattern_definitions().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->pattern_definitions().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::const_iterator
           it = this->pattern_definitions().begin();
           it != this->pattern_definitions().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
@@ -5087,7 +5091,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
       }
     } else {
       ::google::protobuf::scoped_ptr<HapticDescriptionFile_PatternDefinitionsEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::const_iterator
           it = this->pattern_definitions().begin();
           it != this->pattern_definitions().end(); ++it) {
         entry.reset(pattern_definitions_.NewEntryWrapper(
@@ -5101,9 +5105,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
     }
   }
 
-  // map<string, .NullSpaceHaptics.ExperienceDefinitions> experience_definitions = 4;
+  // map<string, .nsvr.detail.encoding.ExperienceDefinitions> experience_definitions = 4;
   if (!this->experience_definitions().empty()) {
-    typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::const_pointer
+    typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::const_pointer
         ConstPtr;
     typedef ConstPtr SortItem;
     typedef ::google::protobuf::internal::CompareByDerefFirst<SortItem> Less;
@@ -5112,7 +5116,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), p->first.length(),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "NullSpaceHaptics.HapticDescriptionFile.ExperienceDefinitionsEntry.key");
+          "nsvr.detail.encoding.HapticDescriptionFile.ExperienceDefinitionsEntry.key");
       }
     };
 
@@ -5120,9 +5124,9 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
         this->experience_definitions().size() > 1) {
       ::google::protobuf::scoped_array<SortItem> items(
           new SortItem[this->experience_definitions().size()]);
-      typedef ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::size_type size_type;
+      typedef ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::size_type size_type;
       size_type n = 0;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::const_iterator
           it = this->experience_definitions().begin();
           it != this->experience_definitions().end(); ++it, ++n) {
         items[n] = SortItem(&*it);
@@ -5140,7 +5144,7 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
       }
     } else {
       ::google::protobuf::scoped_ptr<HapticDescriptionFile_ExperienceDefinitionsEntry> entry;
-      for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::const_iterator
+      for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::const_iterator
           it = this->experience_definitions().begin();
           it != this->experience_definitions().end(); ++it) {
         entry.reset(experience_definitions_.NewEntryWrapper(
@@ -5154,26 +5158,26 @@ void HapticDescriptionFile::SerializeWithCachedSizes(
     }
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(serialize_to_array_end:nsvr.detail.encoding.HapticDescriptionFile)
   return target;
 }
 
 int HapticDescriptionFile::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceHaptics.HapticDescriptionFile)
+// @@protoc_insertion_point(message_byte_size_start:nsvr.detail.encoding.HapticDescriptionFile)
   int total_size = 0;
 
-  // optional .NullSpaceHaptics.RootEffect effect = 1;
+  // optional .nsvr.detail.encoding.RootEffect effect = 1;
   if (this->has_effect()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
         *this->effect_);
   }
 
-  // map<string, .NullSpaceHaptics.SequenceDefinitions> sequence_definitions = 2;
+  // map<string, .nsvr.detail.encoding.SequenceDefinitions> sequence_definitions = 2;
   total_size += 1 * this->sequence_definitions_size();
   {
     ::google::protobuf::scoped_ptr<HapticDescriptionFile_SequenceDefinitionsEntry> entry;
-    for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >::const_iterator
+    for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >::const_iterator
         it = this->sequence_definitions().begin();
         it != this->sequence_definitions().end(); ++it) {
       entry.reset(sequence_definitions_.NewEntryWrapper(it->first, it->second));
@@ -5182,11 +5186,11 @@ int HapticDescriptionFile::ByteSize() const {
     }
   }
 
-  // map<string, .NullSpaceHaptics.PatternDefinitions> pattern_definitions = 3;
+  // map<string, .nsvr.detail.encoding.PatternDefinitions> pattern_definitions = 3;
   total_size += 1 * this->pattern_definitions_size();
   {
     ::google::protobuf::scoped_ptr<HapticDescriptionFile_PatternDefinitionsEntry> entry;
-    for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >::const_iterator
+    for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >::const_iterator
         it = this->pattern_definitions().begin();
         it != this->pattern_definitions().end(); ++it) {
       entry.reset(pattern_definitions_.NewEntryWrapper(it->first, it->second));
@@ -5195,11 +5199,11 @@ int HapticDescriptionFile::ByteSize() const {
     }
   }
 
-  // map<string, .NullSpaceHaptics.ExperienceDefinitions> experience_definitions = 4;
+  // map<string, .nsvr.detail.encoding.ExperienceDefinitions> experience_definitions = 4;
   total_size += 1 * this->experience_definitions_size();
   {
     ::google::protobuf::scoped_ptr<HapticDescriptionFile_ExperienceDefinitionsEntry> entry;
-    for (::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >::const_iterator
+    for (::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >::const_iterator
         it = this->experience_definitions().begin();
         it != this->experience_definitions().end(); ++it) {
       entry.reset(experience_definitions_.NewEntryWrapper(it->first, it->second));
@@ -5215,7 +5219,7 @@ int HapticDescriptionFile::ByteSize() const {
 }
 
 void HapticDescriptionFile::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceHaptics.HapticDescriptionFile)
+// @@protoc_insertion_point(generalized_merge_from_start:nsvr.detail.encoding.HapticDescriptionFile)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -5223,16 +5227,16 @@ void HapticDescriptionFile::MergeFrom(const ::google::protobuf::Message& from) {
       ::google::protobuf::internal::DynamicCastToGenerated<const HapticDescriptionFile>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:nsvr.detail.encoding.HapticDescriptionFile)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceHaptics.HapticDescriptionFile)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:nsvr.detail.encoding.HapticDescriptionFile)
     MergeFrom(*source);
   }
 }
 
 void HapticDescriptionFile::MergeFrom(const HapticDescriptionFile& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceHaptics.HapticDescriptionFile)
+// @@protoc_insertion_point(class_specific_merge_from_start:nsvr.detail.encoding.HapticDescriptionFile)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
@@ -5240,19 +5244,19 @@ void HapticDescriptionFile::MergeFrom(const HapticDescriptionFile& from) {
   pattern_definitions_.MergeFrom(from.pattern_definitions_);
   experience_definitions_.MergeFrom(from.experience_definitions_);
   if (from.has_effect()) {
-    mutable_effect()->::NullSpaceHaptics::RootEffect::MergeFrom(from.effect());
+    mutable_effect()->::nsvr::detail::encoding::RootEffect::MergeFrom(from.effect());
   }
 }
 
 void HapticDescriptionFile::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceHaptics.HapticDescriptionFile)
+// @@protoc_insertion_point(generalized_copy_from_start:nsvr.detail.encoding.HapticDescriptionFile)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void HapticDescriptionFile::CopyFrom(const HapticDescriptionFile& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceHaptics.HapticDescriptionFile)
+// @@protoc_insertion_point(class_specific_copy_from_start:nsvr.detail.encoding.HapticDescriptionFile)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -5287,7 +5291,7 @@ void HapticDescriptionFile::InternalSwap(HapticDescriptionFile* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // HapticDescriptionFile
 
-// optional .NullSpaceHaptics.RootEffect effect = 1;
+// optional .nsvr.detail.encoding.RootEffect effect = 1;
 bool HapticDescriptionFile::has_effect() const {
   return !_is_default_instance_ && effect_ != NULL;
 }
@@ -5295,26 +5299,26 @@ void HapticDescriptionFile::clear_effect() {
   if (GetArenaNoVirtual() == NULL && effect_ != NULL) delete effect_;
   effect_ = NULL;
 }
-const ::NullSpaceHaptics::RootEffect& HapticDescriptionFile::effect() const {
-  // @@protoc_insertion_point(field_get:NullSpaceHaptics.HapticDescriptionFile.effect)
+const ::nsvr::detail::encoding::RootEffect& HapticDescriptionFile::effect() const {
+  // @@protoc_insertion_point(field_get:nsvr.detail.encoding.HapticDescriptionFile.effect)
   return effect_ != NULL ? *effect_ : *default_instance_->effect_;
 }
-::NullSpaceHaptics::RootEffect* HapticDescriptionFile::mutable_effect() {
+::nsvr::detail::encoding::RootEffect* HapticDescriptionFile::mutable_effect() {
   
   if (effect_ == NULL) {
-    effect_ = new ::NullSpaceHaptics::RootEffect;
+    effect_ = new ::nsvr::detail::encoding::RootEffect;
   }
-  // @@protoc_insertion_point(field_mutable:NullSpaceHaptics.HapticDescriptionFile.effect)
+  // @@protoc_insertion_point(field_mutable:nsvr.detail.encoding.HapticDescriptionFile.effect)
   return effect_;
 }
-::NullSpaceHaptics::RootEffect* HapticDescriptionFile::release_effect() {
-  // @@protoc_insertion_point(field_release:NullSpaceHaptics.HapticDescriptionFile.effect)
+::nsvr::detail::encoding::RootEffect* HapticDescriptionFile::release_effect() {
+  // @@protoc_insertion_point(field_release:nsvr.detail.encoding.HapticDescriptionFile.effect)
   
-  ::NullSpaceHaptics::RootEffect* temp = effect_;
+  ::nsvr::detail::encoding::RootEffect* temp = effect_;
   effect_ = NULL;
   return temp;
 }
-void HapticDescriptionFile::set_allocated_effect(::NullSpaceHaptics::RootEffect* effect) {
+void HapticDescriptionFile::set_allocated_effect(::nsvr::detail::encoding::RootEffect* effect) {
   delete effect_;
   effect_ = effect;
   if (effect) {
@@ -5322,60 +5326,60 @@ void HapticDescriptionFile::set_allocated_effect(::NullSpaceHaptics::RootEffect*
   } else {
     
   }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceHaptics.HapticDescriptionFile.effect)
+  // @@protoc_insertion_point(field_set_allocated:nsvr.detail.encoding.HapticDescriptionFile.effect)
 }
 
-// map<string, .NullSpaceHaptics.SequenceDefinitions> sequence_definitions = 2;
+// map<string, .nsvr.detail.encoding.SequenceDefinitions> sequence_definitions = 2;
 int HapticDescriptionFile::sequence_definitions_size() const {
   return sequence_definitions_.size();
 }
 void HapticDescriptionFile::clear_sequence_definitions() {
   sequence_definitions_.Clear();
 }
- const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >&
+ const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >&
 HapticDescriptionFile::sequence_definitions() const {
-  // @@protoc_insertion_point(field_map:NullSpaceHaptics.HapticDescriptionFile.sequence_definitions)
+  // @@protoc_insertion_point(field_map:nsvr.detail.encoding.HapticDescriptionFile.sequence_definitions)
   return sequence_definitions_.GetMap();
 }
- ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::SequenceDefinitions >*
+ ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::SequenceDefinitions >*
 HapticDescriptionFile::mutable_sequence_definitions() {
-  // @@protoc_insertion_point(field_mutable_map:NullSpaceHaptics.HapticDescriptionFile.sequence_definitions)
+  // @@protoc_insertion_point(field_mutable_map:nsvr.detail.encoding.HapticDescriptionFile.sequence_definitions)
   return sequence_definitions_.MutableMap();
 }
 
-// map<string, .NullSpaceHaptics.PatternDefinitions> pattern_definitions = 3;
+// map<string, .nsvr.detail.encoding.PatternDefinitions> pattern_definitions = 3;
 int HapticDescriptionFile::pattern_definitions_size() const {
   return pattern_definitions_.size();
 }
 void HapticDescriptionFile::clear_pattern_definitions() {
   pattern_definitions_.Clear();
 }
- const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >&
+ const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >&
 HapticDescriptionFile::pattern_definitions() const {
-  // @@protoc_insertion_point(field_map:NullSpaceHaptics.HapticDescriptionFile.pattern_definitions)
+  // @@protoc_insertion_point(field_map:nsvr.detail.encoding.HapticDescriptionFile.pattern_definitions)
   return pattern_definitions_.GetMap();
 }
- ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::PatternDefinitions >*
+ ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::PatternDefinitions >*
 HapticDescriptionFile::mutable_pattern_definitions() {
-  // @@protoc_insertion_point(field_mutable_map:NullSpaceHaptics.HapticDescriptionFile.pattern_definitions)
+  // @@protoc_insertion_point(field_mutable_map:nsvr.detail.encoding.HapticDescriptionFile.pattern_definitions)
   return pattern_definitions_.MutableMap();
 }
 
-// map<string, .NullSpaceHaptics.ExperienceDefinitions> experience_definitions = 4;
+// map<string, .nsvr.detail.encoding.ExperienceDefinitions> experience_definitions = 4;
 int HapticDescriptionFile::experience_definitions_size() const {
   return experience_definitions_.size();
 }
 void HapticDescriptionFile::clear_experience_definitions() {
   experience_definitions_.Clear();
 }
- const ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >&
+ const ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >&
 HapticDescriptionFile::experience_definitions() const {
-  // @@protoc_insertion_point(field_map:NullSpaceHaptics.HapticDescriptionFile.experience_definitions)
+  // @@protoc_insertion_point(field_map:nsvr.detail.encoding.HapticDescriptionFile.experience_definitions)
   return experience_definitions_.GetMap();
 }
- ::google::protobuf::Map< ::std::string, ::NullSpaceHaptics::ExperienceDefinitions >*
+ ::google::protobuf::Map< ::std::string, ::nsvr::detail::encoding::ExperienceDefinitions >*
 HapticDescriptionFile::mutable_experience_definitions() {
-  // @@protoc_insertion_point(field_mutable_map:NullSpaceHaptics.HapticDescriptionFile.experience_definitions)
+  // @@protoc_insertion_point(field_mutable_map:nsvr.detail.encoding.HapticDescriptionFile.experience_definitions)
   return experience_definitions_.MutableMap();
 }
 
@@ -5383,6 +5387,8 @@ HapticDescriptionFile::mutable_experience_definitions() {
 
 // @@protoc_insertion_point(namespace_scope)
 
-}  // namespace NullSpaceHaptics
+}  // namespace encoding
+}  // namespace detail
+}  // namespace nsvr
 
 // @@protoc_insertion_point(global_scope)
