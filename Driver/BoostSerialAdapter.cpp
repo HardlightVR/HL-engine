@@ -26,7 +26,7 @@ BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 void BoostSerialAdapter::Connect()
 {
 	//When we first connect, we don't want any delays
-	scheduleImmediateSuitReconnect();
+	beginReconnectionProcess();
 }
 
 void BoostSerialAdapter::Disconnect()
@@ -115,7 +115,7 @@ std::shared_ptr<Buffer> BoostSerialAdapter::GetDataStream()
 
 bool BoostSerialAdapter::IsConnected() const
 {
-	return  !_isResetting && this->m_port && this->m_port->is_open();
+	return  !_isResetting &&  this->m_port && this->m_port->is_open();
 }
 
 
@@ -253,7 +253,7 @@ bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string
 
 void BoostSerialAdapter::scheduleImmediateSuitReconnect()
 {
-	m_suitReconnectionTimer.expires_from_now(boost::posix_time::millisec(0));
+	m_suitReconnectionTimer.expires_from_now(boost::posix_time::millisec(10));
 	m_suitReconnectionTimer.async_wait([this](auto err) {testAllPorts(err); });
 }
 
