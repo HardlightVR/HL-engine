@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "PacketDispatcher.h"
-
+#include <boost\log\trivial.hpp>
 
 
 PacketDispatcher::PacketDispatcher() : _dispatchLimit(32), _consumers()

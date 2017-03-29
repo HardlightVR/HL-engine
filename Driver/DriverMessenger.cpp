@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DriverMessenger.h"
 #include "Encoder.h"
+#include <boost\log\trivial.hpp>
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 _running{true},
 	_process([](void const*, std::size_t) {}),
@@ -51,12 +52,6 @@ void DriverMessenger::WriteTracking(TrackingUpdate t)
 
 void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
 {
-	for (int i = 0; i < 4; i++) {
-		
-		if (s.SuitsFound[i]) {
-			std::cout << "	Status: " << s.Suits[i].Status << '\n';
-		}
-	}
 	m_suitConnectionInfo.Write(s);
 }
 

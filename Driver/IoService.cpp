@@ -2,6 +2,7 @@
 #include "IoService.h"
 #include <iostream>
 #include "Locator.h"
+#include <boost\log\trivial.hpp>
 IoService::IoService():_io(), _work(), _running(false), _readyToResumeIO(2),
 _shouldQuit{false}, _wantsReset{false}, _isReset{false}
 {
@@ -43,7 +44,8 @@ void IoService::start() {
 				}
 			}
 			catch (boost::system::system_error& ec) {
-				std::cout << "BIG ERROR\n";
+				BOOST_LOG_TRIVIAL(error) << "[IoS] Failure in reset loop: " << ec.what();
+
 			}
 		}
 
@@ -57,16 +59,18 @@ void IoService::start() {
 			try {
 				_work = std::make_unique<boost::asio::io_service::work>(_io);
 
-				log.Log("IoService-i", "Going to run");
+				BOOST_LOG_TRIVIAL(info) << "[IoS] Starting";
+
 				_io.run(); //wait here for a while
-				log.Log("IoService-i", "Going to reset and notify");
+				BOOST_LOG_TRIVIAL(info) << "[IoS] Going for a reset and notify";
 				_io.reset(); //someone stopped us? Reset
 
 				_isReset.store(true);
 				_doneResettingIO.notify_one();
 			}
 			catch (boost::system::system_error& e) {
-				std::cout <<"WTF\n";
+				BOOST_LOG_TRIVIAL(info) << "[IoS] Failure in io loop";
+
 			}
 
 		}
@@ -76,6 +80,9 @@ void IoService::start() {
 }
 void IoService::Shutdown()
 {
+
+	BOOST_LOG_TRIVIAL(info) << "[IoS] Shutting down";
+
 	{
 		boost::lock_guard<boost::mutex> lock(_needToCheckMut);
 		_shouldQuit.store(true);
@@ -94,17 +101,7 @@ void IoService::Shutdown()
 
 IoService::~IoService()
 {
-	/*
-	Shutdown();
-
-	if (_ioLoop.joinable()) {
-		_ioLoop.join();
-	}
-
-	if (_adapterResetLoop.joinable()) {
-		_adapterResetLoop.join();
-	}
-*/	
+	
 }
 
 boost::asio::io_service& IoService::GetIOService()
@@ -114,7 +111,8 @@ boost::asio::io_service& IoService::GetIOService()
 
 void IoService::RestartIOService(std::function<void()> ioResetCallback)
 {
-//	Locator::Logger().Log ("IoService", "Someone requested a restart of IO service");
+	BOOST_LOG_TRIVIAL(info) << "[IoS] Was requested to restart";
+
 	_resetIOCallback = ioResetCallback;
 
 	{
@@ -122,7 +120,7 @@ void IoService::RestartIOService(std::function<void()> ioResetCallback)
 		_wantsReset.store(true);
 	}
 	_needWakeup.notify_one();
-	//Locator::Logger().Log("IoService", "I notified it");
+	BOOST_LOG_TRIVIAL(info) << "[IoS] Restart request caller was notified of the restart";
 
 }
 

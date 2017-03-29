@@ -94,8 +94,9 @@ void BoostSerialAdapter::kickoffSuitReading()
 
 
 void BoostSerialAdapter::beginReconnectionProcess() {
+	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Disconnected from suit  ";
+
 	std::cout << "Disconnected..\n";
-	Locator::Logger().Log("Adapter", "Reconnecting..");
 	_isResetting = true;
 	scheduleImmediateSuitReconnect();
 }
@@ -240,7 +241,7 @@ bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string
 		}
 	}
 	catch (boost::system::system_error& ec) {
-		BOOST_LOG_TRIVIAL(trace) << "[Adapter] Got an exception when trying to open port:  " << ec.what();
+	//	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Got an exception when trying to open port:  " << ec.what();
 		return false;
 	}
 

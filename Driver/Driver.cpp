@@ -36,11 +36,11 @@ Driver::Driver() :
 		m_imus.ConsumePacket(packet); 
 	});
 
-	BOOST_LOG_TRIVIAL(info) << "[Driver] Booting";
+	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Booting";
 
 	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
 		SuitVersionInfo version(packet);
-		BOOST_LOG_TRIVIAL(info) << "Suit diagnostics: Running firmware v" << version.Major << "." << version.Minor;
+		BOOST_LOG_TRIVIAL(info) << "[DriverMain] Suit diagnostics: Running firmware v" << version.Major << "." << version.Minor;
 
 		if (version.Major == 2 && version.Minor == 5) {
 
@@ -81,8 +81,7 @@ bool Driver::StartThread()
 
 bool Driver::Shutdown()
 {
-	BOOST_LOG_TRIVIAL(info) << "[Driver] Shutting down";
-
+	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Shutting down";
 
 	m_statusPush.Stop();
 	m_hapticsPull.Stop();
@@ -115,9 +114,12 @@ void Driver::handleCommands()
 		for (const auto& command : *commands) {
 			switch (command.command()) {
 			case NullSpaceIPC::DriverCommand_Command_DISABLE_TRACKING:
+				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Disabling tracking";
+
 				m_hardware.DisableTracking();
 				break;
 			case NullSpaceIPC::DriverCommand_Command_ENABLE_TRACKING:
+				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Enabling tracking";
 				m_hardware.EnableTracking();
 				break;
 			default: 

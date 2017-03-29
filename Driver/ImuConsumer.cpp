@@ -2,6 +2,7 @@
 #include "ImuConsumer.h"
 #include "Synchronizer.h"
 #include "Enums.h"
+#include <boost\log\trivial.hpp>
 ImuConsumer::ImuConsumer()
 {
 }
@@ -22,20 +23,17 @@ boost::optional<NullSpace::SharedMemory::Quaternion> ImuConsumer::GetOrientation
 		}
 	}
 	catch (std::exception&) {
-		std::cout << "EXCEPTION while attempting to get quaternion data!\n";
+		BOOST_LOG_TRIVIAL(warning) << "[Tracking] Failed to find orientation of imu " << (int)imu;
 		return boost::none;
 	}
 }
 
 void ImuConsumer::ConsumePacket(packet packet)
 {
-	//std::cout << "Got Imu  packet: " << int(packet.raw[13]) << " in the fifo" << '\n';
 	Imu id = _mapping[packet.raw[11]];
 	if (id != Imu::Unknown) {
 		_quaternions[id] = parseQuaternion(packet.raw);
-		//std::cout << _quaternions[id].w << ", " << _quaternions[id].x << ", " << _quaternions[id].y << '\n';
 	}
-
 }
 
 void ImuConsumer::AssignMapping(uint32_t key, Imu id)
