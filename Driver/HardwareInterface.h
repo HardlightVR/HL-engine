@@ -28,7 +28,8 @@ public:
 	}
 
 	SuitsConnectionInfo PollDevice();
-
+	void ResetDrivers();
+	void ReadDriverData();
 	void EnableTracking();
 	void DisableTracking();
 	void RequestSuitVersion();

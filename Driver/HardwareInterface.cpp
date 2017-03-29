@@ -3,6 +3,7 @@
 #include "BoostSerialAdapter.h"
 #include "IoService.h"
 #include "Locator.h"
+#include <boost\log\trivial.hpp>
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
 	
 	m_adapter(std::make_unique<BoostSerialAdapter>(ioService->GetIOService())),
@@ -39,8 +40,18 @@ SuitsConnectionInfo HardwareInterface::PollDevice()
 	return info;
 }
 
+void HardwareInterface::ResetDrivers()
+{
+	m_firmware.ResetDrivers();
+}
+
+void HardwareInterface::ReadDriverData() {
+	m_firmware.ReadDriverData();
+}
+
 void HardwareInterface::EnableTracking()
 {
+
 	m_firmware.RequestSuitVersion();
 	m_firmware.EnableTracking();
 	

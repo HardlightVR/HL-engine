@@ -10,12 +10,14 @@ public:
 
 	void PlayEffect(Location location, std::string effect, float strength);
 	void HaltEffect(Location location);
-	//void RequestSuitVersion();
 	void PlayEffectContinuous(Location location, std::string effect, float strength);
-	//void HaltAllEffects();
-	//void PingSuit();
-	//void EnableIMUs();
-	//void DisableIMUs();
+
+
+	void EnableTracking();
+	void DisableTracking();
+	void RequestSuitVersion();
+	void ReadDriverData();
+	void ResetDrivers();
 private:
 	std::shared_ptr<InstructionSet> m_instructionSet;
 	void chooseExecutionStrategy(const Packet&  packet);
@@ -29,9 +31,7 @@ private:
 	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
 	const unsigned int BATCH_SIZE;
 	bool _isBatching;
-public:
-	void EnableTracking();
-	void DisableTracking();
-	void RequestSuitVersion();
+
+	
 };
 

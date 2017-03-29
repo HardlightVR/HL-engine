@@ -34,15 +34,13 @@ void FirmwareInterface::writeBuffer() {
 	}
 	else if (avail > 0 && avail < BATCH_SIZE) {
 		if (_isBatching) {
-			BOOST_LOG_TRIVIAL(trace) << "[FI] Waiting for batch..";
-
 			//	std::cout << "psst! I'm waiting for a batch of cookies!" << '\n';
 			_writeTimer.expires_from_now(_writeInterval);
 			_writeTimer.async_wait(boost::bind(&FirmwareInterface::writeBuffer, this));
 			return;
 		}
 
-		BOOST_LOG_TRIVIAL(trace) << "[FI] Need to make new batch";
+		//BOOST_LOG_TRIVIAL(trace) << "[FI] Need to make new packet batch";
 
 		//	std::cout << "Okay, we need to cook a new batch\n";
 		_isBatching = true;
@@ -52,9 +50,12 @@ void FirmwareInterface::writeBuffer() {
 				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 				const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
 				//	std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
+				//BOOST_LOG_TRIVIAL(trace) << "[FI] Sent an undersized packet batch";
 
 				this->_adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
-
+					if (e) {
+						BOOST_LOG_TRIVIAL(info) << "[FI] Failed to write an undersized packet batch: " << e.message();
+					}
 				}
 				);
 				_writeTimer.expires_from_now(_writeInterval);
@@ -69,14 +70,16 @@ void FirmwareInterface::writeBuffer() {
 		_batchingDeadline.cancel();
 		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 		const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
-		_adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
+		_adapter->Write(a, actualLen, [&](const boost::system::error_code& ec, std::size_t bytes_t) {
 
+			if (ec) {
+				BOOST_LOG_TRIVIAL(info) << "[FI] Failed to write a full packet batch";
 
+			}
 		}
 		);
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&FirmwareInterface::writeBuffer, this));
-		//	std::cout << "Got a FULL BATCH!" << '\n';
 	}
 
 }
@@ -87,7 +90,7 @@ void FirmwareInterface::EnableTracking()
 		chooseExecutionStrategy(_builder.Build());
 	}
 	else {
-		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
 	}
 }
 
@@ -97,7 +100,7 @@ void FirmwareInterface::DisableTracking()
 		chooseExecutionStrategy(_builder.Build());
 	}
 	else {
-		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
 	}
 }
 
@@ -107,14 +110,34 @@ void FirmwareInterface::RequestSuitVersion()
 		chooseExecutionStrategy(_builder.Build());
 	}
 	else {
-		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
+	}
+}
+
+void FirmwareInterface::ReadDriverData()
+{
+	if (_builder.UseInstruction("READ_DATA").Verify()) {
+		chooseExecutionStrategy(_builder.Build());
+	}
+	else {
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
+	}
+}
+
+void FirmwareInterface::ResetDrivers()
+{
+	if (_builder.UseInstruction("RESET_DRIVERS").Verify()) {
+		chooseExecutionStrategy(_builder.Build());
+	}
+	else {
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
 	}
 }
 
 void FirmwareInterface::PlayEffect(Location location, std::string effectString, float strength) {
 	
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
-		std::cout << "Failed to find atom in instruction set: " << effectString << '\n';
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to find atom '" << effectString << "' in the instruction set";
 		return;
 	}
 
@@ -129,14 +152,14 @@ void FirmwareInterface::PlayEffect(Location location, std::string effectString, 
 	}
 	else
 	{
-		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
 	}
 }
 
 void FirmwareInterface::PlayEffectContinuous(Location location, std::string effectString, float strength)
 {
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
-		std::cout << "Failed to find atom in instruction set: " << effectString << '\n';
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to find atom '" << effectString << "' in the instruction set";
 		return;
 	}
 
@@ -150,7 +173,7 @@ void FirmwareInterface::PlayEffectContinuous(Location location, std::string effe
 	}
 	else
 	{
-		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
 	}
 }
 
@@ -171,7 +194,7 @@ void FirmwareInterface::HaltEffect(Location location)
 	}
 	else
 	{
-		std::cout << "Failed to build instruction " << _builder.GetDebugString();
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
 	}
 
 }
