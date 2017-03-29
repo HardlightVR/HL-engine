@@ -66,6 +66,9 @@ bool InstructionBuilder::Verify() {
 std::string InstructionBuilder::GetDebugString() {
 	std::string description = _instruction + ": ";
 	std::size_t index = 0;
+	if (_parameters.empty()) {
+		description += "[no parameters]";
+	}
 	for (auto param : _parameters)
 	{
 		index++;
