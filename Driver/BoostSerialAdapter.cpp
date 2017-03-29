@@ -6,7 +6,7 @@
 #include "enumser.h"
 #include "Locator.h"
 #include "AsyncTimeout.h"
-
+#include <boost\log\trivial.hpp>
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
@@ -142,6 +142,8 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
 	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
+		BOOST_LOG_TRIVIAL(info) << "[Adapter] No ports available on system. Check Device Manager for available devices.";
+
 		Locator::Logger().Log("Adapter", "No ports available on system. Check Device Manager for available devices.", LogLevel::Warning);
 	}
 
@@ -207,7 +209,7 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 	timedReader->Go();
 	
 
-	m_port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this, portNames, timedReader] 
+	m_port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this, portNames, timedReader, portName] 
 		(auto ec, auto bytes_transferred) {
 		
 		//Stop the timed read from potentially expiring
@@ -217,7 +219,8 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 		if (!ec) {
 			assert(m_port && m_port->is_open());
 			if (isPingPacket(m_data, bytes_transferred)) {
-				std::cout << "Connected.\n";
+				BOOST_LOG_TRIVIAL(info) << "[Adapter] Connected to a suit on port " << portName;
+
 				m_io.post([this] { endReconnectionProcess(); });
 				return;
 			}
@@ -230,23 +233,16 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 
 bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string portName)
 {
-	Locator::Logger().Log("Adapter", "About to try and open m_port, let's see if it throws..");
-
 	try {
 		port.open(portName);
 		if (!port.is_open()) {
-			Locator::Logger().Log("Adapter", "It didn't throw but it's not open. Calling testOnePort again");
-
 			return false;
 		}
 	}
 	catch (boost::system::system_error& ec) {
-		Locator::Logger().Log("Adapter", std::string("Yup it threw this error: ") + ec.what());
-
+		BOOST_LOG_TRIVIAL(trace) << "[Adapter] Got an exception when trying to open port:  " << ec.what();
 		return false;
 	}
-
-	Locator::Logger().Log("Adapter", "It opened successfully");
 
 	return true;
 }

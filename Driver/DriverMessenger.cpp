@@ -7,7 +7,7 @@ _running{true},
 	m_hapticsData("ns-haptics-data", 1024, 256),
 	m_trackingData("ns-tracking-data"),
 	m_suitConnectionInfo("ns-suit-data"),
-	m_loggingStream("ns-logging-data", 500, 512),
+	m_loggingStream("ns-logging-data", 501, 512),
 	m_commandStream("ns-command-data", 512, 256),
 
 	m_sentinal("ns-sentinel"),
@@ -62,7 +62,8 @@ void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
 
 void DriverMessenger::WriteLog(std::string s)
 {
-	m_loggingStream.Push(s.data(), s.length());
+	//assumes null termination
+	m_loggingStream.Push(s.data(), s.length() + 1);
 }
 
 boost::optional<std::vector<NullSpaceIPC::EffectCommand>> DriverMessenger::ReadHaptics()

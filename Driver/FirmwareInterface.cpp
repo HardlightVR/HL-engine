@@ -2,6 +2,8 @@
 #include "FirmwareInterface.h"
 #include "Locator.h"
 #include "InstructionSet.h"
+
+#include <boost\log\trivial.hpp>
 FirmwareInterface::FirmwareInterface(std::unique_ptr<ICommunicationAdapter>& adapter, boost::asio::io_service& io):
 m_instructionSet(std::make_shared<InstructionSet>()),
 _adapter(adapter),
@@ -32,11 +34,16 @@ void FirmwareInterface::writeBuffer() {
 	}
 	else if (avail > 0 && avail < BATCH_SIZE) {
 		if (_isBatching) {
+			BOOST_LOG_TRIVIAL(trace) << "[FI] Waiting for batch..";
+
 			//	std::cout << "psst! I'm waiting for a batch of cookies!" << '\n';
 			_writeTimer.expires_from_now(_writeInterval);
 			_writeTimer.async_wait(boost::bind(&FirmwareInterface::writeBuffer, this));
 			return;
 		}
+
+		BOOST_LOG_TRIVIAL(trace) << "[FI] Need to make new batch";
+
 		//	std::cout << "Okay, we need to cook a new batch\n";
 		_isBatching = true;
 		_batchingDeadline.expires_from_now(_batchingTimeout);

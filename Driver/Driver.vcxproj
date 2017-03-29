@@ -189,6 +189,7 @@
     <ClInclude Include="ILogger.h" />
     <ClInclude Include="LoggingUtils.h" />
     <ClInclude Include="MessengerLogger.h" />
+    <ClInclude Include="MyTestLog.h" />
     <ClInclude Include="NSDriverApi.h" />
     <ClInclude Include="NullLogger.h" />
     <ClInclude Include="Packet.h" />
@@ -245,6 +246,7 @@
     <ClCompile Include="LoggingUtils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessengerLogger.cpp" />
+    <ClCompile Include="MyTestLog.cpp" />
     <ClCompile Include="NSDriverApi.cpp" />
     <ClCompile Include="NullLogger.cpp" />
     <ClCompile Include="Packet.cpp" />

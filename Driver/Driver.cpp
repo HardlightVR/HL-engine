@@ -7,6 +7,10 @@
 #include <functional>
 #include "DriverCommand.pb.h"
 #include "SuitVersionInfo.h"
+#include <boost/log/core.hpp>
+#include <boost/log/sinks/sync_frontend.hpp>
+#include <boost/log/trivial.hpp>
+#include "MyTestLog.h"
 Driver::Driver() :
 	_io(new IoService()),
 	m_hardware(_io),
@@ -19,14 +23,27 @@ Driver::Driver() :
 	m_cachedTracking({})
 
 {
+	using namespace boost::log;
 
+	typedef sinks::synchronous_sink<MyTestLog> sink_t;
+
+	boost::shared_ptr<sink_t> sink(new sink_t());
+	sink->locked_backend()->ProvideMessenger(m_messenger);
+
+	core::get()->add_sink(sink);
+	
 	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::ImuData, [this](auto packet) {
 		m_imus.ConsumePacket(packet); 
 	});
 
+	BOOST_LOG_TRIVIAL(info) << "[Driver] Booting";
+
 	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
 		SuitVersionInfo version(packet);
+		BOOST_LOG_TRIVIAL(info) << "Suit diagnostics: Running firmware v" << version.Major << "." << version.Minor;
+
 		if (version.Major == 2 && version.Minor == 5) {
+
 			m_imus.AssignMapping(1, Imu::Left_Upper_Arm);
 			m_imus.AssignMapping(3, Imu::Right_Upper_Arm);
 			m_imus.AssignMapping(0, Imu::Chest);
@@ -64,6 +81,8 @@ bool Driver::StartThread()
 
 bool Driver::Shutdown()
 {
+	BOOST_LOG_TRIVIAL(info) << "[Driver] Shutting down";
+
 
 	m_statusPush.Stop();
 	m_hapticsPull.Stop();

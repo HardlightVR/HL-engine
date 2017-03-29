@@ -135,6 +135,9 @@
     <ClInclude Include="AsyncTimeout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyTestLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -231,6 +234,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AsyncTimeout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MyTestLog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
