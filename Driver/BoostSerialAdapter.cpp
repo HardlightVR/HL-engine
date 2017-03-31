@@ -240,7 +240,7 @@ bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string
 			return false;
 		}
 	}
-	catch (boost::system::system_error& ec) {
+	catch (const boost::system::system_error& ec) {
 	//	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Got an exception when trying to open port:  " << ec.what();
 		return false;
 	}
