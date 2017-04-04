@@ -21,7 +21,7 @@ public:
 
 	std::vector<uint8_t> Pop() {
 		std::vector<uint8_t> data(m_queue.get_max_msg_size());
-		boost::interprocess::message_queue::size_type actualLen = 0;
+		my_message_queue::size_type actualLen = 0;
 		unsigned int priority = 0;
 		
 		m_queue.try_receive(&data[0], m_queue.get_max_msg_size(), actualLen, priority);
