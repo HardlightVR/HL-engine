@@ -218,3 +218,10 @@ enum class Imu {
 	Right_Forearm = 4, //5
 	Right_Upper_Arm = 5 //1
 };
+
+enum class Register {
+	Status = 0x00,
+	Control = 0x01,
+	RtpVol = 0x02,
+	WaveForm = 0x04
+};

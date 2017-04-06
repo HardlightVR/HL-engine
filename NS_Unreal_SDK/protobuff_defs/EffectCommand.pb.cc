@@ -87,12 +87,13 @@ void protobuf_AddDesc_EffectCommand_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\023EffectCommand.proto\022\014NullSpaceIPC\"\266\001\n\r"
+    "\n\023EffectCommand.proto\022\014NullSpaceIPC\"\304\001\n\r"
     "EffectCommand\0224\n\007command\030\001 \001(\0162#.NullSpa"
     "ceIPC.EffectCommand.Command\022\014\n\004area\030\002 \001("
-    "\r\022\016\n\006effect\030\003 \001(\t\022\020\n\010strength\030\004 \001(\002\"\?\n\007C"
+    "\r\022\016\n\006effect\030\003 \001(\t\022\020\n\010strength\030\004 \001(\002\"M\n\007C"
     "ommand\022\013\n\007UNKNOWN\020\000\022\010\n\004PLAY\020\001\022\023\n\017PLAY_CO"
-    "NTINUOUS\020\002\022\010\n\004HALT\020\003b\006proto3", 228);
+    "NTINUOUS\020\002\022\010\n\004HALT\020\003\022\014\n\010PLAY_RTP\020\004b\006prot"
+    "o3", 242);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "EffectCommand.proto", &protobuf_RegisterTypes);
   EffectCommand::default_instance_ = new EffectCommand();
@@ -119,6 +120,7 @@ bool EffectCommand_Command_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+    case 4:
       return true;
     default:
       return false;
@@ -130,6 +132,7 @@ const EffectCommand_Command EffectCommand::UNKNOWN;
 const EffectCommand_Command EffectCommand::PLAY;
 const EffectCommand_Command EffectCommand::PLAY_CONTINUOUS;
 const EffectCommand_Command EffectCommand::HALT;
+const EffectCommand_Command EffectCommand::PLAY_RTP;
 const EffectCommand_Command EffectCommand::Command_MIN;
 const EffectCommand_Command EffectCommand::Command_MAX;
 const int EffectCommand::Command_ARRAYSIZE;

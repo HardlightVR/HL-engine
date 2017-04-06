@@ -45,8 +45,13 @@ void HardwareInterface::ResetDrivers()
 	m_firmware.ResetDrivers();
 }
 
-void HardwareInterface::ReadDriverData() {
-	m_firmware.ReadDriverData();
+void HardwareInterface::ReadDriverData(Location loc) {
+	m_firmware.ReadDriverData(loc, Register::Control);
+	m_firmware.ReadDriverData(loc, Register::RtpVol);
+	m_firmware.ReadDriverData(loc, Register::Status);
+	m_firmware.ReadDriverData(loc, Register::WaveForm);
+
+
 }
 
 void HardwareInterface::EnableTracking()
@@ -62,6 +67,21 @@ void HardwareInterface::DisableTracking()
 	m_firmware.DisableTracking();
 }
 
+void HardwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& options)
+{
+	m_firmware.EnableAudioMode(pad, options);
+}
+
+void HardwareInterface::EnableIntrigMode(Location pad)
+{
+	m_firmware.EnableIntrigMode(pad);
+}
+
+void HardwareInterface::EnableRtpMode(Location pad)
+{
+	m_firmware.EnableRtpMode(pad);
+}
+
 void HardwareInterface::RequestSuitVersion()
 {
 	m_firmware.RequestSuitVersion();
@@ -70,5 +90,11 @@ void HardwareInterface::RequestSuitVersion()
 void HardwareInterface::RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)> func)
 {
 	m_dispatcher.AddConsumer(p, func);
+}
+
+void HardwareInterface::RawCommand(const std::string & command)
+{
+	auto data = reinterpret_cast<const uint8_t*>(command.data());
+	m_firmware.RawCommand(data, command.size());
 }
 

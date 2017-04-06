@@ -69,8 +69,8 @@
 	},
 	{
 		"id" : "0x18",
-		"name" : "HALT_ALL",
-		"purpose" : "Stop all motors",
+		"name" : "STREAM_CONT",
+		"purpose" : "Streams continous data",
 		"parameters" : []
 	},
 	{
@@ -78,6 +78,36 @@
 		"name" : "PLAY_CONTINUOUS",
 		"purpose" : "Play a motor continuously",
 		"parameters" : ["zone", "effect"]
+	},
+	{
+		"id" : "0x1A",
+		"name" : "AUDIO_MODE_ENABLE",
+		"purpose" : "Enables audio mode on pad",
+		"parameters" : ["zone", "audio_max", "audio_min", "peak_time", "filter"]
+	},
+	{
+		"id" : "0x1B",
+		"name" : "INTRIG_MODE_ENABLE",
+		"purpose" : "Enables trigger mode on pad",
+		"parameters" : ["zone"]
+	},
+	{
+		"id" : "0x1C",
+		"name" : "RTP_MODE_ENABLE",
+		"purpose" : "Enables rtp mode on pad",
+		"parameters" : ["zone"]
+	},
+	{
+		"id" : "0x1D",
+		"name" : "PLAY_RTP",
+		"purpose" : "Loads a volume using rtp",
+		"parameters" : ["zone", "volume"]
+	},
+	{
+		"id" : "0x32",
+		"name" : "INIT_TRACKING",
+		"purpose" : "Initialize tracking network",
+		"parameters" : []
 	},
 	{
 		"id" : "0x34",

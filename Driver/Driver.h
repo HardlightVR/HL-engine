@@ -9,7 +9,9 @@
 class IoService;
 
 class Driver {
+
 public:
+	
 	Driver();
 	~Driver();
 	bool StartThread();

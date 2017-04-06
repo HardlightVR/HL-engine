@@ -11,6 +11,31 @@
 #include <boost/log/sinks/sync_frontend.hpp>
 #include <boost/log/trivial.hpp>
 #include "MyTestLog.h"
+
+#include "FirmwareInterface.h"
+#include "IntermediateHapticFormats.h"
+
+
+void extractDrvData(const packet& packet) {
+	//as status register:
+	uint8_t whichDrv = packet.raw[4];
+	uint8_t whichReg = packet.raw[5];
+	uint8_t data = packet.raw[3];
+
+	bool over_current = data & 0x01;
+	bool over_temperature = data & 0x02;
+	
+	bool mode = data & (0x07);
+
+	bool standby = data & 0b00100000;
+
+
+
+	BOOST_LOG_TRIVIAL(info) << "[DriverMain] DRV " << int(whichDrv) << ", register " << int(whichReg) << ": Over current = " << int(over_current) << ", over temp = " << int(over_temperature);
+
+	
+}
+
 Driver::Driver() :
 	_io(new IoService()),
 	m_hardware(_io),
@@ -54,6 +79,13 @@ Driver::Driver() :
 		else if (version.Major == 2 && version.Minor == 4) {
 			m_imus.AssignMapping(3, Imu::Chest);
 		}
+
+		m_hardware.ReadDriverData(Location::Chest_Left);
+	});
+
+	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::DrvStatus, [&](auto packet) {
+		extractDrvData(packet);
+
 	});
 
 }
@@ -108,6 +140,10 @@ void Driver::handleStatus()
 	m_messenger.WriteSuits(m_hardware.PollDevice());
 }
 
+void DoForEachBit(std::function<void(Location l)> fn, uint32_t bits) {
+	for (uint32_t bit = 1; bits >= bit; bit *= 2) if (bits & bit) fn(Location(bit));
+
+}
 void Driver::handleCommands()
 {
 	if (auto commands = m_messenger.ReadCommands()) {
@@ -121,6 +157,28 @@ void Driver::handleCommands()
 			case NullSpaceIPC::DriverCommand_Command_ENABLE_TRACKING:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Enabling tracking";
 				m_hardware.EnableTracking();
+				break;
+			case NullSpaceIPC::DriverCommand_Command_ENABLE_AUDIO:
+				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Enabling audio mode for all pads";
+				FirmwareInterface::AudioOptions options;
+				options.AudioMin =  command.params().at("audio_min");
+				options.AudioMax = command.params().at("audio_max");
+				options.PeakTime = command.params().at("peak_time");
+				options.Filter = command.params().at("filter");
+				for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
+					m_hardware.EnableAudioMode(static_cast<Location>(loc), options);
+				}
+				break;
+			case NullSpaceIPC::DriverCommand_Command_DISABLE_AUDIO:
+				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Disabling audio mode for all pads";
+			
+				for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
+					m_hardware.EnableIntrigMode(static_cast<Location>(loc));
+				}
+				break;
+			case NullSpaceIPC::DriverCommand_Command_RAW_COMMAND:
+				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Submitting raw command to the suit";
+				m_hardware.RawCommand(command.raw_command());
 				break;
 			default: 
 				break;

@@ -29,11 +29,13 @@ InstructionBuilder& InstructionBuilder::UseInstruction(std::string name) {
 
 
 
-InstructionBuilder& InstructionBuilder::WithParam(std::string key, std::string val) {
+InstructionBuilder& InstructionBuilder::WithParam(std::string key, Param val) {
 	//std::cout << "	With param: " << key << " = " << val << '\n';
 	this->_parameters[key] = val;
 	return *this;
 }
+
+
 
 bool InstructionBuilder::Verify() {
 	
@@ -45,20 +47,13 @@ bool InstructionBuilder::Verify() {
 
 	const Instruction& desired = _iset->Instructions().at(this->_instruction);
 	for (std::string param : desired.Parameters) {
-		if (_parameters.find(param) == _parameters.end()) {
-		//	std::cout << "		Couldn't find " << param << '\n';
 
+		if (!boost::apply_visitor(param_valid_visitor(_iset, param), _parameters[param])) {
 			return false;
 		}
-		auto dict = this->_iset->ParamDict().at(param);
-		if (dict.find(_parameters[param]) == dict.end()) {
-			//std::cout << "		Couldn't find the dict " << param << '\n';
-
-			return false;
-		}
+	
 
 	}
-//	std::cout << "	verified." << '\n';
 	return true;
 }
 
@@ -72,7 +67,7 @@ std::string InstructionBuilder::GetDebugString() {
 	for (auto param : _parameters)
 	{
 		index++;
-		description += param.first + " = " + param.second;
+		description += param.first + " = " + boost::apply_visitor(param_debug_visitor(), param.second);
 		if (index < _parameters.size())
 		{
 			description += ", ";
@@ -80,6 +75,7 @@ std::string InstructionBuilder::GetDebugString() {
 	}
 	return description;
 }
+//Todo: stop using heap
 Packet InstructionBuilder::Build() {
 	const Instruction& desired = _iset->Instructions().at(_instruction);
 	const int packetLength = 7 + _parameters.size();
@@ -96,10 +92,8 @@ Packet InstructionBuilder::Build() {
 	const size_t numParams = _parameters.size();
 	for (std::size_t i = 0; i < numParams; i++) {
 		string paramKey = desired.Parameters[i];
-		string userParamVal = _parameters[paramKey];
-		auto paramKeyToByteId =_iset->ParamDict().at(paramKey);
-		uint8_t id = paramKeyToByteId[userParamVal];
-		packet[i + 4] = id;
+		uint8_t val = boost::apply_visitor(param_value_visitor(_iset, paramKey), _parameters[paramKey]);
+		packet[i + 4] = val;
 	}
 
 	packet[packetLength - 3] = 0xFF;

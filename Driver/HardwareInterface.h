@@ -25,15 +25,28 @@ public:
 		else if (ec.command()== NullSpaceIPC::EffectCommand_Command_PLAY_CONTINUOUS) {
 			m_firmware.PlayEffectContinuous(Location(ec.area()), ec.effect(), ec.strength());
 		}
+		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_PLAY_RTP) {
+			int strength = ec.strength() * 255;
+
+			m_firmware.PlayRtp(Location(ec.area()), strength);
+		}
 	}
 
 	SuitsConnectionInfo PollDevice();
 	void ResetDrivers();
-	void ReadDriverData();
+	void ReadDriverData(Location loc);
 	void EnableTracking();
 	void DisableTracking();
+
+
+	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& options);
+	void EnableIntrigMode(Location pad);
+	void EnableRtpMode(Location pad);
+
 	void RequestSuitVersion();
 	void RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)>);
+
+	void RawCommand(const std::string& command);
 
 private:
 	PacketDispatcher m_dispatcher;

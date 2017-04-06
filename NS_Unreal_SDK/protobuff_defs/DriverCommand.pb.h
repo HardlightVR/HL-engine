@@ -26,6 +26,8 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>
 #include <google/protobuf/extension_set.h>
+#include <google/protobuf/map.h>
+#include <google/protobuf/map_field_inl.h>
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
@@ -43,12 +45,15 @@ enum DriverCommand_Command {
   DriverCommand_Command_UNKNOWN = 0,
   DriverCommand_Command_ENABLE_TRACKING = 1,
   DriverCommand_Command_DISABLE_TRACKING = 2,
+  DriverCommand_Command_ENABLE_AUDIO = 3,
+  DriverCommand_Command_DISABLE_AUDIO = 4,
+  DriverCommand_Command_RAW_COMMAND = 5,
   DriverCommand_Command_DriverCommand_Command_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   DriverCommand_Command_DriverCommand_Command_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool DriverCommand_Command_IsValid(int value);
 const DriverCommand_Command DriverCommand_Command_Command_MIN = DriverCommand_Command_UNKNOWN;
-const DriverCommand_Command DriverCommand_Command_Command_MAX = DriverCommand_Command_DISABLE_TRACKING;
+const DriverCommand_Command DriverCommand_Command_Command_MAX = DriverCommand_Command_RAW_COMMAND;
 const int DriverCommand_Command_Command_ARRAYSIZE = DriverCommand_Command_Command_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* DriverCommand_Command_descriptor();
@@ -121,6 +126,7 @@ class DriverCommand : public ::google::protobuf::Message /* @@protoc_insertion_p
 
   // nested types ----------------------------------------------------
 
+
   typedef DriverCommand_Command Command;
   static const Command UNKNOWN =
     DriverCommand_Command_UNKNOWN;
@@ -128,6 +134,12 @@ class DriverCommand : public ::google::protobuf::Message /* @@protoc_insertion_p
     DriverCommand_Command_ENABLE_TRACKING;
   static const Command DISABLE_TRACKING =
     DriverCommand_Command_DISABLE_TRACKING;
+  static const Command ENABLE_AUDIO =
+    DriverCommand_Command_ENABLE_AUDIO;
+  static const Command DISABLE_AUDIO =
+    DriverCommand_Command_DISABLE_AUDIO;
+  static const Command RAW_COMMAND =
+    DriverCommand_Command_RAW_COMMAND;
   static inline bool Command_IsValid(int value) {
     return DriverCommand_Command_IsValid(value);
   }
@@ -157,11 +169,43 @@ class DriverCommand : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::NullSpaceIPC::DriverCommand_Command command() const;
   void set_command(::NullSpaceIPC::DriverCommand_Command value);
 
+  // map<string, int32> params = 2;
+  int params_size() const;
+  void clear_params();
+  static const int kParamsFieldNumber = 2;
+  const ::google::protobuf::Map< ::std::string, ::google::protobuf::int32 >&
+      params() const;
+  ::google::protobuf::Map< ::std::string, ::google::protobuf::int32 >*
+      mutable_params();
+
+  // optional bytes raw_command = 3;
+  void clear_raw_command();
+  static const int kRawCommandFieldNumber = 3;
+  const ::std::string& raw_command() const;
+  void set_raw_command(const ::std::string& value);
+  void set_raw_command(const char* value);
+  void set_raw_command(const void* value, size_t size);
+  ::std::string* mutable_raw_command();
+  ::std::string* release_raw_command();
+  void set_allocated_raw_command(::std::string* raw_command);
+
   // @@protoc_insertion_point(class_scope:NullSpaceIPC.DriverCommand)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
+  typedef ::google::protobuf::internal::MapEntryLite<
+      ::std::string, ::google::protobuf::int32,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
+      0 >
+      DriverCommand_ParamsEntry;
+  ::google::protobuf::internal::MapField<
+      ::std::string, ::google::protobuf::int32,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
+      0 > params_;
+  ::google::protobuf::internal::ArenaStringPtr raw_command_;
   int command_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_DriverCommand_2eproto();
@@ -191,6 +235,68 @@ inline void DriverCommand::set_command(::NullSpaceIPC::DriverCommand_Command val
   
   command_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.DriverCommand.command)
+}
+
+// map<string, int32> params = 2;
+inline int DriverCommand::params_size() const {
+  return params_.size();
+}
+inline void DriverCommand::clear_params() {
+  params_.Clear();
+}
+inline const ::google::protobuf::Map< ::std::string, ::google::protobuf::int32 >&
+DriverCommand::params() const {
+  // @@protoc_insertion_point(field_map:NullSpaceIPC.DriverCommand.params)
+  return params_.GetMap();
+}
+inline ::google::protobuf::Map< ::std::string, ::google::protobuf::int32 >*
+DriverCommand::mutable_params() {
+  // @@protoc_insertion_point(field_mutable_map:NullSpaceIPC.DriverCommand.params)
+  return params_.MutableMap();
+}
+
+// optional bytes raw_command = 3;
+inline void DriverCommand::clear_raw_command() {
+  raw_command_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& DriverCommand::raw_command() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.DriverCommand.raw_command)
+  return raw_command_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void DriverCommand::set_raw_command(const ::std::string& value) {
+  
+  raw_command_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.DriverCommand.raw_command)
+}
+inline void DriverCommand::set_raw_command(const char* value) {
+  
+  raw_command_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.DriverCommand.raw_command)
+}
+inline void DriverCommand::set_raw_command(const void* value, size_t size) {
+  
+  raw_command_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.DriverCommand.raw_command)
+}
+inline ::std::string* DriverCommand::mutable_raw_command() {
+  
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.DriverCommand.raw_command)
+  return raw_command_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* DriverCommand::release_raw_command() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.DriverCommand.raw_command)
+  
+  return raw_command_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void DriverCommand::set_allocated_raw_command(::std::string* raw_command) {
+  if (raw_command != NULL) {
+    
+  } else {
+    
+  }
+  raw_command_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), raw_command);
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.DriverCommand.raw_command)
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS

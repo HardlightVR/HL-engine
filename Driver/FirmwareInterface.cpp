@@ -114,14 +114,14 @@ void FirmwareInterface::RequestSuitVersion()
 	}
 }
 
-void FirmwareInterface::ReadDriverData()
+//Todo: update all to VerifyThenExecute
+void FirmwareInterface::ReadDriverData(Location loc, Register reg)
 {
-	if (_builder.UseInstruction("READ_DATA").Verify()) {
-		chooseExecutionStrategy(_builder.Build());
-	}
-	else {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
+	VerifyThenExecute(
+		_builder.UseInstruction("READ_DATA")
+		.WithParam("zone", Locator::Translator().ToString(loc))
+		.WithParam("register", static_cast<int>(reg))
+	); 
 }
 
 void FirmwareInterface::ResetDrivers()
@@ -132,6 +132,60 @@ void FirmwareInterface::ResetDrivers()
 	else {
 		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
 	}
+}
+
+void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
+	if (builder.Verify()) {
+		chooseExecutionStrategy(builder.Build());
+	}
+	else {
+		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << builder.GetDebugString();
+
+	}
+}
+
+
+void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& opts)
+{
+	VerifyThenExecute(
+		_builder.UseInstruction("AUDIO_MODE_ENABLE")
+		.WithParam("zone", Locator::Translator().ToString(pad))
+		.WithParam("audio_max", opts.AudioMax) // 0 -255
+		.WithParam("audio_min", opts.AudioMin)// 0-255
+		.WithParam("peak_time", opts.PeakTime) //0-3
+		.WithParam("filter", opts.Filter) //0-3
+	);
+}
+
+void FirmwareInterface::EnableIntrigMode(Location pad)
+{
+	VerifyThenExecute(
+		_builder.UseInstruction("INTRIG_MODE_ENABLE")
+		.WithParam("zone", Locator::Translator().ToString(pad))
+	);
+}
+
+void FirmwareInterface::EnableRtpMode(Location pad)
+{
+	VerifyThenExecute(
+		_builder.UseInstruction("RTP_MODE_ENABLE")
+		.WithParam("zone", Locator::Translator().ToString(pad))
+	);
+}
+
+void FirmwareInterface::PlayRtp(Location location, int strength)
+{
+	VerifyThenExecute(
+		_builder.UseInstruction("PLAY_RTP")
+		.WithParam("zone", Locator::Translator().ToString(location))
+		.WithParam("volume", strength)
+	);
+}
+
+void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
+{
+	_lfQueue.push(bytes, length);
+
 }
 
 void FirmwareInterface::PlayEffect(Location location, std::string effectString, float strength) {

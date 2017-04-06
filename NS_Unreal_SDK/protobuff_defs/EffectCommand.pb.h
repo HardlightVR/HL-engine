@@ -44,12 +44,13 @@ enum EffectCommand_Command {
   EffectCommand_Command_PLAY = 1,
   EffectCommand_Command_PLAY_CONTINUOUS = 2,
   EffectCommand_Command_HALT = 3,
+  EffectCommand_Command_PLAY_RTP = 4,
   EffectCommand_Command_EffectCommand_Command_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   EffectCommand_Command_EffectCommand_Command_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool EffectCommand_Command_IsValid(int value);
 const EffectCommand_Command EffectCommand_Command_Command_MIN = EffectCommand_Command_UNKNOWN;
-const EffectCommand_Command EffectCommand_Command_Command_MAX = EffectCommand_Command_HALT;
+const EffectCommand_Command EffectCommand_Command_Command_MAX = EffectCommand_Command_PLAY_RTP;
 const int EffectCommand_Command_Command_ARRAYSIZE = EffectCommand_Command_Command_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* EffectCommand_Command_descriptor();
@@ -131,6 +132,8 @@ class EffectCommand : public ::google::protobuf::Message /* @@protoc_insertion_p
     EffectCommand_Command_PLAY_CONTINUOUS;
   static const Command HALT =
     EffectCommand_Command_HALT;
+  static const Command PLAY_RTP =
+    EffectCommand_Command_PLAY_RTP;
   static inline bool Command_IsValid(int value) {
     return EffectCommand_Command_IsValid(value);
   }
