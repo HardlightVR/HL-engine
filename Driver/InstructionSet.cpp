@@ -3,6 +3,9 @@
 #include "HexUtils.h"
 #include <fstream>
 #include "json.h"
+
+#include "JsonKeyValueConfig.h"
+
 InstructionSet::InstructionSet() :_instructions()
 {
 	std::string validParams[4] = { "zone", "effect", "data", "register" };
@@ -28,82 +31,53 @@ const std::unordered_map<std::string, std::unordered_map<std::string, uint8_t>>&
 }
 
 
-void InstructionSet::LoadAtoms(const Json::Value & json)
-{
-	std::size_t numAtoms = json.size();
-	for (std::size_t i = 0; i < numAtoms; ++i) {
-		Atom atom;
-		atom.Deserialize(json[i]);
-		_atoms[atom.Id()] = atom;
-	}
-}
+
 const std::unordered_map<std::string, Atom>& InstructionSet::Atoms() const
 {
 	return _atoms;
 }
 
-void InstructionSet::loadFromJson(std::string path, Loader loader) {
-	Json::Value root;
-	std::ifstream json(path, std::ifstream::binary);
-	try {
-		json >> root;
-		loader(root); 
-	}
-	catch (Json::Exception::exception& e) {
-		throw InstructionLoadingException("Failed to load " + path + ": " + e.what());
-	}
-}
+
 bool InstructionSet::LoadAll() {
 	try {
+		using namespace nsvr::tools::json;
+
+		//Extract an actual byte from a hex string
+		auto parseHexValue = [](const Json::Value& val) {
+			const char* hexChars = &val.asCString()[2];
+			uint8_t hex[1]{ 0 };
+			HexStringToInt(hexChars, hex);
+			return hex[0];
+		};
+
+
+		//Zones & Effects are dictionaries, so we grab the key and parse the hex value
+		_paramDict["zone"] = parseDictFromDict<std::string, uint8_t>("Zones.json", [](auto val) { return val.asString(); }, parseHexValue);
+
+		_paramDict["effect"] = parseDictFromDict<std::string, uint8_t>("Effects.json", [](auto val) { return val.asString(); }, parseHexValue);
 		
-		loadFromJson("Zones.json",
-			boost::bind(&InstructionSet::LoadKeyValue, this, boost::ref(_paramDict["zone"]), _1));
-		
-		loadFromJson("Effects.json",
-			boost::bind(&InstructionSet::LoadKeyValue, this, boost::ref(_paramDict["effect"]), _1));
+	
+	
+		//Instructions and atoms are more complex objects, so we deserialize them manually
+		_instructions = parseDictFromArray<std::string, Instruction>("Instructions.json",
+		[](auto value) {
+			Instruction inst;
+			inst.Deserialize(value);
+			return std::make_tuple(inst.Name, inst);
+		});
 
-		loadFromJson("Instructions.json", 
-			boost::bind(&InstructionSet::LoadInstructions, this, _1));
-
-		loadFromJson("Atoms.json",
-			boost::bind(&InstructionSet::LoadAtoms, this, _1));
-
-
-
-
-
+		_atoms = parseDictFromArray<std::string, Atom>("Atoms.json",
+		[](auto value) {
+			Atom atom;
+			atom.Deserialize(value);
+			return std::make_tuple(atom.Id(), atom);
+		});
+	
 		return true;
-
 	}
-	catch (InstructionLoadingException& e) {
+	catch (Json::Exception& e) {
 		std::cout << e.what() << '\n';
 		return false;
 	}
 }
-void InstructionSet::LoadInstructions(const Json::Value& json) {
-	
-		std::size_t numInstructions = json.size();
-		for (std::size_t i = 0; i < numInstructions; ++i) {
-			Instruction inst;
-			inst.Deserialize(json[i]);
-			_instructions[inst.Name] = inst;
-		}
 
-	
-}
-
-
-
-void InstructionSet::LoadKeyValue(std::unordered_map<std::string, uint8_t>& dict, Json::Value json) {
-	
-	auto names = json.getMemberNames();
-	for (std::string key : names) {
-		std::string val = json.get(key, "0x00").asString();
-		const char* hexChars = &val.c_str()[2];
-		uint8_t hex[1]{ 0 };
-		HexStringToInt(hexChars, hex);
-		dict[key] = hex[0];
-	}
-	
-	
-}

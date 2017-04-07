@@ -36,11 +36,7 @@ private:
 
 	std::unordered_map<std::string, Instruction> _instructions;
 	std::unordered_map<std::string, std::unordered_map<std::string, uint8_t>> _paramDict;
-	void LoadKeyValue(std::unordered_map<std::string, uint8_t>& dict, Json::Value json);
-	void loadFromJson(std::string path, Loader loader);
-	void LoadInstructions(const Json::Value& json);
 
-	void LoadAtoms(const Json::Value& json);
 
 
 };

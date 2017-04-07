@@ -188,6 +188,7 @@
     <ClInclude Include="InstructionBuilder.h" />
     <ClInclude Include="InstructionSet.h" />
     <ClInclude Include="IoService.h" />
+    <ClInclude Include="JsonKeyValueConfig.h" />
     <ClInclude Include="KeepaliveMonitor.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="ILogger.h" />
