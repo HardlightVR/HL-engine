@@ -11,6 +11,7 @@ message DriverCommand {
 		ENABLE_AUDIO = 3;
 		DISABLE_AUDIO = 4;
 		RAW_COMMAND = 5;
+		DUMP_DEVICE_DIAGNOSTICS = 6;
 	}
 	Command command = 1;
 

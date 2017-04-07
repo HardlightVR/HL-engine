@@ -49,6 +49,12 @@ namespace NullSpace {
 			
 		};
 
+		struct ServiceInfo {
+			int ServiceMajor;
+			int ServiceMinor;
+			
+		};
+
 		static const SuitsConnectionInfo NullSuitsConnectionInfo = {};
 		static const TrackingUpdate NullTrackingUpdate = {};
 

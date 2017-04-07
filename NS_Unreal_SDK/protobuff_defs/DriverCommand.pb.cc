@@ -97,16 +97,16 @@ void protobuf_AddDesc_DriverCommand_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\023DriverCommand.proto\022\014NullSpaceIPC\"\273\002\n\r"
+    "\n\023DriverCommand.proto\022\014NullSpaceIPC\"\331\002\n\r"
     "DriverCommand\0224\n\007command\030\001 \001(\0162#.NullSpa"
     "ceIPC.DriverCommand.Command\0227\n\006params\030\002 "
     "\003(\0132\'.NullSpaceIPC.DriverCommand.ParamsE"
     "ntry\022\023\n\013raw_command\030\003 \001(\014\032-\n\013ParamsEntry"
-    "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\005:\0028\001\"w\n\007Comm"
-    "and\022\013\n\007UNKNOWN\020\000\022\023\n\017ENABLE_TRACKING\020\001\022\024\n"
-    "\020DISABLE_TRACKING\020\002\022\020\n\014ENABLE_AUDIO\020\003\022\021\n"
-    "\rDISABLE_AUDIO\020\004\022\017\n\013RAW_COMMAND\020\005b\006proto"
-    "3", 361);
+    "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\005:\0028\001\"\224\001\n\007Com"
+    "mand\022\013\n\007UNKNOWN\020\000\022\023\n\017ENABLE_TRACKING\020\001\022\024"
+    "\n\020DISABLE_TRACKING\020\002\022\020\n\014ENABLE_AUDIO\020\003\022\021"
+    "\n\rDISABLE_AUDIO\020\004\022\017\n\013RAW_COMMAND\020\005\022\033\n\027DU"
+    "MP_DEVICE_DIAGNOSTICS\020\006b\006proto3", 391);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "DriverCommand.proto", &protobuf_RegisterTypes);
   DriverCommand::default_instance_ = new DriverCommand();
@@ -135,6 +135,7 @@ bool DriverCommand_Command_IsValid(int value) {
     case 3:
     case 4:
     case 5:
+    case 6:
       return true;
     default:
       return false;
@@ -148,6 +149,7 @@ const DriverCommand_Command DriverCommand::DISABLE_TRACKING;
 const DriverCommand_Command DriverCommand::ENABLE_AUDIO;
 const DriverCommand_Command DriverCommand::DISABLE_AUDIO;
 const DriverCommand_Command DriverCommand::RAW_COMMAND;
+const DriverCommand_Command DriverCommand::DUMP_DEVICE_DIAGNOSTICS;
 const DriverCommand_Command DriverCommand::Command_MIN;
 const DriverCommand_Command DriverCommand::Command_MAX;
 const int DriverCommand::Command_ARRAYSIZE;

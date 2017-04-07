@@ -48,12 +48,13 @@ enum DriverCommand_Command {
   DriverCommand_Command_ENABLE_AUDIO = 3,
   DriverCommand_Command_DISABLE_AUDIO = 4,
   DriverCommand_Command_RAW_COMMAND = 5,
+  DriverCommand_Command_DUMP_DEVICE_DIAGNOSTICS = 6,
   DriverCommand_Command_DriverCommand_Command_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
   DriverCommand_Command_DriverCommand_Command_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
 };
 bool DriverCommand_Command_IsValid(int value);
 const DriverCommand_Command DriverCommand_Command_Command_MIN = DriverCommand_Command_UNKNOWN;
-const DriverCommand_Command DriverCommand_Command_Command_MAX = DriverCommand_Command_RAW_COMMAND;
+const DriverCommand_Command DriverCommand_Command_Command_MAX = DriverCommand_Command_DUMP_DEVICE_DIAGNOSTICS;
 const int DriverCommand_Command_Command_ARRAYSIZE = DriverCommand_Command_Command_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* DriverCommand_Command_descriptor();
@@ -140,6 +141,8 @@ class DriverCommand : public ::google::protobuf::Message /* @@protoc_insertion_p
     DriverCommand_Command_DISABLE_AUDIO;
   static const Command RAW_COMMAND =
     DriverCommand_Command_RAW_COMMAND;
+  static const Command DUMP_DEVICE_DIAGNOSTICS =
+    DriverCommand_Command_DUMP_DEVICE_DIAGNOSTICS;
   static inline bool Command_IsValid(int value) {
     return DriverCommand_Command_IsValid(value);
   }

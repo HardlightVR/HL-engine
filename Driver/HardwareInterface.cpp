@@ -46,10 +46,10 @@ void HardwareInterface::ResetDrivers()
 }
 
 void HardwareInterface::ReadDriverData(Location loc) {
-	m_firmware.ReadDriverData(loc, Register::Control);
-	m_firmware.ReadDriverData(loc, Register::RtpVol);
+	//m_firmware.ReadDriverData(loc, Register::Control);
+	//m_firmware.ReadDriverData(loc, Register::RtpVol);
 	m_firmware.ReadDriverData(loc, Register::Status);
-	m_firmware.ReadDriverData(loc, Register::WaveForm);
+	//m_firmware.ReadDriverData(loc, Register::WaveForm);
 
 
 }

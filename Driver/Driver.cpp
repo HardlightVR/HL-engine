@@ -31,7 +31,7 @@ void extractDrvData(const packet& packet) {
 
 
 
-	BOOST_LOG_TRIVIAL(info) << "[DriverMain] DRV " << int(whichDrv) << ", register " << int(whichReg) << ": Over current = " << int(over_current) << ", over temp = " << int(over_temperature);
+	BOOST_LOG_TRIVIAL(info) << "[DriverMain] DRVDIAG " << int(whichDrv) << "," <<int(over_current) << "," << int(over_temperature);
 
 	
 }
@@ -179,6 +179,12 @@ void Driver::handleCommands()
 			case NullSpaceIPC::DriverCommand_Command_RAW_COMMAND:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Submitting raw command to the suit";
 				m_hardware.RawCommand(command.raw_command());
+				break;
+			case NullSpaceIPC::DriverCommand_Command_DUMP_DEVICE_DIAGNOSTICS:
+				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Requesting device diagnostics..";
+				for (int loc = (int)Location::Lower_Ab_Right; loc != (int) Location::Error; loc++) {
+					m_hardware.ReadDriverData(static_cast<Location>(loc));
+				}
 				break;
 			default: 
 				break;
