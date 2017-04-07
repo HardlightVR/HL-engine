@@ -1,4 +1,3 @@
-
 /// Json-cpp amalgated source (http://jsoncpp.sourceforge.net/).
 /// It is intended to be used with #include "json/json.h"
 
