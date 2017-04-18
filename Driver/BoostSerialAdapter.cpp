@@ -36,7 +36,7 @@ void BoostSerialAdapter::Disconnect()
 			m_port->close();
 		}
 	}
-	catch (const boost::system::error_code& ec) {
+	catch (const boost::system::error_code&) {
 		//log this
 	}
 }
@@ -200,7 +200,7 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 			try {
 				m_port->close();
 			}
-			catch (const boost::system::system_error& ec) {
+			catch (const boost::system::system_error&) {
 				//intentionally left blank
 			}
 		}
@@ -240,7 +240,7 @@ bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string
 			return false;
 		}
 	}
-	catch (const boost::system::system_error& ec) {
+	catch (const boost::system::system_error&) {
 	//	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Got an exception when trying to open port:  " << ec.what();
 		return false;
 	}

@@ -16,7 +16,7 @@ public:
 
 private:
 	//keep track of how many pings sent after initial connection loss
-	int _failedPingCount;
+	unsigned int _failedPingCount;
 
 	//instantaneous ping time, updated whenever receive a new ping
 	long long _pingTime;

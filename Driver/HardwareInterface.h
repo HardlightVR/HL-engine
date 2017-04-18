@@ -26,7 +26,7 @@ public:
 			m_firmware.PlayEffectContinuous(Location(ec.area()), ec.effect(), ec.strength());
 		}
 		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_PLAY_RTP) {
-			int strength = ec.strength() * 255;
+			int strength = int(ec.strength() * 255.0f);
 
 			m_firmware.PlayRtp(Location(ec.area()), strength);
 		}

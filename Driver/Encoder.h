@@ -1,5 +1,4 @@
 #pragma once
-#include "IntermediateHapticFormats.h"
 #include "flatbuffers\flatbuffers.h"
 #include "ExecutionCommand_generated.h"
 #include "SharedCommunication\SharedTypes.h"

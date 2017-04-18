@@ -1,8 +1,8 @@
 #pragma once
 #include "Enums.h"
+#include "AreaFlags.h"
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
-#include "IntermediateHapticFormats.h"
 using namespace boost::bimaps;
 
 typedef bimap<Effect, std::string> EffectMap;

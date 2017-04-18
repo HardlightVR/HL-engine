@@ -68,7 +68,7 @@ void IoService::start() {
 				_isReset.store(true);
 				_doneResettingIO.notify_one();
 			}
-			catch (boost::system::system_error& e) {
+			catch (boost::system::system_error&) {
 				BOOST_LOG_TRIVIAL(info) << "[IoS] Failure in io loop";
 
 			}

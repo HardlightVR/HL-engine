@@ -2,8 +2,6 @@
 #include "Driver.h"
 #include "IoService.h"
 #include "ClientMessenger.h" 
-#include "IntermediateHapticFormats.h"
-#include "Encoder.h"
 #include <functional>
 #include "DriverCommand.pb.h"
 #include "SuitVersionInfo.h"
@@ -13,7 +11,6 @@
 #include "MyTestLog.h"
 
 #include "FirmwareInterface.h"
-#include "IntermediateHapticFormats.h"
 
 
 void extractDrvData(const packet& packet) {
