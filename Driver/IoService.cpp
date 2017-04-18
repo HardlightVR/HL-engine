@@ -21,7 +21,7 @@ void IoService::start() {
 				auto& log = Locator::Logger();
 				boost::unique_lock<boost::mutex> lock(_needToCheckMut); //unlocked at this point
 				//log.Log("IoService-r", "Waiting on the conditions");
-				//this thread will wakeup when either _shouldQuit or _wantsReset returns true, and aquire the lock
+				//this thread will wakeup when either _shouldQuit or _wantsReset returns true, and acquire the lock
 				_needWakeup.wait(lock, [&] { return _shouldQuit.load() || _wantsReset.load();  });
 				if (!_shouldQuit.load()) {
 					//	log.Log("IoService-r", "Was awoken to do work");

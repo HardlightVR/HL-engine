@@ -3,7 +3,6 @@
 #include "Locator.h"
 #include <boost\log\trivial.hpp>
 #include <boost\asio\serial_port.hpp>
-//not necessarily using the port's io_service
 KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, std::unique_ptr<boost::asio::serial_port>& port) :
 	_port(port),
 	_responseTimer(io), 
