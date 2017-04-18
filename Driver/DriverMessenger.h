@@ -6,6 +6,8 @@
 #include "SharedCommunication\SharedTypes.h"
 #include "EffectCommand.pb.h"
 #include "DriverCommand.pb.h"
+
+#include <memory>
 using namespace boost::interprocess;
 using namespace NullSpace::SharedMemory;
 
@@ -25,22 +27,22 @@ private:
 	std::function<void(void const* data, std::size_t length)> _process;
 	
 	//Write tracking data here
-	WritableSharedObject<TrackingUpdate> m_trackingData;
+	std::unique_ptr<WritableSharedObject<TrackingUpdate>> m_trackingData;
 
 	//Write suit connection data here (which suits connected, etc)
-	WritableSharedObject<SuitsConnectionInfo> m_suitConnectionInfo;
+	std::unique_ptr<WritableSharedObject<SuitsConnectionInfo>> m_suitConnectionInfo;
 
 	//Write haptics data here
-	OwnedReadableSharedQueue m_hapticsData;
+	std::unique_ptr<OwnedReadableSharedQueue> m_hapticsData;
 
 	//If logging, write data here
-	OwnedWritableSharedQueue m_loggingStream;
+	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
 
 	//Write a timestamp here every so often to signify that this driver is alive
-	WritableSharedObject<std::time_t> m_sentinal;
+	std::unique_ptr<WritableSharedObject<std::time_t>> m_sentinal;
 
 	//Read commands from here, such as ENABLE_TRACKING, DISABLE_TRACKING
-	OwnedReadableSharedQueue m_commandStream;
+	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
 	std::atomic<bool> _running;
 

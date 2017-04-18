@@ -5,6 +5,7 @@
 #include "shared_data.h"
 
  
+
 template<typename T>
 class WritableSharedObject
 {
@@ -29,10 +30,16 @@ public:
 	void Write(T data) {
 		m_data->SetData(data);
 	}
+
+	static bool remove(const char* name) {
+		return boost::interprocess::shared_memory_object::remove(name);
+	}
 private:
 	std::string m_name;
 	boost::interprocess::shared_memory_object m_object;
 	boost::interprocess::mapped_region m_region;
 	shared_data<T>* m_data;
 };
+
+
 

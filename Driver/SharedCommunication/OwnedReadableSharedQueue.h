@@ -64,10 +64,13 @@ public:
 		return boost::optional<std::vector<uint8_t>>();
 	}
 
-	
+	static bool remove(const char* name) {
+		return my_message_queue::remove(name);
+	}
 private:
 	std::string m_name;
 	std::size_t m_maxElementSizeBytes;
 	my_message_queue m_queue;
 };
+
 
