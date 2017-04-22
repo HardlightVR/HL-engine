@@ -12,6 +12,7 @@ public:
 	typedef boost::interprocess::message_queue_t<boost::interprocess::offset_ptr<void, boost::int32_t, boost::uint64_t>> my_message_queue;
 
 	ReadableSharedQueue(std::string name):
+		m_name(name),
 		m_queue(boost::interprocess::open_only, name.c_str()) 
 	{}
 

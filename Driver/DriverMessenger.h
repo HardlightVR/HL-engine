@@ -39,18 +39,18 @@ private:
 	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
 
 	//Write a timestamp here every so often to signify that this driver is alive
-	std::unique_ptr<WritableSharedObject<std::time_t>> m_sentinal;
+	std::unique_ptr<WritableSharedObject<std::time_t>> m_sentinel;
 
 	//Read commands from here, such as ENABLE_TRACKING, DISABLE_TRACKING
 	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
 	std::atomic<bool> _running;
 
-	boost::asio::deadline_timer m_sentinalTimer;
-	boost::posix_time::milliseconds m_sentinalInterval;
+	boost::asio::deadline_timer m_sentinelTimer;
+	boost::posix_time::milliseconds m_sentinelInterval;
 
-	void sentinalHandler(const boost::system::error_code&);
-	void startSentinal();
+	void sentinelHandler(const boost::system::error_code&);
+	void startSentinel();
 
 	template<typename TResult, typename TQueueType>
 	std::vector<TResult> readFromStream(TQueueType& queue, std::size_t max_messages);

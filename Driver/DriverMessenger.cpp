@@ -5,8 +5,8 @@
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	_running{true},
 	_process([](void const*, std::size_t) {}),
-	m_sentinalTimer(io),
-	m_sentinalInterval(1000)
+	m_sentinelTimer(io),
+	m_sentinelInterval(1000)
 
 {
 
@@ -22,26 +22,27 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	m_suitConnectionInfo = std::make_unique<WritableSharedObject<SuitsConnectionInfo>>("ns-suit-data");
 	m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
 	m_commandStream = std::make_unique<OwnedReadableSharedQueue>("ns-command-data",/* max elements */  512, /*max element byte size*/ 256);
-
-	m_sentinal = std::make_unique<WritableSharedObject<std::time_t>>("ns-sentinel");
+	static_assert(sizeof(std::time_t) == 8, "Time is wrong size");
+	
+	m_sentinel = std::make_unique<WritableSharedObject<std::time_t>>("ns-sentinel");
 
 	TrackingUpdate nullTracking = {};
 	SuitsConnectionInfo nullSuits = {};
 	m_trackingData->Write(nullTracking);
 	m_suitConnectionInfo->Write(nullSuits);
 	
-	startSentinal();
+	startSentinel();
 }
 
 
-void DriverMessenger::startSentinal() {
-	m_sentinalTimer.expires_from_now(m_sentinalInterval);
-	m_sentinalTimer.async_wait(boost::bind(&DriverMessenger::sentinalHandler, this, boost::asio::placeholders::error));
+void DriverMessenger::startSentinel() {
+	m_sentinelTimer.expires_from_now(m_sentinelInterval);
+	m_sentinelTimer.async_wait([&](auto error) {sentinelHandler(error); });
 }
-void DriverMessenger::sentinalHandler(const boost::system::error_code& ec) {
+void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 	if (!ec) {
-		m_sentinal->Write(std::time(nullptr));
-		startSentinal();
+		m_sentinel->Write(std::time(nullptr));
+		startSentinel();
 	}
 }
 
@@ -88,7 +89,7 @@ boost::optional<std::vector<NullSpaceIPC::DriverCommand>> DriverMessenger::ReadC
 void DriverMessenger::Disconnect()
 {
 	_running.store(false);
-	m_sentinalTimer.cancel();
+	m_sentinelTimer.cancel();
 }
 
 

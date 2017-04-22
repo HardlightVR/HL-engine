@@ -32,14 +32,14 @@ private:
 	std::unique_ptr<ReadableSharedQueue> m_logStream;
 
 	//Sentinal to see if the driver is running
-	std::unique_ptr<ReadableSharedObject<std::time_t>> m_sentinal;
+	std::unique_ptr<ReadableSharedObject<std::time_t>> m_sentinel;
 
 
 	//We use a sentinal to see if the driver is responsive/exists
-	boost::asio::deadline_timer m_sentinalTimer;
+	boost::asio::deadline_timer m_sentinelTimer;
 
 	//How often we read the sentinal
-	boost::posix_time::milliseconds m_sentinalInterval;
+	boost::posix_time::milliseconds m_sentinelInterval;
 
 	//If currentTime - sentinalTime > m_sentinalTimeout, we say that we are disconnected
 	boost::chrono::milliseconds m_sentinalTimeout;
