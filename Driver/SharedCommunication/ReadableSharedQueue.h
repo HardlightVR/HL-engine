@@ -13,7 +13,7 @@ public:
 
 	ReadableSharedQueue(std::string name):
 		m_name(name),
-		m_queue(boost::interprocess::open_only, name.c_str()) 
+		m_queue(boost::interprocess::open_only, name.c_str())
 	{}
 
 	~ReadableSharedQueue() {

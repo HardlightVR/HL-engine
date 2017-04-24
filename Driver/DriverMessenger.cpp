@@ -14,7 +14,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>::remove("ns-tracking-data");
 	WritableSharedObject<SuitsConnectionInfo>::remove("ns-suit-data");
 	OwnedWritableSharedQueue::remove("ns-logging-data");
-	OwnedWritableSharedQueue::remove("ns-command-data");
+	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<std::time_t>::remove("ns-sentinel");
 
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", 1024, 256);
