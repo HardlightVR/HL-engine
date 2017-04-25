@@ -37,7 +37,6 @@ NSEngine::NSEngine():
 
 {
 
-
 	//The ZMQ sockets require some tweaking. For haptic_requests, we want the "high water mark" to be fairly small. Meaning,
 	//if we receive more messages than the HWM, we discard them. This is because we don't want old haptics. 
 	//Alternatively, we could use ZMQ_CONFLATE, which only keeps one message, but if we don't process it fast enough it's gone. 
@@ -48,14 +47,14 @@ NSEngine::NSEngine():
 
 	haptic_requests.bind("tcp://127.0.0.1:9452");
 	//Since it's a sub socket, we need a topic to subscribe to. Since we don't use multiple topics, we use "".
-
+		
 	//We don't want server updates buffered at all. Might get stale IMU data, disconnections, reconnections, etc. Also,
 	//say the application froze - we don't want them to receive a bunch of junk data, just the most recent.
 	int confl = 1;
+	server_updates.setsockopt(ZMQ_SNDHWM, 1);
 
 	server_updates.bind("tcp://127.0.0.1:9453");
 	server_updates.setsockopt(ZMQ_CONFLATE, &confl, sizeof(confl));
-
 	lastFrameTime = std::chrono::high_resolution_clock::now();
 
 	suitStatusTimer.async_wait(boost::bind(&NSEngine::sendSuitStatusMsg,this, boost::asio::placeholders::error, &server_updates));
@@ -91,20 +90,12 @@ void NSEngine::Update() {
 		if (NullSpace::HapticFiles::VerifyHapticPacketBuffer(verifier)) {
 			auto packet = NullSpace::HapticFiles::GetHapticPacket(data);
 			switch (packet->packet_type()) {
-			case NullSpace::HapticFiles::FileType::FileType_Sequence:
-				engine.PlaySequence(*packet);
-				break;
-			case NullSpace::HapticFiles::FileType::FileType_Node:
-				engine.Play(*packet);
-				break;
-			case NullSpace::HapticFiles::FileType::FileType_Pattern:
-				engine.PlayPattern(*packet);
-				break;
-			case NullSpace::HapticFiles::FileType::FileType_Experience:
-				engine.PlayExperience(*packet);
-				break;
+			
 			case NullSpace::HapticFiles::FileType::FileType_Tracking:
 				engine.EnableOrDisableTracking(*packet);
+				break;
+			case NullSpace::HapticFiles::FileType::FileType_TinyEffectArray:
+				engine.PlayEffect(*packet);
 				break;
 				//Commands like Stop, Start, Play, Reset, Pause, etc.
 			case NullSpace::HapticFiles::FileType::FileType_HandleCommand:
@@ -154,6 +145,8 @@ void NSEngine::sendSuitStatusMsg(const boost::system::error_code& ec,zmq::socket
 	NullSpace::Communication::SuitStatus status = engine.SuitConnected() ?
 		NullSpace::Communication::SuitStatus::SuitStatus_Connected :
 		NullSpace::Communication::SuitStatus::SuitStatus_Disconnected;
+
+	std::cout << "Suit is " << status << "\n";
 	_encoder.AquireEncodingLock();
 	_encoder.Finalize(_encoder.Encode(status),
 		[&](uint8_t* data, int size) {

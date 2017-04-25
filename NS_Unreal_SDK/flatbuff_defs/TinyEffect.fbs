@@ -1,0 +1,11 @@
+namespace NullSpace.HapticFiles;
+
+table TinyEffect {
+	time:float;
+	strength:float;
+	duration:float;
+	area:uint;
+	effect:ubyte;
+}
+
+root_type TinyEffect;

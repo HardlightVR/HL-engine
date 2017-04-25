@@ -12,6 +12,8 @@
 #include "Node_generated.h"
 #include "Pattern_generated.h"
 #include "Sequence_generated.h"
+#include "TinyEffect_generated.h"
+#include "TinyEffectArray_generated.h"
 
 namespace NullSpace {
 namespace HapticFiles {
@@ -72,8 +74,9 @@ enum FileType {
   FileType_HandleCommand = 6,
   FileType_EngineCommandData = 7,
   FileType_Node = 8,
+  FileType_TinyEffectArray = 9,
   FileType_MIN = FileType_NONE,
-  FileType_MAX = FileType_Node
+  FileType_MAX = FileType_TinyEffectArray
 };
 
 struct FileTypeUnion {
@@ -99,7 +102,7 @@ struct FileTypeUnion {
 };
 
 inline const char **EnumNamesFileType() {
-  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", "EngineCommandData", "Node", nullptr };
+  static const char *names[] = { "NONE", "Experience", "Pattern", "Sequence", "HapticEffect", "Tracking", "HandleCommand", "EngineCommandData", "Node", "TinyEffectArray", nullptr };
   return names;
 }
 
@@ -139,6 +142,10 @@ template<> struct FileTypeTraits<EngineCommandData> {
 
 template<> struct FileTypeTraits<NullSpace::HapticFiles::Node> {
   static const FileType enum_value = FileType_Node;
+};
+
+template<> struct FileTypeTraits<NullSpace::HapticFiles::TinyEffectArray> {
+  static const FileType enum_value = FileType_TinyEffectArray;
 };
 
 inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_obj, FileType type);
@@ -403,6 +410,7 @@ inline bool VerifyFileType(flatbuffers::Verifier &verifier, const void *union_ob
     case FileType_HandleCommand: return verifier.VerifyTable(reinterpret_cast<const HandleCommand *>(union_obj));
     case FileType_EngineCommandData: return verifier.VerifyTable(reinterpret_cast<const EngineCommandData *>(union_obj));
     case FileType_Node: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::Node *>(union_obj));
+    case FileType_TinyEffectArray: return verifier.VerifyTable(reinterpret_cast<const NullSpace::HapticFiles::TinyEffectArray *>(union_obj));
     default: return false;
   }
 }

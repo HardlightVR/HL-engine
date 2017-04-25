@@ -1,0 +1,22 @@
+namespace NullSpace.Events;
+
+table BasicHapticEvent {
+	time:float;
+	strength:float;
+	duration:float;
+	area:uint;
+	effect:uint;
+}
+
+union SuitEventType {BasicHapticEvent}
+
+table SuitEvent {
+	event: SuitEventType;
+}
+
+table SuitEventList {
+	events: [SuitEvent];
+}
+
+root_type SuitEventList;
+

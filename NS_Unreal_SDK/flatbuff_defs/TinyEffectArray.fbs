@@ -1,0 +1,10 @@
+include "TinyEffect.fbs";
+
+namespace NullSpace.HapticFiles;
+
+table TinyEffectArray {
+	effects:[TinyEffect];
+}
+
+root_type TinyEffectArray;
+

@@ -1,0 +1,7 @@
+namespace NullSpace.Logging;
+
+table LogMessage {
+	message:string;
+}
+
+root_type LogMessage;

@@ -2,8 +2,7 @@
 #include <unordered_map>
 #include "HapticQueue.h"
 #include "IntermediateHapticFormats.h"
-
-class SuitHardwareInterface;
+#include "SuitHardwareInterface.h"
 class PriorityModel
 {
 public:
@@ -17,7 +16,7 @@ public:
 		Command Command;
 		ExecutionCommand(::Location loc,  PriorityModel::Command c, ::Duration d = ::Duration::OneShot,::Effect eff = Effect::Buzz_100 ) :Effect(eff),Location(loc), Duration(d), Command(c) {}
 	};
-	PriorityModel(std::unique_ptr<SuitHardwareInterface>& _hardware);
+	PriorityModel();
 	~PriorityModel();
 	std::vector<PriorityModel::ExecutionCommand> Update(float dt);
 	void Clean(Location loc);
@@ -25,6 +24,5 @@ public:
 	boost::optional<HapticEvent> Remove(AreaFlag area, boost::uuids::uuid e);
 private:
 	std::unordered_map<Location, HapticQueue> _model;
-	std::unique_ptr<SuitHardwareInterface>& _hardware;
 };
 

@@ -6,10 +6,13 @@
 #include "Consumers\FifoConsumer.h"
 #include "Consumers\SuitInfoConsumer.h"
 #include "Consumers\SuitStatusConsumer.h"
-#include "PlayableSequence.h"
-#include "PlayablePattern.h"
-#include "PlayableExperience.h"
+
+#include "PlayableEffect.h"
 #include "SuitDiagnostics.h"
+
+#include "HapticCommandExecutor.h"
+
+
 Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::socket_t& socket) :
 	//This contains all suit instructions, like GET_VERSION, PLAY_EFFECT, etc.
 	_instructionSet(std::make_shared<InstructionSet>()),
@@ -26,7 +29,7 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	_streamSynchronizer(_adapter->GetDataStream(), _packetDispatcher),
 	//The executor is responsible for executing haptic effects, and garbage collecting them when handles are
 	//released.
-	_executor(_instructionSet, std::make_unique<SuitHardwareInterface>(_adapter, _instructionSet, io->GetIOService())),
+	_hapticsPlayer(_instructionSet),
 	//Since we want IMU data, we need an ImuConsumer to parse those packets into quaternions
 	_imuConsumer(),
 	//Since we only receive IMU data at a fixed rate, we should only dispatch it to the plugin at a fixed rate
@@ -37,7 +40,8 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	//This is only present because we do not track separate state for each client. This wants to be its own
 	//struct with all client related data. 
 	_userRequestsTracking(false),
-	_diagnostics()
+	_diagnostics(),
+	_hardware(_adapter, _instructionSet, io->GetIOService())
 
 {
 	//Pulls all instructions, effects, etc. from disk
@@ -53,6 +57,8 @@ Engine::Engine(std::shared_ptr<IoService> io, EncodingOperations& encoder, zmq::
 	else {
 		std::cout << "> Unable to connect to suit." << "\n";
 	}
+
+	_hardware.UseDeferredMode();
 
 	_diagnostics.OnReceiveVersion(boost::bind(&Engine::handleSuitVersionUpdate, this, _1));
 
@@ -102,58 +108,22 @@ void Engine::handleSuitVersionUpdate(const SuitDiagnostics::VersionInfo & v)
 	}
 }
 
-void Engine::PlaySequence(const NullSpace::HapticFiles::HapticPacket& packet)
-{
-	auto name = packet.name()->str();
-	auto rawSequenceData = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
-	auto location = AreaFlag(rawSequenceData->area());
-
-	auto handle = packet.handle(); //converts from uint64 to uint32, maybe should check this
-
-	auto decoded = EncodingOperations::DecodeSequence(rawSequenceData);
-		
-	//todo: figure out caching. If user changes a sequence's effects and the engine isn't
-	//reloaded, then it is cached. Could do on create for very first time, cache
-	                                                                        //default strength --V for now
-	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableSequence(decoded, location, 1.0)));
-}
-
-void Engine::PlayPattern(const NullSpace::HapticFiles::HapticPacket& packet)
-{
-	auto name = packet.name()->str();
-	auto rawPatternData = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
-	auto handle = packet.handle();
-	
-	auto decoded = EncodingOperations::DecodePattern(rawPatternData);
-	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayablePattern(decoded, _executor)));
-}
-
-void Engine::PlayExperience(const NullSpace::HapticFiles::HapticPacket& packet)
-{
-	auto name = packet.name()->str();
-	auto rawExperienceData = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
-	auto handle = packet.handle();
-
-	auto decoded = EncodingOperations::DecodeExperience(rawExperienceData);
-	_executor.Create(handle, std::unique_ptr<IPlayable>(new PlayableExperience(decoded, _executor)));
-}
-
-
 void Engine::HandleCommand(const NullSpace::HapticFiles::HapticPacket & packet)
 {
 	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::HandleCommand*>(packet.packet()));
 	switch (decoded.Command) {
 	case NullSpace::HapticFiles::Command_PAUSE:
-		_executor.Pause(decoded.Handle);
+		_hapticsPlayer.Pause(decoded.Handle);
 		break;
 	case NullSpace::HapticFiles::Command_PLAY:
-		_executor.Play(decoded.Handle);
+		_hapticsPlayer.Play(decoded.Handle);
 		break;
+
 	case NullSpace::HapticFiles::Command_RESET:
-		_executor.Reset(decoded.Handle);
+		_hapticsPlayer.Restart(decoded.Handle);
 		break;
 	case NullSpace::HapticFiles::Command_RELEASE:
-		_executor.Release(decoded.Handle);
+		_hapticsPlayer.Release(decoded.Handle);
 	default:
 		break;
 	}
@@ -163,59 +133,53 @@ void Engine::EngineCommand(const NullSpace::HapticFiles::HapticPacket& packet) {
 	auto decoded = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::EngineCommandData*>(packet.packet()));
 	switch (decoded.Command) {
 	case NullSpace::HapticFiles::EngineCommand_ENABLE_TRACKING:
-		_executor.Hardware()->EnableIMUs();
-		_executor.Hardware()->RequestSuitVersion();
+		_hardware.EnableIMUs();
+		_hardware.RequestSuitVersion();
 		break;
 	case NullSpace::HapticFiles::EngineCommand_DISABLE_TRACKING:
-		_executor.Hardware()->DisableIMUs();
+		_hardware.DisableIMUs();
 		break;
 	case NullSpace::HapticFiles::EngineCommand_CLEAR_ALL:
-		_executor.ClearAll();
+		_hapticsPlayer.ClearAll();
 		break;
 	case NullSpace::HapticFiles::EngineCommand_PAUSE_ALL:
-		_executor.PauseAll();
+		_hapticsPlayer.PauseAll();
 		break;
 	case NullSpace::HapticFiles::EngineCommand_PLAY_ALL:
-		_executor.PlayAll();
+		_hapticsPlayer.PlayAll();
 		break;
 	default:
 		break;
 	}
 }
-void Engine::Play(const NullSpace::HapticFiles::HapticPacket & packet)
+
+void Engine::PlayEffect(const NullSpace::HapticFiles::HapticPacket & packet)
 {
-	auto node = static_cast<const NullSpace::HapticFiles::Node*>(packet.packet());
-	switch (node->type()) {
-	case NullSpace::HapticFiles::NodeType_Sequence:
-		PlaySequence(packet);
-		break;
-	case NullSpace::HapticFiles::NodeType_Pattern:
-		PlayPattern(packet);
-		break;
-	case NullSpace::HapticFiles::NodeType_Experience:
-		PlayExperience(packet);
-		break;
-	default:
-		std::cout << "Unrecognized node type!" << node->type() << '\n';
-		break;
-	}
+	auto effectArray = static_cast<const NullSpace::HapticFiles::TinyEffectArray*>(packet.packet());
+	auto handle = packet.handle();
+	auto decoded = EncodingOperations::Decode(effectArray);
+	_hapticsPlayer.Create(handle, decoded);
+
+	
 }
 void Engine::EnableOrDisableTracking(const NullSpace::HapticFiles::HapticPacket & packet)
 {
 	_userRequestsTracking = EncodingOperations::Decode(static_cast<const NullSpace::HapticFiles::Tracking*>(packet.packet()));
-
+	
+	
 	if (_userRequestsTracking) {
-		_executor.Hardware()->EnableIMUs();
+		_hardware.EnableIMUs();
 	}
 	else {
-		_executor.Hardware()->DisableIMUs();
+		_hardware.DisableIMUs();
 	}
 }
 
 void Engine::Update(float dt)
 {
-	_executor.Update(dt);
-	//todo: Raise event on disconnect and reconnect, so that engine can set the tracking to what the user requested
+	auto latestHapticCommands = _hapticsPlayer.Update(dt);
+	NS::Hardware::ExecuteHapticCommands(_hardware, latestHapticCommands, _hapticsPlayer.GetModel());
+	
 	if (_adapter->NeedsReset()) {
 		_adapter->DoReset();
 	}

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package NullSpaceIPC;
+
+
+message DriverCommand {
+	enum Command {
+		UNKNOWN = 0;
+		ENABLE_TRACKING = 1;
+		DISABLE_TRACKING = 2;
+		ENABLE_AUDIO = 3;
+		DISABLE_AUDIO = 4;
+		RAW_COMMAND = 5;
+		DUMP_DEVICE_DIAGNOSTICS = 6;
+	}
+	Command command = 1;
+
+	map<string, int32> params = 2;
+	bytes raw_command = 3; // Beginning to tack on random stuff here
+}

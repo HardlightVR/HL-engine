@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+    .
+.DESCRIPTION
+    .
+.PARAMETER tag
+    Name of the marketing release, e.g. "2.1.0"
+.PARAMETER product
+    Name of the product, one of (Chimera, DiagnosticsTool, to-be-filled-in)
+.PARAMETER message 
+    Release message, can be left blank for default message
+.EXAMPLE
+    To be determined
+.NOTES
+    Author: Casey Waldren casey@nullspacevr.com
+    Date: Some time in 2016
+#>
+
+
 [CmdletBinding()]
 Param (
      [Parameter(Mandatory=$True)]
@@ -85,7 +104,7 @@ function BumpVersion($file_path, $contents)
     }
  }
 
- function AssembleChimera([string]$service_version, [string]$unity_package_path, [string]$installer_path, [string]$public_chimera_path) {
+ function AssembleChimera([string]$service_version, [string]$unity_package_path, [string]$installer_path, [string]$public_chimera_path, [string] $asset_tool_path) {
     $confirm = Read-Host "Pull just in case someone updated the wiki. [enter]"
     $confirm = Read-Host "Make sure that the version file is updated for the installer. [enter]"
     $confirm = Read-Host "Make sure that the version info is updated within the release notes dialog in the GUI. [enter]"
@@ -118,28 +137,57 @@ function BumpVersion($file_path, $contents)
  }
 
 function Main() {
-    $release_groups = @{
-        "Service" = "installer", "engine";
-        "Plugin" = @("plugin");
-        "Unity_SDK" = "csharp_wrapper", "unity_sdk";
-        "Chimera" = "unity_sdk", "engine", "installer", "csharp_wrapper", "plugin";
-    }
-
+    # Here we list all of the repos that we are pulling binaries from.
     $repo_directories = @{
+        # for the Unity SDK, .unitypackage
         "unity_sdk" = "$Env:USERPROFILE\Documents\NullSpace SDK 0.1.1";
-        "engine" = "$Env:USERPROFILE\Documents\NS_Unreal_SDK";
+
+        # For driver.dll, our userland driver (ignore the bad name of NS_Unreal_SDK)
+        "driver" = "$Env:USERPROFILE\Documents\NS_Unreal_SDK";
+
+        # For our C# installer of the service
         "installer" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSVRService";
+
+        # For our C# wrapper over our C API
         "csharp_wrapper" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSLoaderWrapper";
+
+        # For our C API
         "plugin" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSLoader";
+
+        # The destination repo for the Chimera SDK
         "public_chimera" = "$Env:USERPROFILE\Documents\NullSpace-Chimera-SDK";
 
+        # AssetTool for creating haptic assets
+        "asset_tool" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\HapticAssetTools";
+
+        # Diagnostics tool for determining problems with suit
+        "diagnostic_tool" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\DiagnosticsTool";
+
+        # The UE plugin
+        "unreal_plugin" = "D:\UnrealEngine-release\Engine\Plugins\Runtime\HapticSuit";
+
+
     }
+
+    # This is where you specify how a product is composed. The components in each group will be tagged together with the product name. 
+    $release_groups = @{
+        "Service" = "installer", "driver", "plugin";
+        "Plugin" = @("plugin");
+        "AssetTool" = @("asset_tool");
+        "DiagnosticTool" = "diagnostic_tool", "plugin", "service"
+        "Unity_SDK" = "csharp_wrapper", "unity_sdk", "plugin", "service"
+        "Chimera" = "unity_sdk", "driver", "installer", "csharp_wrapper", "plugin", "asset_tool"
+    }
+
+   
 
     $messages = @{
         "Service" = "Runtime, GUI, and Engine $tag";
         "Plugin" = "Plugin $tag";
         "Unity_SDK" = "Unity SDK $tag";
         "Chimera" = "Chimera SDK $tag";
+        "AssetTool" = "Haptic Asset Tool $tag";
+        "DiagnosticTool" = "NullSpace Diagnostics $tag";
     }
 
     if ($product) {
@@ -170,6 +218,7 @@ function Main() {
         $latest_service_release = FormatTag (GetLatestRelease "Service" $release_groups $repo_directories)
         $latest_plugin_release = FormatTag (GetLatestRelease "Plugin" $release_groups $repo_directories)
         $latest_unitysdk_release = FormatTag (GetLatestRelease "Unity_SDK" $release_groups $repo_directories)
+        $latest_assettool_release = FormatTag (GetLatestRelease "DiagnosticTool" $release_groups $repo_directories)
 
         Write-Host "Creating version string"
         Write-Host "Chimera SDK $tag"
@@ -177,14 +226,18 @@ function Main() {
         Write-Host "Service = $latest_service_release"
         Write-Host "Plugin = $latest_plugin_release"
         Write-Host "Unity SDK = $latest_unitysdk_release"
+        Write-Host "Asset Tool = $latest_assettool_release"
 
         $output_str = "Chimera SDK $tag`n"
         $output_str += "------------------------`n"
         $output_str += "Service = $latest_service_release`n"
         $output_str += "Plugin = $latest_plugin_release`n"
-        $output_str += "Unity SDK = $latest_unitysdk_release`n`n"
+        $output_str += "Unity SDK = $latest_unitysdk_release`n"
+        $output_str += "Asset Tool = $latest_assettool_release`n"
+        $output_str += "`n"
+
         # BumpVersion ($repo_directories["installer"] + "\versions.txt")
-        AssembleChimera $latest_unitysdk_release $repo_directories["unity_sdk"] ($repo_directories["installer"] + '/' + "NSVRServiceSetup") $repo_directories["public_chimera"]
+        AssembleChimera $latest_unitysdk_release $repo_directories["unity_sdk"] ($repo_directories["installer"] + '/' + "NSVRServiceSetup") $repo_directories["public_chimera"] $repo_directories["asset_tool"] + '/' + "/Release"
         Write-Host "`nDone."
     }
 

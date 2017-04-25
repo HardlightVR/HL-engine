@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package nsvr.detail.encoding;
+
+message Effect {
+	float time = 1;
+	string effect = 2;
+	float strength = 3;
+	float duration = 4;
+}
+
+message Sequence {
+	repeated Effect effects = 1;
+	float time = 2;
+	float strength = 3;
+	uint32 area = 4;
+}
+
+message Pattern {
+	repeated Sequence sequences = 1;
+	float time = 2;
+	float strength = 3;
+}
+
+message Experience {
+	repeated Pattern patterns = 1;
+	float time = 2;
+	float strength = 3;
+}
+
+
+message HapticFile {
+	enum Type {UNKNOWN = 0; SEQUENCE = 1; PATTERN = 2; EXPERIENCE = 3;}
+	Type type = 1;
+	Sequence sequence = 2;
+	Pattern pattern = 3;
+	Experience experience = 4;
+}
+
+
+message RootEffect {
+	enum Type {UNKNOWN = 0; SEQUENCE = 1; PATTERN = 2; EXPERIENCE = 3;}
+	string name = 1;
+	Type type = 2;
+
+}
+
+message PatternNode {
+	float time = 1;
+	string sequence = 2;
+	uint32 area = 3;
+	float strength = 4;
+}
+
+message ExperienceNode {
+	float time = 1;
+	string pattern = 2;
+	float strength = 3;
+}
+
+message SequenceDefinitions {
+	repeated Effect effects = 1;
+}
+
+message PatternDefinitions {
+	repeated PatternNode pattern_nodes = 1;
+}
+message ExperienceDefinitions{
+	repeated ExperienceNode experience_nodes = 1;
+}
+
+message HapticDescriptionFile {
+	RootEffect effect = 1;
+	map<string, SequenceDefinitions> sequence_definitions = 2;
+	map<string, PatternDefinitions> pattern_definitions = 3;
+	map<string, ExperienceDefinitions> experience_definitions = 4;
+
+}

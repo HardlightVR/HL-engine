@@ -1,6 +1,5 @@
 #pragma once
 #include "ICommunicationAdapter.h"
-#include "handler_allocator.h"
 #include "SuitHardwareInterface.h"
 #include <boost\lockfree\spsc_queue.hpp>
 
@@ -21,11 +20,9 @@ public:
 	bool NeedsReset() const override {
 		return _needsReset;
 	}
-	void DoReset() override;
 
 private:
 	
-	handler_allocator _allocator;
 	std::shared_ptr<IoService> _ioService;
 	std::shared_ptr<boost::asio::io_service> _io;
 	std::unique_ptr<boost::asio::serial_port> port;

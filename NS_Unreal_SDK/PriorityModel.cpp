@@ -3,7 +3,7 @@
 #include "SuitHardwareInterface.h"
 #include "HapticEvent.h"
 
-PriorityModel::PriorityModel(std::unique_ptr<SuitHardwareInterface>& h):_hardware(h)
+PriorityModel::PriorityModel()
 {
 }
 
@@ -38,7 +38,6 @@ std::vector<PriorityModel::ExecutionCommand> PriorityModel::Update(float dt)
 			continue;
 		}
 		else {
-			//BUG: Need to not send continuous play repeatedly 
 
 			if (!effect->Sent) {
 				effect->Sent = true;

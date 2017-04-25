@@ -21,8 +21,13 @@ boost::optional<boost::uuids::uuid> HapticQueue::Put(unsigned int priority, Hapt
 	{
 		//std::cout << "Adding effect " << int(effect.Effect) << " to queue" << "\n";
 		_queue.push_back(pair);
-		
-		return effect.Handle;
+		if (effect.DurationType() != Duration::OneShot) {
+			return effect.Handle;
+
+		}
+		else {
+			return boost::optional<boost::uuids::uuid>();
+		}
 	} else if(effect.DurationType() != Duration::OneShot || isHigherPriorityOneShot(effect, _queue.at(0), priority))
 	{
 		auto iter = std::lower_bound(_queue.begin(), _queue.end(), pair, [](const PriorityPair& lhs, const PriorityPair& rhs) {

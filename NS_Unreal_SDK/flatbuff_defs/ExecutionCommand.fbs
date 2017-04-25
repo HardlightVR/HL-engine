@@ -1,0 +1,12 @@
+namespace NullSpace.HapticFiles;
+enum PlayCommand:short {
+	PLAY, PLAY_CONTINUOUS, HALT
+}
+
+table ExecutionCommand {
+	location:uint;
+	effect:uint;
+	command:PlayCommand;
+}
+
+root_type ExecutionCommand;
