@@ -24,7 +24,7 @@ public:
 
 	bool Push(const void* data, std::size_t sizeBytes) {
 		assert(sizeBytes <= m_maxElementSizeBytes);
-		return m_queue.try_send(data, (unsigned int) sizeBytes, 1);
+		return m_queue.try_send(data, static_cast<unsigned int>(sizeBytes), 1);
 	}
 private:
 	std::string m_name;

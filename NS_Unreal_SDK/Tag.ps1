@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+    .
+.DESCRIPTION
+    .
+.PARAMETER tag
+    Name of the marketing release, e.g. "2.1.0"
+.PARAMETER product
+    Name of the product, one of (Chimera, DiagnosticsTool, to-be-filled-in)
+.PARAMETER message 
+    Release message, can be left blank for default message
+.EXAMPLE
+    To be determined
+.NOTES
+    Author: Casey Waldren casey@nullspacevr.com
+    Date: Some time in 2016
+#>
+
+
 [CmdletBinding()]
 Param (
      [Parameter(Mandatory=$True)]
@@ -113,26 +132,49 @@ function BumpVersion($file_path, $contents)
  }
 
 function Main() {
-    $release_groups = @{
-        "Service" = "installer", "engine";
-        "Plugin" = @("plugin");
-        "AssetTool" = @("asset_tool");
-        "DiagnosticTool" = @("diagnostic_tool");
-        "Unity_SDK" = "csharp_wrapper", "unity_sdk";
-        "Chimera" = "unity_sdk", "engine", "installer", "csharp_wrapper", "plugin", "asset_tool";
-    }
-
+    # Here we list all of the repos that we are pulling binaries from.
     $repo_directories = @{
+        # for the Unity SDK, .unitypackage
         "unity_sdk" = "$Env:USERPROFILE\Documents\NullSpace SDK 0.1.1";
-        "engine" = "$Env:USERPROFILE\Documents\NS_Unreal_SDK";
+
+        # For driver.dll, our userland driver (ignore the bad name of NS_Unreal_SDK)
+        "driver" = "$Env:USERPROFILE\Documents\NS_Unreal_SDK";
+
+        # For our C# installer of the service
         "installer" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSVRService";
+
+        # For our C# wrapper over our C API
         "csharp_wrapper" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSLoaderWrapper";
+
+        # For our C API
         "plugin" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\NSLoader";
+
+        # The destination repo for the Chimera SDK
         "public_chimera" = "$Env:USERPROFILE\Documents\NullSpace-Chimera-SDK";
+
+        # AssetTool for creating haptic assets
         "asset_tool" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\HapticAssetTools";
+
+        # Diagnostics tool for determining problems with suit
         "diagnostic_tool" = "$Env:USERPROFILE\Documents\Visual Studio 2015\Projects\DiagnosticsTool";
 
+        # The UE plugin
+        "unreal_plugin" = "D:\UnrealEngine-release\Engine\Plugins\Runtime\HapticSuit";
+
+
     }
+
+    # This is where you specify how a product is composed. The components in each group will be tagged together with the product name. 
+    $release_groups = @{
+        "Service" = "installer", "driver", "plugin";
+        "Plugin" = @("plugin");
+        "AssetTool" = @("asset_tool");
+        "DiagnosticTool" = "diagnostic_tool", "plugin", "service"
+        "Unity_SDK" = "csharp_wrapper", "unity_sdk", "plugin", "service"
+        "Chimera" = "unity_sdk", "driver", "installer", "csharp_wrapper", "plugin", "asset_tool"
+    }
+
+   
 
     $messages = @{
         "Service" = "Runtime, GUI, and Engine $tag";
