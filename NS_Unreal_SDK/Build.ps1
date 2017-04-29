@@ -5,7 +5,7 @@ Param(
 
  $projects = @{
  	"plugin" = "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoader\build\bin";
- 	"wrapper" = "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoaderWrapper\NSLoaderWrapper\bin";
+ 	"wrapper" = "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\NSLoaderWrapper\build\bin";
  	"unity" = "C:\Users\NullSpace Team\Documents\NullSpace SDK 0.1.1\Assets\NullSpace SDK\Plugins";
  }
 $project_dll_names = @{
@@ -28,12 +28,12 @@ $project_dll_names = @{
  	};
  	"wrapper" = @{
  		"debug" = @{
- 			"win32" = "x86\Debug";
- 			"win64" = "x64\Debug";
+ 			"win32" = "Debug\Win32";
+ 			"win64" = "Debug\Win64";
  		};
  		"release" = @{
- 			"win32" = "x86\Release";
- 			"win64" = "x64\Release";
+ 			"win32" = "Release\Win32";
+ 			"win64" = "Release\Win64";
  		};
  	};
  	"unity" = @{
