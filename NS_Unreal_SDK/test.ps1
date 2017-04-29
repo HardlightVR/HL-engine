@@ -189,21 +189,35 @@ $build_functions = @{
     "asset_tool" = $make_assettool;
 }
 
+function number_from_version_tag([string]$tag) {
+    $index_of_v = $tag.IndexOf("_v")
+    return $tag.Substring($index_of_v+1)
+}
 
+function get_git_branch([string] $repo) {
+    Push-Location $repo_directories[$repo]
+    $branch = iex "git rev-parse --abbrev-ref HEAD"
+    Pop-Location
+    return $branch;
+}
 function latest_tagged_git_release([string]$repo, [string] $prefix) {
 
    Push-Location $repo_directories[$repo]
-
-
+  
+  
+    $commit = iex "git rev-parse HEAD"
     $cmd = "git config --global versionsort.prereleaseSuffix `"-rc`""
     iex $cmd
     $cmd = "git tag -l --sort=-version:refname `"$($prefix)_v*`""
     $result = Invoke-Expression $cmd
     if (-not $result) {
         Pop-Location
-        return ""
+        return "(No version tag found) ($commit)"
     }
     $latest_tag = $result.Split(' ')[0]
+
+    
+    $latest_tag = "$latest_tag ($commit)"
     Pop-Location
 
     return $latest_tag
@@ -211,7 +225,7 @@ function latest_tagged_git_release([string]$repo, [string] $prefix) {
 
 function do_build([String] $component_name, [HashTable] $options, [String] $path) {
 
-    Write-Output "------- Packaging $component_name -------"
+    Write-Host "------- Packaging $component_name -------"
     $delegate = $build_functions[$component_name]
 
     if ($options.ContainsKey("tag_repo")) {
@@ -222,7 +236,6 @@ function do_build([String] $component_name, [HashTable] $options, [String] $path
     New-Item -ItemType Directory -Force -Path $path | Out-Null
     $delegate.Invoke($repo_directories, $path, $options)
 
-
 }
 
 
@@ -232,13 +245,25 @@ $chimera_wizard = {
 
     $chimera_version = Read-Host "You're planning a new Chimera release. What shall be the marketing version number?"
 
-    Write-Host "Latest tags:"
+    Write-Host "Great, version >>>>> $chimera_version <<<<<`n"
+
+    Write-Host "This release will contain the following products:`n"
     Foreach ($repo in $products["chimera"]) {
-        $release = "???"
-        $result = latest_tagged_git_release $repo $tag_friendly_names[$repo]
-        if ($result) { $release = $result;}
+        $branch = get_git_branch $repo
+        $release = "[$branch] $(latest_tagged_git_release $repo $tag_friendly_names[$repo])"
         Write-Host "$repo = $release"
+      #  Write-Host (number_from_version_tag $release)
     }
+
+
+    $result = Read-Host "Does this configuration look correct? [y/n]"
+    if ($result -contains "y") {
+        do_build "installer" $options "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\DiagnosticsTool\Release\TestBuild"
+        do_build "unitypackage" $options "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\DiagnosticsTool\Release\TestBuild"
+        do_build "asset_tool" $options "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\DiagnosticsTool\Release\TestBuild"
+
+
+    } 
 
 }
 $product_wizards = @{
