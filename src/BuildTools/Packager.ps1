@@ -60,7 +60,7 @@ $tag_friendly_names = @{
 # Group together some repos to make a product. This means they will be tagged with a common release number when building.
 $products =    @{
 
-    "chimera" = "unity_sdk", "installer", "asset_tool"; 
+    "chimera" = "unity_sdk", "installer", "asset_tool", "unreal_plugin"; 
     "installer" = @("installer");
 
 }
@@ -208,6 +208,63 @@ $make_installer = {
 
 }
 
+function get_file_size_kb($path) {
+    $file = Get-Item $path
+    return ($file.length/1024)
+}
+$make_unrealplugin = {
+        param([HashTable]$dirs, [String] $destination, [HashTable] $options) 
+        $plugin_name = "HapticSuit"
+        $temp_path = ""
+
+        $max_file_size = 3000 #kb, should be changed in future if files get bigger. This is simply a heuristic to catch a bad problem
+
+        $needs_package = Read-Host "Did you already package the plugin?"
+        if (-not ($needs_package -contains "y")) {
+            $temp_build_path = "$Env:USERPROFILE\Documents\HardlightPluginTemp"
+            New-Item -ItemType Directory -Force -Path $temp_build_path | Out-Null
+            Write-Host "We're gonna do this together. I've made a temp folder at $temp_build_path"
+            Read-Host "Go into Unreal, and package the plugin to that directory. When done, hit [enter]"
+            $temp_path = $temp_build_path
+
+        } else {
+            $temp_path = Read-Host "Enter the path:"
+            Write-Host "Path given: $temp_path"
+        }
+
+        Write-Host "Copying the ThirdParty directory from the engine/plugin repo into this temp folder.."
+        Copy-Item -Path (Join-Path $dirs["unreal_plugin"] "ThirdParty") -Destination (Join-Path $temp_path $plugin_name) -Recurse
+
+        Write-Host "Creating Binaries folder.."
+        #New-Item -ItemType Directory -Force -Path (Join-Path $temp_path "Binaries") | Out-Null
+
+        New-Item -ItemType Directory -Force -Path (Join-Path $temp_path "Binaries/Win32") | Out-Null
+        New-Item -ItemType Directory -Force -Path (Join-Path $temp_path "Binaries/Win64") | Out-Null
+
+        $win32_dll = [io.path]::combine($temp_path, $plugin_name, "ThirdParty/NullSpaceVR/lib/Win32/NSLoader.dll")
+        $win64_dll = [io.path]::combine($temp_path, $plugin_name, "ThirdParty/NullSpaceVR/lib/Win64/NSLoader.dll")
+
+        $win32_size = get_file_size_kb $win32_dll
+        $win64_size = get_file_size_kb $win64_dll
+
+        if ($win32_size -gt $max_file_size) {
+            Write-Host "WARNING: The win32 dll is larger than 3000kb, which means it may be a DEBUG dll! Do not distribute!"
+        }
+        if ($win64_size -gt $max_file_size) {
+            Write-Host "WARNING: The win64 dll is larger than 3000kb, which means it may be a DEBUG dll! Do not distribute!"
+        }
+
+
+        Copy-Item -Path $win32_dll -Destination (Join-Path $temp_path "Binaries/Win32") | Out-Null
+        Copy-Item -Path $win64_dll -Destination (Join-Path $temp_path "Binaries/Win64") | Out-Null
+
+        $essential_folders = "Binaries", $plugin_name
+
+        New-Item -ItemType Directory -Force -Path (Join-Path $destination "Unreal Hardlight Plugin") |Out-Null
+        copy_all_dirs $temp_path $essential_folders (Join-Path $destination "Unreal Hardlight Plugin")
+        
+        
+}
 
 $make_unitypackage= {
     param([HashTable]$dirs, [String] $destination, [HashTable] $options) 
@@ -240,6 +297,7 @@ $build_functions = @{
     "installer" = $make_installer;
     "unitypackage" = $make_unitypackage;
     "asset_tool" = $make_assettool;
+    "unreal_plugin" = $make_unrealplugin;
 }
 
 # Given a version tage SomeProduct_v0.1.3, return 0.1.3
@@ -330,6 +388,8 @@ $chimera_wizard = {
         $service_version =  number_from_version_tag (latest_tag_name "installer" $tag_friendly_names["installer"])
         $plugin_version = number_from_version_tag (latest_tag_name "plugin" $tag_friendly_names["plugin"])
         $unity_version = number_from_version_tag (latest_tag_name "unity_sdk" $tag_friendly_names["unity_sdk"])
+        $unreal_version = number_from_version_tag (latest_tag_name "unreal_plugin" $tag_friendly_names["unreal_plugin"])
+
         $assettool_version = number_from_version_tag (latest_tag_name "asset_tool" $tag_friendly_names["asset_tool"])
 
 
@@ -341,7 +401,7 @@ $chimera_wizard = {
         # perhaps do_build is bad name, but it is unclear if we should have this tool building stuff or just packaging for now.
         do_build "installer" $options $location
         do_build "unitypackage" $options $location
-
+        do_build "unreal_plugin" $options $location
 
         $header_text = generate_chimera_version_header $chimera_version $service_version $plugin_version $unity_version $assettool_version
         New-Item (Join-Path $location "versions.txt") -type file -force -value $header_text | Out-Null
@@ -379,9 +439,7 @@ function Main(){
 
     $product_wizards[$product].Invoke($options);
 
-    #do_build "installer" $options "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\DiagnosticsTool\Release\TestBuild"
-   # do_build "diagnostic_tool" $options "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\DiagnosticsTool\Release\TestBuild"
-  #  do_build "unitypackage" $options "C:\Users\NullSpace Team\Documents\Visual Studio 2015\Projects\DiagnosticsTool\Release\TestBuild"
+ 
 
 }
 
