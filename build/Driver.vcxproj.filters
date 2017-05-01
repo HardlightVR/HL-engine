@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Json">
+      <UniqueIdentifier>{7F9B877C-6BD2-880D-14BF-6E1000D5040F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SharedCommunication">
+      <UniqueIdentifier>{529512AA-BEF6-EFB7-4764-366AB3C42677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="protobuff_defs">
+      <UniqueIdentifier>{BD9239EB-A960-2DF1-92F4-9D177E610956}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Driver\AreaFlags.h" />
+    <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
+    <ClInclude Include="..\src\Driver\Atom.h" />
+    <ClInclude Include="..\src\Driver\BoostSerialAdapter.h" />
+    <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
+    <ClInclude Include="..\src\Driver\Driver.h" />
+    <ClInclude Include="..\src\Driver\DriverMessenger.h" />
+    <ClInclude Include="..\src\Driver\Encoder.h" />
+    <ClInclude Include="..\src\Driver\EnumTranslator.h" />
+    <ClInclude Include="..\src\Driver\Enums.h" />
+    <ClInclude Include="..\src\Driver\FirmwareInterface.h" />
+    <ClInclude Include="..\src\Driver\HardwareInterface.h" />
+    <ClInclude Include="..\src\Driver\HexUtils.h" />
+    <ClInclude Include="..\src\Driver\ICommunicationAdapter.h" />
+    <ClInclude Include="..\src\Driver\ILogger.h" />
+    <ClInclude Include="..\src\Driver\IPacketConsumer.h" />
+    <ClInclude Include="..\src\Driver\ImuConsumer.h" />
+    <ClInclude Include="..\src\Driver\Instruction.h" />
+    <ClInclude Include="..\src\Driver\InstructionBuilder.h" />
+    <ClInclude Include="..\src\Driver\InstructionSet.h" />
+    <ClInclude Include="..\src\Driver\IoService.h" />
+    <ClInclude Include="..\src\Driver\Json\JsonKeyValueConfig.h">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\Json\json-forwards.h">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\Json\json.h">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
+    <ClInclude Include="..\src\Driver\KeepaliveMonitor.h" />
+    <ClInclude Include="..\src\Driver\Locator.h" />
+    <ClInclude Include="..\src\Driver\LoggingUtils.h" />
+    <ClInclude Include="..\src\Driver\MessengerLogger.h" />
+    <ClInclude Include="..\src\Driver\MyTestLog.h" />
+    <ClInclude Include="..\src\Driver\NSDriverApi.h" />
+    <ClInclude Include="..\src\Driver\NullLogger.h" />
+    <ClInclude Include="..\src\Driver\Packet.h" />
+    <ClInclude Include="..\src\Driver\PacketDispatcher.h" />
+    <ClInclude Include="..\src\Driver\SuitPacket.h" />
+    <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
+    <ClInclude Include="..\src\Driver\Synchronizer.h" />
+    <ClInclude Include="..\src\Driver\enumser.h" />
+    <ClInclude Include="..\src\Driver\stdafx.h" />
+    <ClInclude Include="..\src\Driver\suit_packet.h" />
+    <ClInclude Include="..\src\Driver\targetver.h" />
+    <ClInclude Include="..\src\Driver\zmq.hpp" />
+    <ClInclude Include="..\src\Driver\zmq_addon.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
+    <ClCompile Include="..\src\Driver\Atom.cpp" />
+    <ClCompile Include="..\src\Driver\BoostSerialAdapter.cpp" />
+    <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
+    <ClCompile Include="..\src\Driver\Driver.cpp" />
+    <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
+    <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
+    <ClCompile Include="..\src\Driver\FirmwareInterface.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareInterface.cpp" />
+    <ClCompile Include="..\src\Driver\HexUtils.cpp" />
+    <ClCompile Include="..\src\Driver\ImuConsumer.cpp" />
+    <ClCompile Include="..\src\Driver\Instruction.cpp" />
+    <ClCompile Include="..\src\Driver\InstructionBuilder.cpp" />
+    <ClCompile Include="..\src\Driver\InstructionSet.cpp" />
+    <ClCompile Include="..\src\Driver\IoService.cpp" />
+    <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
+      <Filter>Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\KeepaliveMonitor.cpp" />
+    <ClCompile Include="..\src\Driver\Locator.cpp" />
+    <ClCompile Include="..\src\Driver\LoggingUtils.cpp" />
+    <ClCompile Include="..\src\Driver\MessengerLogger.cpp" />
+    <ClCompile Include="..\src\Driver\MyTestLog.cpp" />
+    <ClCompile Include="..\src\Driver\NSDriverApi.cpp" />
+    <ClCompile Include="..\src\Driver\NullLogger.cpp" />
+    <ClCompile Include="..\src\Driver\Packet.cpp" />
+    <ClCompile Include="..\src\Driver\PacketDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
+      <Filter>SharedCommunication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\SuitPacket.cpp" />
+    <ClCompile Include="..\src\Driver\Synchronizer.cpp" />
+    <ClCompile Include="..\src\Driver\enumser.cpp" />
+    <ClCompile Include="..\src\Driver\main.cpp" />
+    <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
+      <Filter>protobuff_defs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\protobuff_defs\EffectCommand.pb.cc">
+      <Filter>protobuff_defs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\stdafx.cpp" />
+  </ItemGroup>
+</Project>
