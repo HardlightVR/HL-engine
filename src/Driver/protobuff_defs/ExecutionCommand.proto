@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package NullSpaceIPC;
+
+
+message ExecutionCommand {
+	uint32 location = 1;
+	uint32 command = 2;
+	uint32 effect = 3;
+}
