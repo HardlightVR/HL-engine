@@ -169,16 +169,11 @@ class EffectCommand : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::uint32 area() const;
   void set_area(::google::protobuf::uint32 value);
 
-  // optional string effect = 3;
+  // optional uint32 effect = 3;
   void clear_effect();
   static const int kEffectFieldNumber = 3;
-  const ::std::string& effect() const;
-  void set_effect(const ::std::string& value);
-  void set_effect(const char* value);
-  void set_effect(const char* value, size_t size);
-  ::std::string* mutable_effect();
-  ::std::string* release_effect();
-  void set_allocated_effect(::std::string* effect);
+  ::google::protobuf::uint32 effect() const;
+  void set_effect(::google::protobuf::uint32 value);
 
   // optional float strength = 4;
   void clear_strength();
@@ -193,7 +188,7 @@ class EffectCommand : public ::google::protobuf::Message /* @@protoc_insertion_p
   bool _is_default_instance_;
   int command_;
   ::google::protobuf::uint32 area_;
-  ::google::protobuf::internal::ArenaStringPtr effect_;
+  ::google::protobuf::uint32 effect_;
   float strength_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_EffectCommand_2eproto();
@@ -239,48 +234,18 @@ inline void EffectCommand::set_area(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.EffectCommand.area)
 }
 
-// optional string effect = 3;
+// optional uint32 effect = 3;
 inline void EffectCommand::clear_effect() {
-  effect_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  effect_ = 0u;
 }
-inline const ::std::string& EffectCommand::effect() const {
+inline ::google::protobuf::uint32 EffectCommand::effect() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.EffectCommand.effect)
-  return effect_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return effect_;
 }
-inline void EffectCommand::set_effect(const ::std::string& value) {
+inline void EffectCommand::set_effect(::google::protobuf::uint32 value) {
   
-  effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  effect_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.EffectCommand.effect)
-}
-inline void EffectCommand::set_effect(const char* value) {
-  
-  effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.EffectCommand.effect)
-}
-inline void EffectCommand::set_effect(const char* value, size_t size) {
-  
-  effect_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.EffectCommand.effect)
-}
-inline ::std::string* EffectCommand::mutable_effect() {
-  
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.EffectCommand.effect)
-  return effect_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* EffectCommand::release_effect() {
-  // @@protoc_insertion_point(field_release:NullSpaceIPC.EffectCommand.effect)
-  
-  return effect_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void EffectCommand::set_allocated_effect(::std::string* effect) {
-  if (effect != NULL) {
-    
-  } else {
-    
-  }
-  effect_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), effect);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.EffectCommand.effect)
 }
 
 // optional float strength = 4;

@@ -13,6 +13,6 @@ message EffectCommand {
 	}
 	Command command = 1;
 	uint32 area = 2;
-	string effect = 3;
+	uint32 effect = 3;
 	float strength = 4;
 }

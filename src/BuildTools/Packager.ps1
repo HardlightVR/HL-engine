@@ -145,7 +145,7 @@ $make_diagnostics_tool = {
 
     $essential_files = "DiagnosticsTool.exe", "NSLoader.dll", "PadToZone.json", "VertexShader.txt", "FragmentShader.txt", "Zones.json", "imgui.ini"
     
-    copy_all (Join-Path $dirs["diagnostic_tool"] "Release") $essential_files $destination
+    copy_all (Join-Path $dirs["diagnostic_tool"] "build/bin/Release/Win32") $essential_files $destination
 
 }
 
@@ -217,7 +217,7 @@ $make_unrealplugin = {
         $plugin_name = "HapticSuit"
         $temp_path = ""
 
-        $max_file_size = 3000 #kb, should be changed in future if files get bigger. This is simply a heuristic to catch a bad problem
+        $max_file_size = 3000 #kb, should be changed in future if files get bigger. This is simply a heuristic to catch a bad problem of releasing products with debug dlls by accident
 
         $needs_package = Read-Host "Did you already package the plugin?"
         if (-not ($needs_package -contains "y")) {
@@ -287,8 +287,8 @@ $make_assettool = {
     param([HashTable]$dirs, [String] $destination, [HashTable] $options) 
 
     $essential_files = @("HapticAssetTools.exe")
-    $release_dir = Join-Path $repo_directories["asset_tool"] "Release"
-Write-Host "Release dir: $release_dir"
+    $release_dir = Join-Path $repo_directories["asset_tool"] "Build/bin/Release/Win32"
+    Write-Host "Release dir: $release_dir"
     copy_all $release_dir $essential_files $destination
 
 }
@@ -417,11 +417,17 @@ $chimera_wizard = {
 
     } 
 
+}
 
 
+$diagnostics_wizard = {
+      param([HashTable] $options)
+
+      Write-Host "Just do it yourself"
 }
 $product_wizards = @{
     "chimera" = $chimera_wizard;
+    "diagnostics" = $diagnostics_wizard;
 
 }
 
@@ -435,7 +441,7 @@ function Main(){
     }
 
 
-    $product = Read-Host "Welcome to the release wizard. Which product?"
+    $product = Read-Host "Welcome to the release wizard. Which product? Options: chimera"
 
     $product_wizards[$product].Invoke($options);
 
