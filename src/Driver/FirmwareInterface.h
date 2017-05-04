@@ -17,9 +17,9 @@ public:
 	FirmwareInterface(std::unique_ptr<ICommunicationAdapter>& adapter, boost::asio::io_service& io);
 	~FirmwareInterface();
 
-	void PlayEffect(Location location, std::string effect, float strength);
+	void PlayEffect(Location location, uint32_t effect, float strength);
 	void HaltEffect(Location location);
-	void PlayEffectContinuous(Location location, std::string effect, float strength);
+	void PlayEffectContinuous(Location location, uint32_t effect, float strength);
 
 
 	void EnableTracking();

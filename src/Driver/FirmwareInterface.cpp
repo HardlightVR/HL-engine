@@ -188,17 +188,20 @@ void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
 
 }
 
-void FirmwareInterface::PlayEffect(Location location, std::string effectString, float strength) {
-	
+void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float strength) {
+	//Todo: In the future, we should translate all the values from the configs at first so we don't have to do it all the time
+	//at runtime. Or make the translator smarter and cache it.
+
+	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
 		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to find atom '" << effectString << "' in the instruction set";
 		return;
 	}
 
-	auto effect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
+	auto actualEffect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 	if (_builder.UseInstruction("PLAY_EFFECT")
 		.WithParam("zone", Locator::Translator().ToString(location))
-		.WithParam("effect", Locator::Translator().ToString(effect))
+		.WithParam("effect", Locator::Translator().ToString(actualEffect))
 		.Verify())
 	{
 		chooseExecutionStrategy(_builder.Build());
@@ -210,16 +213,17 @@ void FirmwareInterface::PlayEffect(Location location, std::string effectString, 
 	}
 }
 
-void FirmwareInterface::PlayEffectContinuous(Location location, std::string effectString, float strength)
+void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
+	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
 		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to find atom '" << effectString << "' in the instruction set";
 		return;
 	}
 
-	auto effect = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
+	auto actualEffect = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 	if (_builder.UseInstruction("PLAY_CONTINUOUS")
-		.WithParam("effect", Locator::Translator().ToString(effect))
+		.WithParam("effect", Locator::Translator().ToString(actualEffect))
 		.WithParam("zone", Locator::Translator().ToString(location))
 		.Verify())
 	{

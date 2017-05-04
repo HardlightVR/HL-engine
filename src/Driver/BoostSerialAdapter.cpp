@@ -235,7 +235,7 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string portName)
 {
 	try {
-	//	//port.open(portName);
+		port.open(portName);
 		//port.set_option(boost::asio::serial_port::baud_rate(115200));
 		////port.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
 		//port.set_option(boost::asio::serial_port::parity());
