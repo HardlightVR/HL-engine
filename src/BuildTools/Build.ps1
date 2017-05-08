@@ -1,6 +1,7 @@
 Param(
 	[switch]$debug,
-	[switch]$release
+	[switch]$release,
+	[switch]$v
 )
 
  $projects = @{
@@ -82,13 +83,16 @@ function copy_dlls_from_to($projectA, $projectB, $configuration) {
 		$a_win64_dll = Join-Path $A_win64_dir $dll;
 		$b_win64_dll = Join-Path $B_win64_dir $dll;
 
-		Write-Host "Copying $($a_win32_dll) to $($b_win32_dll)";
+		if ($v) {
+			Write-Host "Copying $($a_win32_dll) to $($b_win32_dll)`n";
 
-		Write-Host "Copying $($a_win64_dll) to $($b_win64_dll)";
+			Write-Host "Copying $($a_win64_dll) to $($b_win64_dll)`n";
+		} 
 		Copy-Item -Path $a_win32_dll -Destination $b_win32_dll
 		Copy-Item -Path $a_win64_dll -Destination $b_win64_dll
 
 	}
+
 
 
 
@@ -98,6 +102,8 @@ if ($debug) {
 
 	copy_dlls_from_to "plugin" "wrapper" "debug"
 	copy_dlls_from_to "wrapper" "unity" "debug"
+
+	Write-Host "Done."
 	#Write-Host "Copying from loader to wrapper.."
 	#copy_debug_to_wrapper
 	#Write-Host "Copying from wrapper to unity.."
@@ -109,6 +115,8 @@ if ($release) {
 
 	copy_dlls_from_to "plugin" "wrapper" "release"
 	copy_dlls_from_to "wrapper" "unity" "release"
+
+	Write-Host "Done."
 	#Write-Host "Copying from loader to wrapper.."
 	#copy_release_to_wrapper
 	#Write-Host "Copying from wrapper to unity.."
