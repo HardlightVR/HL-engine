@@ -1,8 +1,9 @@
 #pragma once
+class FirmwareInterface;
 class KeepaliveMonitor
 {
 public:
-	KeepaliveMonitor(boost::asio::io_service& io,std::unique_ptr<boost::asio::serial_port>& port);
+	KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterface& fi);
 	~KeepaliveMonitor();
 
 	//Set what happens when the monitor detects a suit disconnect
@@ -18,6 +19,7 @@ public:
 	void SetMaxAllowedResponseTime(boost::posix_time::millisec max);
 
 private:
+	FirmwareInterface& m_fi;
 	//keep track of how many pings sent after initial connection loss
 	unsigned int _failedPingCount;
 
@@ -31,7 +33,6 @@ private:
 	std::function<void()> _disconnectHandler;
 
 	//The port which we are operating on
-	std::unique_ptr<boost::asio::serial_port>& _port;
 	
 	//How long we wait for a response before timing out
 	boost::posix_time::milliseconds _responseTimeout;

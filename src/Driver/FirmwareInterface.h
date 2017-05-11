@@ -32,7 +32,7 @@ public:
 	void EnableIntrigMode(Location pad);
 	void EnableRtpMode(Location pad);
 	void PlayRtp(Location location, int strength);
-
+	void Ping();
 	void RawCommand(const uint8_t* bytes, std::size_t length);
 private:
 	inline void VerifyThenExecute(InstructionBuilder& builder);

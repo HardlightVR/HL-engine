@@ -182,6 +182,15 @@ void FirmwareInterface::PlayRtp(Location location, int strength)
 	);
 }
 
+void FirmwareInterface::Ping()
+{
+	uint8_t data[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
+	Packet packet(data, 7);
+	chooseExecutionStrategy(packet);
+		//Schedule a read - even if the write fails, it could be temporary and we may not need
+		//to perform the reset dance
+}
+
 void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
 {
 	_lfQueue.push(bytes, length);

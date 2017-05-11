@@ -5,6 +5,7 @@
 #include "DriverMessenger.h"
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "Atom.h"
+#include "KeepaliveMonitor.h"
 #include "PacketDispatcher.h"
 class Synchronizer;
 class IoService;
@@ -49,8 +50,10 @@ public:
 
 private:
 	PacketDispatcher m_dispatcher;
-
 	std::unique_ptr<ICommunicationAdapter> m_adapter;
+	std::shared_ptr<KeepaliveMonitor> m_monitor;
+	FirmwareInterface m_firmware;
+
 	std::unique_ptr<Synchronizer> m_synchronizer;
 
 	boost::asio::deadline_timer m_adapterResetCheckTimer;
@@ -62,7 +65,6 @@ private:
 	boost::condition_variable _needToCheckAdapter;
 	boost::mutex _needToCheckMut;
 
-	FirmwareInterface m_firmware;
 
 };
 

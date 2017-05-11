@@ -3,6 +3,7 @@
 #include "Synchronizer.h"
 #include <functional>
 #include <boost/asio.hpp>
+#include "KeepaliveMonitor.h"
 class ICommunicationAdapter {
 public:
 	virtual ~ICommunicationAdapter() = default;
@@ -15,4 +16,6 @@ public:
 
 	virtual std::shared_ptr<Buffer> GetDataStream() = 0;
 
+	//this is dumb hack
+	virtual void SetMonitor(std::shared_ptr<KeepaliveMonitor> monitor) = 0;
 };

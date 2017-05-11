@@ -5,17 +5,23 @@
 #include "Locator.h"
 #include <boost\log\trivial.hpp>
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService) :
-	
 	m_adapter(std::make_unique<BoostSerialAdapter>(ioService->GetIOService())),
+
+	m_firmware(m_adapter, ioService->GetIOService()),
+	m_monitor(std::make_shared<KeepaliveMonitor>(ioService->GetIOService(), m_firmware)),
+
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, ioService->GetIOService())),
 	m_adapterResetCheckTimer(ioService->GetIOService()),
 	m_adapterResetCheckInterval(boost::posix_time::milliseconds(50)),
-	m_running(true),
-	m_firmware(m_adapter, ioService->GetIOService())
+	m_running(true)
+	
 
 {
+	m_adapter->SetMonitor(m_monitor);
 	m_adapter->Connect();
 	m_synchronizer->BeginSync();
+	
+
 }
 
 

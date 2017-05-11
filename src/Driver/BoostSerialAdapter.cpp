@@ -16,11 +16,9 @@ BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 	m_io(io),
 	m_suitReconnectionTimeout(boost::posix_time::milliseconds(50)),
 	m_initialConnectTimeout(boost::posix_time::milliseconds(300)),
-	m_suitReconnectionTimer(io),
-	m_keepaliveMonitor(io, m_port)
+	m_suitReconnectionTimer(io)
 {
 	std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
-	m_keepaliveMonitor.SetDisconnectHandler([this]() { beginReconnectionProcess(); });
 }
 
 void BoostSerialAdapter::Connect()
@@ -77,7 +75,9 @@ void BoostSerialAdapter::kickoffSuitReading()
 					std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
 				}
 				else {
-					m_keepaliveMonitor.ReceivePing();
+					assert(m_keepaliveMonitor);
+					m_keepaliveMonitor->ReceivePing();
+					
 				}
 
 				kickoffSuitReading();
@@ -103,7 +103,9 @@ void BoostSerialAdapter::beginReconnectionProcess() {
 void BoostSerialAdapter::endReconnectionProcess()
 {
 	_isResetting = false;
-	m_keepaliveMonitor.BeginMonitoring();
+	assert(m_keepaliveMonitor);
+	m_keepaliveMonitor->BeginMonitoring();
+
 	kickoffSuitReading();
 }
 
@@ -117,6 +119,13 @@ std::shared_ptr<Buffer> BoostSerialAdapter::GetDataStream()
 bool BoostSerialAdapter::IsConnected() const
 {
 	return  !_isResetting &&  this->m_port && this->m_port->is_open();
+}
+
+void BoostSerialAdapter::SetMonitor(std::shared_ptr<KeepaliveMonitor> monitor)
+{
+	m_keepaliveMonitor = monitor;	
+	m_keepaliveMonitor->SetDisconnectHandler([this]() { beginReconnectionProcess(); });
+
 }
 
 

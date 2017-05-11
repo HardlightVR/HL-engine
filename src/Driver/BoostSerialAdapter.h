@@ -27,7 +27,7 @@ public:
 	//Check if the adapter is connected to the hardware
 	bool IsConnected() const override;
 
-
+	void SetMonitor(std::shared_ptr<KeepaliveMonitor> monitor) override;
 
 private:
 
@@ -55,7 +55,7 @@ private:
 	bool _isResetting = false;
 
 	//Handles pinging the suit 
-	KeepaliveMonitor m_keepaliveMonitor;
+	std::shared_ptr<KeepaliveMonitor> m_keepaliveMonitor;
 
 	//Starts reading data from the suit
 	void kickoffSuitReading();
