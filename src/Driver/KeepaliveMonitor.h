@@ -14,6 +14,9 @@ public:
 	//Tell monitor to begin pinging and waiting for responses
 	void BeginMonitoring();
 
+	//Use this for adaptive load. When the api is getting slammed, we need to be more lenient
+	void SetMaxAllowedResponseTime(boost::posix_time::millisec max);
+
 private:
 	//keep track of how many pings sent after initial connection loss
 	unsigned int _failedPingCount;

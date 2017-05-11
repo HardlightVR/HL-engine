@@ -50,6 +50,11 @@ void KeepaliveMonitor::BeginMonitoring()
 
 
 
+void KeepaliveMonitor::SetMaxAllowedResponseTime(boost::posix_time::millisec max)
+{
+	_responseTimeout = max;
+}
+
 void KeepaliveMonitor::doKeepAlivePing()
 {
 	if (_port && _port->is_open()) {
