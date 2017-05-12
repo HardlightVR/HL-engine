@@ -10,6 +10,8 @@ message EffectCommand {
 		PLAY_CONTINUOUS = 2;
 		HALT = 3;
 		PLAY_RTP = 4;
+		ENABLE_RTP = 5;
+		ENABLE_INTRIG = 6;
 	}
 	Command command = 1;
 	uint32 area = 2;

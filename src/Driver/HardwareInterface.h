@@ -27,8 +27,13 @@ public:
 		}
 		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_PLAY_RTP) {
 			int strength = int(ec.strength() * 255.0f);
-
 			m_firmware.PlayRtp(Location(ec.area()), strength);
+		}
+		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_ENABLE_RTP) {
+			m_firmware.EnableRtpMode(Location(ec.area()));
+		}
+		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_ENABLE_INTRIG) {
+			m_firmware.EnableIntrigMode(Location(ec.area()));
 		}
 	}
 
