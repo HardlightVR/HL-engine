@@ -144,8 +144,11 @@ $make_diagnostics_tool = {
     param([HashTable]$dirs, [String] $destination, [HashTable] $options) 
 
     $essential_files = "DiagnosticsTool.exe", "NSLoader.dll", "PadToZone.json", "VertexShader.txt", "FragmentShader.txt", "Zones.json", "imgui.ini"
-    
-    copy_all (Join-Path $dirs["diagnostic_tool"] "build/bin/Release/Win32") $essential_files $destination
+    $build_path = Join-Path $dirs["diagnostic_tool"] "build/bin/Release/Win32"
+
+    sign_binary $build_path "DiagnosticsTool.exe"
+
+    copy_all $build_path $essential_files $destination
 
 }
 
@@ -195,14 +198,19 @@ $make_installer = {
     & "$DEVENV" $sln /Rebuild Release /project (Join-Path $dirs["installer"] "NSVRServiceSetup\NSVRServiceSetup.vdproj") | Out-Null
     Write-Host "Finished."
 
-    # Now we can finally copy everything!
+   
+  
+
 
     $essential_files = "setup.exe", "NSVRServiceSetup.msi"
     $essential_folders = "vcredist_x86", "vcredist_x64", "DotNetFX45"
 
     $build_path = Join-Path $dirs["installer"] "NSVRServiceSetup\Release"
 
-    Copy-Item -Path (Join-Path $dirs["installer"] "release_notes.txt") -Destination $destination
+    sign_binary $build_path "setup.exe"
+    sign_binary $build_path "NSVRServiceSetup.msi"
+
+
     copy_all $build_path $essential_files $destination
     copy_all_dirs $build_path $essential_folders $destination
 
@@ -289,6 +297,8 @@ $make_assettool = {
     $essential_files = @("HapticAssetTools.exe")
     $release_dir = Join-Path $repo_directories["asset_tool"] "Build/bin/Release/Win32"
     Write-Host "Release dir: $release_dir"
+
+    sign_binary $release_dir "HapticAssetTools.exe"
     copy_all $release_dir $essential_files $destination
 
 }
@@ -312,6 +322,14 @@ function get_git_branch([string] $repo) {
     $branch = iex "git rev-parse --abbrev-ref HEAD"
     Pop-Location
     return $branch;
+}
+
+function sign_binary([string] $dir, [string] $binaryName) {
+    Push-Location $dir
+    $timeserver = "http://timestamp.globalsign.com/scripts/timstamp.dll"
+    $cmd = "signtool sign /a /n `"NullSpace VR, Inc`" /t $timeserver $binaryName"
+    Invoke-Expression $cmd | Out-Null
+    Pop-Location 
 }
 
 # Given a bunch of tags like v0.1.2, v0.1.3, return the latest, i.e. v0.1.3 in this case
@@ -394,8 +412,12 @@ $chimera_wizard = {
 
 
         $options["chimera_version_bump"] = $chimera_version;
-        $options["service_version_bump"] = $service_version
+        $options["service_version_bump"] = $service_version;
 
+        $header_text = generate_chimera_version_header $chimera_version $service_version $plugin_version $unity_version $assettool_version
+
+        Write-Host "Putting versions.txt in the installer directory"
+        New-Item (Join-Path $repo_directories["installer"] "versions.txt") -type file -force -value $header_text | Out-Null
         # we don't do_build the asset tool because it is pulled in by the installer
         # do_build "asset_tool" $options $location 
         # perhaps do_build is bad name, but it is unclear if we should have this tool building stuff or just packaging for now.
@@ -403,9 +425,7 @@ $chimera_wizard = {
         do_build "unitypackage" $options $location
         do_build "unreal_plugin" $options $location
 
-        $header_text = generate_chimera_version_header $chimera_version $service_version $plugin_version $unity_version $assettool_version
-        New-Item (Join-Path $location "versions.txt") -type file -force -value $header_text | Out-Null
-
+    
         Write-Host "`nFinished packaging chimera at location $location"
         $tag_all = Read-Host "Want to tag everything with the chimera release number? [y/n]"
         if ($tag_all -contains "y") {
@@ -432,20 +452,21 @@ $product_wizards = @{
 }
 
 function Main(){
-    do_registry_hack
+     do_registry_hack
 
-    $options = @{
+     $options = @{
         "tag_repo" = "TestTag";
         "tag_msg"   = "test";
        
     }
 
 
-    $product = Read-Host "Welcome to the release wizard. Which product? Options: chimera"
+     $product = Read-Host "Welcome to the release wizard. Which product? Options: chimera"
 
-    $product_wizards[$product].Invoke($options);
-
+     $product_wizards[$product].Invoke($options);
  
+
+ hapTech.55wxyz?xyzw
 
 }
 
