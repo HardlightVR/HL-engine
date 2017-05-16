@@ -13,7 +13,7 @@ _batchingDeadline(io),
 _writeInterval(30),
 _batchingTimeout(20),
 BATCH_SIZE(64),
-_lfQueue(1024)
+_lfQueue(10240)
 
 {
 
@@ -28,6 +28,7 @@ FirmwareInterface::~FirmwareInterface()
 
 void FirmwareInterface::writeBuffer() {
 	const std::size_t avail = _lfQueue.read_available();
+//	std::cout << "Size: " << avail << '\n';
 	if (avail == 0) {
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&FirmwareInterface::writeBuffer, this));
@@ -106,12 +107,7 @@ void FirmwareInterface::DisableTracking()
 
 void FirmwareInterface::RequestSuitVersion()
 {
-	if (_builder.UseInstruction("GET_VERSION").Verify()) {
-		chooseExecutionStrategy(_builder.Build());
-	}
-	else {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
+	VerifyThenExecute(_builder.UseInstruction("GET_VERSION"));
 }
 
 //Todo: update all to VerifyThenExecute
@@ -126,12 +122,7 @@ void FirmwareInterface::ReadDriverData(Location loc, Register reg)
 
 void FirmwareInterface::ResetDrivers()
 {
-	if (_builder.UseInstruction("RESET_DRIVERS").Verify()) {
-		chooseExecutionStrategy(_builder.Build());
-	}
-	else {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
+	VerifyThenExecute(_builder.UseInstruction("RESET_DRIVERS"));
 }
 
 void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
