@@ -7,7 +7,7 @@
 KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterface& fi):
 	m_fi(fi),
 	_responseTimer(io), 
-	_responseTimeout(boost::posix_time::milliseconds(400)),
+	_responseTimeout(boost::posix_time::milliseconds(3000)),
 	_pingTimer(io),
 	_pingInterval(boost::posix_time::milliseconds(500)),
 	MAX_FAILED_PINGS(2),
@@ -28,13 +28,13 @@ KeepaliveMonitor::~KeepaliveMonitor()
 void KeepaliveMonitor::schedulePingTimer()
 {
 	_pingTimer.expires_from_now(_pingInterval);
-	_pingTimer.async_wait(boost::bind(&KeepaliveMonitor::doKeepAlivePing, this));
+	_pingTimer.async_wait([&](auto& ec) { doKeepAlivePing(); });
 }
 
 void KeepaliveMonitor::scheduleResponseTimer()
 {
 	_responseTimer.expires_from_now(_responseTimeout);
-	_responseTimer.async_wait(boost::bind(&KeepaliveMonitor::onReceiveResponse, this, boost::asio::placeholders::error));
+	_responseTimer.async_wait([&](auto& ec) { onReceiveResponse(ec); });
 }
 
 
@@ -51,7 +51,6 @@ void KeepaliveMonitor::ReceivePing()
 
 void KeepaliveMonitor::BeginMonitoring()
 {
-	//scheduleResponseTimer();
 	schedulePingTimer();
 }
 
@@ -70,38 +69,21 @@ void KeepaliveMonitor::doKeepAlivePing()
 	
 }
 
-void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ec)
+void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_recd)
 {
-	assert(_failedPingCount <= MAX_FAILED_PINGS);
 
 
-	if (ec) {
+	if (ping_recd) {
 		//Timer was canceled - this is the most common execution of this function.
 		//Most likely triggered by the adapter seeing a ping response and calling ReceivePing()
 	
-		//Since we are on the normal path, set the _failedPingCount to 0
-		_failedPingCount = 0;
-
 		//store ping-response time for aid in debugging and logging
 		_pingTime = _responseTimeout.total_milliseconds() - _responseTimer.expires_from_now().total_milliseconds();
-
+		std::cout << "The ping time from send to receive was " << _pingTime << " ms\n";
 		schedulePingTimer();
-		return;
 	}
 	else {
-		//This block only happens if the timer is allowed to timeout. It only times out
-		//if it failed to receive a ping. 
-		_failedPingCount++;
-
-		if (_failedPingCount >= MAX_FAILED_PINGS) {
-			BOOST_LOG_TRIVIAL(info) << "[KeepAlive] After " << _failedPingCount << " failed pings, notifying suit disconnection";
-
-			_failedPingCount = 0;
-			_disconnectHandler();
-		}
-		else {
-			schedulePingTimer();
-		}
+		_disconnectHandler();
 	}
 
 }
