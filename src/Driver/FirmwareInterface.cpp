@@ -12,7 +12,7 @@ _writeTimer(io),
 _batchingDeadline(io),
 _writeInterval(20),
 _batchingTimeout(20),
-BATCH_SIZE(64),
+BATCH_SIZE(192),
 _lfQueue(10240)
 
 {
@@ -28,7 +28,7 @@ FirmwareInterface::~FirmwareInterface()
 
 void FirmwareInterface::writeBuffer() {
 	const std::size_t avail = _lfQueue.read_available();
-//	std::cout << "Size: " << avail << '\n';
+	std::cout << "Size: " << avail << '\n';
 	if (avail == 0) {
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&FirmwareInterface::writeBuffer, this));
