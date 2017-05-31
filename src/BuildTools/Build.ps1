@@ -11,7 +11,7 @@ Param(
  }
 $project_dll_names = @{
 	"plugin" = "NSLoader.dll";
-	"wrapper" = "NSLoaderWrapper.dll", "NSLoader.dll"
+	"wrapper" = "NSLoaderWrapper.dll", "NSLoader.dll", "NSLoaderWrapper.XML"
 	"unity" = "NSLoader.dll", "NSLoaderWrapper.dll"
 }
 
