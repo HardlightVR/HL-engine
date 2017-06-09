@@ -80,13 +80,14 @@ function do_registry_hack() {
 }
 
 # Generate the little header that appears above release notes. Useful for figuring out what internal versions correspond to a marketing release. 
-function generate_chimera_version_header($chimera_version, $service, $plugin, $unity, $asset_tool) {
+function generate_chimera_version_header($chimera_version, $service, $plugin, $unity, $asset_tool, $ue_plugin) {
     $output_str = "Chimera SDK $chimera_version`n"
     $output_str += "------------------------`n"
     $output_str += "Service = $service`n"
     $output_str += "Plugin = $plugin`n"
     $output_str += "Unity SDK = $unity`n"
     $output_str += "Asset Tool = $asset_tool`n"
+    $output_str += "Unreal Plugin = $ue_plugin`n"
     $output_str += "`n"
     return $output_str;
 }
@@ -414,7 +415,7 @@ $chimera_wizard = {
         $options["chimera_version_bump"] = $chimera_version;
         $options["service_version_bump"] = $service_version;
 
-        $header_text = generate_chimera_version_header $chimera_version $service_version $plugin_version $unity_version $assettool_version
+        $header_text = generate_chimera_version_header $chimera_version $service_version $plugin_version $unity_version $assettool_version $unreal_version
 
         Write-Host "Putting versions.txt in the installer directory"
         New-Item (Join-Path $repo_directories["installer"] "versions.txt") -type file -force -value $header_text | Out-Null
