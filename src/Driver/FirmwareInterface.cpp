@@ -28,7 +28,6 @@ FirmwareInterface::~FirmwareInterface()
 
 void FirmwareInterface::writeBuffer() {
 	const std::size_t avail = _lfQueue.read_available();
-	std::cout << "Size: " << avail << '\n';
 	if (avail == 0) {
 		_writeTimer.expires_from_now(_writeInterval);
 		_writeTimer.async_wait(boost::bind(&FirmwareInterface::writeBuffer, this));
@@ -213,6 +212,7 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 	}
 }
 
+//TODO: STUFF BROKEN. LOCATION IS WRONG. EITYHER BEING PASSED BY API WRONG OR SOMETHING ELSE
 void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
 	std::string effectString = Locator::Translator().ToString(effect);

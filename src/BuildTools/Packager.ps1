@@ -86,8 +86,8 @@ function generate_chimera_version_header($chimera_version, $service, $plugin, $u
     $output_str += "Service = $service`n"
     $output_str += "Plugin = $plugin`n"
     $output_str += "Unity SDK = $unity`n"
-    $output_str += "Asset Tool = $asset_tool`n"
     $output_str += "Unreal Plugin = $ue_plugin`n"
+    $output_str += "Asset Tool = $asset_tool`n"
     $output_str += "`n"
     return $output_str;
 }
