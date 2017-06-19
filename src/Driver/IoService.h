@@ -22,7 +22,7 @@ private:
 	bool _running;
 
 	std::thread _ioLoop;
-	boost::asio::io_service _io;
+	boost::asio::io_service m_io;
 	std::unique_ptr<boost::asio::io_service::work> _work;
 
 	std::function<void()> _resetIOCallback;

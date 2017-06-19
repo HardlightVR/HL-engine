@@ -33,15 +33,17 @@ void extractDrvData(const packet& packet) {
 }
 
 Driver::Driver() :
-	_io(new IoService()),
-	m_hardware(_io),
-	m_messenger(_io->GetIOService()),
-	m_statusPush(_io->GetIOService(), boost::posix_time::millisec(250)),
-	m_hapticsPull(_io->GetIOService(), boost::posix_time::millisec(5)),
-	m_commandPull(_io->GetIOService(), boost::posix_time::millisec(50)),
-	m_trackingPush(_io->GetIOService(), boost::posix_time::millisec(10)),
+	m_io(new IoService()),
+	m_hardware(m_io),
+	m_messenger(m_io->GetIOService()),
+	m_statusPush(m_io->GetIOService(), boost::posix_time::millisec(250)),
+	m_hapticsPull(m_io->GetIOService(), boost::posix_time::millisec(5)),
+	m_commandPull(m_io->GetIOService(), boost::posix_time::millisec(50)),
+	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_imus(),
-	m_cachedTracking({})
+	m_cachedTracking({}),
+	m_pluginManager({}), 
+	m_regionRegistry(m_pluginManager) 
 
 {
 	using namespace boost::log;
@@ -75,8 +77,6 @@ Driver::Driver() :
 		else if (version.Major == 2 && version.Minor == 4) {
 			m_imus.AssignMapping(3, Imu::Chest);
 		}
-
-		m_hardware.ReadDriverData(Location::Chest_Left);
 	});
 
 	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::DrvStatus, [&](auto packet) {
@@ -117,7 +117,7 @@ bool Driver::Shutdown()
 	m_trackingPush.Stop();
 	m_messenger.Disconnect();
 	
-	_io->Shutdown();
+	m_io->Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	return true;
 }

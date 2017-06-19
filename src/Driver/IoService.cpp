@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Locator.h"
 #include <boost\log\trivial.hpp>
-IoService::IoService():_io(), _work(), _running(false), _readyToResumeIO(2),
+IoService::IoService():m_io(), _work(), _running(false), _readyToResumeIO(2),
 _shouldQuit{false}, _wantsReset{false}, _isReset{false}
 {
 	start();
@@ -29,14 +29,14 @@ void IoService::start() {
 						//First, reset  _wantsReset to it's default state: false
 					_wantsReset.store(false);
 					//Then, we unlock the mutex so other threads can modify any of the variables
-					_io.stop();
+					m_io.stop();
 					//	log.Log("IoService-r", "Now waiting on the reset condition..");
 						//we will wakeup again once isReset becomes true
 					_doneResettingIO.wait(lock, [&] {return _isReset.load(); });
 					//	log.Log("IoService-r", "Okay, going to call the callback");
 					_isReset.store(false); //set back to default state
 					lock.unlock();
-					_io.post(_resetIOCallback);
+					m_io.post(_resetIOCallback);
 				}
 				else {
 					//we want to quit, so break the loop
@@ -57,13 +57,13 @@ void IoService::start() {
 		auto& log = Locator::Logger();
 		while (!_shouldQuit.load()) {
 			try {
-				_work = std::make_unique<boost::asio::io_service::work>(_io);
+				_work = std::make_unique<boost::asio::io_service::work>(m_io);
 
 				BOOST_LOG_TRIVIAL(info) << "[IoS] Starting";
 
-				_io.run(); //wait here for a while
+				m_io.run(); //wait here for a while
 				BOOST_LOG_TRIVIAL(info) << "[IoS] Going for a reset and notify";
-				_io.reset(); //someone stopped us? Reset
+				m_io.reset(); //someone stopped us? Reset
 
 				_isReset.store(true);
 				_doneResettingIO.notify_one();
@@ -88,7 +88,7 @@ void IoService::Shutdown()
 		_shouldQuit.store(true);
 	}
 	_needWakeup.notify_one();
-	_io.stop();
+	m_io.stop();
 
 	if (_ioLoop.joinable()) {
 		_ioLoop.join();
@@ -106,7 +106,7 @@ IoService::~IoService()
 
 boost::asio::io_service& IoService::GetIOService()
 {
-	return _io;
+	return m_io;
 }
 
 void IoService::RestartIOService(std::function<void()> ioResetCallback)

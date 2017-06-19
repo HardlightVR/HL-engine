@@ -5,6 +5,10 @@
 #include "Encoder.h"
 #include "SharedCommunication/ScheduledEvent.h"
 #include "ImuConsumer.h"
+
+#include "PluginManager.h"
+#include "RegionRegistry.h"
+
 class IoService;
 
 class Driver {
@@ -17,7 +21,7 @@ public:
 	bool Shutdown();
 private:
 
-	std::shared_ptr<IoService> _io;
+	std::shared_ptr<IoService> m_io;
 	DriverMessenger m_messenger;
 	HardwareInterface m_hardware;
 	Encoder _encoder;
@@ -36,7 +40,8 @@ private:
 
 	NullSpace::SharedMemory::TrackingUpdate m_cachedTracking;
 	
-
+	PluginManager m_pluginManager;   //order dependency (1)
+	RegionRegistry m_regionRegistry; //order dependency (2)
 	
 	void handleTracking();
 };

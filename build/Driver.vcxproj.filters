@@ -52,6 +52,9 @@
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\Packet.h" />
     <ClInclude Include="..\src\Driver\PacketDispatcher.h" />
+    <ClInclude Include="..\src\Driver\PluginInstance.h" />
+    <ClInclude Include="..\src\Driver\PluginManager.h" />
+    <ClInclude Include="..\src\Driver\RegionRegistry.h" />
     <ClInclude Include="..\src\Driver\SuitPacket.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Synchronizer.h" />
@@ -90,6 +93,9 @@
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
     <ClCompile Include="..\src\Driver\Packet.cpp" />
     <ClCompile Include="..\src\Driver\PacketDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
+    <ClCompile Include="..\src\Driver\PluginManager.cpp" />
+    <ClCompile Include="..\src\Driver\RegionRegistry.cpp" />
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
       <Filter>SharedCommunication</Filter>
     </ClCompile>
