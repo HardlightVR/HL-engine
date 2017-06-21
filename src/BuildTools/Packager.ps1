@@ -191,7 +191,8 @@ $make_installer = {
         $resx.Save($resx_file_path)
     }
 
-
+    $gui_build_path = Join-Path $dirs["installer"] "NSVRGui\obj\Release"
+    sign_binary $gui_build_path "NSVRGui.exe"
 
     $sln = (Join-Path $dirs["installer"] "NSVRService.sln") 
       
@@ -208,6 +209,7 @@ $make_installer = {
 
     $build_path = Join-Path $dirs["installer"] "NSVRServiceSetup\Release"
 
+    
     sign_binary $build_path "setup.exe"
     sign_binary $build_path "NSVRServiceSetup.msi"
 
