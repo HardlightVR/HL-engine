@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Driver">
+      <UniqueIdentifier>{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Driver\include">
+      <UniqueIdentifier>{A4187720-90E6-6A26-797A-DB4C65E7468B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Driver\include\events">
+      <UniqueIdentifier>{2838D3B0-94A4-8EAB-5D98-2609C9C3B013}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins">
+      <UniqueIdentifier>{07D1A6B5-73B0-2551-7CC8-B027E8268CB2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\hardlight">
+      <UniqueIdentifier>{8DD7A9A0-F9ED-A736-4265-3358AEBA78BE}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Driver\include\PluginAPI.h">
+      <Filter>Driver\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\stdafx.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

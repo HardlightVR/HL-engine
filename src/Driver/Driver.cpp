@@ -11,7 +11,9 @@
 
 #include "FirmwareInterface.h"
 
-
+//remove following two
+#include "PluginInstance.h"
+#include "events/briefhapticprimitive.h"
 void extractDrvData(const packet& packet) {
 	//as status register:
 	uint8_t whichDrv = packet.raw[4];
@@ -46,6 +48,9 @@ Driver::Driver() :
 	m_regionRegistry(m_pluginManager) 
 
 {
+
+	PluginInstance a("test");
+	a.GetConsumeFunction<NSVR_BriefHapticPrimitive>();
 	using namespace boost::log;
 
 	typedef sinks::synchronous_sink<MyTestLog> sink_t;

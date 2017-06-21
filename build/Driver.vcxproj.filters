@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -6,6 +6,15 @@
     </Filter>
     <Filter Include="SharedCommunication">
       <UniqueIdentifier>{529512AA-BEF6-EFB7-4764-366AB3C42677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="events_impl">
+      <UniqueIdentifier>{CB8FD5D3-3745-4EC9-C039-48A02CEE44CD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\events">
+      <UniqueIdentifier>{6D7B514B-5949-4551-42DD-B5772E4A21B6}</UniqueIdentifier>
     </Filter>
     <Filter Include="protobuff_defs">
       <UniqueIdentifier>{BD9239EB-A960-2DF1-92F4-9D177E610956}</UniqueIdentifier>
@@ -59,6 +68,21 @@
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Synchronizer.h" />
     <ClInclude Include="..\src\Driver\enumser.h" />
+    <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h">
+      <Filter>events_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\events_impl\LastingHapticPrimitive.h">
+      <Filter>events_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\PluginAPI.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h">
+      <Filter>include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h">
+      <Filter>include\events</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\suit_packet.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
@@ -102,6 +126,12 @@
     <ClCompile Include="..\src\Driver\SuitPacket.cpp" />
     <ClCompile Include="..\src\Driver\Synchronizer.cpp" />
     <ClCompile Include="..\src\Driver\enumser.cpp" />
+    <ClCompile Include="..\src\Driver\events_impl\BriefHapticPrimitive.cpp">
+      <Filter>events_impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\events_impl\LastingHapticPrimitive.cpp">
+      <Filter>events_impl</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <Filter>protobuff_defs</Filter>

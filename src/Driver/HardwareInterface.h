@@ -7,15 +7,32 @@
 #include "Atom.h"
 #include "KeepaliveMonitor.h"
 #include "PacketDispatcher.h"
+#include "include/events/BriefHapticPrimitive.h"
 class Synchronizer;
 class IoService;
 class HardwareInterface
 {
 public:
-	HardwareInterface(std::shared_ptr<IoService> io);
+	HardwareInterface(std::shared_ptr<IoService> io); //(io, regionRegistry)
 	~HardwareInterface();
 	//these all will eventually either be parameterized over each device, or take a device id
 	void ReceiveExecutionCommand(const NullSpaceIPC::EffectCommand& ec) {
+		//pseudocode for registry:
+		/*
+		void ReceiveExecutionCommand(const Event& ec)
+			auto area = ec.area();
+			auto plugins = registry.GetPluginSet(area);
+			for each plugin in plugins:
+				plugin->handle(ec)
+
+		//IBasicHapticEvent.h
+*/
+
+		
+		
+
+
+
 		if (ec.command() == NullSpaceIPC::EffectCommand_Command_HALT) {
 			m_firmware.HaltEffect(Location(ec.area()));
 		}

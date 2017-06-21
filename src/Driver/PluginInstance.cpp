@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "PluginInstance.h"
-
-
+#include <boost/type_index.hpp>
 #include <iostream>
-
+#include "events/briefhapticprimitive.h"
 PluginInstance::PluginInstance(std::string fileName) : m_fileName(fileName), m_loaded{ false }
 {
 }
@@ -25,12 +24,7 @@ bool PluginInstance::Load()
 	return m_creator(&m_rawPtr);
 	
 }
-template<class TFunc>
-bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string& symbol, std::function<TFunc>& result) {
-	result = lib->get<TFunc>(symbol);
-	return result? true : false;
 
-}
 bool PluginInstance::Link()
 {
 	boost::system::error_code loadFailure;
@@ -53,6 +47,8 @@ bool PluginInstance::Link()
 	if (!tryLoad(m_lib, "NSVR_RegisterRegions", m_registerRegions)) {
 		return false;
 	}
+
+	
 	return true;
 
 }
@@ -101,3 +97,5 @@ bool PluginInstance::RegisterRegions(NSVR_Region * regions)
 {
 	return m_registerRegions(m_rawPtr, regions);
 }
+
+

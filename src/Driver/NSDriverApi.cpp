@@ -3,6 +3,7 @@
 #include "Driver.h"
 #include "Locator.h"
 #include "EnumTranslator.h"
+
 #define AS_TYPE(Type, Obj) reinterpret_cast<Type *>(Obj)
 #define AS_CTYPE(Type, Obj) reinterpret_cast<const Type *>(Obj)
 
@@ -10,6 +11,8 @@ NS_DRIVER_API NSVR_Driver_Context_t* __stdcall NSVR_Driver_Create()
 {
 	Locator::initialize();
 	Locator::provide(new EnumTranslator());
+	
+
 
 	return AS_TYPE(NSVR_Driver_Context_t, new Driver());
 }

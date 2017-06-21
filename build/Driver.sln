@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Driver", "Driver.vcxproj", "{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HardlightMkIII", "HardlightMkIII.vcxproj", "{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +27,18 @@ Global
 		{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}.Release|Win32Exe.Build.0 = Release Win32Exe|Win32
 		{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}.Release|Win64.ActiveCfg = Release Win64|x64
 		{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}.Release|Win64.Build.0 = Release Win64|x64
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Debug|Win32.Build.0 = Debug|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Debug|Win32Exe.ActiveCfg = Debug Win32Exe|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Debug|Win32Exe.Build.0 = Debug Win32Exe|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Debug|Win64.ActiveCfg = Debug Win64|x64
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Debug|Win64.Build.0 = Debug Win64|x64
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win32.ActiveCfg = Release|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win32.Build.0 = Release|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win32Exe.ActiveCfg = Release Win32Exe|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win32Exe.Build.0 = Release Win32Exe|Win32
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win64.ActiveCfg = Release Win64|x64
+		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win64.Build.0 = Release Win64|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
