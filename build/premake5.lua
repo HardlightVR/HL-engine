@@ -3,16 +3,13 @@
 
 workspace "Driver"
 	configurations {"Debug", "Release"}
-	platforms {"Win32", "Win64", "Win32Exe"}
+	platforms {"Win32", "Win64", "UnitTestWin32"}
 	language "C++"
 	
 	
 
 
 project "Driver" 
-
-
-
 	
 	targetdir "bin/%{cfg.buildcfg}/%{cfg.platform}"
 	targetname "Driver"
@@ -42,19 +39,10 @@ project "Driver"
 	--links {"System", "UnityEditor", "UnityEngine", "System.ServiceProcess"}
 
 	files {
-		"../src/Driver/*.cpp",
-		"../src/Driver/*.h",
-		"../src/Driver/*.hpp",
-		"../src/Consumers/*.cpp",
-		"../src/Consumers/*.h",
-		"../src/Driver/",
-		"../src/Driver/Json/*.cpp",
-		"../src/Driver/Json/*.h",
-		"../src/Driver/events_impl/**.cpp",
-		"../src/Driver/events_impl/**.h",
-
-		"../src/Driver/include/**.h",
-		
+		"../src/Driver/**.cpp",
+		"../src/Driver/**.h",
+		"../src/Driver/**.hpp",
+				
 		-- protobuffs. Could just do something like **.pb.cc
 		path.join(protobuf_def_incl_dir, "DriverCommand.pb.cc"),
 		path.join(protobuf_def_incl_dir, "EffectCommand.pb.cc"),
@@ -64,10 +52,6 @@ project "Driver"
 	}
 
 	
-
-	postbuildcommands {
-		"{COPY} ../src/Driver/*.json %{cfg.targetdir}"
-	}
 
 
 	boost_win32_dir = "D:/Libraries/boost/boost_1_61_0/stage/win32/lib"
@@ -82,33 +66,42 @@ project "Driver"
 
 
 	defines {"NS_DRIVER_EXPORTS", "NSVR_BUILDING_CORE", "BOOST_THREAD_USE_LIB"}
+
 	filter {"files:**.pb.cc or files:**ScheduledEvent.cpp or files:**jsoncpp.cpp"}
 		flags {'NoPCH'}
 	
 	filter {"platforms:Win32 or platforms:Win64"}
 		kind "SharedLib"
-	filter {"platforms:Win32Exe"}
+		postbuildcommands {
+			"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} bin/%{cfg.buildcfg}/UnitTestWin32"		
+		}
+
+
+	filter {"platforms:UnitTestWin32"}
 		kind "ConsoleApp"
-	-- input: libprotobuf
-	filter {"platforms:Win32*", "configurations:Debug"}
+		postbuildcommands {
+			"{COPY} ../src/Driver/*.json %{cfg.targetdir}",
+			-- the following copy is so that you can run the exe from in Visual Studio. For some reason
+			-- it doesn't find the json in the actual {targetdir}, so we copy it here as well
+			"{COPY} ../src/Driver/*.json ../build/"
+
+		}
+
+
+
+ 	
+	filter {"platforms:*Win32*", "configurations:Debug"}
 		libdirs {
 			path.join(protobuf_win32_dir, "Debug")
 		}
-	filter {"platforms:Win32*", "configurations:Release"}
+	filter {"platforms:*Win32*", "configurations:Release"}
 		libdirs {
 			path.join(protobuf_win32_dir, "Release")
 		}
-	filter {"platforms:Win64*", "configurations:Debug"}
-		libdirs {
-			path.join(protobuf_win64_dir, "Debug")
-		}
-	filter {"platforms:Win64*", "configurations:Release"}
-		libdirs {
-			path.join(protobuf_win64_dir, "Release")
-		}
+	
 
 
-	filter "platforms:Win32*" 
+	filter "platforms:*Win32*" 
 		system "Windows"
 		architecture "x86"
 		libdirs {
@@ -116,23 +109,18 @@ project "Driver"
 		}
 		defines {"WIN32"}
 		
-	filter "platforms:Win64*"
-		system "Windows"
-		architecture "x86_64"
-		libdirs {
-			boost_win64_dir
-		}
 	filter "configurations:Debug"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
 		optimize "Off"
 		links {"libprotobufd"}
-
+		
 
 	filter "configurations:Release"
 		defines {"NDEBUG"}
 		optimize "On" 
 		links {"libprotobuf"}
+		
 
 	filter {"system:Windows"}
 		defines {"_WINDOWS", "_USRDLL"}
@@ -186,21 +174,25 @@ project "HardlightMkIII"
 	pchheader "stdafx.h"
 	pchsource "../src/plugins/hardlight/stdafx.cpp"
 
-	nsvr_core_win32_dir_debug = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/build/bin/Debug/Win32"
-	nsvr_core_win32_dir_release = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/build/bin/Release/Win32"
+	--nsvr_core_win32_dir_debug = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/build/bin/Debug/Win32"
+	--nsvr_core_win32_dir_release = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/build/bin/Release/Win32"
+
+	nsvr_core_win32_dir_debug = "../build/bin/Debug/Win32"
+	nsvr_core_win32_dir_release = "../build/bin/Release/Win32"
+
 
 	filter {"files:**.pb.cc"}
 		flags {'NoPCH'}
 	
 
 
-	filter {"configurations:Debug or configurations:Release"}
+	filter {"platforms:Win32 or platforms:Win64"}
 		kind "SharedLib"
-	filter {"configurations:UnitTest"}
+
+	filter {"platforms:UnitTestWin32"}
 		kind "ConsoleApp"
 
-	
-	
+
 
 	filter "platforms:Win32" 
 		system "Windows"
@@ -208,16 +200,11 @@ project "HardlightMkIII"
 
 		defines {"WIN32"}
 		postbuildcommands {
-			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll bin/Debug/Win32Exe"		
+			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll bin/Debug/UnitTestWin32"		
 
 		}
-	filter "platforms:Win64"
-		system "Windows"
-		architecture "x86_64"
-		libdirs {
-			boost_win64_dir
-		}
-	filter "configurations:Debug or configurations:UnitTest"
+	
+	filter "configurations:Debug"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
 		optimize "Off"
@@ -239,5 +226,5 @@ project "HardlightMkIII"
 	filter {"system:Windows"}
 		defines {"_WINDOWS", "_USRDLL"}
 
-	filter {"system:Windows", "configurations:Debug or configurations:UnitTest"}
+	filter {"system:Windows", "configurations:Debug"}
 		buildoptions {"-D_SCL_SECURE_NO_WARNINGS"}

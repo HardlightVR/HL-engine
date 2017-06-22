@@ -14,10 +14,10 @@
 #define consumer_function(type) concat("NSVR_Provider_Consume_", type)
 
 template <typename T>
-constexpr const char* typeName(void) { return "unknown"; }
+constexpr const char* getUnmangledConsumeFunction(void) { return "unknown"; }
 
 template <>
-constexpr const char* typeName<NSVR_BriefHapticPrimitive>(void) { return consumer_function("BriefHapticPrimitive"); }
+constexpr const char* getUnmangledConsumeFunction<NSVR_BriefHapticPrimitive>(void) { return consumer_function("BriefHapticPrimitive"); }
 class PluginInstance
 {
 public:
@@ -40,7 +40,7 @@ public:
 	
 
 	template<class T>
-	void GetConsumeFunction();
+	void Consume( const T* input);
 private:
 	typedef std::function<int(NSVR_Provider**)> plugin_creator_t;
 	typedef std::function<int(NSVR_Provider**)> plugin_destructor_t;
@@ -59,6 +59,8 @@ private:
 
 
 
+
+
 };
 
 template<class TFunc>
@@ -68,20 +70,19 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 
 }
 
-template<class T>
-constexpr std::string getName() {
-	strcat("NSVR_Provider_Consume_", typeName<T>());
-}
-template<class T>
-void PluginInstance::GetConsumeFunction()
-{
-	
-	auto then = std::chrono::high_resolution_clock::now();
-	constexpr const char* funcName = typeName<T>();
-	auto now = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - then);
-	std::cout << "nanoseconds: " << now.count();
-	std::function<bool(NSVR_Provider*, T*)> consumer;
-	//"NSVR_Provider_Consume_BriefHapticPrimitive"
-	tryLoad(m_lib, funcName, consumer);
 
+template<class THapticType>
+void PluginInstance::Consume(const THapticType* input)
+{
+	//This matches the signature of all NSVR_Provider_Consume_X functions
+	typedef std::function<bool(NSVR_Provider*, const THapticType*)> SourceDllFunc;
+	
+	constexpr const char* dllFunctionName = getUnmangledConsumeFunction<THapticType>();
+
+	SourceDllFunc dllFunction;
+
+	if (tryLoad(m_lib, dllFunctionName, dllFunction)) {
+		dllFunction(m_rawPtr, input);
+	}
+	
 }

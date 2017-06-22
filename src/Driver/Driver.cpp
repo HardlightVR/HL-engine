@@ -8,7 +8,7 @@
 #include <boost/log/sinks/sync_frontend.hpp>
 #include <boost/log/trivial.hpp>
 #include "MyTestLog.h"
-
+#include "events_impl/BriefHapticPrimitive.h"
 #include "FirmwareInterface.h"
 
 //remove following two
@@ -44,13 +44,21 @@ Driver::Driver() :
 	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_imus(),
 	m_cachedTracking({}),
-	m_pluginManager({}), 
-	m_regionRegistry(m_pluginManager) 
+	m_pluginManager({}),
+	m_regionRegistry(m_pluginManager)
 
 {
 
-	PluginInstance a("test");
-	a.GetConsumeFunction<NSVR_BriefHapticPrimitive>();
+	PluginInstance a("HardlightPlugin");
+	if (a.Link()) {
+
+		nsvr::events::BriefHapticPrimitive b;
+		auto ptr = reinterpret_cast<const NSVR_BriefHapticPrimitive*>(&b);
+
+
+		a.Consume(ptr);
+	}
+
 	using namespace boost::log;
 
 	typedef sinks::synchronous_sink<MyTestLog> sink_t;

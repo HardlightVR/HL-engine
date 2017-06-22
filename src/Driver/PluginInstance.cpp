@@ -20,6 +20,8 @@ bool PluginInstance::Load()
 		return true;
 	}
 
+	m_loaded = true;
+
 
 	return m_creator(&m_rawPtr);
 	

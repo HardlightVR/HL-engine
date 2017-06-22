@@ -5,13 +5,15 @@
 
 #include "HardlightPlugin.h"
 #include <iostream>
-NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_LastingHapticPrimitive(NSVR_Provider* plugin, NSVR_LastingHapticPrimitive* haptic) {
+
+
+NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_LastingHapticPrimitive(NSVR_Provider* plugin, const NSVR_LastingHapticPrimitive* haptic) {
 	float duration;
 	NSVR_LastingHapticPrimitive_GetDuration(haptic, &duration);
 	std::cout << "Got a lasting haptic primitive of duration " << duration << '\n';
 	return true;
 }
-NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_BriefHapticPrimitive(NSVR_Provider* plugin, NSVR_BriefHapticPrimitive* iota) {
+NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_BriefHapticPrimitive(NSVR_Provider* plugin, const NSVR_BriefHapticPrimitive* iota) {
 	return true;
 }
 

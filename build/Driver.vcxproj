@@ -5,49 +5,25 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug Win64|Win32">
       <Configuration>Debug Win64</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug Win64|x64">
-      <Configuration>Debug Win64</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug Win32Exe|Win32">
-      <Configuration>Debug Win32Exe</Configuration>
+    <ProjectConfiguration Include="Debug UnitTestWin32|Win32">
+      <Configuration>Debug UnitTestWin32</Configuration>
       <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug Win32Exe|x64">
-      <Configuration>Debug Win32Exe</Configuration>
-      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release Win64|Win32">
       <Configuration>Release Win64</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release Win64|x64">
-      <Configuration>Release Win64</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release Win32Exe|Win32">
-      <Configuration>Release Win32Exe</Configuration>
+    <ProjectConfiguration Include="Release UnitTestWin32|Win32">
+      <Configuration>Release UnitTestWin32</Configuration>
       <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release Win32Exe|x64">
-      <Configuration>Release Win32Exe</Configuration>
-      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -63,13 +39,13 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
@@ -81,13 +57,13 @@
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
@@ -99,19 +75,19 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -122,17 +98,17 @@
     <TargetName>Driver</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\Debug\Win64\</OutDir>
     <IntDir>obj\Win64\Debug\Driver\</IntDir>
     <TargetName>Driver</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>bin\Debug\Win32Exe\</OutDir>
-    <IntDir>obj\Win32Exe\Debug\Driver\</IntDir>
+    <OutDir>bin\Debug\UnitTestWin32\</OutDir>
+    <IntDir>obj\UnitTestWin32\Debug\Driver\</IntDir>
     <TargetName>Driver</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -143,17 +119,17 @@
     <TargetName>Driver</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\Release\Win64\</OutDir>
     <IntDir>obj\Win64\Release\Driver\</IntDir>
     <TargetName>Driver</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>bin\Release\Win32Exe\</OutDir>
-    <IntDir>obj\Win32Exe\Release\Driver\</IntDir>
+    <OutDir>bin\Release\UnitTestWin32\</OutDir>
+    <IntDir>obj\UnitTestWin32\Release\Driver\</IntDir>
     <TargetName>Driver</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -179,10 +155,10 @@
       <ImportLibrary>bin\Debug\Win32\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Debug\Win32 &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Debug\Win32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Debug\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -200,14 +176,13 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution64\Debug;D:\Libraries\boost\boost_1_61_0\stage\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Debug\Win64\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Debug\Win64 &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Debug\Win64 &gt; nul)</Command>
+      <Command>IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -229,7 +204,8 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Debug\Win32Exe &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Debug\Win32Exe &gt; nul)</Command>
+      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -257,10 +233,10 @@
       <ImportLibrary>bin\Release\Win32\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Release\Win32 &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Release\Win32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Release\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -281,14 +257,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution64\Release;D:\Libraries\boost\boost_1_61_0\stage\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Release\Win64\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Release\Win64 &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Release\Win64 &gt; nul)</Command>
+      <Command>IF EXIST bin\Release\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -313,7 +288,8 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Release\Win32Exe &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Release\Win32Exe &gt; nul)</Command>
+      <Command>IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json bin\Release\UnitTestWin32 &gt; nul)
+IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Driver\*.json ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -322,6 +298,8 @@
     <ClInclude Include="..\src\Driver\Atom.h" />
     <ClInclude Include="..\src\Driver\BoostSerialAdapter.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
+    <ClInclude Include="..\src\Driver\Consumers\FifoConsumer.h" />
+    <ClInclude Include="..\src\Driver\Consumers\IPacketConsumer.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
     <ClInclude Include="..\src\Driver\Encoder.h" />
@@ -354,15 +332,52 @@
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
     <ClInclude Include="..\src\Driver\RegionRegistry.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedObject.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedQueue.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\ScheduledEvent.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\SharedTypes.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\WritableSharedObject.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\WritableSharedQueue.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\WriteableSharedObject.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
     <ClInclude Include="..\src\Driver\SuitPacket.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Synchronizer.h" />
     <ClInclude Include="..\src\Driver\enumser.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\events_impl\LastingHapticPrimitive.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\ClientStatusUpdate_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\EnginePacket_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Events_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\ExecutionCommand_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Experience_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticEffect_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticFrame_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticPacket_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticSample_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\LogMessage_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedHapticFrame_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedPattern_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedSequence_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Node_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Pattern_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Sequence_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\SuitStatusUpdate_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffectArray_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffect_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\TrackingUpdate_generated.h" />
+    <ClInclude Include="..\src\Driver\flatbuff_defs\instructions_generated.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
+    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
     <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h" />
+    <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h" />
+    <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h" />
+    <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h" />
+    <ClInclude Include="..\src\Driver\protobuff_defs\HapticEffect.pb.h" />
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\suit_packet.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
@@ -374,6 +389,8 @@
     <ClCompile Include="..\src\Driver\Atom.cpp" />
     <ClCompile Include="..\src\Driver\BoostSerialAdapter.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
+    <ClCompile Include="..\src\Driver\Consumers\FifoConsumer.cpp" />
+    <ClCompile Include="..\src\Driver\Consumers\IPacketConsumer.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
@@ -387,11 +404,11 @@
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\Driver\KeepaliveMonitor.cpp" />
     <ClCompile Include="..\src\Driver\Locator.cpp" />
@@ -407,11 +424,11 @@
     <ClCompile Include="..\src\Driver\RegionRegistry.cpp" />
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\Driver\SuitPacket.cpp" />
     <ClCompile Include="..\src\Driver\Synchronizer.cpp" />
@@ -421,27 +438,27 @@
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\Driver\protobuff_defs\EffectCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win32Exe|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win32Exe|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

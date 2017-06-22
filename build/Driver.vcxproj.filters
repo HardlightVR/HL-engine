@@ -1,6 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Consumers">
+      <UniqueIdentifier>{C47B8307-30E6-377E-7924-E923E5CD15D3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Json">
       <UniqueIdentifier>{7F9B877C-6BD2-880D-14BF-6E1000D5040F}</UniqueIdentifier>
     </Filter>
@@ -9,6 +12,9 @@
     </Filter>
     <Filter Include="events_impl">
       <UniqueIdentifier>{CB8FD5D3-3745-4EC9-C039-48A02CEE44CD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="flatbuff_defs">
+      <UniqueIdentifier>{508FBA42-BC4F-3679-858A-7FF6F1097B55}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
@@ -26,6 +32,12 @@
     <ClInclude Include="..\src\Driver\Atom.h" />
     <ClInclude Include="..\src\Driver\BoostSerialAdapter.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
+    <ClInclude Include="..\src\Driver\Consumers\FifoConsumer.h">
+      <Filter>Consumers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\Consumers\IPacketConsumer.h">
+      <Filter>Consumers</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
     <ClInclude Include="..\src\Driver\Encoder.h" />
@@ -64,6 +76,39 @@
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
     <ClInclude Include="..\src\Driver\RegionRegistry.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedObject.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedQueue.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\ScheduledEvent.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\SharedTypes.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\WritableSharedObject.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\WritableSharedQueue.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\WriteableSharedObject.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\SuitPacket.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Synchronizer.h" />
@@ -74,14 +119,92 @@
     <ClInclude Include="..\src\Driver\events_impl\LastingHapticPrimitive.h">
       <Filter>events_impl</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\ClientStatusUpdate_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\EnginePacket_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Events_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\ExecutionCommand_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Experience_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticEffect_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticFrame_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticPacket_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticSample_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\LogMessage_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedHapticFrame_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedPattern_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedSequence_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Node_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Pattern_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\Sequence_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\SuitStatusUpdate_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffectArray_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffect_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\TrackingUpdate_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\flatbuff_defs\instructions_generated.h">
+      <Filter>flatbuff_defs</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
+      <Filter>include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h">
       <Filter>include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h">
       <Filter>include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
+      <Filter>protobuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h">
+      <Filter>protobuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h">
+      <Filter>protobuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\protobuff_defs\HapticEffect.pb.h">
+      <Filter>protobuff_defs</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\suit_packet.h" />
@@ -94,6 +217,12 @@
     <ClCompile Include="..\src\Driver\Atom.cpp" />
     <ClCompile Include="..\src\Driver\BoostSerialAdapter.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
+    <ClCompile Include="..\src\Driver\Consumers\FifoConsumer.cpp">
+      <Filter>Consumers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\Consumers\IPacketConsumer.cpp">
+      <Filter>Consumers</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
