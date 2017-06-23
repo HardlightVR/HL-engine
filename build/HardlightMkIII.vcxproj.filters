@@ -16,6 +16,9 @@
     <Filter Include="plugins\hardlight">
       <UniqueIdentifier>{8DD7A9A0-F9ED-A736-4265-3358AEBA78BE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="plugins\hardlight\Json">
+      <UniqueIdentifier>{56A3CC43-429D-F595-2B0A-8CA617A35B02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
@@ -24,24 +27,156 @@
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
       <Filter>Driver\include\events</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h">
+    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h">
       <Filter>Driver\include\events</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h">
+    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h">
       <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Atom.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\BoostSerialAdapter.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Effects.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\EnumTranslator.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Enums.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\FirmwareInterface.h">
+      <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\HexUtils.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\ILogger.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Instruction.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Json\JsonKeyValueConfig.h">
+      <Filter>plugins\hardlight\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Json\json-forwards.h">
+      <Filter>plugins\hardlight\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Json\json.h">
+      <Filter>plugins\hardlight\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\KeepaliveMonitor.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Locator.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\NullLogger.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Packet.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\enumser.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\suit_packet.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Atom.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\BoostSerialAdapter.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\EnumTranslator.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\FirmwareInterface.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp">
+      <Filter>plugins\hardlight\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\KeepaliveMonitor.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Locator.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\NullLogger.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Packet.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\enumser.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">

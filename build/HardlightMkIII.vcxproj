@@ -139,7 +139,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -154,7 +154,8 @@
       <ImportLibrary>bin\Plugins\Debug\Win32\HardlightPlugin.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
@@ -163,7 +164,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -174,7 +175,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win64\HardlightPlugin.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -184,7 +185,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -198,6 +199,10 @@
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -205,7 +210,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -222,7 +227,8 @@
       <ImportLibrary>bin\Plugins\Release\Win32\HardlightPlugin.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
@@ -231,7 +237,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -244,7 +250,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win64\HardlightPlugin.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -254,7 +260,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -270,18 +276,66 @@
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
-    <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h" />
-    <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h" />
+    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h" />
+    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h" />
+    <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h" />
+    <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Atom.h" />
+    <ClInclude Include="..\src\plugins\hardlight\BoostSerialAdapter.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Effects.h" />
+    <ClInclude Include="..\src\plugins\hardlight\EnumTranslator.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Enums.h" />
+    <ClInclude Include="..\src\plugins\hardlight\FirmwareInterface.h" />
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h" />
+    <ClInclude Include="..\src\plugins\hardlight\HexUtils.h" />
+    <ClInclude Include="..\src\plugins\hardlight\ILogger.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
+    <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h" />
+    <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Json\JsonKeyValueConfig.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Json\json-forwards.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Json\json.h" />
+    <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h" />
+    <ClInclude Include="..\src\plugins\hardlight\KeepaliveMonitor.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Locator.h" />
+    <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Packet.h" />
+    <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
+    <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h" />
+    <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h" />
+    <ClInclude Include="..\src\plugins\hardlight\suit_packet.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Atom.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\BoostSerialAdapter.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\EnumTranslator.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\FirmwareInterface.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\KeepaliveMonitor.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Locator.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\NullLogger.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Packet.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">Create</PrecompiledHeader>

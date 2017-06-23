@@ -113,10 +113,10 @@
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Synchronizer.h" />
     <ClInclude Include="..\src\Driver\enumser.h" />
-    <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h">
+    <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h">
       <Filter>events_impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\events_impl\LastingHapticPrimitive.h">
+    <ClInclude Include="..\src\Driver\events_impl\LastingTaxel.h">
       <Filter>events_impl</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\flatbuff_defs\ClientStatusUpdate_generated.h">
@@ -188,10 +188,10 @@
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
       <Filter>include\events</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h">
+    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h">
       <Filter>include\events</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h">
+    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h">
       <Filter>include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
@@ -246,6 +246,7 @@
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
     <ClCompile Include="..\src\Driver\Packet.cpp" />
     <ClCompile Include="..\src\Driver\PacketDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
     <ClCompile Include="..\src\Driver\PluginManager.cpp" />
     <ClCompile Include="..\src\Driver\RegionRegistry.cpp" />
@@ -255,10 +256,10 @@
     <ClCompile Include="..\src\Driver\SuitPacket.cpp" />
     <ClCompile Include="..\src\Driver\Synchronizer.cpp" />
     <ClCompile Include="..\src\Driver\enumser.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\BriefHapticPrimitive.cpp">
+    <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp">
       <Filter>events_impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Driver\events_impl\LastingHapticPrimitive.cpp">
+    <ClCompile Include="..\src\Driver\events_impl\LastingTaxel.cpp">
       <Filter>events_impl</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\main.cpp" />

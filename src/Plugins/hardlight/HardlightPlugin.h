@@ -11,4 +11,6 @@ public:
 
 private:
 
+public:
+	int Configure(NSVR_Core* core);
 };

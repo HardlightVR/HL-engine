@@ -1,6 +1,12 @@
 -- We are using PCH, so you must disable PCH on the protobuf files, and enable generation on stdafx.cpp
 
 
+-- note[0] 
+-- It appears that by messing with the output directories, VS doesn't start the binary in the right place
+-- when debugging. If you simply double click the Driver.exe, for example, it will find the plugins and JSON
+-- configs just fine. But if you do it from the IDE, it won't. I copy the required files into ../build to solve this.
+-- Better solution: obey, or figure out, the necessary directory structure to make VS happy.
+
 workspace "Driver"
 	configurations {"Debug", "Release"}
 	platforms {"Win32", "Win64", "UnitTestWin32"}
@@ -73,7 +79,10 @@ project "Driver"
 	filter {"platforms:Win32 or platforms:Win64"}
 		kind "SharedLib"
 		postbuildcommands {
-			"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} bin/%{cfg.buildcfg}/UnitTestWin32"		
+			"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} bin/%{cfg.buildcfg}/UnitTestWin32",
+			-- see note at top [0]
+			"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} ../build"		
+
 		}
 
 
@@ -81,8 +90,7 @@ project "Driver"
 		kind "ConsoleApp"
 		postbuildcommands {
 			"{COPY} ../src/Driver/*.json %{cfg.targetdir}",
-			-- the following copy is so that you can run the exe from in Visual Studio. For some reason
-			-- it doesn't find the json in the actual {targetdir}, so we copy it here as well
+			-- see note at top [0]
 			"{COPY} ../src/Driver/*.json ../build/"
 
 		}
@@ -107,7 +115,7 @@ project "Driver"
 		libdirs {
 			boost_win32_dir
 		}
-		defines {"WIN32"}
+		defines {"WIN32", "_WIN32_WINNT=0x0A00"}
 		
 	filter "configurations:Debug"
 		defines {"DEBUG", "_DEBUG"}
@@ -165,6 +173,7 @@ project "HardlightMkIII"
 
 
 
+
 	boost_win32_dir = "D:/Libraries/boost/boost_1_61_0/stage/win32/lib"
 	boost_win64_dir = "D:/Libraries/boost/boost_1_61_0/stage/x64/lib"
 
@@ -180,6 +189,7 @@ project "HardlightMkIII"
 	nsvr_core_win32_dir_debug = "../build/bin/Debug/Win32"
 	nsvr_core_win32_dir_release = "../build/bin/Release/Win32"
 
+	defines {"BOOST_THREAD_USE_LIB"}
 
 	filter {"files:**.pb.cc"}
 		flags {'NoPCH'}
@@ -194,24 +204,29 @@ project "HardlightMkIII"
 
 
 
-	filter "platforms:Win32" 
+	filter "platforms:*Win32*" 
 		system "Windows"
 		architecture "x86"
 
-		defines {"WIN32"}
+		defines {"WIN32", "_WIN32_WINNT=0x0A00"}
 		postbuildcommands {
-			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll bin/Debug/UnitTestWin32"		
+			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll bin/Debug/UnitTestWin32",		
+			-- see note at top [0]
+			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll ../build/"		
+
 
 		}
-	
+		libdirs {
+			boost_win32_dir
+		}
 	filter "configurations:Debug"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
 		optimize "Off"
 		links {"Driver"}
 		libdirs {
-			boost_win32_dir,
 			nsvr_core_win32_dir_debug
+
 		}
 
 	filter "configurations:Release"
@@ -219,7 +234,6 @@ project "HardlightMkIII"
 		optimize "On" 
 		links { "Driver"}
 		libdirs {
-			boost_win32_dir,
 			nsvr_core_win32_dir_release
 		}
 

@@ -25,7 +25,6 @@ private:
 
 	std::shared_ptr<IoService> m_io;
 	DriverMessenger m_messenger;
-	HardwareInterface m_hardware;
 	Encoder _encoder;
 
 	
@@ -44,6 +43,7 @@ private:
 	
 	PluginManager m_pluginManager;   //order dependency (1)
 	RegionRegistry m_regionRegistry; //order dependency (2)
-	
+	HardwareInterface m_hardware;
+
 	void handleTracking();
 };

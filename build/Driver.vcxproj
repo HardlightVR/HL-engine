@@ -139,7 +139,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -155,7 +155,8 @@
       <ImportLibrary>bin\Debug\Win32\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Debug\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Debug\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Debug\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\Driver.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
@@ -179,7 +180,8 @@
       <ImportLibrary>bin\Debug\Win64\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\Driver.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
@@ -188,7 +190,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -214,7 +216,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -233,7 +235,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <ImportLibrary>bin\Release\Win32\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Release\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Release\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul)
+IF EXIST bin\Release\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\Driver.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
@@ -260,7 +263,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <ImportLibrary>bin\Release\Win64\Driver.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Release\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul)</Command>
+      <Command>IF EXIST bin\Release\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul)
+IF EXIST bin\Release\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\Driver.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
@@ -269,7 +273,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -347,8 +351,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Synchronizer.h" />
     <ClInclude Include="..\src\Driver\enumser.h" />
-    <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
-    <ClInclude Include="..\src\Driver\events_impl\LastingHapticPrimitive.h" />
+    <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h" />
+    <ClInclude Include="..\src\Driver\events_impl\LastingTaxel.h" />
     <ClInclude Include="..\src\Driver\flatbuff_defs\ClientStatusUpdate_generated.h" />
     <ClInclude Include="..\src\Driver\flatbuff_defs\EnginePacket_generated.h" />
     <ClInclude Include="..\src\Driver\flatbuff_defs\Events_generated.h" />
@@ -372,8 +376,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\flatbuff_defs\instructions_generated.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
-    <ClInclude Include="..\src\Driver\include\events\LastingHapticPrimitive.h" />
-    <ClInclude Include="..\src\Driver\include\events\briefhapticprimitive.h" />
+    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h" />
+    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h" />
@@ -419,6 +423,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
     <ClCompile Include="..\src\Driver\Packet.cpp" />
     <ClCompile Include="..\src\Driver\PacketDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
     <ClCompile Include="..\src\Driver\PluginManager.cpp" />
     <ClCompile Include="..\src\Driver\RegionRegistry.cpp" />
@@ -433,8 +438,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\SuitPacket.cpp" />
     <ClCompile Include="..\src\Driver\Synchronizer.cpp" />
     <ClCompile Include="..\src\Driver\enumser.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\BriefHapticPrimitive.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\LastingHapticPrimitive.cpp" />
+    <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp" />
+    <ClCompile Include="..\src\Driver\events_impl\LastingTaxel.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

@@ -3,7 +3,6 @@
 #include "Locator.h"
 #include "InstructionSet.h"
 
-#include <boost\log\trivial.hpp>
 FirmwareInterface::FirmwareInterface(std::unique_ptr<ICommunicationAdapter>& adapter, boost::asio::io_service& io):
 m_instructionSet(std::make_shared<InstructionSet>()),
 _adapter(adapter),
@@ -212,7 +211,7 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 	}
 }
 
-//TODO: STUFF BROKEN. LOCATION IS WRONG. EITYHER BEING PASSED BY API WRONG OR SOMETHING ELSE
+
 void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
 	std::string effectString = Locator::Translator().ToString(effect);

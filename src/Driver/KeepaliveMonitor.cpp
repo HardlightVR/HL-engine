@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "KeepaliveMonitor.h"
 #include "Locator.h"
-#include <boost\log\trivial.hpp>
 #include <boost\asio\serial_port.hpp>
 #include "FirmwareInterface.h"
 KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterface& fi):

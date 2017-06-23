@@ -2,7 +2,6 @@
 #include "IoService.h"
 #include <iostream>
 #include "Locator.h"
-#include <boost\log\trivial.hpp>
 IoService::IoService():m_io(), _work(), _running(false), _readyToResumeIO(2),
 _shouldQuit{false}, _wantsReset{false}, _isReset{false}
 {

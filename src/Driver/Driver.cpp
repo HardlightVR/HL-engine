@@ -1,6 +1,4 @@
 #include "stdafx.h"
-#include "Driver.h"
-#include "IoService.h"
 #include <functional>
 #include "protobuff_defs/DriverCommand.pb.h"
 #include "SuitVersionInfo.h"
@@ -8,12 +6,20 @@
 #include <boost/log/sinks/sync_frontend.hpp>
 #include <boost/log/trivial.hpp>
 #include "MyTestLog.h"
-#include "events_impl/BriefHapticPrimitive.h"
+#include "Driver.h"
+
+#include "IoService.h"
+
+#include "events_impl/LastingTaxel.h"
+#include "events_impl/BriefTaxel.h"
+
 #include "FirmwareInterface.h"
 
 //remove following two
 #include "PluginInstance.h"
-#include "events/briefhapticprimitive.h"
+#include "events/LastingTaxel.h"
+#include "events/BriefTaxel.h"
+
 void extractDrvData(const packet& packet) {
 	//as status register:
 	uint8_t whichDrv = packet.raw[4];
@@ -36,7 +42,6 @@ void extractDrvData(const packet& packet) {
 
 Driver::Driver() :
 	m_io(new IoService()),
-	m_hardware(m_io),
 	m_messenger(m_io->GetIOService()),
 	m_statusPush(m_io->GetIOService(), boost::posix_time::millisec(250)),
 	m_hapticsPull(m_io->GetIOService(), boost::posix_time::millisec(5)),
@@ -44,20 +49,14 @@ Driver::Driver() :
 	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_imus(),
 	m_cachedTracking({}),
-	m_pluginManager({}),
-	m_regionRegistry(m_pluginManager)
+	m_pluginManager({"HardlightPlugin"}),
+	m_regionRegistry(m_pluginManager),
+	m_hardware(m_io, m_regionRegistry)
+
 
 {
+	m_pluginManager.LoadAll(m_regionRegistry);
 
-	PluginInstance a("HardlightPlugin");
-	if (a.Link()) {
-
-		nsvr::events::BriefHapticPrimitive b;
-		auto ptr = reinterpret_cast<const NSVR_BriefHapticPrimitive*>(&b);
-
-
-		a.Consume(ptr);
-	}
 
 	using namespace boost::log;
 

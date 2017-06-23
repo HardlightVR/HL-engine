@@ -6,7 +6,6 @@
 #include "MessengerLogger.h"
 #include "EnumTranslator.h"
 #include <boost\interprocess\interprocess_fwd.hpp>
-#include <boost\log\trivial.hpp>
 int main()
 {
 	

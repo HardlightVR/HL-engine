@@ -2,6 +2,7 @@
 #include "PluginManager.h"
 #include <iostream>
 #include <bitset>
+#include "RegionRegistry.h"
 PluginManager::PluginManager(std::vector<std::string> plugins) 
 	: m_pluginNames(std::move(plugins))
 	, m_plugins()
@@ -9,10 +10,11 @@ PluginManager::PluginManager(std::vector<std::string> plugins)
 
 }
 
-bool PluginManager::LoadAll()
+bool PluginManager::LoadAll(RegionRegistry& registry)
 {
 	linkAll();
 	instantiateAll();
+	configureAll(registry);
 	return true;
 }
 
@@ -50,6 +52,18 @@ bool PluginManager::instantiateAll()
 	for (auto& plugin : m_plugins) {
 		if (!plugin.second.Load()) {
 			std::cout << "Warning: unable to instantiate " << plugin.first << '\n';
+		}
+	}
+
+	return true;
+}
+
+bool PluginManager::configureAll(RegionRegistry& registry)
+{
+	for (auto& plugin : m_plugins) {
+		if (!plugin.second.Configure(registry)) {
+			std::cout << "Warning: unable to configure " << plugin.first << '\n';
+
 		}
 	}
 

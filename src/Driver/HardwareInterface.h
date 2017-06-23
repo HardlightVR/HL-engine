@@ -7,36 +7,32 @@
 #include "Atom.h"
 #include "KeepaliveMonitor.h"
 #include "PacketDispatcher.h"
-#include "include/events/BriefHapticPrimitive.h"
+#include "events/BriefTaxel.h"
+#include "events_impl/BriefTaxel.h"
+
+#include "RegionRegistry.h"
 class Synchronizer;
 class IoService;
 class HardwareInterface
 {
 public:
-	HardwareInterface(std::shared_ptr<IoService> io); //(io, regionRegistry)
+	HardwareInterface(std::shared_ptr<IoService> io, RegionRegistry& registry); //(io, regionRegistry)
 	~HardwareInterface();
 	//these all will eventually either be parameterized over each device, or take a device id
 	void ReceiveExecutionCommand(const NullSpaceIPC::EffectCommand& ec) {
-		//pseudocode for registry:
-		/*
-		void ReceiveExecutionCommand(const Event& ec)
-			auto area = ec.area();
-			auto plugins = registry.GetPluginSet(area);
-			for each plugin in plugins:
-				plugin->handle(ec)
-
-		//IBasicHapticEvent.h
-*/
-
 		
-		
-
 
 
 		if (ec.command() == NullSpaceIPC::EffectCommand_Command_HALT) {
+			
 			m_firmware.HaltEffect(Location(ec.area()));
 		}
 		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_PLAY) {
+			nsvr::events::BriefTaxel taxel = { 0 };
+			taxel.Effect = ec.effect();
+			taxel.Strength = ec.strength();
+			m_registry.Activate("chest_left", "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
+
 			m_firmware.PlayEffect(Location(ec.area()), ec.effect(), ec.strength());
 		}
 		else if (ec.command()== NullSpaceIPC::EffectCommand_Command_PLAY_CONTINUOUS) {
@@ -86,6 +82,8 @@ private:
 
 	boost::condition_variable _needToCheckAdapter;
 	boost::mutex _needToCheckMut;
+
+	RegionRegistry& m_registry;
 
 
 };

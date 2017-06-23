@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DriverMessenger.h"
 #include "Encoder.h"
-#include <boost\log\trivial.hpp>
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	_running{true},
 	_process([](void const*, std::size_t) {}),

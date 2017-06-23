@@ -2,7 +2,7 @@
 #include "PluginInstance.h"
 #include <boost/type_index.hpp>
 #include <iostream>
-#include "events/briefhapticprimitive.h"
+#include "RegionRegistry.h"
 PluginInstance::PluginInstance(std::string fileName) : m_fileName(fileName), m_loaded{ false }
 {
 }
@@ -27,6 +27,13 @@ bool PluginInstance::Load()
 	
 }
 
+//precondition: successfully loaded
+bool PluginInstance::Configure(RegionRegistry& registry)
+{
+	m_configure(m_rawPtr, AS_TYPE(NSVR_Core, &registry));
+	return true;
+}
+
 bool PluginInstance::Link()
 {
 	boost::system::error_code loadFailure;
@@ -46,7 +53,7 @@ bool PluginInstance::Link()
 		return false;
 	}
 	
-	if (!tryLoad(m_lib, "NSVR_RegisterRegions", m_registerRegions)) {
+	if (!tryLoad(m_lib, "NSVR_Configure", m_configure)) {
 		return false;
 	}
 
@@ -83,6 +90,11 @@ std::string PluginInstance::GetDisplayName() const
 	return m_displayName;
 }
 
+NSVR_Provider* PluginInstance::GetRawHandle()
+{
+	return m_rawPtr;
+}
+
 PluginInstance::PluginInstance(PluginInstance && old) : 
 	  m_lib(std::move(old.m_lib))
 	, m_creator(std::move(old.m_creator))
@@ -94,10 +106,5 @@ PluginInstance::PluginInstance(PluginInstance && old) :
 {
 }
 
-//precondition: linked successfully
-bool PluginInstance::RegisterRegions(NSVR_Region * regions)
-{
-	return m_registerRegions(m_rawPtr, regions);
-}
 
 

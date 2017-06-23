@@ -2,7 +2,6 @@
 #include "ImuConsumer.h"
 #include "Synchronizer.h"
 #include "Enums.h"
-#include <boost\log\trivial.hpp>
 ImuConsumer::ImuConsumer()
 {
 }

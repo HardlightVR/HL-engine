@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+
 #include "BoostSerialAdapter.h"
 #include <iostream>
 #include <future>
@@ -6,7 +7,6 @@
 #include "enumser.h"
 #include "Locator.h"
 #include "AsyncTimeout.h"
-#include <boost\log\trivial.hpp>
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 

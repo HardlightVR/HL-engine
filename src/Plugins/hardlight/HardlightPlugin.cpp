@@ -25,5 +25,15 @@ int HardlightPlugin::registerRegions(NSVR_Region * requestedRegions)
 	return 1;
 }
 
+int HardlightPlugin::Configure(NSVR_Core* core)
+{
+	NSVR_RegParams params = { 0 };
+	params.Provider = AS_TYPE(NSVR_Provider, this);
+	params.Interface = "brief-taxel";
+	params.Region = "chest_left";
+
+	NSVR_Core_RegisterNode(core, params);
+	return 1;
+}
 
 

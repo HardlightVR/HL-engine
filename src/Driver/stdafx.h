@@ -25,6 +25,13 @@
 #include <mutex>
 
 /* boost */
+
+
+#include <boost/log/core.hpp>
+#include <boost/log/sinks/sync_frontend.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost\log\expressions.hpp>
+
 #include <boost\thread.hpp>
 #include <boost\asio\placeholders.hpp>
 #include <boost\asio\io_service.hpp>
@@ -39,10 +46,6 @@
 #include <boost/filesystem.hpp>
 #include <boost\bind.hpp>
 
-
-#include <boost/log/core.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-#include <boost/log/trivial.hpp>
 
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
