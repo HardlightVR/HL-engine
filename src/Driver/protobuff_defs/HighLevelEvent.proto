@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package NullSpaceIPC;
+
+
+message UUID {
+  bytes value = 1;
+}
+
+message SimpleHaptic {
+	uint32 effect = 1;
+	float strength = 2;
+	float duration = 3;
+}
+
+message HighLevelEvent {
+	UUID parent_id = 1;
+	string region = 2;
+	oneof events {
+		SimpleHaptic simple_haptic = 3;
+	}
+}

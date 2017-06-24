@@ -300,6 +300,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h" />
+    <ClInclude Include="..\src\plugins\hardlight\IoService.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\json-forwards.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\json.h" />
@@ -326,6 +327,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\IoService.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\KeepaliveMonitor.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp" />

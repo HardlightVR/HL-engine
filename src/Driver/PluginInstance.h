@@ -38,7 +38,7 @@ public:
 	
 
 	template<class THapticType>
-	void Consume( const THapticType* input);
+	void Dispatch( const char* region, const THapticType* input);
 
 private:
 	typedef std::function<int(NSVR_Provider**)> plugin_creator_t;
@@ -71,7 +71,7 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 
 
 template<class THapticType>
-void PluginInstance::Consume(const THapticType* input)
+void PluginInstance::Dispatch(const char* region, const THapticType* input)
 {
 	static_assert(getSymbolName<THapticType>() != "unknown", 
 		"You must use REGISTER_INTERFACE on this type.\n" 
@@ -80,14 +80,14 @@ void PluginInstance::Consume(const THapticType* input)
 
 
 	//This matches the signature of all NSVR_Provider_Consume_X functions
-	typedef std::function<bool(NSVR_Provider*, const THapticType*)> SourceDllFunc;
+	typedef std::function<bool(NSVR_Provider*, const char*, const THapticType*)> SourceDllFunc;
 	
 	constexpr const char* dllFunctionName = getSymbolName<THapticType>();
 
 	SourceDllFunc dllFunction;
 
 	if (tryLoad(m_lib, dllFunctionName, dllFunction)) {
-		dllFunction(m_rawPtr, input);
+		dllFunction(m_rawPtr, region, input);
 	}
 	
 }

@@ -101,6 +101,7 @@ PluginInstance::PluginInstance(PluginInstance && old) :
 	, m_destructor(std::move(old.m_destructor))
 	, m_displayName(std::move(old.m_displayName))
 	, m_fileName(std::move(old.m_fileName))
+	, m_loaded(std::move(old.m_loaded))
 	//be sure to update when we add new function defs. Should only be about 5-10 total.
 	//He whispered. Hoping. 
 {

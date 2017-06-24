@@ -1,16 +1,34 @@
 #pragma once
 #include "PluginAPI.h"
-#include <functional>
+#include <stdint.h>
+#include "PacketDispatcher.h"
+#include <memory>
+#include "KeepaliveMonitor.h"
+#include "BoostSerialAdapter.h"
+#include "Synchronizer.h"
+#include <thread>
+#include "FirmwareInterface.h"
+#include "IoService.h"
 class HardlightPlugin {
 public:
 	HardlightPlugin();
 	~HardlightPlugin();
-
-	int handleDirectControl(NSVR_Region region, const char* data, unsigned int length);
-	int registerRegions(NSVR_Region * requestedRegions);
-
-private:
-
-public:
 	int Configure(NSVR_Core* core);
+	int PlayBrief(Location loc, uint32_t effect, float strength);
+private:
+	std::shared_ptr<IoService> m_io;
+	PacketDispatcher m_dispatcher;
+	std::unique_ptr<BoostSerialAdapter> m_adapter;
+	FirmwareInterface m_firmware;
+
+	std::shared_ptr<KeepaliveMonitor> m_monitor;
+
+	std::unique_ptr<Synchronizer> m_synchronizer;
+
+
+
+	bool m_running;
+
+	
+
 };

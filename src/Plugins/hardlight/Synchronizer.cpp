@@ -25,11 +25,9 @@ void Synchronizer::TryReadPacket()
 		this->searchForSync();
 		break;
 	case Synchronizer::State::ConfirmingSync:
-
 		this->confirmSync();
 		break;
 	case Synchronizer::State::Synchronized:
-
 		this->monitorSync();
 		break;
 	case Synchronizer::State::ConfirmingSyncLoss:

@@ -70,6 +70,7 @@ EnumTranslator::EnumTranslator() {
 	init_locations();
 	init_effects();
 	init_familymap();
+	init_regions();
 	
 }
 
@@ -162,6 +163,10 @@ std::string EnumTranslator::ToString(uint32_t effectFamily) const
 {
 	return _effectFamilyMap.right.at(effectFamily);
 }
+Location EnumTranslator::ToLocationFromRegion(const std::string & region) const
+{
+	return _regionMap.right.at(region);
+}
 void EnumTranslator::init_familymap()
 {
 	boost::assign::insert(_effectFamilyMap)
@@ -187,6 +192,27 @@ void EnumTranslator::init_familymap()
 
 
 
+
+void EnumTranslator::init_regions()
+{
+	boost::assign::insert(_regionMap)
+		(Location::Upper_Back_Left, "left_back")
+		(Location::Upper_Back_Right, "right_back")
+		(Location::Shoulder_Left, "left_shoulder")
+		(Location::Shoulder_Right, "right_shoulder")
+		(Location::Upper_Arm_Left, "left_upper_arm")
+		(Location::Upper_Arm_Right, "right_upper_arm")
+		(Location::Forearm_Left, "left_forearm")
+		(Location::Forearm_Right, "right_forearm")
+		(Location::Chest_Left, "left_upper_chest")
+		(Location::Chest_Right, "right_upper_chest")
+		(Location::Upper_Ab_Left, "left_upper_ab")
+		(Location::Upper_Ab_Right, "right_upper_ab")
+		(Location::Mid_Ab_Left, "left_mid_ab")
+		(Location::Mid_Ab_Right, "right_mid_ab")
+		(Location::Lower_Ab_Left, "left_lower_ab")
+		(Location::Lower_Ab_Right, "right_lower_ab");
+}
 
 void EnumTranslator::init_locations() {
 	boost::assign::insert(_locationMap)

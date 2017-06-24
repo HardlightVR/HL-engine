@@ -6,6 +6,7 @@
 #include "SharedCommunication\SharedTypes.h"
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "protobuff_defs/DriverCommand.pb.h"
+#include "protobuff_defs/HighLevelEvent.pb.h"
 
 #include <memory>
 using namespace boost::interprocess;
@@ -21,6 +22,7 @@ public:
 	void WriteSuits(SuitsConnectionInfo s);
 	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
+	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
 	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();
 	void Disconnect();
 private:

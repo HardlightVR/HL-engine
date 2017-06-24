@@ -75,6 +75,9 @@
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\IoService.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Json\JsonKeyValueConfig.h">
       <Filter>plugins\hardlight\Json</Filter>
     </ClInclude>
@@ -147,6 +150,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\IoService.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp">

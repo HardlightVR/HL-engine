@@ -206,6 +206,9 @@
     <ClInclude Include="..\src\Driver\protobuff_defs\HapticEffect.pb.h">
       <Filter>protobuff_defs</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.h">
+      <Filter>protobuff_defs</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\suit_packet.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
@@ -267,6 +270,15 @@
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\protobuff_defs\EffectCommand.pb.cc">
+      <Filter>protobuff_defs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.cc">
+      <Filter>protobuff_defs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\protobuff_defs\HapticEffect.pb.cc">
+      <Filter>protobuff_defs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.cc">
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />

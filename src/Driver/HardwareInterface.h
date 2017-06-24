@@ -4,12 +4,13 @@
 #include "FirmwareInterface.h"
 #include "DriverMessenger.h"
 #include "protobuff_defs/EffectCommand.pb.h"
+#include "protobuff_defs/HighLevelEvent.pb.h"
 #include "Atom.h"
 #include "KeepaliveMonitor.h"
 #include "PacketDispatcher.h"
 #include "events/BriefTaxel.h"
 #include "events_impl/BriefTaxel.h"
-
+#include "events_impl/LastingTaxel.h"
 #include "RegionRegistry.h"
 class Synchronizer;
 class IoService;
@@ -18,7 +19,18 @@ class HardwareInterface
 public:
 	HardwareInterface(std::shared_ptr<IoService> io, RegionRegistry& registry); //(io, regionRegistry)
 	~HardwareInterface();
-	//these all will eventually either be parameterized over each device, or take a device id
+
+	void ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event) {
+		switch (event.events_case()) {
+		case NullSpaceIPC::HighLevelEvent::kSimpleHaptic:
+			generateLowLevelSimpleHapticEvents(event);
+			break;
+		case NullSpaceIPC::HighLevelEvent::EVENTS_NOT_SET:
+			//fall-through
+		default:
+			break;
+		}
+	}
 	void ReceiveExecutionCommand(const NullSpaceIPC::EffectCommand& ec) {
 		
 
@@ -31,9 +43,11 @@ public:
 			nsvr::events::BriefTaxel taxel = { 0 };
 			taxel.Effect = ec.effect();
 			taxel.Strength = ec.strength();
-			m_registry.Activate("chest_left", "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
 
-			m_firmware.PlayEffect(Location(ec.area()), ec.effect(), ec.strength());
+			std::string locString = Locator::Translator().ToString(Location(ec.area()));
+			m_registry.Activate(locString, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
+
+			//m_firmware.PlayEffect(Location(ec.area()), ec.effect(), ec.strength());
 		}
 		else if (ec.command()== NullSpaceIPC::EffectCommand_Command_PLAY_CONTINUOUS) {
 			m_firmware.PlayEffectContinuous(Location(ec.area()), ec.effect(), ec.strength());
@@ -74,17 +88,14 @@ private:
 
 	std::unique_ptr<Synchronizer> m_synchronizer;
 
-	boost::asio::deadline_timer m_adapterResetCheckTimer;
-	boost::posix_time::milliseconds m_adapterResetCheckInterval;
 	std::thread m_adapterResetChecker;
 
 	bool m_running;
 
-	boost::condition_variable _needToCheckAdapter;
-	boost::mutex _needToCheckMut;
 
 	RegionRegistry& m_registry;
 
 
+	void generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event);
 };
 

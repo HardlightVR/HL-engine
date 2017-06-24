@@ -48,11 +48,8 @@ project "Driver"
 		"../src/Driver/**.cpp",
 		"../src/Driver/**.h",
 		"../src/Driver/**.hpp",
-				
-		-- protobuffs. Could just do something like **.pb.cc
-		path.join(protobuf_def_incl_dir, "DriverCommand.pb.cc"),
-		path.join(protobuf_def_incl_dir, "EffectCommand.pb.cc"),
-		-- end protobufs
+		"../src/Driver/protobuff_defs/**.pb.cc",
+		
 		path.join(shared_comms_incl_dir, "ScheduledEvent.cpp")
 
 	}
@@ -146,7 +143,7 @@ project "HardlightMkIII"
 
 	--shared_comms_incl_dir = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/src/Driver/SharedCommunication"
 	boost_incl_dir = "D:/Libraries/boost/boost_1_61_0"
-	--protobuf_def_incl_dir = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/src/Driver/protobuff_defs"
+	protobuf_def_incl_dir = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/src/Driver/protobuff_defs"
 	disablewarnings {"4800"}
 
 
@@ -154,7 +151,7 @@ project "HardlightMkIII"
 		boost_incl_dir,
 		"../src/plugins/hardlight",
 		"../src/Driver/include"
-	}
+			}
 
 	
 	flags {
@@ -166,7 +163,8 @@ project "HardlightMkIII"
 	files {
 		"../src/plugins/hardlight/**.cpp",
 		"../src/plugins/hardlight/**.h",
-		"../src/Driver/include/**.h"
+		"../src/Driver/include/**.h",
+
 	}
 
 	

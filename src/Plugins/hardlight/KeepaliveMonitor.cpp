@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "KeepaliveMonitor.h"
 #include "Locator.h"
-//#include <boost\log\trivial.hpp> COULD BE IT?
+#include <boost\log\trivial.hpp> 
 #include <boost\asio\serial_port.hpp>
 #include "FirmwareInterface.h"
 KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterface& fi):
@@ -63,6 +63,7 @@ void KeepaliveMonitor::SetMaxAllowedResponseTime(boost::posix_time::millisec max
 
 void KeepaliveMonitor::doKeepAlivePing()
 {
+	BOOST_LOG_TRIVIAL(info) << "[Keepalive] Doing ping";
 	m_fi.Ping();
 	
 	scheduleResponseTimer();
@@ -74,6 +75,8 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_r
 
 
 	if (ping_recd) {
+		BOOST_LOG_TRIVIAL(info) << "[Keepalive] got response";
+
 		//Timer was canceled - this is the most common execution of this function.
 		//Most likely triggered by the adapter seeing a ping response and calling ReceivePing()
 	

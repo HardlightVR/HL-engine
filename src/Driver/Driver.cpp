@@ -136,9 +136,10 @@ bool Driver::Shutdown()
 
 void Driver::handleHaptics()
 {
-	if (auto commands = m_messenger.ReadHaptics()) {
+	//note: changed to ReadEvents instead of ReadHaptics
+	if (auto commands = m_messenger.ReadEvents()) {
 		for (const auto& command : *commands) {
-			m_hardware.ReceiveExecutionCommand(command);
+			m_hardware.ReceiveHighLevelEvent(command);
 		}
 	}
 }

@@ -53,7 +53,7 @@ int RegionRegistry::Activate(const std::string& region, const std::string& iface
 		std::cout << "Found plugin that matched: " << a << '\n';
 		for (PluginInstance* plugin : actualPlugins) {
 			if (plugin->GetRawHandle() == a) {
-				plugin->Consume(args);
+				plugin->Dispatch(region.c_str(), args);
 			}
 		}
 	}

@@ -11,16 +11,15 @@ HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, Regio
 	m_monitor(std::make_shared<KeepaliveMonitor>(ioService->GetIOService(), m_firmware)),
 
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, ioService->GetIOService())),
-	m_adapterResetCheckTimer(ioService->GetIOService()),
-	m_adapterResetCheckInterval(boost::posix_time::milliseconds(50)),
+	
 	m_running(true),
 	m_registry(registry)
 	
 
 {
-	m_adapter->SetMonitor(m_monitor);
-	m_adapter->Connect();
-	m_synchronizer->BeginSync();
+	//m_adapter->SetMonitor(m_monitor);
+	//m_adapter->Connect();
+	//m_synchronizer->BeginSync();
 	
 
 }
@@ -29,9 +28,7 @@ HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, Regio
 HardwareInterface::~HardwareInterface()
 {
 	m_running = false;
-	if (m_adapterResetChecker.joinable()) {
-		m_adapterResetChecker.join();
-	}
+	
 }
 
 SuitsConnectionInfo HardwareInterface::PollDevice()
@@ -103,5 +100,25 @@ void HardwareInterface::RawCommand(const std::string & command)
 {
 	auto data = reinterpret_cast<const uint8_t*>(command.data());
 	m_firmware.RawCommand(data, command.size());
+}
+
+void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event)
+{
+	const auto& simple_event = event.simple_haptic();
+	const std::string& region = event.region();
+
+	if (simple_event.duration() == 0.0f) {
+		nsvr::events::BriefTaxel taxel = { 0 };
+		taxel.Effect = simple_event.effect();
+		taxel.Strength = simple_event.strength();
+		m_registry.Activate(region, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
+	}
+	else {
+		nsvr::events::LastingTaxel taxel = { 0 };
+		taxel.Effect = simple_event.effect();
+		taxel.Strength = simple_event.strength();
+		taxel.Duration = simple_event.duration();
+		m_registry.Activate(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
+	}
 }
 
