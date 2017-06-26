@@ -3,7 +3,7 @@
 #include "BoostSerialAdapter.h"
 #include "IoService.h"
 #include "Locator.h"
-
+#include "events_impl/PlaybackEvent.h"
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, PluginManager& plugins) :
 	m_adapter(std::make_unique<BoostSerialAdapter>(ioService->GetIOService())),
 
@@ -118,7 +118,18 @@ void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::H
 		taxel.Effect = simple_event.effect();
 		taxel.Strength = simple_event.strength();
 		taxel.Duration = simple_event.duration();
+		taxel.Id = event.parent_id();
 		m_pluginManager.Dispatch(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
 	}
+}
+
+void HardwareInterface::generatePlaybackCommands(const NullSpaceIPC::HighLevelEvent& event)
+{
+	const auto& playback_event = event.playback_event();
+	nsvr::events::PlaybackEvent playback;
+	playback.Command = static_cast<NSVR_PlaybackEvent_Command>(playback_event.command());
+	playback.Id = event.parent_id();
+	m_pluginManager.Broadcast(AS_TYPE(NSVR_PlaybackEvent, &playback));
+
 }
 

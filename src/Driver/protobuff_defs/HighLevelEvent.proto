@@ -3,9 +3,6 @@ syntax = "proto3";
 package NullSpaceIPC;
 
 
-message UUID {
-  bytes value = 1;
-}
 
 message SimpleHaptic {
 	uint32 effect = 1;
@@ -13,10 +10,20 @@ message SimpleHaptic {
 	float duration = 3;
 }
 
+message PlaybackEvent {
+	enum Command {
+		UNKNOWN = 0;
+		PAUSE = 1;
+		UNPAUSE = 2;
+		CANCEL = 3;
+	}
+	Command command = 1;
+}
 message HighLevelEvent {
-	UUID parent_id = 1;
+	uint64 parent_id = 1;
 	string region = 2;
 	oneof events {
-		SimpleHaptic simple_haptic = 3;
+		PlaybackEvent playback_event = 3;
+		SimpleHaptic simple_haptic = 4;
 	}
 }

@@ -21,16 +21,18 @@ namespace NullSpaceIPC {
 
 namespace {
 
-const ::google::protobuf::Descriptor* UUID_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  UUID_reflection_ = NULL;
 const ::google::protobuf::Descriptor* SimpleHaptic_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   SimpleHaptic_reflection_ = NULL;
+const ::google::protobuf::Descriptor* PlaybackEvent_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  PlaybackEvent_reflection_ = NULL;
+const ::google::protobuf::EnumDescriptor* PlaybackEvent_Command_descriptor_ = NULL;
 const ::google::protobuf::Descriptor* HighLevelEvent_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   HighLevelEvent_reflection_ = NULL;
 struct HighLevelEventOneofInstance {
+  const ::NullSpaceIPC::PlaybackEvent* playback_event_;
   const ::NullSpaceIPC::SimpleHaptic* simple_haptic_;
 }* HighLevelEvent_default_oneof_instance_ = NULL;
 
@@ -44,22 +46,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
     ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
       "HighLevelEvent.proto");
   GOOGLE_CHECK(file != NULL);
-  UUID_descriptor_ = file->message_type(0);
-  static const int UUID_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UUID, value_),
-  };
-  UUID_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      UUID_descriptor_,
-      UUID::default_instance_,
-      UUID_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(UUID),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UUID, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UUID, _is_default_instance_));
-  SimpleHaptic_descriptor_ = file->message_type(1);
+  SimpleHaptic_descriptor_ = file->message_type(0);
   static const int SimpleHaptic_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, effect_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, strength_),
@@ -76,10 +63,27 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(SimpleHaptic),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, _is_default_instance_));
+  PlaybackEvent_descriptor_ = file->message_type(1);
+  static const int PlaybackEvent_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, command_),
+  };
+  PlaybackEvent_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      PlaybackEvent_descriptor_,
+      PlaybackEvent::default_instance_,
+      PlaybackEvent_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(PlaybackEvent),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _is_default_instance_));
+  PlaybackEvent_Command_descriptor_ = PlaybackEvent_descriptor_->enum_type(0);
   HighLevelEvent_descriptor_ = file->message_type(2);
-  static const int HighLevelEvent_offsets_[4] = {
+  static const int HighLevelEvent_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, parent_id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, region_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, playback_event_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, simple_haptic_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, events_),
   };
@@ -110,9 +114,9 @@ void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      UUID_descriptor_, &UUID::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       SimpleHaptic_descriptor_, &SimpleHaptic::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      PlaybackEvent_descriptor_, &PlaybackEvent::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       HighLevelEvent_descriptor_, &HighLevelEvent::default_instance());
 }
@@ -120,10 +124,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
 }  // namespace
 
 void protobuf_ShutdownFile_HighLevelEvent_2eproto() {
-  delete UUID::default_instance_;
-  delete UUID_reflection_;
   delete SimpleHaptic::default_instance_;
   delete SimpleHaptic_reflection_;
+  delete PlaybackEvent::default_instance_;
+  delete PlaybackEvent_reflection_;
   delete HighLevelEvent::default_instance_;
   delete HighLevelEvent_default_oneof_instance_;
   delete HighLevelEvent_reflection_;
@@ -137,21 +141,25 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\024HighLevelEvent.proto\022\014NullSpaceIPC\"\025\n\004"
-    "UUID\022\r\n\005value\030\001 \001(\014\"B\n\014SimpleHaptic\022\016\n\006e"
-    "ffect\030\001 \001(\r\022\020\n\010strength\030\002 \001(\002\022\020\n\010duratio"
-    "n\030\003 \001(\002\"\206\001\n\016HighLevelEvent\022%\n\tparent_id\030"
-    "\001 \001(\0132\022.NullSpaceIPC.UUID\022\016\n\006region\030\002 \001("
-    "\t\0223\n\rsimple_haptic\030\003 \001(\0132\032.NullSpaceIPC."
-    "SimpleHapticH\000B\010\n\006eventsb\006proto3", 272);
+    "\n\024HighLevelEvent.proto\022\014NullSpaceIPC\"B\n\014"
+    "SimpleHaptic\022\016\n\006effect\030\001 \001(\r\022\020\n\010strength"
+    "\030\002 \001(\002\022\020\n\010duration\030\003 \001(\002\"\201\001\n\rPlaybackEve"
+    "nt\0224\n\007command\030\001 \001(\0162#.NullSpaceIPC.Playb"
+    "ackEvent.Command\":\n\007Command\022\013\n\007UNKNOWN\020\000"
+    "\022\t\n\005PAUSE\020\001\022\013\n\007UNPAUSE\020\002\022\n\n\006CANCEL\020\003\"\251\001\n"
+    "\016HighLevelEvent\022\021\n\tparent_id\030\001 \001(\004\022\016\n\006re"
+    "gion\030\002 \001(\t\0225\n\016playback_event\030\003 \001(\0132\033.Nul"
+    "lSpaceIPC.PlaybackEventH\000\0223\n\rsimple_hapt"
+    "ic\030\004 \001(\0132\032.NullSpaceIPC.SimpleHapticH\000B\010"
+    "\n\006eventsb\006proto3", 416);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "HighLevelEvent.proto", &protobuf_RegisterTypes);
-  UUID::default_instance_ = new UUID();
   SimpleHaptic::default_instance_ = new SimpleHaptic();
+  PlaybackEvent::default_instance_ = new PlaybackEvent();
   HighLevelEvent::default_instance_ = new HighLevelEvent();
   HighLevelEvent_default_oneof_instance_ = new HighLevelEventOneofInstance();
-  UUID::default_instance_->InitAsDefaultInstance();
   SimpleHaptic::default_instance_->InitAsDefaultInstance();
+  PlaybackEvent::default_instance_->InitAsDefaultInstance();
   HighLevelEvent::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_HighLevelEvent_2eproto);
 }
@@ -162,278 +170,6 @@ struct StaticDescriptorInitializer_HighLevelEvent_2eproto {
     protobuf_AddDesc_HighLevelEvent_2eproto();
   }
 } static_descriptor_initializer_HighLevelEvent_2eproto_;
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int UUID::kValueFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-UUID::UUID()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceIPC.UUID)
-}
-
-void UUID::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-UUID::UUID(const UUID& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.UUID)
-}
-
-void UUID::SharedCtor() {
-    _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
-  _cached_size_ = 0;
-  value_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-
-UUID::~UUID() {
-  // @@protoc_insertion_point(destructor:NullSpaceIPC.UUID)
-  SharedDtor();
-}
-
-void UUID::SharedDtor() {
-  value_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != default_instance_) {
-  }
-}
-
-void UUID::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* UUID::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return UUID_descriptor_;
-}
-
-const UUID& UUID::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
-  return *default_instance_;
-}
-
-UUID* UUID::default_instance_ = NULL;
-
-UUID* UUID::New(::google::protobuf::Arena* arena) const {
-  UUID* n = new UUID;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void UUID::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.UUID)
-  value_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-
-bool UUID::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceIPC.UUID)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional bytes value = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
-                input, this->mutable_value()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:NullSpaceIPC.UUID)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.UUID)
-  return false;
-#undef DO_
-}
-
-void UUID::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.UUID)
-  // optional bytes value = 1;
-  if (this->value().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
-      1, this->value(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.UUID)
-}
-
-::google::protobuf::uint8* UUID::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.UUID)
-  // optional bytes value = 1;
-  if (this->value().size() > 0) {
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        1, this->value(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.UUID)
-  return target;
-}
-
-int UUID::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.UUID)
-  int total_size = 0;
-
-  // optional bytes value = 1;
-  if (this->value().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::BytesSize(
-        this->value());
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void UUID::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.UUID)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const UUID* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const UUID>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.UUID)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.UUID)
-    MergeFrom(*source);
-  }
-}
-
-void UUID::MergeFrom(const UUID& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.UUID)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.value().size() > 0) {
-
-    value_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.value_);
-  }
-}
-
-void UUID::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.UUID)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void UUID::CopyFrom(const UUID& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.UUID)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool UUID::IsInitialized() const {
-
-  return true;
-}
-
-void UUID::Swap(UUID* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void UUID::InternalSwap(UUID* other) {
-  value_.Swap(&other->value_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata UUID::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = UUID_descriptor_;
-  metadata.reflection = UUID_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// UUID
-
-// optional bytes value = 1;
-void UUID::clear_value() {
-  value_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- const ::std::string& UUID::value() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.UUID.value)
-  return value_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void UUID::set_value(const ::std::string& value) {
-  
-  value_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.UUID.value)
-}
- void UUID::set_value(const char* value) {
-  
-  value_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.UUID.value)
-}
- void UUID::set_value(const void* value, size_t size) {
-  
-  value_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.UUID.value)
-}
- ::std::string* UUID::mutable_value() {
-  
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.UUID.value)
-  return value_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- ::std::string* UUID::release_value() {
-  // @@protoc_insertion_point(field_release:NullSpaceIPC.UUID.value)
-  
-  return value_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
- void UUID::set_allocated_value(::std::string* value) {
-  if (value != NULL) {
-    
-  } else {
-    
-  }
-  value_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.UUID.value)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -795,9 +531,275 @@ void SimpleHaptic::clear_duration() {
 
 // ===================================================================
 
+const ::google::protobuf::EnumDescriptor* PlaybackEvent_Command_descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PlaybackEvent_Command_descriptor_;
+}
+bool PlaybackEvent_Command_IsValid(int value) {
+  switch(value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const PlaybackEvent_Command PlaybackEvent::UNKNOWN;
+const PlaybackEvent_Command PlaybackEvent::PAUSE;
+const PlaybackEvent_Command PlaybackEvent::UNPAUSE;
+const PlaybackEvent_Command PlaybackEvent::CANCEL;
+const PlaybackEvent_Command PlaybackEvent::Command_MIN;
+const PlaybackEvent_Command PlaybackEvent::Command_MAX;
+const int PlaybackEvent::Command_ARRAYSIZE;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int PlaybackEvent::kCommandFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+PlaybackEvent::PlaybackEvent()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.PlaybackEvent)
+}
+
+void PlaybackEvent::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+PlaybackEvent::PlaybackEvent(const PlaybackEvent& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.PlaybackEvent)
+}
+
+void PlaybackEvent::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+  command_ = 0;
+}
+
+PlaybackEvent::~PlaybackEvent() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.PlaybackEvent)
+  SharedDtor();
+}
+
+void PlaybackEvent::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void PlaybackEvent::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* PlaybackEvent::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return PlaybackEvent_descriptor_;
+}
+
+const PlaybackEvent& PlaybackEvent::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
+  return *default_instance_;
+}
+
+PlaybackEvent* PlaybackEvent::default_instance_ = NULL;
+
+PlaybackEvent* PlaybackEvent::New(::google::protobuf::Arena* arena) const {
+  PlaybackEvent* n = new PlaybackEvent;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void PlaybackEvent::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.PlaybackEvent)
+  command_ = 0;
+}
+
+bool PlaybackEvent::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.PlaybackEvent)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional .NullSpaceIPC.PlaybackEvent.Command command = 1;
+      case 1: {
+        if (tag == 8) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_command(static_cast< ::NullSpaceIPC::PlaybackEvent_Command >(value));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.PlaybackEvent)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.PlaybackEvent)
+  return false;
+#undef DO_
+}
+
+void PlaybackEvent::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.PlaybackEvent)
+  // optional .NullSpaceIPC.PlaybackEvent.Command command = 1;
+  if (this->command() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      1, this->command(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.PlaybackEvent)
+}
+
+::google::protobuf::uint8* PlaybackEvent::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.PlaybackEvent)
+  // optional .NullSpaceIPC.PlaybackEvent.Command command = 1;
+  if (this->command() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      1, this->command(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.PlaybackEvent)
+  return target;
+}
+
+int PlaybackEvent::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.PlaybackEvent)
+  int total_size = 0;
+
+  // optional .NullSpaceIPC.PlaybackEvent.Command command = 1;
+  if (this->command() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->command());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void PlaybackEvent::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.PlaybackEvent)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const PlaybackEvent* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const PlaybackEvent>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.PlaybackEvent)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.PlaybackEvent)
+    MergeFrom(*source);
+  }
+}
+
+void PlaybackEvent::MergeFrom(const PlaybackEvent& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.PlaybackEvent)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.command() != 0) {
+    set_command(from.command());
+  }
+}
+
+void PlaybackEvent::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.PlaybackEvent)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void PlaybackEvent::CopyFrom(const PlaybackEvent& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.PlaybackEvent)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool PlaybackEvent::IsInitialized() const {
+
+  return true;
+}
+
+void PlaybackEvent::Swap(PlaybackEvent* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void PlaybackEvent::InternalSwap(PlaybackEvent* other) {
+  std::swap(command_, other->command_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata PlaybackEvent::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = PlaybackEvent_descriptor_;
+  metadata.reflection = PlaybackEvent_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// PlaybackEvent
+
+// optional .NullSpaceIPC.PlaybackEvent.Command command = 1;
+void PlaybackEvent::clear_command() {
+  command_ = 0;
+}
+ ::NullSpaceIPC::PlaybackEvent_Command PlaybackEvent::command() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.PlaybackEvent.command)
+  return static_cast< ::NullSpaceIPC::PlaybackEvent_Command >(command_);
+}
+ void PlaybackEvent::set_command(::NullSpaceIPC::PlaybackEvent_Command value) {
+  
+  command_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.PlaybackEvent.command)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int HighLevelEvent::kParentIdFieldNumber;
 const int HighLevelEvent::kRegionFieldNumber;
+const int HighLevelEvent::kPlaybackEventFieldNumber;
 const int HighLevelEvent::kSimpleHapticFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -809,7 +811,7 @@ HighLevelEvent::HighLevelEvent()
 
 void HighLevelEvent::InitAsDefaultInstance() {
   _is_default_instance_ = true;
-  parent_id_ = const_cast< ::NullSpaceIPC::UUID*>(&::NullSpaceIPC::UUID::default_instance());
+  HighLevelEvent_default_oneof_instance_->playback_event_ = const_cast< ::NullSpaceIPC::PlaybackEvent*>(&::NullSpaceIPC::PlaybackEvent::default_instance());
   HighLevelEvent_default_oneof_instance_->simple_haptic_ = const_cast< ::NullSpaceIPC::SimpleHaptic*>(&::NullSpaceIPC::SimpleHaptic::default_instance());
 }
 
@@ -825,7 +827,7 @@ void HighLevelEvent::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  parent_id_ = NULL;
+  parent_id_ = GOOGLE_ULONGLONG(0);
   region_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   clear_has_events();
 }
@@ -841,7 +843,6 @@ void HighLevelEvent::SharedDtor() {
     clear_events();
   }
   if (this != default_instance_) {
-    delete parent_id_;
   }
 }
 
@@ -873,6 +874,10 @@ HighLevelEvent* HighLevelEvent::New(::google::protobuf::Arena* arena) const {
 void HighLevelEvent::clear_events() {
 // @@protoc_insertion_point(one_of_clear_start:NullSpaceIPC.HighLevelEvent)
   switch(events_case()) {
+    case kPlaybackEvent: {
+      delete events_.playback_event_;
+      break;
+    }
     case kSimpleHaptic: {
       delete events_.simple_haptic_;
       break;
@@ -887,8 +892,7 @@ void HighLevelEvent::clear_events() {
 
 void HighLevelEvent::Clear() {
 // @@protoc_insertion_point(message_clear_start:NullSpaceIPC.HighLevelEvent)
-  if (GetArenaNoVirtual() == NULL && parent_id_ != NULL) delete parent_id_;
-  parent_id_ = NULL;
+  parent_id_ = GOOGLE_ULONGLONG(0);
   region_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   clear_events();
 }
@@ -903,11 +907,13 @@ bool HighLevelEvent::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .NullSpaceIPC.UUID parent_id = 1;
+      // optional uint64 parent_id = 1;
       case 1: {
-        if (tag == 10) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_parent_id()));
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &parent_id_)));
+
         } else {
           goto handle_unusual;
         }
@@ -928,13 +934,26 @@ bool HighLevelEvent::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(26)) goto parse_simple_haptic;
+        if (input->ExpectTag(26)) goto parse_playback_event;
         break;
       }
 
-      // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 3;
+      // optional .NullSpaceIPC.PlaybackEvent playback_event = 3;
       case 3: {
         if (tag == 26) {
+         parse_playback_event:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_playback_event()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_simple_haptic;
+        break;
+      }
+
+      // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 4;
+      case 4: {
+        if (tag == 34) {
          parse_simple_haptic:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_simple_haptic()));
@@ -969,10 +988,9 @@ failure:
 void HighLevelEvent::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:NullSpaceIPC.HighLevelEvent)
-  // optional .NullSpaceIPC.UUID parent_id = 1;
-  if (this->has_parent_id()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, *this->parent_id_, output);
+  // optional uint64 parent_id = 1;
+  if (this->parent_id() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(1, this->parent_id(), output);
   }
 
   // optional string region = 2;
@@ -985,10 +1003,16 @@ void HighLevelEvent::SerializeWithCachedSizes(
       2, this->region(), output);
   }
 
-  // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 3;
+  // optional .NullSpaceIPC.PlaybackEvent playback_event = 3;
+  if (has_playback_event()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3, *events_.playback_event_, output);
+  }
+
+  // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 4;
   if (has_simple_haptic()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      3, *events_.simple_haptic_, output);
+      4, *events_.simple_haptic_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:NullSpaceIPC.HighLevelEvent)
@@ -997,11 +1021,9 @@ void HighLevelEvent::SerializeWithCachedSizes(
 ::google::protobuf::uint8* HighLevelEvent::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.HighLevelEvent)
-  // optional .NullSpaceIPC.UUID parent_id = 1;
-  if (this->has_parent_id()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, *this->parent_id_, false, target);
+  // optional uint64 parent_id = 1;
+  if (this->parent_id() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(1, this->parent_id(), target);
   }
 
   // optional string region = 2;
@@ -1015,11 +1037,18 @@ void HighLevelEvent::SerializeWithCachedSizes(
         2, this->region(), target);
   }
 
-  // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 3;
+  // optional .NullSpaceIPC.PlaybackEvent playback_event = 3;
+  if (has_playback_event()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        3, *events_.playback_event_, false, target);
+  }
+
+  // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 4;
   if (has_simple_haptic()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
-        3, *events_.simple_haptic_, false, target);
+        4, *events_.simple_haptic_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.HighLevelEvent)
@@ -1030,11 +1059,11 @@ int HighLevelEvent::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.HighLevelEvent)
   int total_size = 0;
 
-  // optional .NullSpaceIPC.UUID parent_id = 1;
-  if (this->has_parent_id()) {
+  // optional uint64 parent_id = 1;
+  if (this->parent_id() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        *this->parent_id_);
+      ::google::protobuf::internal::WireFormatLite::UInt64Size(
+        this->parent_id());
   }
 
   // optional string region = 2;
@@ -1045,7 +1074,14 @@ int HighLevelEvent::ByteSize() const {
   }
 
   switch (events_case()) {
-    // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 3;
+    // optional .NullSpaceIPC.PlaybackEvent playback_event = 3;
+    case kPlaybackEvent: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *events_.playback_event_);
+      break;
+    }
+    // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 4;
     case kSimpleHaptic: {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1085,6 +1121,10 @@ void HighLevelEvent::MergeFrom(const HighLevelEvent& from) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
   switch (from.events_case()) {
+    case kPlaybackEvent: {
+      mutable_playback_event()->::NullSpaceIPC::PlaybackEvent::MergeFrom(from.playback_event());
+      break;
+    }
     case kSimpleHaptic: {
       mutable_simple_haptic()->::NullSpaceIPC::SimpleHaptic::MergeFrom(from.simple_haptic());
       break;
@@ -1093,8 +1133,8 @@ void HighLevelEvent::MergeFrom(const HighLevelEvent& from) {
       break;
     }
   }
-  if (from.has_parent_id()) {
-    mutable_parent_id()->::NullSpaceIPC::UUID::MergeFrom(from.parent_id());
+  if (from.parent_id() != 0) {
+    set_parent_id(from.parent_id());
   }
   if (from.region().size() > 0) {
 
@@ -1145,42 +1185,18 @@ void HighLevelEvent::InternalSwap(HighLevelEvent* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // HighLevelEvent
 
-// optional .NullSpaceIPC.UUID parent_id = 1;
-bool HighLevelEvent::has_parent_id() const {
-  return !_is_default_instance_ && parent_id_ != NULL;
-}
+// optional uint64 parent_id = 1;
 void HighLevelEvent::clear_parent_id() {
-  if (GetArenaNoVirtual() == NULL && parent_id_ != NULL) delete parent_id_;
-  parent_id_ = NULL;
+  parent_id_ = GOOGLE_ULONGLONG(0);
 }
-const ::NullSpaceIPC::UUID& HighLevelEvent::parent_id() const {
+ ::google::protobuf::uint64 HighLevelEvent::parent_id() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.parent_id)
-  return parent_id_ != NULL ? *parent_id_ : *default_instance_->parent_id_;
-}
-::NullSpaceIPC::UUID* HighLevelEvent::mutable_parent_id() {
-  
-  if (parent_id_ == NULL) {
-    parent_id_ = new ::NullSpaceIPC::UUID;
-  }
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.parent_id)
   return parent_id_;
 }
-::NullSpaceIPC::UUID* HighLevelEvent::release_parent_id() {
-  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.parent_id)
+ void HighLevelEvent::set_parent_id(::google::protobuf::uint64 value) {
   
-  ::NullSpaceIPC::UUID* temp = parent_id_;
-  parent_id_ = NULL;
-  return temp;
-}
-void HighLevelEvent::set_allocated_parent_id(::NullSpaceIPC::UUID* parent_id) {
-  delete parent_id_;
-  parent_id_ = parent_id;
-  if (parent_id) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.parent_id)
+  parent_id_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.HighLevelEvent.parent_id)
 }
 
 // optional string region = 2;
@@ -1227,7 +1243,55 @@ void HighLevelEvent::clear_region() {
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.region)
 }
 
-// optional .NullSpaceIPC.SimpleHaptic simple_haptic = 3;
+// optional .NullSpaceIPC.PlaybackEvent playback_event = 3;
+bool HighLevelEvent::has_playback_event() const {
+  return events_case() == kPlaybackEvent;
+}
+void HighLevelEvent::set_has_playback_event() {
+  _oneof_case_[0] = kPlaybackEvent;
+}
+void HighLevelEvent::clear_playback_event() {
+  if (has_playback_event()) {
+    delete events_.playback_event_;
+    clear_has_events();
+  }
+}
+ const ::NullSpaceIPC::PlaybackEvent& HighLevelEvent::playback_event() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.playback_event)
+  return has_playback_event()
+      ? *events_.playback_event_
+      : ::NullSpaceIPC::PlaybackEvent::default_instance();
+}
+::NullSpaceIPC::PlaybackEvent* HighLevelEvent::mutable_playback_event() {
+  if (!has_playback_event()) {
+    clear_events();
+    set_has_playback_event();
+    events_.playback_event_ = new ::NullSpaceIPC::PlaybackEvent;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.playback_event)
+  return events_.playback_event_;
+}
+::NullSpaceIPC::PlaybackEvent* HighLevelEvent::release_playback_event() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.playback_event)
+  if (has_playback_event()) {
+    clear_has_events();
+    ::NullSpaceIPC::PlaybackEvent* temp = events_.playback_event_;
+    events_.playback_event_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void HighLevelEvent::set_allocated_playback_event(::NullSpaceIPC::PlaybackEvent* playback_event) {
+  clear_events();
+  if (playback_event) {
+    set_has_playback_event();
+    events_.playback_event_ = playback_event;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.playback_event)
+}
+
+// optional .NullSpaceIPC.SimpleHaptic simple_haptic = 4;
 bool HighLevelEvent::has_simple_haptic() const {
   return events_case() == kSimpleHaptic;
 }

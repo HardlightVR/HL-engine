@@ -15,6 +15,8 @@ public:
 	template<typename THapticType>
 	void Dispatch(const std::string& region, const std::string& iface, const THapticType* input);
 
+	template<typename THapticType>
+	void Broadcast(const THapticType* input);
 private:
 	bool linkAll();
 	bool instantiateAll();
@@ -32,5 +34,13 @@ inline void PluginManager::Dispatch(const std::string& region, const std::string
 {
 	for (auto& plugin : m_plugins) {
 		plugin.second->Dispatch(region, iface, input);
+	}
+}
+
+template<typename THapticType>
+void PluginManager::Broadcast(const THapticType* input)
+{
+	for (auto& plugin : m_plugins) {
+		plugin.second->Broadcast(input);
 	}
 }

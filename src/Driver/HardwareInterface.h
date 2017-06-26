@@ -25,6 +25,9 @@ public:
 		case NullSpaceIPC::HighLevelEvent::kSimpleHaptic:
 			generateLowLevelSimpleHapticEvents(event);
 			break;
+		case NullSpaceIPC::HighLevelEvent::kPlaybackEvent:
+			generatePlaybackCommands(event);
+			break;
 		case NullSpaceIPC::HighLevelEvent::EVENTS_NOT_SET:
 			//fall-through
 		default:
@@ -92,5 +95,6 @@ private:
 
 
 	void generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event);
+	void generatePlaybackCommands(const NullSpaceIPC::HighLevelEvent& event);
 };
 

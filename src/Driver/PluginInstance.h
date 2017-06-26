@@ -9,7 +9,7 @@
 
 #include "events/briefTaxel.h"
 #include "events/lastingTaxel.h"
-
+#include <boost/log/trivial.hpp>
 class RegionRegistry;
 class PluginInstance
 {
@@ -38,6 +38,8 @@ public:
 	template<class THapticType>
 	void Dispatch(const std::string& region, const std::string& iface, const THapticType* input);
 
+	template<class THapticType>
+	void Broadcast(const THapticType* input);
 private:
 	std::vector<NSVR_Provider*> getProviders(const std::string& region, const std::string& iface);
 
@@ -77,8 +79,14 @@ private:
 
 template<class TFunc>
 bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string& symbol, std::function<TFunc>& result) {
-	result = lib->get<TFunc>(symbol);
-	return result ? true : false;
+	try {
+		result = lib->get<TFunc>(symbol);
+		return result ? true : false;
+	}
+	catch (const boost::system::system_error&) {
+		BOOST_LOG_TRIVIAL(warning) << "[PluginInstance] Unable to find function named " << symbol << '\n';
+		return false;
+	}
 
 }
 
@@ -108,6 +116,30 @@ void PluginInstance::Dispatch(const std::string& region, const std::string& ifac
 		dllFunction(provider, region.c_str(), input);	
 	}
 	
+}
+
+template<class THapticType>
+inline void PluginInstance::Broadcast(const THapticType * input)
+{
+
+	static_assert(getSymbolName<THapticType>() != "unknown",
+		"You must use REGISTER_INTERFACE on this type.\n"
+		"If you have implemented a new consumer type, simply put REGISTER_INTERFACE(TypeNameWithoutNSVRPrefixHere)\n"
+		"as the last line of your .h");
+	typedef std::function<bool(NSVR_Provider*, const char*, const THapticType*)> SourceDllFunc;
+
+	constexpr const char* dllFunctionName = getSymbolName<THapticType>();
+	SourceDllFunc dllFunction;
+
+	if (!tryLoad(m_lib, dllFunctionName, dllFunction)) {
+		return;//can't load function
+	}
+
+	for (auto& regionList : m_interfaces) {
+		for (auto& provider : regionList.second.Interfaces) {
+			dllFunction(provider.Provider, regionList.first.c_str(), input);
+		}
+	}
 }
 
 

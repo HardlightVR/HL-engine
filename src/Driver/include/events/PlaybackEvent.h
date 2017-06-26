@@ -9,9 +9,10 @@ extern "C" {
 typedef struct NSVR_PlaybackEvent_t NSVR_PlaybackEvent;
 
 enum NSVR_PlaybackEvent_Command {
-	NSVR_PlaybackEvent_Command_Pause = 0, 
-	NSVR_PlaybackEvent_Command_Unpause = 1,
-	NSVR_PlaybackEvent_Command_Cancel = 2
+	NSVR_PlaybackEvent_Command_Unknown = 0,
+	NSVR_PlaybackEvent_Command_Pause = 1, 
+	NSVR_PlaybackEvent_Command_Unpause = 2,
+	NSVR_PlaybackEvent_Command_Cancel = 3
 };
 
 NSVR_CORE_RETURN(int)NSVR_PlaybackEvent_GetCommand(const NSVR_PlaybackEvent* event, NSVR_PlaybackEvent_Command* outCommand);
