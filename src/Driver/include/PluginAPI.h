@@ -33,6 +33,7 @@ extern "C" {
 
 
 	typedef struct NSVR_Provider_t NSVR_Provider;
+	typedef struct NSVR_Plugin_t NSVR_Plugin;
 	typedef struct NSVR_Core_t NSVR_Core;
 	
 	typedef struct NSVR_RegParams_t {
@@ -43,16 +44,15 @@ extern "C" {
 
 
 	//Right now, temporary until we have auto json-configuration
-	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Provider* pluginPtr, NSVR_Core* core);
+	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, NSVR_Core* core);
 	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(NSVR_Core_t* core, NSVR_RegParams params);
 
 
-	NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Provider** pluginPtr);
+	NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin** pluginPtr);
 
-	NSVR_PLUGIN_RETURN(int) NSVR_Free(NSVR_Provider** ptr);
+	NSVR_PLUGIN_RETURN(int) NSVR_Free(NSVR_Plugin** ptr);
 
 
-	
 
 #ifdef __cplusplus
 }

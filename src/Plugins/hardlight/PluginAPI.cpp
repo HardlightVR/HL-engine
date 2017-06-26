@@ -11,11 +11,18 @@
 
 
 NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_LastingTaxel(NSVR_Provider* plugin, const char* region, const NSVR_LastingTaxel* haptic) {
-//	float duration;
-	//NSVR_LastingTaxel_GetDuration(haptic, &duration);
-//	std::cout << "Got a lasting haptic primitive of duration " << duration << '\n';
+	uint64_t id;
+	uint32_t effect;
+	float strength;
 
-	//AS_TYPE(HardlightPlugin, pluginPtr)->
+	NSVR_LastingTaxel_GetId(haptic, &id);
+	NSVR_LastingTaxel_GetEffect(haptic, &effect);
+	NSVR_LastingTaxel_GetStrength(haptic, &strength);
+	
+	Location location = Locator::Translator().ToLocationFromRegion(region);
+
+	AS_TYPE(HardlightPlugin, plugin)->PlayLasting(id, location, effect, strength);
+	
 	return true;
 }
 NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_BriefTaxel(NSVR_Provider* plugin, const char* region, const NSVR_BriefTaxel* iota) {
@@ -26,24 +33,23 @@ NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_BriefTaxel(NSVR_Provider* plugin, 
 
 	NSVR_BriefTaxel_GetEffect(iota, &effect);
 	NSVR_BriefTaxel_GetStrength(iota, &strength);
-
 	AS_TYPE(HardlightPlugin, plugin)->PlayBrief(location, effect, strength);
 
 
 	return true;
 }
 
-NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Provider ** pluginPtr)
+NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin ** pluginPtr)
 {
 	Locator::initialize();
 	Locator::provide(new EnumTranslator());
 
-	*pluginPtr = AS_TYPE(NSVR_Provider, new HardlightPlugin());
+	*pluginPtr = AS_TYPE(NSVR_Plugin, new HardlightPlugin());
 
 	return 1;
 }
 
-NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Provider* pluginPtr, NSVR_Core* core) {
+NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, NSVR_Core* core) {
 
 	return AS_TYPE(HardlightPlugin, pluginPtr)->Configure(core);
 	
@@ -51,7 +57,7 @@ NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Provider* pluginPtr, NSVR_Core* core
 
 
 
-NSVR_PLUGIN_RETURN(int) NSVR_Free(NSVR_Provider ** ptr)
+NSVR_PLUGIN_RETURN(int) NSVR_Free(NSVR_Plugin ** ptr)
 {
 	delete AS_TYPE(HardlightPlugin, *ptr);
 	*ptr = nullptr;

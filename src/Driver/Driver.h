@@ -7,7 +7,6 @@
 #include "ImuConsumer.h"
 
 #include "PluginManager.h"
-#include "RegionRegistry.h"
 
 
 
@@ -41,8 +40,7 @@ private:
 
 	NullSpace::SharedMemory::TrackingUpdate m_cachedTracking;
 	
-	PluginManager m_pluginManager;   //order dependency (1)
-	RegionRegistry m_regionRegistry; //order dependency (2)
+	PluginManager m_pluginManager;   
 	HardwareInterface m_hardware;
 
 	void handleTracking();

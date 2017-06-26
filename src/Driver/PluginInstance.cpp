@@ -28,9 +28,9 @@ bool PluginInstance::Load()
 }
 
 //precondition: successfully loaded
-bool PluginInstance::Configure(RegionRegistry& registry)
+bool PluginInstance::Configure()
 {
-	m_configure(m_rawPtr, AS_TYPE(NSVR_Core, &registry));
+	m_configure(m_rawPtr, AS_TYPE(NSVR_Core, this));
 	return true;
 }
 
@@ -90,10 +90,28 @@ std::string PluginInstance::GetDisplayName() const
 	return m_displayName;
 }
 
-NSVR_Provider* PluginInstance::GetRawHandle()
+int PluginInstance::RegisterInterface(NSVR_RegParams params)
 {
-	return m_rawPtr;
+	m_interfaces[params.Region].Interfaces.emplace_back(params.Interface, params.Provider);
+	return 1;
 }
+
+std::vector<NSVR_Provider*> PluginInstance::getProviders(const std::string& region, const std::string& iface)
+{
+	std::vector<NSVR_Provider*> matchingProviders;
+	if (m_interfaces.find(region) != m_interfaces.end()) {
+		auto& atRegion = m_interfaces.at(region).Interfaces;
+		for (const auto& plugin : atRegion) {
+			if (plugin.Name == iface) {
+				matchingProviders.push_back(plugin.Provider);
+			}
+		}
+	}
+	
+	return matchingProviders;
+}
+
+
 
 PluginInstance::PluginInstance(PluginInstance && old) : 
 	  m_lib(std::move(old.m_lib))

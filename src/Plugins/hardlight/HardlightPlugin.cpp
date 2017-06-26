@@ -63,4 +63,8 @@ int HardlightPlugin::PlayBrief(Location loc, uint32_t effect, float strength)
 	return 1;
 }
 
+void HardlightPlugin::PlayLasting(uint64_t id, Location location, uint32_t effect, float strength)
+{
+	//put it in the zone mode, wooo
+}
 

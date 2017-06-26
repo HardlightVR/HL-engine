@@ -11,6 +11,6 @@ NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(NSVR_Core_t * core, NSVR_RegParams 
 		return -1;
 	}
 
-	return AS_TYPE(RegionRegistry, core)->RegisterNode(params);
+	return AS_TYPE(PluginInstance, core)->RegisterInterface(params);
 
 }

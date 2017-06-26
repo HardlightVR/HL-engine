@@ -4,7 +4,7 @@
 #include "IoService.h"
 #include "Locator.h"
 
-HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, RegionRegistry& registry) :
+HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, PluginManager& plugins) :
 	m_adapter(std::make_unique<BoostSerialAdapter>(ioService->GetIOService())),
 
 	m_firmware(m_adapter, ioService->GetIOService()),
@@ -13,7 +13,7 @@ HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, Regio
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, ioService->GetIOService())),
 	
 	m_running(true),
-	m_registry(registry)
+	m_pluginManager(plugins)
 	
 
 {
@@ -111,14 +111,14 @@ void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::H
 		nsvr::events::BriefTaxel taxel = { 0 };
 		taxel.Effect = simple_event.effect();
 		taxel.Strength = simple_event.strength();
-		m_registry.Activate(region, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
+		m_pluginManager.Dispatch(region, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
 	}
 	else {
 		nsvr::events::LastingTaxel taxel = { 0 };
 		taxel.Effect = simple_event.effect();
 		taxel.Strength = simple_event.strength();
 		taxel.Duration = simple_event.duration();
-		m_registry.Activate(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
+		m_pluginManager.Dispatch(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
 	}
 }
 

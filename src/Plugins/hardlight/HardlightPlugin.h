@@ -31,4 +31,6 @@ private:
 
 	
 
+public:
+	void PlayLasting(uint64_t id, Location location, uint32_t effect, float strength);
 };

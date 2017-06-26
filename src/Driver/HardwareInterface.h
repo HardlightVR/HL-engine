@@ -17,7 +17,7 @@ class IoService;
 class HardwareInterface
 {
 public:
-	HardwareInterface(std::shared_ptr<IoService> io, RegionRegistry& registry); //(io, regionRegistry)
+	HardwareInterface(std::shared_ptr<IoService> io, PluginManager& manager); 
 	~HardwareInterface();
 
 	void ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event) {
@@ -40,14 +40,9 @@ public:
 			m_firmware.HaltEffect(Location(ec.area()));
 		}
 		else if (ec.command() == NullSpaceIPC::EffectCommand_Command_PLAY) {
-			nsvr::events::BriefTaxel taxel = { 0 };
-			taxel.Effect = ec.effect();
-			taxel.Strength = ec.strength();
+		
 
-			std::string locString = Locator::Translator().ToString(Location(ec.area()));
-			m_registry.Activate(locString, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
-
-			//m_firmware.PlayEffect(Location(ec.area()), ec.effect(), ec.strength());
+			m_firmware.PlayEffect(Location(ec.area()), ec.effect(), ec.strength());
 		}
 		else if (ec.command()== NullSpaceIPC::EffectCommand_Command_PLAY_CONTINUOUS) {
 			m_firmware.PlayEffectContinuous(Location(ec.area()), ec.effect(), ec.strength());
@@ -93,7 +88,7 @@ private:
 	bool m_running;
 
 
-	RegionRegistry& m_registry;
+	PluginManager& m_pluginManager;
 
 
 	void generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event);

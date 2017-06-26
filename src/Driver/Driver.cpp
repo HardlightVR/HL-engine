@@ -50,12 +50,11 @@ Driver::Driver() :
 	m_imus(),
 	m_cachedTracking({}),
 	m_pluginManager({"HardlightPlugin"}),
-	m_regionRegistry(m_pluginManager),
-	m_hardware(m_io, m_regionRegistry)
+	m_hardware(m_io, m_pluginManager)
 
 
 {
-	m_pluginManager.LoadAll(m_regionRegistry);
+	m_pluginManager.LoadAll();
 
 
 	using namespace boost::log;
@@ -142,6 +141,8 @@ void Driver::handleHaptics()
 			m_hardware.ReceiveHighLevelEvent(command);
 		}
 	}
+
+	
 }
 
 void Driver::handleStatus()

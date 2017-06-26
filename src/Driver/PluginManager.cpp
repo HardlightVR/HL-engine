@@ -2,7 +2,6 @@
 #include "PluginManager.h"
 #include <iostream>
 #include <bitset>
-#include "RegionRegistry.h"
 PluginManager::PluginManager(std::vector<std::string> plugins) 
 	: m_pluginNames(std::move(plugins))
 	, m_plugins()
@@ -10,11 +9,11 @@ PluginManager::PluginManager(std::vector<std::string> plugins)
 
 }
 
-bool PluginManager::LoadAll(RegionRegistry& registry)
+bool PluginManager::LoadAll()
 {
 	linkAll();
 	instantiateAll();
-	configureAll(registry);
+	configureAll();
 	return true;
 }
 
@@ -25,21 +24,15 @@ bool PluginManager::UnloadAll()
 	return true;
 }
 
-std::vector<PluginInstance*> PluginManager::GetPlugins()
-{
-	std::vector<PluginInstance*> plugins;
-	for (auto& plugin : m_plugins) {
-		plugins.push_back(&plugin.second);
-	}
-	return plugins;
-}
+
+
 
 
 bool PluginManager::linkAll()
 {
 	for (const std::string& pluginName : m_pluginNames) {
-		m_plugins.emplace(std::make_pair(pluginName, PluginInstance(pluginName)));
-		if (!m_plugins.at(pluginName).Link()) {
+		m_plugins.emplace(std::make_pair(pluginName, std::make_shared<PluginInstance>(pluginName)));
+		if (!m_plugins.at(pluginName)->Link()) {
 			std::cout << "Warning: unable to link " << pluginName << '\n';
 		}
 	}
@@ -50,7 +43,7 @@ bool PluginManager::linkAll()
 bool PluginManager::instantiateAll()
 {
 	for (auto& plugin : m_plugins) {
-		if (!plugin.second.Load()) {
+		if (!plugin.second->Load()) {
 			std::cout << "Warning: unable to instantiate " << plugin.first << '\n';
 		}
 	}
@@ -58,10 +51,10 @@ bool PluginManager::instantiateAll()
 	return true;
 }
 
-bool PluginManager::configureAll(RegionRegistry& registry)
+bool PluginManager::configureAll()
 {
 	for (auto& plugin : m_plugins) {
-		if (!plugin.second.Configure(registry)) {
+		if (!plugin.second->Configure()) {
 			std::cout << "Warning: unable to configure " << plugin.first << '\n';
 
 		}
@@ -73,7 +66,7 @@ bool PluginManager::configureAll(RegionRegistry& registry)
 bool PluginManager::destroyAll()
 {
 	for (auto& plugin : m_plugins) {
-		if (!plugin.second.Unload()) {
+		if (!plugin.second->Unload()) {
 			std::cout << "Warning: unable to destroy " << plugin.first << '\n';
 		}
 	}

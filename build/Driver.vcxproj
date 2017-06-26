@@ -353,6 +353,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\enumser.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h" />
     <ClInclude Include="..\src\Driver\events_impl\LastingTaxel.h" />
+    <ClInclude Include="..\src\Driver\events_impl\PlaybackEvent.h" />
     <ClInclude Include="..\src\Driver\flatbuff_defs\ClientStatusUpdate_generated.h" />
     <ClInclude Include="..\src\Driver\flatbuff_defs\EnginePacket_generated.h" />
     <ClInclude Include="..\src\Driver\flatbuff_defs\Events_generated.h" />
@@ -375,9 +376,9 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\flatbuff_defs\TrackingUpdate_generated.h" />
     <ClInclude Include="..\src\Driver\flatbuff_defs\instructions_generated.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
-    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
     <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h" />
     <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h" />
+    <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h" />
@@ -427,7 +428,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
     <ClCompile Include="..\src\Driver\PluginManager.cpp" />
-    <ClCompile Include="..\src\Driver\RegionRegistry.cpp" />
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
@@ -441,6 +441,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\enumser.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\LastingTaxel.cpp" />
+    <ClCompile Include="..\src\Driver\events_impl\PlaybackEvent.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

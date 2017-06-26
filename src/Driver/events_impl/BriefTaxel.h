@@ -1,4 +1,5 @@
 #pragma once
+#include "../include/events/BriefTaxel.h"
 
 namespace nsvr {
 	namespace events {

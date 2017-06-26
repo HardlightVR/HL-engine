@@ -20,16 +20,14 @@ public:
 	~PluginInstance();
 	bool Link();
 	bool Load();
-	bool Configure(RegionRegistry& registry);
 
+	bool Configure();
+	int RegisterInterface(NSVR_RegParams params);
 	bool Unload();
 	bool IsLoaded() const;
 	std::string GetFileName() const;
 	std::string GetDisplayName() const;
-	//This is temporary
-	//I swear
-	NSVR_Provider* GetRawHandle();
-	//testing purposes only!
+
 
 	PluginInstance(const PluginInstance&) = delete;
 	const PluginInstance& operator=(const PluginInstance&) = delete;
@@ -38,15 +36,18 @@ public:
 	
 
 	template<class THapticType>
-	void Dispatch( const char* region, const THapticType* input);
+	void Dispatch(const std::string& region, const std::string& iface, const THapticType* input);
 
 private:
-	typedef std::function<int(NSVR_Provider**)> plugin_creator_t;
-	typedef std::function<int(NSVR_Provider**)> plugin_destructor_t;
-	typedef std::function<int(NSVR_Provider*, NSVR_Core*)> plugin_configure_t;
+	std::vector<NSVR_Provider*> getProviders(const std::string& region, const std::string& iface);
+
+
+	typedef std::function<int(NSVR_Plugin**)> plugin_creator_t;
+	typedef std::function<int(NSVR_Plugin**)> plugin_destructor_t;
+	typedef std::function<int(NSVR_Plugin*, NSVR_Core*)> plugin_configure_t;
 	std::unique_ptr<boost::dll::shared_library> m_lib;
 	
-	NSVR_Provider* m_rawPtr;
+	NSVR_Plugin* m_rawPtr;
 
 	plugin_creator_t m_creator;
 	plugin_destructor_t m_destructor;
@@ -56,6 +57,18 @@ private:
 	std::string m_fileName;
 	bool m_loaded;
 
+	struct Interface {
+		std::string Name;
+		NSVR_Provider* Provider;
+		Interface(std::string name, NSVR_Provider* provider) : Name(name), Provider(provider) {}
+	};
+
+	struct InterfaceList {
+		std::vector<Interface> Interfaces;
+		InterfaceList(): Interfaces() {};
+		InterfaceList(std::vector<Interface>&& i) : Interfaces(std::move(i)) {}
+	};
+	std::unordered_map<std::string, InterfaceList> m_interfaces;
 
 
 
@@ -69,9 +82,9 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 
 }
 
-
+//dispatches an event to any providers registered to the given region and interface
 template<class THapticType>
-void PluginInstance::Dispatch(const char* region, const THapticType* input)
+void PluginInstance::Dispatch(const std::string& region, const std::string& iface, const THapticType* input)
 {
 	static_assert(getSymbolName<THapticType>() != "unknown", 
 		"You must use REGISTER_INTERFACE on this type.\n" 
@@ -79,15 +92,20 @@ void PluginInstance::Dispatch(const char* region, const THapticType* input)
 		"as the last line of your .h");
 
 
-	//This matches the signature of all NSVR_Provider_Consume_X functions
-	typedef std::function<bool(NSVR_Provider*, const char*, const THapticType*)> SourceDllFunc;
-	
-	constexpr const char* dllFunctionName = getSymbolName<THapticType>();
+	std::vector<NSVR_Provider*> providers = getProviders(region, iface);
 
+	typedef std::function<bool(NSVR_Provider*, const char*, const THapticType*)> SourceDllFunc;
+
+	constexpr const char* dllFunctionName = getSymbolName<THapticType>();
 	SourceDllFunc dllFunction;
 
-	if (tryLoad(m_lib, dllFunctionName, dllFunction)) {
-		dllFunction(m_rawPtr, region, input);
+	if (!tryLoad(m_lib, dllFunctionName, dllFunction)) {
+		return;//can't load function
+	} 
+
+
+	for (NSVR_Provider* provider : providers) {
+		dllFunction(provider, region.c_str(), input);	
 	}
 	
 }

@@ -24,13 +24,13 @@
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>Driver\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
-      <Filter>Driver\include\events</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h">
       <Filter>Driver\include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h">
       <Filter>Driver\include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h">

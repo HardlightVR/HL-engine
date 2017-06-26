@@ -7,24 +7,21 @@
 #include "PluginManager.h"
 class RegionRegistry {
 public:
-	typedef std::size_t RegionIndex;
 
 	RegionRegistry(PluginManager& pluginManager);
 	int RegisterNode(NSVR_RegParams params);
 
 	template<class THapticType>
-	int Activate(const std::string& region, const std::string& iface, const THapticType* args);
-
-	std::vector<PluginInstance*> GetPluginSet(NSVR_Region regions);
+	int Dispatch(const std::string& region, const std::string& iface, const THapticType* args);
+	
 private:
 	PluginManager& m_pluginManager;
-	std::unordered_map<RegionIndex, std::vector<PluginInstance*>> m_regionRegistry;
-	typedef std::unordered_map<std::string, std::set<NSVR_Provider*>> ProviderMap;
+	using ProviderMap = std::unordered_map<std::string, std::set<NSVR_Provider*>>;
 	std::unordered_map<std::string, ProviderMap> m_interfaces;
 };
 
 template<class THapticType>
-int RegionRegistry::Activate(const std::string& region, const std::string& iface, const THapticType* args)
+int RegionRegistry::Dispatch(const std::string& region, const std::string& iface, const THapticType* args)
 {
 	if (m_interfaces.find(region) == m_interfaces.end()) {
 		return -1;
@@ -57,4 +54,6 @@ int RegionRegistry::Activate(const std::string& region, const std::string& iface
 			}
 		}
 	}
+
+	return 1;
 }
