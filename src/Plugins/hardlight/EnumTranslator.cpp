@@ -167,6 +167,10 @@ Location EnumTranslator::ToLocationFromRegion(const std::string & region) const
 {
 	return _regionMap.right.at(region);
 }
+
+std::string EnumTranslator::ToRegionFromLocation(Location loc) const {
+	return _regionMap.left.at(loc);
+}
 void EnumTranslator::init_familymap()
 {
 	boost::assign::insert(_effectFamilyMap)

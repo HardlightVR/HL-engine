@@ -295,6 +295,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClInclude Include="..\src\plugins\hardlight\Enums.h" />
     <ClInclude Include="..\src\plugins\hardlight\FirmwareInterface.h" />
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h" />
+    <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h" />
     <ClInclude Include="..\src\plugins\hardlight\HexUtils.h" />
     <ClInclude Include="..\src\plugins\hardlight\ILogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
@@ -310,11 +311,19 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\Packet.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
+    <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
     <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h" />
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h" />
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h" />
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.h" />
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardwareCommands.h" />
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\LiveBasicHapticEvent.h" />
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.h" />
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\RtpModel.h" />
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\ZoneModel.h" />
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp" />
@@ -323,6 +332,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClCompile Include="..\src\plugins\hardlight\EnumTranslator.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\FirmwareInterface.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp" />
@@ -335,6 +345,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClCompile Include="..\src\plugins\hardlight\Packet.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
@@ -346,6 +357,12 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightDevice.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\LiveBasicHapticEvent.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\RtpModel.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Driver.vcxproj">

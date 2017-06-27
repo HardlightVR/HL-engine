@@ -164,6 +164,9 @@ project "HardlightMkIII"
 		"../src/plugins/hardlight/**.cpp",
 		"../src/plugins/hardlight/**.h",
 		"../src/Driver/include/**.h",
+		"../src/plugins/hardlight/zone_log/**.cpp",
+		"../src/plugins/hardlight/zone_log/**.h"
+
 
 	}
 

@@ -19,6 +19,9 @@
     <Filter Include="plugins\hardlight\Json">
       <UniqueIdentifier>{56A3CC43-429D-F595-2B0A-8CA617A35B02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="plugins\hardlight\zone_logic">
+      <UniqueIdentifier>{A5D20152-918D-F1FD-3A45-6A4826DF3B8E}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
@@ -58,6 +61,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\HexUtils.h">
@@ -105,6 +111,9 @@
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -119,6 +128,27 @@
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h">
       <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardwareCommands.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\LiveBasicHapticEvent.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\RtpModel.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\ZoneModel.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +168,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp">
@@ -176,6 +209,9 @@
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
@@ -187,6 +223,24 @@
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
       <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightDevice.cpp">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.cpp">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\LiveBasicHapticEvent.cpp">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.cpp">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\RtpModel.cpp">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
+      <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

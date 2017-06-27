@@ -3,7 +3,7 @@
 #include "InstructionBuilder.h"
 #include "Enums.h"
 #include <boost/asio/io_service.hpp>
-
+#include "zone_logic/HardwareCommands.h"
 class FirmwareInterface
 {
 	
@@ -17,6 +17,7 @@ public:
 	FirmwareInterface(std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io);
 	~FirmwareInterface();
 
+	void Execute(const CommandBuffer& buffer);
 	void PlayEffect(Location location, uint32_t effect, float strength);
 	void HaltEffect(Location location);
 	void PlayEffectContinuous(Location location, uint32_t effect, float strength);

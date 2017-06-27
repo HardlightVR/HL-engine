@@ -8,12 +8,25 @@ HardlightPlugin::HardlightPlugin() :
 	m_adapter(std::make_unique<BoostSerialAdapter>(m_io->GetIOService())),
 	m_firmware(m_adapter, m_io->GetIOService()),
 	m_monitor(std::make_shared<KeepaliveMonitor>(m_io->GetIOService(), m_firmware)),
-	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, m_io->GetIOService()))
+	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, m_io->GetIOService())),
+	m_device(),
+	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5))
 
 {
+
 	m_adapter->SetMonitor(m_monitor);
 	m_adapter->Connect();
 	m_synchronizer->BeginSync();
+	
+	m_eventPull.SetEvent([&]() {
+		constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
+		auto dt = 5 * ms_fraction_of_second;
+
+	
+		auto commands = m_device.GenerateHardwareCommands(dt);
+		m_firmware.Execute(commands);
+		
+	});
 }
 
 HardlightPlugin::~HardlightPlugin()
@@ -27,44 +40,9 @@ HardlightPlugin::~HardlightPlugin()
 
 int HardlightPlugin::Configure(NSVR_Core* core)
 {
-	NSVR_RegParams params = { 0 };
-	params.Provider = AS_TYPE(NSVR_Provider, this);
-	params.Interface = "brief-taxel";
-
-	std::vector<std::string> regions = {
-		"left_back",
-		"right_back",
-		"left_shoulder",
-		"right_shoulder",
-		"left_upper_arm",
-		"right_upper_arm",
-		"left_forearm",
-		"right_forearm",
-		"left_upper_chest",
-		"right_upper_chest",
-		"left_upper_ab",
-		"right_upper_ab",
-		"left_mid_ab",
-		"right_mid_ab",
-		"left_lower_ab",
-		"right_lower_ab"
-	};
-	for (const auto& region : regions) {
-		params.Region = region.c_str();
-		NSVR_Core_RegisterNode(core, params);
-	}
+	m_device.RegisterDrivers(core);
+	
 
 	return 1;
-}
-
-int HardlightPlugin::PlayBrief(Location loc, uint32_t effect, float strength)
-{
-	m_firmware.PlayEffect(loc, effect, strength);
-	return 1;
-}
-
-void HardlightPlugin::PlayLasting(uint64_t id, Location location, uint32_t effect, float strength)
-{
-	//put it in the zone mode, wooo
 }
 

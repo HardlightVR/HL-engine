@@ -2,7 +2,7 @@
 #include "FirmwareInterface.h"
 #include "Locator.h"
 #include "InstructionSet.h"
-
+#include "HardwareCommandVisitor.h"
 #include <boost\log\trivial.hpp>
 FirmwareInterface::FirmwareInterface(std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io):
 m_instructionSet(std::make_shared<InstructionSet>()),
@@ -191,6 +191,14 @@ void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
 {
 	_lfQueue.push(bytes, length);
 
+}
+
+void FirmwareInterface::Execute(const CommandBuffer & buffer)
+{
+	HardwareCommandVisitor executor(*this);
+	for (const auto& command : buffer) {
+		boost::apply_visitor(executor, command);
+	}
 }
 
 void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float strength) {

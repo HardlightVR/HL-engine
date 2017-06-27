@@ -50,6 +50,7 @@ public:
 	std::string ToString(uint32_t effectFamily) const;
 
 	Location ToLocationFromRegion(const std::string& region) const;
+	std::string ToRegionFromLocation(Location loc) const;
 private:
 	
 	void init_locations();
