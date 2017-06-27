@@ -24,6 +24,12 @@ namespace {
 const ::google::protobuf::Descriptor* SimpleHaptic_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   SimpleHaptic_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CurveHaptic_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CurveHaptic_reflection_ = NULL;
+const ::google::protobuf::Descriptor* CurveHaptic_Sample_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  CurveHaptic_Sample_reflection_ = NULL;
 const ::google::protobuf::Descriptor* RealtimeHaptic_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   RealtimeHaptic_reflection_ = NULL;
@@ -41,6 +47,7 @@ struct HighLevelEventOneofInstance {
   const ::NullSpaceIPC::PlaybackEvent* playback_event_;
   const ::NullSpaceIPC::SimpleHaptic* simple_haptic_;
   const ::NullSpaceIPC::RealtimeHaptic* realtime_haptic_;
+  const ::NullSpaceIPC::CurveHaptic* curve_haptic_;
 }* HighLevelEvent_default_oneof_instance_ = NULL;
 
 }  // namespace
@@ -71,7 +78,39 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(SimpleHaptic),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, _is_default_instance_));
-  RealtimeHaptic_descriptor_ = file->message_type(1);
+  CurveHaptic_descriptor_ = file->message_type(1);
+  static const int CurveHaptic_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, regions_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, samples_),
+  };
+  CurveHaptic_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CurveHaptic_descriptor_,
+      CurveHaptic::default_instance_,
+      CurveHaptic_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CurveHaptic),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, _is_default_instance_));
+  CurveHaptic_Sample_descriptor_ = CurveHaptic_descriptor_->nested_type(0);
+  static const int CurveHaptic_Sample_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, time_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, magnitude_),
+  };
+  CurveHaptic_Sample_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      CurveHaptic_Sample_descriptor_,
+      CurveHaptic_Sample::default_instance_,
+      CurveHaptic_Sample_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(CurveHaptic_Sample),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, _is_default_instance_));
+  RealtimeHaptic_descriptor_ = file->message_type(2);
   static const int RealtimeHaptic_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic, magnitudes_),
   };
@@ -102,7 +141,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(RealtimeHaptic_Magnitude),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic_Magnitude, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic_Magnitude, _is_default_instance_));
-  PlaybackEvent_descriptor_ = file->message_type(2);
+  PlaybackEvent_descriptor_ = file->message_type(3);
   static const int PlaybackEvent_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, command_),
   };
@@ -118,12 +157,13 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _is_default_instance_));
   PlaybackEvent_Command_descriptor_ = PlaybackEvent_descriptor_->enum_type(0);
-  HighLevelEvent_descriptor_ = file->message_type(3);
-  static const int HighLevelEvent_offsets_[5] = {
+  HighLevelEvent_descriptor_ = file->message_type(4);
+  static const int HighLevelEvent_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, parent_id_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, playback_event_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, simple_haptic_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, realtime_haptic_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, curve_haptic_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, events_),
   };
   HighLevelEvent_reflection_ =
@@ -155,6 +195,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       SimpleHaptic_descriptor_, &SimpleHaptic::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CurveHaptic_descriptor_, &CurveHaptic::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      CurveHaptic_Sample_descriptor_, &CurveHaptic_Sample::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       RealtimeHaptic_descriptor_, &RealtimeHaptic::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       RealtimeHaptic_Magnitude_descriptor_, &RealtimeHaptic_Magnitude::default_instance());
@@ -169,6 +213,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void protobuf_ShutdownFile_HighLevelEvent_2eproto() {
   delete SimpleHaptic::default_instance_;
   delete SimpleHaptic_reflection_;
+  delete CurveHaptic::default_instance_;
+  delete CurveHaptic_reflection_;
+  delete CurveHaptic_Sample::default_instance_;
+  delete CurveHaptic_Sample_reflection_;
   delete RealtimeHaptic::default_instance_;
   delete RealtimeHaptic_reflection_;
   delete RealtimeHaptic_Magnitude::default_instance_;
@@ -191,27 +239,36 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
     "\n\024HighLevelEvent.proto\022\014NullSpaceIPC\"S\n\014"
     "SimpleHaptic\022\017\n\007regions\030\001 \003(\t\022\016\n\006effect\030"
     "\002 \001(\r\022\020\n\010strength\030\003 \001(\002\022\020\n\010duration\030\004 \001("
-    "\002\"{\n\016RealtimeHaptic\022:\n\nmagnitudes\030\001 \003(\0132"
-    "&.NullSpaceIPC.RealtimeHaptic.Magnitude\032"
-    "-\n\tMagnitude\022\016\n\006region\030\001 \001(\t\022\020\n\010strength"
-    "\030\002 \001(\002\"\201\001\n\rPlaybackEvent\0224\n\007command\030\001 \001("
-    "\0162#.NullSpaceIPC.PlaybackEvent.Command\":"
-    "\n\007Command\022\013\n\007UNKNOWN\020\000\022\t\n\005PAUSE\020\001\022\013\n\007UNP"
-    "AUSE\020\002\022\n\n\006CANCEL\020\003\"\322\001\n\016HighLevelEvent\022\021\n"
-    "\tparent_id\030\001 \001(\004\0225\n\016playback_event\030\002 \001(\013"
-    "2\033.NullSpaceIPC.PlaybackEventH\000\0223\n\rsimpl"
-    "e_haptic\030\003 \001(\0132\032.NullSpaceIPC.SimpleHapt"
-    "icH\000\0227\n\017realtime_haptic\030\004 \001(\0132\034.NullSpac"
-    "eIPC.RealtimeHapticH\000B\010\n\006eventsb\006proto3", 599);
+    "\002\"|\n\013CurveHaptic\022\017\n\007regions\030\001 \003(\t\0221\n\007sam"
+    "ples\030\002 \003(\0132 .NullSpaceIPC.CurveHaptic.Sa"
+    "mple\032)\n\006Sample\022\014\n\004time\030\001 \001(\002\022\021\n\tmagnitud"
+    "e\030\002 \001(\002\"{\n\016RealtimeHaptic\022:\n\nmagnitudes\030"
+    "\001 \003(\0132&.NullSpaceIPC.RealtimeHaptic.Magn"
+    "itude\032-\n\tMagnitude\022\016\n\006region\030\001 \001(\t\022\020\n\010st"
+    "rength\030\002 \001(\002\"\201\001\n\rPlaybackEvent\0224\n\007comman"
+    "d\030\001 \001(\0162#.NullSpaceIPC.PlaybackEvent.Com"
+    "mand\":\n\007Command\022\013\n\007UNKNOWN\020\000\022\t\n\005PAUSE\020\001\022"
+    "\013\n\007UNPAUSE\020\002\022\n\n\006CANCEL\020\003\"\205\002\n\016HighLevelEv"
+    "ent\022\021\n\tparent_id\030\001 \001(\004\0225\n\016playback_event"
+    "\030\002 \001(\0132\033.NullSpaceIPC.PlaybackEventH\000\0223\n"
+    "\rsimple_haptic\030\003 \001(\0132\032.NullSpaceIPC.Simp"
+    "leHapticH\000\0227\n\017realtime_haptic\030\004 \001(\0132\034.Nu"
+    "llSpaceIPC.RealtimeHapticH\000\0221\n\014curve_hap"
+    "tic\030\005 \001(\0132\031.NullSpaceIPC.CurveHapticH\000B\010"
+    "\n\006eventsb\006proto3", 776);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "HighLevelEvent.proto", &protobuf_RegisterTypes);
   SimpleHaptic::default_instance_ = new SimpleHaptic();
+  CurveHaptic::default_instance_ = new CurveHaptic();
+  CurveHaptic_Sample::default_instance_ = new CurveHaptic_Sample();
   RealtimeHaptic::default_instance_ = new RealtimeHaptic();
   RealtimeHaptic_Magnitude::default_instance_ = new RealtimeHaptic_Magnitude();
   PlaybackEvent::default_instance_ = new PlaybackEvent();
   HighLevelEvent::default_instance_ = new HighLevelEvent();
   HighLevelEvent_default_oneof_instance_ = new HighLevelEventOneofInstance();
   SimpleHaptic::default_instance_->InitAsDefaultInstance();
+  CurveHaptic::default_instance_->InitAsDefaultInstance();
+  CurveHaptic_Sample::default_instance_->InitAsDefaultInstance();
   RealtimeHaptic::default_instance_->InitAsDefaultInstance();
   RealtimeHaptic_Magnitude::default_instance_->InitAsDefaultInstance();
   PlaybackEvent::default_instance_->InitAsDefaultInstance();
@@ -687,6 +744,676 @@ void SimpleHaptic::clear_duration() {
   
   duration_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.duration)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CurveHaptic_Sample::kTimeFieldNumber;
+const int CurveHaptic_Sample::kMagnitudeFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CurveHaptic_Sample::CurveHaptic_Sample()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.CurveHaptic.Sample)
+}
+
+void CurveHaptic_Sample::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CurveHaptic_Sample::CurveHaptic_Sample(const CurveHaptic_Sample& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.CurveHaptic.Sample)
+}
+
+void CurveHaptic_Sample::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+  time_ = 0;
+  magnitude_ = 0;
+}
+
+CurveHaptic_Sample::~CurveHaptic_Sample() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.CurveHaptic.Sample)
+  SharedDtor();
+}
+
+void CurveHaptic_Sample::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void CurveHaptic_Sample::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CurveHaptic_Sample::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CurveHaptic_Sample_descriptor_;
+}
+
+const CurveHaptic_Sample& CurveHaptic_Sample::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
+  return *default_instance_;
+}
+
+CurveHaptic_Sample* CurveHaptic_Sample::default_instance_ = NULL;
+
+CurveHaptic_Sample* CurveHaptic_Sample::New(::google::protobuf::Arena* arena) const {
+  CurveHaptic_Sample* n = new CurveHaptic_Sample;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CurveHaptic_Sample::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.CurveHaptic.Sample)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(CurveHaptic_Sample, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<CurveHaptic_Sample*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(time_, magnitude_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
+}
+
+bool CurveHaptic_Sample::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.CurveHaptic.Sample)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float time = 1;
+      case 1: {
+        if (tag == 13) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &time_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(21)) goto parse_magnitude;
+        break;
+      }
+
+      // optional float magnitude = 2;
+      case 2: {
+        if (tag == 21) {
+         parse_magnitude:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &magnitude_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.CurveHaptic.Sample)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.CurveHaptic.Sample)
+  return false;
+#undef DO_
+}
+
+void CurveHaptic_Sample::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.CurveHaptic.Sample)
+  // optional float time = 1;
+  if (this->time() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->time(), output);
+  }
+
+  // optional float magnitude = 2;
+  if (this->magnitude() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->magnitude(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.CurveHaptic.Sample)
+}
+
+::google::protobuf::uint8* CurveHaptic_Sample::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.CurveHaptic.Sample)
+  // optional float time = 1;
+  if (this->time() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->time(), target);
+  }
+
+  // optional float magnitude = 2;
+  if (this->magnitude() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->magnitude(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.CurveHaptic.Sample)
+  return target;
+}
+
+int CurveHaptic_Sample::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.CurveHaptic.Sample)
+  int total_size = 0;
+
+  // optional float time = 1;
+  if (this->time() != 0) {
+    total_size += 1 + 4;
+  }
+
+  // optional float magnitude = 2;
+  if (this->magnitude() != 0) {
+    total_size += 1 + 4;
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CurveHaptic_Sample::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.CurveHaptic.Sample)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CurveHaptic_Sample* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CurveHaptic_Sample>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.CurveHaptic.Sample)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.CurveHaptic.Sample)
+    MergeFrom(*source);
+  }
+}
+
+void CurveHaptic_Sample::MergeFrom(const CurveHaptic_Sample& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.CurveHaptic.Sample)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.time() != 0) {
+    set_time(from.time());
+  }
+  if (from.magnitude() != 0) {
+    set_magnitude(from.magnitude());
+  }
+}
+
+void CurveHaptic_Sample::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.CurveHaptic.Sample)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CurveHaptic_Sample::CopyFrom(const CurveHaptic_Sample& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.CurveHaptic.Sample)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CurveHaptic_Sample::IsInitialized() const {
+
+  return true;
+}
+
+void CurveHaptic_Sample::Swap(CurveHaptic_Sample* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CurveHaptic_Sample::InternalSwap(CurveHaptic_Sample* other) {
+  std::swap(time_, other->time_);
+  std::swap(magnitude_, other->magnitude_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CurveHaptic_Sample::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CurveHaptic_Sample_descriptor_;
+  metadata.reflection = CurveHaptic_Sample_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int CurveHaptic::kRegionsFieldNumber;
+const int CurveHaptic::kSamplesFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+CurveHaptic::CurveHaptic()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.CurveHaptic)
+}
+
+void CurveHaptic::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+CurveHaptic::CurveHaptic(const CurveHaptic& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.CurveHaptic)
+}
+
+void CurveHaptic::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+}
+
+CurveHaptic::~CurveHaptic() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.CurveHaptic)
+  SharedDtor();
+}
+
+void CurveHaptic::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void CurveHaptic::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* CurveHaptic::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return CurveHaptic_descriptor_;
+}
+
+const CurveHaptic& CurveHaptic::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
+  return *default_instance_;
+}
+
+CurveHaptic* CurveHaptic::default_instance_ = NULL;
+
+CurveHaptic* CurveHaptic::New(::google::protobuf::Arena* arena) const {
+  CurveHaptic* n = new CurveHaptic;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void CurveHaptic::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.CurveHaptic)
+  regions_.Clear();
+  samples_.Clear();
+}
+
+bool CurveHaptic::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.CurveHaptic)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated string regions = 1;
+      case 1: {
+        if (tag == 10) {
+         parse_regions:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_regions()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->regions(this->regions_size() - 1).data(),
+            this->regions(this->regions_size() - 1).length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "NullSpaceIPC.CurveHaptic.regions"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(10)) goto parse_regions;
+        if (input->ExpectTag(18)) goto parse_samples;
+        break;
+      }
+
+      // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_samples:
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_samples:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+                input, add_samples()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_loop_samples;
+        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.CurveHaptic)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.CurveHaptic)
+  return false;
+#undef DO_
+}
+
+void CurveHaptic::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.CurveHaptic)
+  // repeated string regions = 1;
+  for (int i = 0; i < this->regions_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->regions(i).data(), this->regions(i).length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "NullSpaceIPC.CurveHaptic.regions");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->regions(i), output);
+  }
+
+  // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
+  for (unsigned int i = 0, n = this->samples_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, this->samples(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.CurveHaptic)
+}
+
+::google::protobuf::uint8* CurveHaptic::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.CurveHaptic)
+  // repeated string regions = 1;
+  for (int i = 0; i < this->regions_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->regions(i).data(), this->regions(i).length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "NullSpaceIPC.CurveHaptic.regions");
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(1, this->regions(i), target);
+  }
+
+  // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
+  for (unsigned int i = 0, n = this->samples_size(); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        2, this->samples(i), false, target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.CurveHaptic)
+  return target;
+}
+
+int CurveHaptic::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.CurveHaptic)
+  int total_size = 0;
+
+  // repeated string regions = 1;
+  total_size += 1 * this->regions_size();
+  for (int i = 0; i < this->regions_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->regions(i));
+  }
+
+  // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
+  total_size += 1 * this->samples_size();
+  for (int i = 0; i < this->samples_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->samples(i));
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void CurveHaptic::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.CurveHaptic)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const CurveHaptic* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const CurveHaptic>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.CurveHaptic)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.CurveHaptic)
+    MergeFrom(*source);
+  }
+}
+
+void CurveHaptic::MergeFrom(const CurveHaptic& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.CurveHaptic)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  regions_.MergeFrom(from.regions_);
+  samples_.MergeFrom(from.samples_);
+}
+
+void CurveHaptic::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.CurveHaptic)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void CurveHaptic::CopyFrom(const CurveHaptic& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.CurveHaptic)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CurveHaptic::IsInitialized() const {
+
+  return true;
+}
+
+void CurveHaptic::Swap(CurveHaptic* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void CurveHaptic::InternalSwap(CurveHaptic* other) {
+  regions_.UnsafeArenaSwap(&other->regions_);
+  samples_.UnsafeArenaSwap(&other->samples_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata CurveHaptic::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = CurveHaptic_descriptor_;
+  metadata.reflection = CurveHaptic_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CurveHaptic_Sample
+
+// optional float time = 1;
+void CurveHaptic_Sample::clear_time() {
+  time_ = 0;
+}
+ float CurveHaptic_Sample::time() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.Sample.time)
+  return time_;
+}
+ void CurveHaptic_Sample::set_time(float value) {
+  
+  time_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.Sample.time)
+}
+
+// optional float magnitude = 2;
+void CurveHaptic_Sample::clear_magnitude() {
+  magnitude_ = 0;
+}
+ float CurveHaptic_Sample::magnitude() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.Sample.magnitude)
+  return magnitude_;
+}
+ void CurveHaptic_Sample::set_magnitude(float value) {
+  
+  magnitude_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.Sample.magnitude)
+}
+
+// -------------------------------------------------------------------
+
+// CurveHaptic
+
+// repeated string regions = 1;
+int CurveHaptic::regions_size() const {
+  return regions_.size();
+}
+void CurveHaptic::clear_regions() {
+  regions_.Clear();
+}
+ const ::std::string& CurveHaptic::regions(int index) const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.regions)
+  return regions_.Get(index);
+}
+ ::std::string* CurveHaptic::mutable_regions(int index) {
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.CurveHaptic.regions)
+  return regions_.Mutable(index);
+}
+ void CurveHaptic::set_regions(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.regions)
+  regions_.Mutable(index)->assign(value);
+}
+ void CurveHaptic::set_regions(int index, const char* value) {
+  regions_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.CurveHaptic.regions)
+}
+ void CurveHaptic::set_regions(int index, const char* value, size_t size) {
+  regions_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.CurveHaptic.regions)
+}
+ ::std::string* CurveHaptic::add_regions() {
+  // @@protoc_insertion_point(field_add_mutable:NullSpaceIPC.CurveHaptic.regions)
+  return regions_.Add();
+}
+ void CurveHaptic::add_regions(const ::std::string& value) {
+  regions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:NullSpaceIPC.CurveHaptic.regions)
+}
+ void CurveHaptic::add_regions(const char* value) {
+  regions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:NullSpaceIPC.CurveHaptic.regions)
+}
+ void CurveHaptic::add_regions(const char* value, size_t size) {
+  regions_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:NullSpaceIPC.CurveHaptic.regions)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+CurveHaptic::regions() const {
+  // @@protoc_insertion_point(field_list:NullSpaceIPC.CurveHaptic.regions)
+  return regions_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+CurveHaptic::mutable_regions() {
+  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.CurveHaptic.regions)
+  return &regions_;
+}
+
+// repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
+int CurveHaptic::samples_size() const {
+  return samples_.size();
+}
+void CurveHaptic::clear_samples() {
+  samples_.Clear();
+}
+const ::NullSpaceIPC::CurveHaptic_Sample& CurveHaptic::samples(int index) const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.samples)
+  return samples_.Get(index);
+}
+::NullSpaceIPC::CurveHaptic_Sample* CurveHaptic::mutable_samples(int index) {
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.CurveHaptic.samples)
+  return samples_.Mutable(index);
+}
+::NullSpaceIPC::CurveHaptic_Sample* CurveHaptic::add_samples() {
+  // @@protoc_insertion_point(field_add:NullSpaceIPC.CurveHaptic.samples)
+  return samples_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::CurveHaptic_Sample >*
+CurveHaptic::mutable_samples() {
+  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.CurveHaptic.samples)
+  return &samples_;
+}
+const ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::CurveHaptic_Sample >&
+CurveHaptic::samples() const {
+  // @@protoc_insertion_point(field_list:NullSpaceIPC.CurveHaptic.samples)
+  return samples_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -1555,6 +2282,7 @@ const int HighLevelEvent::kParentIdFieldNumber;
 const int HighLevelEvent::kPlaybackEventFieldNumber;
 const int HighLevelEvent::kSimpleHapticFieldNumber;
 const int HighLevelEvent::kRealtimeHapticFieldNumber;
+const int HighLevelEvent::kCurveHapticFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 HighLevelEvent::HighLevelEvent()
@@ -1568,6 +2296,7 @@ void HighLevelEvent::InitAsDefaultInstance() {
   HighLevelEvent_default_oneof_instance_->playback_event_ = const_cast< ::NullSpaceIPC::PlaybackEvent*>(&::NullSpaceIPC::PlaybackEvent::default_instance());
   HighLevelEvent_default_oneof_instance_->simple_haptic_ = const_cast< ::NullSpaceIPC::SimpleHaptic*>(&::NullSpaceIPC::SimpleHaptic::default_instance());
   HighLevelEvent_default_oneof_instance_->realtime_haptic_ = const_cast< ::NullSpaceIPC::RealtimeHaptic*>(&::NullSpaceIPC::RealtimeHaptic::default_instance());
+  HighLevelEvent_default_oneof_instance_->curve_haptic_ = const_cast< ::NullSpaceIPC::CurveHaptic*>(&::NullSpaceIPC::CurveHaptic::default_instance());
 }
 
 HighLevelEvent::HighLevelEvent(const HighLevelEvent& from)
@@ -1636,6 +2365,10 @@ void HighLevelEvent::clear_events() {
     }
     case kRealtimeHaptic: {
       delete events_.realtime_haptic_;
+      break;
+    }
+    case kCurveHaptic: {
+      delete events_.curve_haptic_;
       break;
     }
     case EVENTS_NOT_SET: {
@@ -1711,6 +2444,19 @@ bool HighLevelEvent::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(42)) goto parse_curve_haptic;
+        break;
+      }
+
+      // optional .NullSpaceIPC.CurveHaptic curve_haptic = 5;
+      case 5: {
+        if (tag == 42) {
+         parse_curve_haptic:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_curve_haptic()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1762,6 +2508,12 @@ void HighLevelEvent::SerializeWithCachedSizes(
       4, *events_.realtime_haptic_, output);
   }
 
+  // optional .NullSpaceIPC.CurveHaptic curve_haptic = 5;
+  if (has_curve_haptic()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, *events_.curve_haptic_, output);
+  }
+
   // @@protoc_insertion_point(serialize_end:NullSpaceIPC.HighLevelEvent)
 }
 
@@ -1792,6 +2544,13 @@ void HighLevelEvent::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         4, *events_.realtime_haptic_, false, target);
+  }
+
+  // optional .NullSpaceIPC.CurveHaptic curve_haptic = 5;
+  if (has_curve_haptic()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        5, *events_.curve_haptic_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.HighLevelEvent)
@@ -1829,6 +2588,13 @@ int HighLevelEvent::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *events_.realtime_haptic_);
+      break;
+    }
+    // optional .NullSpaceIPC.CurveHaptic curve_haptic = 5;
+    case kCurveHaptic: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *events_.curve_haptic_);
       break;
     }
     case EVENTS_NOT_SET: {
@@ -1874,6 +2640,10 @@ void HighLevelEvent::MergeFrom(const HighLevelEvent& from) {
     }
     case kRealtimeHaptic: {
       mutable_realtime_haptic()->::NullSpaceIPC::RealtimeHaptic::MergeFrom(from.realtime_haptic());
+      break;
+    }
+    case kCurveHaptic: {
+      mutable_curve_haptic()->::NullSpaceIPC::CurveHaptic::MergeFrom(from.curve_haptic());
       break;
     }
     case EVENTS_NOT_SET: {
@@ -2083,6 +2853,54 @@ void HighLevelEvent::set_allocated_realtime_haptic(::NullSpaceIPC::RealtimeHapti
     events_.realtime_haptic_ = realtime_haptic;
   }
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.realtime_haptic)
+}
+
+// optional .NullSpaceIPC.CurveHaptic curve_haptic = 5;
+bool HighLevelEvent::has_curve_haptic() const {
+  return events_case() == kCurveHaptic;
+}
+void HighLevelEvent::set_has_curve_haptic() {
+  _oneof_case_[0] = kCurveHaptic;
+}
+void HighLevelEvent::clear_curve_haptic() {
+  if (has_curve_haptic()) {
+    delete events_.curve_haptic_;
+    clear_has_events();
+  }
+}
+ const ::NullSpaceIPC::CurveHaptic& HighLevelEvent::curve_haptic() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.curve_haptic)
+  return has_curve_haptic()
+      ? *events_.curve_haptic_
+      : ::NullSpaceIPC::CurveHaptic::default_instance();
+}
+::NullSpaceIPC::CurveHaptic* HighLevelEvent::mutable_curve_haptic() {
+  if (!has_curve_haptic()) {
+    clear_events();
+    set_has_curve_haptic();
+    events_.curve_haptic_ = new ::NullSpaceIPC::CurveHaptic;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.curve_haptic)
+  return events_.curve_haptic_;
+}
+::NullSpaceIPC::CurveHaptic* HighLevelEvent::release_curve_haptic() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.curve_haptic)
+  if (has_curve_haptic()) {
+    clear_has_events();
+    ::NullSpaceIPC::CurveHaptic* temp = events_.curve_haptic_;
+    events_.curve_haptic_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void HighLevelEvent::set_allocated_curve_haptic(::NullSpaceIPC::CurveHaptic* curve_haptic) {
+  clear_events();
+  if (curve_haptic) {
+    set_has_curve_haptic();
+    events_.curve_haptic_ = curve_haptic;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.curve_haptic)
 }
 
 bool HighLevelEvent::has_events() const {

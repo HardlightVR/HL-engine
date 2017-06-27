@@ -11,6 +11,17 @@ message SimpleHaptic {
 	float duration = 4;
 }
 
+
+message CurveHaptic {
+	repeated string regions = 1;
+	message Sample {
+		float time = 1;
+		float magnitude = 2;
+	}
+
+	repeated Sample samples = 2;
+}
+
 message RealtimeHaptic {
 	message Magnitude {
 		string region = 1;
@@ -38,5 +49,6 @@ message HighLevelEvent {
 		PlaybackEvent playback_event = 2;
 		SimpleHaptic simple_haptic = 3;
 		RealtimeHaptic realtime_haptic = 4;
+		CurveHaptic curve_haptic = 5;
 	}
 }

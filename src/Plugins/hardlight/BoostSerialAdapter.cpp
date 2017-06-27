@@ -41,7 +41,7 @@ void BoostSerialAdapter::Disconnect()
 
 void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(const boost::system::error_code&, std::size_t)> cb)
 {
-	BOOST_LOG_TRIVIAL(info) << "Writing to suit";
+	//BOOST_LOG_TRIVIAL(info) << "Writing to suit";
 	if (this->m_port && this->m_port->is_open()) {
 		this->m_port->async_write_some(boost::asio::buffer(*bytes, length), cb);
 	}
