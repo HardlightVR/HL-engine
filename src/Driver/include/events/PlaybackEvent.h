@@ -19,11 +19,9 @@ NSVR_CORE_RETURN(int)NSVR_PlaybackEvent_GetCommand(const NSVR_PlaybackEvent* eve
 NSVR_CORE_RETURN(int)NSVR_PlaybackEvent_GetId(const NSVR_PlaybackEvent* event, uint64_t* outId);
 
 
-NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_PlaybackEvent(NSVR_Provider* plugin, const char* region, const NSVR_PlaybackEvent* event);
 
 #ifdef __cplusplus
 }
 #endif
 
-REGISTER_INTERFACE(PlaybackEvent)
 

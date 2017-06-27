@@ -4,6 +4,8 @@
 #include "IoService.h"
 #include "Locator.h"
 #include "events_impl/PlaybackEvent.h"
+#include "events_impl/RealtimeEvent.h"
+
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, PluginManager& plugins) :
 	m_adapter(std::make_unique<BoostSerialAdapter>(ioService->GetIOService())),
 
@@ -105,13 +107,14 @@ void HardwareInterface::RawCommand(const std::string & command)
 void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event)
 {
 	const auto& simple_event = event.simple_haptic();
-	const std::string& region = event.region();
 
 	if (simple_event.duration() == 0.0f) {
 		nsvr::events::BriefTaxel taxel = { 0 };
 		taxel.Effect = simple_event.effect();
 		taxel.Strength = simple_event.strength();
-		m_pluginManager.Dispatch(region, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
+		for (const auto& region : simple_event.regions()) {
+			m_pluginManager.Dispatch(region, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
+		}
 	}
 	else {
 		nsvr::events::LastingTaxel taxel = { 0 };
@@ -119,7 +122,9 @@ void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::H
 		taxel.Strength = simple_event.strength();
 		taxel.Duration = simple_event.duration();
 		taxel.Id = event.parent_id();
-		m_pluginManager.Dispatch(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
+		for (const auto& region : simple_event.regions()) {
+			m_pluginManager.Dispatch(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
+		}
 	}
 }
 
@@ -129,7 +134,17 @@ void HardwareInterface::generatePlaybackCommands(const NullSpaceIPC::HighLevelEv
 	nsvr::events::PlaybackEvent playback;
 	playback.Command = static_cast<NSVR_PlaybackEvent_Command>(playback_event.command());
 	playback.Id = event.parent_id();
-	m_pluginManager.Broadcast(AS_TYPE(NSVR_PlaybackEvent, &playback));
+	m_pluginManager.Broadcast("playback-controls", AS_TYPE(NSVR_PlaybackEvent, &playback));
 
+}
+
+void HardwareInterface::generateRealtimeCommands(const NullSpaceIPC::HighLevelEvent& event)
+{
+	const auto& realtime_event = event.realtime_haptic();
+	for (const auto& magnitude : realtime_event.magnitudes()) {
+		nsvr::events::RealtimeEvent realtime;
+		realtime.Strength = magnitude.strength();
+		m_pluginManager.Dispatch(magnitude.region(), "realtime", AS_TYPE(NSVR_RealtimeEvent, &realtime));
+	}
 }
 

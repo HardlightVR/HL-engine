@@ -16,7 +16,7 @@ public:
 
 		m_name(name),
 		m_queue(boost::interprocess::open_only, name.c_str()),
-		m_maxElementSizeBytes(256)
+		m_maxElementSizeBytes(512)
 	{}
 
 	~WritableSharedQueue() {

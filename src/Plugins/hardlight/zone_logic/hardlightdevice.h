@@ -15,17 +15,22 @@ public:
 
 	CommandBuffer GenerateHardwareCommands(float dt);
 
-
+//	template<typename THapticType>
+	//void callback(void* client_data, const char* region, const char* iface, const NSVR_GenericEvent* event);
 
 
 	//virtual DisplayResults QueryDrivers() override;
-
 private:
+
 	std::vector<std::unique_ptr<Hardlight_Mk3_ZoneDriver>> m_drivers;
 
 
 };
-
+template<typename THaptic>
+void zoneDriverCallback(void* client_data, const char* region, const char* iface, const NSVR_GenericEvent* event) {
+	Hardlight_Mk3_ZoneDriver* driver = static_cast<Hardlight_Mk3_ZoneDriver*>(client_data);
+	driver->consume(AS_TYPE(const THaptic, event));
+}
 
 
 

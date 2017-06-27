@@ -283,9 +283,11 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
+    <ClInclude Include="..\src\Driver\include\events\AudioEvent.h" />
     <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h" />
     <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h" />
     <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h" />
+    <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h" />
     <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h" />
     <ClInclude Include="..\src\plugins\hardlight\Atom.h" />

@@ -16,11 +16,11 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<std::time_t>::remove("ns-sentinel");
 
-	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", 1024, 256);
+	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_trackingData = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>>("ns-tracking-data");
 	m_suitConnectionInfo = std::make_unique<WritableSharedObject<SuitsConnectionInfo>>("ns-suit-data");
 	m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
-	m_commandStream = std::make_unique<OwnedReadableSharedQueue>("ns-command-data",/* max elements */  512, /*max element byte size*/ 256);
+	m_commandStream = std::make_unique<OwnedReadableSharedQueue>("ns-command-data",/* max elements */  512, /*max element byte size*/ 512);
 	static_assert(sizeof(std::time_t) == 8, "Time is wrong size");
 	
 	m_sentinel = std::make_unique<WritableSharedObject<std::time_t>>("ns-sentinel");

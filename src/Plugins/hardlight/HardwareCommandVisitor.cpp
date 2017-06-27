@@ -35,3 +35,7 @@ void HardwareCommandVisitor::operator()(const Halt& halt)
 {
 	firmware.HaltEffect(halt.Area);
 }
+
+
+
+

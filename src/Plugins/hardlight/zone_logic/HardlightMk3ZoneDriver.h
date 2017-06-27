@@ -6,8 +6,10 @@
 #include "RtpModel.h"
 #include <boost/uuid/random_generator.hpp>
 #include "HardwareCommands.h"
-
-
+#include "../include/events/BriefTaxel.h"
+#include "../include/events/LastingTaxel.h"
+#include "../include/events/PlaybackEvent.h"
+#include "../include/events/RealtimeEvent.h"
 
 class Hardlight_Mk3_ZoneDriver {
 public:
@@ -19,9 +21,11 @@ public:
 
 	//boost::optional<HapticDisplayInfo> QueryCurrentlyPlaying();
 
-	void createOneshot(Location location, uint32_t effect, float strength);
-	void createCont(uint64_t id, Location loc, uint32_t effect, float strength, float duration);
-	void realtime(uint16_t volume);
+	void consume(const NSVR_BriefTaxel* taxel);
+	void consume(const NSVR_LastingTaxel * haptic);
+	void consume(const NSVR_PlaybackEvent* event);
+	void consume(const NSVR_RealtimeEvent* realtime);
+	//void realtime(uint16_t volume);
 private:
 	::Location m_area;
 

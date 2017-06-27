@@ -39,6 +39,8 @@ void protobuf_ShutdownFile_HighLevelEvent_2eproto();
 
 class HighLevelEvent;
 class PlaybackEvent;
+class RealtimeHaptic;
+class RealtimeHaptic_Magnitude;
 class SimpleHaptic;
 
 enum PlaybackEvent_Command {
@@ -126,21 +128,37 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 effect = 1;
+  // repeated string regions = 1;
+  int regions_size() const;
+  void clear_regions();
+  static const int kRegionsFieldNumber = 1;
+  const ::std::string& regions(int index) const;
+  ::std::string* mutable_regions(int index);
+  void set_regions(int index, const ::std::string& value);
+  void set_regions(int index, const char* value);
+  void set_regions(int index, const char* value, size_t size);
+  ::std::string* add_regions();
+  void add_regions(const ::std::string& value);
+  void add_regions(const char* value);
+  void add_regions(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& regions() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_regions();
+
+  // optional uint32 effect = 2;
   void clear_effect();
-  static const int kEffectFieldNumber = 1;
+  static const int kEffectFieldNumber = 2;
   ::google::protobuf::uint32 effect() const;
   void set_effect(::google::protobuf::uint32 value);
 
-  // optional float strength = 2;
+  // optional float strength = 3;
   void clear_strength();
-  static const int kStrengthFieldNumber = 2;
+  static const int kStrengthFieldNumber = 3;
   float strength() const;
   void set_strength(float value);
 
-  // optional float duration = 3;
+  // optional float duration = 4;
   void clear_duration();
-  static const int kDurationFieldNumber = 3;
+  static const int kDurationFieldNumber = 4;
   float duration() const;
   void set_duration(float value);
 
@@ -149,6 +167,7 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> regions_;
   ::google::protobuf::uint32 effect_;
   float strength_;
   float duration_;
@@ -159,6 +178,190 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   void InitAsDefaultInstance();
   static SimpleHaptic* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RealtimeHaptic_Magnitude : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.RealtimeHaptic.Magnitude) */ {
+ public:
+  RealtimeHaptic_Magnitude();
+  virtual ~RealtimeHaptic_Magnitude();
+
+  RealtimeHaptic_Magnitude(const RealtimeHaptic_Magnitude& from);
+
+  inline RealtimeHaptic_Magnitude& operator=(const RealtimeHaptic_Magnitude& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RealtimeHaptic_Magnitude& default_instance();
+
+  void Swap(RealtimeHaptic_Magnitude* other);
+
+  // implements Message ----------------------------------------------
+
+  inline RealtimeHaptic_Magnitude* New() const { return New(NULL); }
+
+  RealtimeHaptic_Magnitude* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RealtimeHaptic_Magnitude& from);
+  void MergeFrom(const RealtimeHaptic_Magnitude& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(RealtimeHaptic_Magnitude* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string region = 1;
+  void clear_region();
+  static const int kRegionFieldNumber = 1;
+  const ::std::string& region() const;
+  void set_region(const ::std::string& value);
+  void set_region(const char* value);
+  void set_region(const char* value, size_t size);
+  ::std::string* mutable_region();
+  ::std::string* release_region();
+  void set_allocated_region(::std::string* region);
+
+  // optional float strength = 2;
+  void clear_strength();
+  static const int kStrengthFieldNumber = 2;
+  float strength() const;
+  void set_strength(float value);
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.RealtimeHaptic.Magnitude)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::internal::ArenaStringPtr region_;
+  float strength_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static RealtimeHaptic_Magnitude* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RealtimeHaptic : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.RealtimeHaptic) */ {
+ public:
+  RealtimeHaptic();
+  virtual ~RealtimeHaptic();
+
+  RealtimeHaptic(const RealtimeHaptic& from);
+
+  inline RealtimeHaptic& operator=(const RealtimeHaptic& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RealtimeHaptic& default_instance();
+
+  void Swap(RealtimeHaptic* other);
+
+  // implements Message ----------------------------------------------
+
+  inline RealtimeHaptic* New() const { return New(NULL); }
+
+  RealtimeHaptic* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RealtimeHaptic& from);
+  void MergeFrom(const RealtimeHaptic& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(RealtimeHaptic* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef RealtimeHaptic_Magnitude Magnitude;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .NullSpaceIPC.RealtimeHaptic.Magnitude magnitudes = 1;
+  int magnitudes_size() const;
+  void clear_magnitudes();
+  static const int kMagnitudesFieldNumber = 1;
+  const ::NullSpaceIPC::RealtimeHaptic_Magnitude& magnitudes(int index) const;
+  ::NullSpaceIPC::RealtimeHaptic_Magnitude* mutable_magnitudes(int index);
+  ::NullSpaceIPC::RealtimeHaptic_Magnitude* add_magnitudes();
+  ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::RealtimeHaptic_Magnitude >*
+      mutable_magnitudes();
+  const ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::RealtimeHaptic_Magnitude >&
+      magnitudes() const;
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.RealtimeHaptic)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::RealtimeHaptic_Magnitude > magnitudes_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static RealtimeHaptic* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -290,8 +493,9 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
   static const HighLevelEvent& default_instance();
 
   enum EventsCase {
-    kPlaybackEvent = 3,
-    kSimpleHaptic = 4,
+    kPlaybackEvent = 2,
+    kSimpleHaptic = 3,
+    kRealtimeHaptic = 4,
     EVENTS_NOT_SET = 0,
   };
 
@@ -346,40 +550,39 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
   ::google::protobuf::uint64 parent_id() const;
   void set_parent_id(::google::protobuf::uint64 value);
 
-  // optional string region = 2;
-  void clear_region();
-  static const int kRegionFieldNumber = 2;
-  const ::std::string& region() const;
-  void set_region(const ::std::string& value);
-  void set_region(const char* value);
-  void set_region(const char* value, size_t size);
-  ::std::string* mutable_region();
-  ::std::string* release_region();
-  void set_allocated_region(::std::string* region);
-
-  // optional .NullSpaceIPC.PlaybackEvent playback_event = 3;
+  // optional .NullSpaceIPC.PlaybackEvent playback_event = 2;
   bool has_playback_event() const;
   void clear_playback_event();
-  static const int kPlaybackEventFieldNumber = 3;
+  static const int kPlaybackEventFieldNumber = 2;
   const ::NullSpaceIPC::PlaybackEvent& playback_event() const;
   ::NullSpaceIPC::PlaybackEvent* mutable_playback_event();
   ::NullSpaceIPC::PlaybackEvent* release_playback_event();
   void set_allocated_playback_event(::NullSpaceIPC::PlaybackEvent* playback_event);
 
-  // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 4;
+  // optional .NullSpaceIPC.SimpleHaptic simple_haptic = 3;
   bool has_simple_haptic() const;
   void clear_simple_haptic();
-  static const int kSimpleHapticFieldNumber = 4;
+  static const int kSimpleHapticFieldNumber = 3;
   const ::NullSpaceIPC::SimpleHaptic& simple_haptic() const;
   ::NullSpaceIPC::SimpleHaptic* mutable_simple_haptic();
   ::NullSpaceIPC::SimpleHaptic* release_simple_haptic();
   void set_allocated_simple_haptic(::NullSpaceIPC::SimpleHaptic* simple_haptic);
+
+  // optional .NullSpaceIPC.RealtimeHaptic realtime_haptic = 4;
+  bool has_realtime_haptic() const;
+  void clear_realtime_haptic();
+  static const int kRealtimeHapticFieldNumber = 4;
+  const ::NullSpaceIPC::RealtimeHaptic& realtime_haptic() const;
+  ::NullSpaceIPC::RealtimeHaptic* mutable_realtime_haptic();
+  ::NullSpaceIPC::RealtimeHaptic* release_realtime_haptic();
+  void set_allocated_realtime_haptic(::NullSpaceIPC::RealtimeHaptic* realtime_haptic);
 
   EventsCase events_case() const;
   // @@protoc_insertion_point(class_scope:NullSpaceIPC.HighLevelEvent)
  private:
   inline void set_has_playback_event();
   inline void set_has_simple_haptic();
+  inline void set_has_realtime_haptic();
 
   inline bool has_events() const;
   void clear_events();
@@ -388,11 +591,11 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::uint64 parent_id_;
-  ::google::protobuf::internal::ArenaStringPtr region_;
   union EventsUnion {
     EventsUnion() {}
     ::NullSpaceIPC::PlaybackEvent* playback_event_;
     ::NullSpaceIPC::SimpleHaptic* simple_haptic_;
+    ::NullSpaceIPC::RealtimeHaptic* realtime_haptic_;
   } events_;
   mutable int _cached_size_;
   ::google::protobuf::uint32 _oneof_case_[1];
@@ -412,7 +615,62 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // SimpleHaptic
 
-// optional uint32 effect = 1;
+// repeated string regions = 1;
+inline int SimpleHaptic::regions_size() const {
+  return regions_.size();
+}
+inline void SimpleHaptic::clear_regions() {
+  regions_.Clear();
+}
+inline const ::std::string& SimpleHaptic::regions(int index) const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.regions)
+  return regions_.Get(index);
+}
+inline ::std::string* SimpleHaptic::mutable_regions(int index) {
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.SimpleHaptic.regions)
+  return regions_.Mutable(index);
+}
+inline void SimpleHaptic::set_regions(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.regions)
+  regions_.Mutable(index)->assign(value);
+}
+inline void SimpleHaptic::set_regions(int index, const char* value) {
+  regions_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.SimpleHaptic.regions)
+}
+inline void SimpleHaptic::set_regions(int index, const char* value, size_t size) {
+  regions_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.SimpleHaptic.regions)
+}
+inline ::std::string* SimpleHaptic::add_regions() {
+  // @@protoc_insertion_point(field_add_mutable:NullSpaceIPC.SimpleHaptic.regions)
+  return regions_.Add();
+}
+inline void SimpleHaptic::add_regions(const ::std::string& value) {
+  regions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:NullSpaceIPC.SimpleHaptic.regions)
+}
+inline void SimpleHaptic::add_regions(const char* value) {
+  regions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:NullSpaceIPC.SimpleHaptic.regions)
+}
+inline void SimpleHaptic::add_regions(const char* value, size_t size) {
+  regions_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:NullSpaceIPC.SimpleHaptic.regions)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+SimpleHaptic::regions() const {
+  // @@protoc_insertion_point(field_list:NullSpaceIPC.SimpleHaptic.regions)
+  return regions_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+SimpleHaptic::mutable_regions() {
+  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.SimpleHaptic.regions)
+  return &regions_;
+}
+
+// optional uint32 effect = 2;
 inline void SimpleHaptic::clear_effect() {
   effect_ = 0u;
 }
@@ -426,7 +684,7 @@ inline void SimpleHaptic::set_effect(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.effect)
 }
 
-// optional float strength = 2;
+// optional float strength = 3;
 inline void SimpleHaptic::clear_strength() {
   strength_ = 0;
 }
@@ -440,7 +698,7 @@ inline void SimpleHaptic::set_strength(float value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.strength)
 }
 
-// optional float duration = 3;
+// optional float duration = 4;
 inline void SimpleHaptic::clear_duration() {
   duration_ = 0;
 }
@@ -452,6 +710,102 @@ inline void SimpleHaptic::set_duration(float value) {
   
   duration_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.duration)
+}
+
+// -------------------------------------------------------------------
+
+// RealtimeHaptic_Magnitude
+
+// optional string region = 1;
+inline void RealtimeHaptic_Magnitude::clear_region() {
+  region_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& RealtimeHaptic_Magnitude::region() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
+  return region_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void RealtimeHaptic_Magnitude::set_region(const ::std::string& value) {
+  
+  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
+}
+inline void RealtimeHaptic_Magnitude::set_region(const char* value) {
+  
+  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
+}
+inline void RealtimeHaptic_Magnitude::set_region(const char* value, size_t size) {
+  
+  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
+}
+inline ::std::string* RealtimeHaptic_Magnitude::mutable_region() {
+  
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
+  return region_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* RealtimeHaptic_Magnitude::release_region() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
+  
+  return region_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void RealtimeHaptic_Magnitude::set_allocated_region(::std::string* region) {
+  if (region != NULL) {
+    
+  } else {
+    
+  }
+  region_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), region);
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
+}
+
+// optional float strength = 2;
+inline void RealtimeHaptic_Magnitude::clear_strength() {
+  strength_ = 0;
+}
+inline float RealtimeHaptic_Magnitude::strength() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.RealtimeHaptic.Magnitude.strength)
+  return strength_;
+}
+inline void RealtimeHaptic_Magnitude::set_strength(float value) {
+  
+  strength_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.RealtimeHaptic.Magnitude.strength)
+}
+
+// -------------------------------------------------------------------
+
+// RealtimeHaptic
+
+// repeated .NullSpaceIPC.RealtimeHaptic.Magnitude magnitudes = 1;
+inline int RealtimeHaptic::magnitudes_size() const {
+  return magnitudes_.size();
+}
+inline void RealtimeHaptic::clear_magnitudes() {
+  magnitudes_.Clear();
+}
+inline const ::NullSpaceIPC::RealtimeHaptic_Magnitude& RealtimeHaptic::magnitudes(int index) const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.RealtimeHaptic.magnitudes)
+  return magnitudes_.Get(index);
+}
+inline ::NullSpaceIPC::RealtimeHaptic_Magnitude* RealtimeHaptic::mutable_magnitudes(int index) {
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.RealtimeHaptic.magnitudes)
+  return magnitudes_.Mutable(index);
+}
+inline ::NullSpaceIPC::RealtimeHaptic_Magnitude* RealtimeHaptic::add_magnitudes() {
+  // @@protoc_insertion_point(field_add:NullSpaceIPC.RealtimeHaptic.magnitudes)
+  return magnitudes_.Add();
+}
+inline ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::RealtimeHaptic_Magnitude >*
+RealtimeHaptic::mutable_magnitudes() {
+  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.RealtimeHaptic.magnitudes)
+  return &magnitudes_;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::RealtimeHaptic_Magnitude >&
+RealtimeHaptic::magnitudes() const {
+  // @@protoc_insertion_point(field_list:NullSpaceIPC.RealtimeHaptic.magnitudes)
+  return magnitudes_;
 }
 
 // -------------------------------------------------------------------
@@ -490,51 +844,7 @@ inline void HighLevelEvent::set_parent_id(::google::protobuf::uint64 value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.HighLevelEvent.parent_id)
 }
 
-// optional string region = 2;
-inline void HighLevelEvent::clear_region() {
-  region_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& HighLevelEvent::region() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.region)
-  return region_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void HighLevelEvent::set_region(const ::std::string& value) {
-  
-  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.HighLevelEvent.region)
-}
-inline void HighLevelEvent::set_region(const char* value) {
-  
-  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.HighLevelEvent.region)
-}
-inline void HighLevelEvent::set_region(const char* value, size_t size) {
-  
-  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.HighLevelEvent.region)
-}
-inline ::std::string* HighLevelEvent::mutable_region() {
-  
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.region)
-  return region_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* HighLevelEvent::release_region() {
-  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.region)
-  
-  return region_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void HighLevelEvent::set_allocated_region(::std::string* region) {
-  if (region != NULL) {
-    
-  } else {
-    
-  }
-  region_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), region);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.region)
-}
-
-// optional .NullSpaceIPC.PlaybackEvent playback_event = 3;
+// optional .NullSpaceIPC.PlaybackEvent playback_event = 2;
 inline bool HighLevelEvent::has_playback_event() const {
   return events_case() == kPlaybackEvent;
 }
@@ -582,7 +892,7 @@ inline void HighLevelEvent::set_allocated_playback_event(::NullSpaceIPC::Playbac
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.playback_event)
 }
 
-// optional .NullSpaceIPC.SimpleHaptic simple_haptic = 4;
+// optional .NullSpaceIPC.SimpleHaptic simple_haptic = 3;
 inline bool HighLevelEvent::has_simple_haptic() const {
   return events_case() == kSimpleHaptic;
 }
@@ -630,6 +940,54 @@ inline void HighLevelEvent::set_allocated_simple_haptic(::NullSpaceIPC::SimpleHa
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.simple_haptic)
 }
 
+// optional .NullSpaceIPC.RealtimeHaptic realtime_haptic = 4;
+inline bool HighLevelEvent::has_realtime_haptic() const {
+  return events_case() == kRealtimeHaptic;
+}
+inline void HighLevelEvent::set_has_realtime_haptic() {
+  _oneof_case_[0] = kRealtimeHaptic;
+}
+inline void HighLevelEvent::clear_realtime_haptic() {
+  if (has_realtime_haptic()) {
+    delete events_.realtime_haptic_;
+    clear_has_events();
+  }
+}
+inline  const ::NullSpaceIPC::RealtimeHaptic& HighLevelEvent::realtime_haptic() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.realtime_haptic)
+  return has_realtime_haptic()
+      ? *events_.realtime_haptic_
+      : ::NullSpaceIPC::RealtimeHaptic::default_instance();
+}
+inline ::NullSpaceIPC::RealtimeHaptic* HighLevelEvent::mutable_realtime_haptic() {
+  if (!has_realtime_haptic()) {
+    clear_events();
+    set_has_realtime_haptic();
+    events_.realtime_haptic_ = new ::NullSpaceIPC::RealtimeHaptic;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.realtime_haptic)
+  return events_.realtime_haptic_;
+}
+inline ::NullSpaceIPC::RealtimeHaptic* HighLevelEvent::release_realtime_haptic() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.realtime_haptic)
+  if (has_realtime_haptic()) {
+    clear_has_events();
+    ::NullSpaceIPC::RealtimeHaptic* temp = events_.realtime_haptic_;
+    events_.realtime_haptic_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void HighLevelEvent::set_allocated_realtime_haptic(::NullSpaceIPC::RealtimeHaptic* realtime_haptic) {
+  clear_events();
+  if (realtime_haptic) {
+    set_has_realtime_haptic();
+    events_.realtime_haptic_ = realtime_haptic;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.realtime_haptic)
+}
+
 inline bool HighLevelEvent::has_events() const {
   return events_case() != EVENTS_NOT_SET;
 }
@@ -640,6 +998,10 @@ inline HighLevelEvent::EventsCase HighLevelEvent::events_case() const {
   return HighLevelEvent::EventsCase(_oneof_case_[0]);
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

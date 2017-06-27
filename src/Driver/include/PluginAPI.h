@@ -45,7 +45,25 @@ extern "C" {
 
 	//Right now, temporary until we have auto json-configuration
 	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, NSVR_Core* core);
-	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(NSVR_Core_t* core, NSVR_RegParams params);
+	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(NSVR_Core* core, NSVR_RegParams params);
+
+	typedef struct NSVR_GenericEvent_t NSVR_GenericEvent;
+
+	typedef void(*NSVR_Consumer_Handler_t)(
+		void* client_data,
+		const char* region,
+		const char* iface,
+		const NSVR_GenericEvent* event
+	);
+
+	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode2(
+		NSVR_Core* core,
+		NSVR_Consumer_Handler_t callback,
+	
+		const char* region,
+		const char* iface,
+		void* client_data 
+	);
 
 
 	NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin** pluginPtr);
@@ -59,20 +77,3 @@ extern "C" {
 #endif
 
 
-#ifdef __cplusplus 
-#ifdef NSVR_BUILDING_CORE
-template <typename T>
-constexpr const char* getSymbolName(void) { return "unknown"; }
-#define consumer_function(type) "NSVR_Provider_Consume_" type
-
-#define REGISTER_INTERFACE(name) \
-template <> \
-constexpr const char* getSymbolName<NSVR_##name>(void) { \
-	return consumer_function(#name); \
-}
-#else
-#define REGISTER_INTERFACE(name)
-#endif
-#else 
-#define REGISTER_INTERFACE(name)
-#endif

@@ -14,7 +14,12 @@ class RegionRegistry;
 class PluginInstance
 {
 public:
-	
+	struct ClientData {
+		std::string Interface;
+		NSVR_Consumer_Handler_t Callback;
+		void* Data;
+		ClientData(std::string iface, NSVR_Consumer_Handler_t cb, void* ud);
+	};
 
 	explicit PluginInstance(std::string fileName);
 	~PluginInstance();
@@ -23,6 +28,7 @@ public:
 
 	bool Configure();
 	int RegisterInterface(NSVR_RegParams params);
+	int RegisterInterface2(NSVR_Consumer_Handler_t callback, const char* region, const char* iface, void* client_data);
 	bool Unload();
 	bool IsLoaded() const;
 	std::string GetFileName() const;
@@ -35,14 +41,15 @@ public:
 
 	
 
-	template<class THapticType>
-	void Dispatch(const std::string& region, const std::string& iface, const THapticType* input);
 
 	template<class THapticType>
-	void Broadcast(const THapticType* input);
+	void Broadcast(const std::string& iface, const THapticType* input);
+
+	template<class THapticType>
+	void PluginInstance::Dispatch2(const std::string& region, const std::string& iface, const THapticType* input);
 private:
 	std::vector<NSVR_Provider*> getProviders(const std::string& region, const std::string& iface);
-
+	std::vector<PluginInstance::ClientData> PluginInstance::getProviders2(const std::string& region, const std::string& iface);
 
 	typedef std::function<int(NSVR_Plugin**)> plugin_creator_t;
 	typedef std::function<int(NSVR_Plugin**)> plugin_destructor_t;
@@ -72,7 +79,7 @@ private:
 	};
 	std::unordered_map<std::string, InterfaceList> m_interfaces;
 
-
+	std::unordered_map<std::string, std::vector<ClientData>> m_interfaces2;
 
 
 };
@@ -90,56 +97,25 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 
 }
 
-//dispatches an event to any providers registered to the given region and interface
+
 template<class THapticType>
-void PluginInstance::Dispatch(const std::string& region, const std::string& iface, const THapticType* input)
-{
-	static_assert(getSymbolName<THapticType>() != "unknown", 
-		"You must use REGISTER_INTERFACE on this type.\n" 
-		"If you have implemented a new consumer type, simply put REGISTER_INTERFACE(TypeNameWithoutNSVRPrefixHere)\n" 
-		"as the last line of your .h");
-
-
-	std::vector<NSVR_Provider*> providers = getProviders(region, iface);
-
-	typedef std::function<bool(NSVR_Provider*, const char*, const THapticType*)> SourceDllFunc;
-
-	constexpr const char* dllFunctionName = getSymbolName<THapticType>();
-	SourceDllFunc dllFunction;
-
-	if (!tryLoad(m_lib, dllFunctionName, dllFunction)) {
-		return;//can't load function
-	} 
-
-
-	for (NSVR_Provider* provider : providers) {
-		dllFunction(provider, region.c_str(), input);	
+void PluginInstance::Dispatch2(const std::string& region, const std::string& iface, const THapticType* input) {
+	std::vector<PluginInstance::ClientData> callbacks = getProviders2(region, iface);
+	for (const PluginInstance::ClientData& clientData : callbacks) {
+		clientData.Callback(clientData.Data, region.c_str(), iface.c_str(), AS_TYPE(const NSVR_GenericEvent, input));
 	}
-	
 }
 
 template<class THapticType>
-inline void PluginInstance::Broadcast(const THapticType * input)
+inline void PluginInstance::Broadcast(const std::string& iface,  const THapticType * input)
 {
-
-	static_assert(getSymbolName<THapticType>() != "unknown",
-		"You must use REGISTER_INTERFACE on this type.\n"
-		"If you have implemented a new consumer type, simply put REGISTER_INTERFACE(TypeNameWithoutNSVRPrefixHere)\n"
-		"as the last line of your .h");
-	typedef std::function<bool(NSVR_Provider*, const char*, const THapticType*)> SourceDllFunc;
-
-	constexpr const char* dllFunctionName = getSymbolName<THapticType>();
-	SourceDllFunc dllFunction;
-
-	if (!tryLoad(m_lib, dllFunctionName, dllFunction)) {
-		return;//can't load function
-	}
-
-	for (auto& regionList : m_interfaces) {
-		for (auto& provider : regionList.second.Interfaces) {
-			dllFunction(provider.Provider, regionList.first.c_str(), input);
+	for (const auto& region : m_interfaces2) {
+		std::vector<PluginInstance::ClientData> callbacks = getProviders2(region.first, iface);
+		for (const auto& clientData : callbacks) {
+			clientData.Callback(clientData.Data, region.first.c_str(), iface.c_str(), AS_TYPE(const NSVR_GenericEvent, input));
 		}
 	}
+	
 }
 
 

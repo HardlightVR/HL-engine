@@ -27,10 +27,13 @@ HardlightPlugin::HardlightPlugin() :
 		m_firmware.Execute(commands);
 		
 	});
+
+	m_eventPull.Start();
 }
 
 HardlightPlugin::~HardlightPlugin()
 {
+	m_eventPull.Stop();
 	m_io->Shutdown();
 
 }

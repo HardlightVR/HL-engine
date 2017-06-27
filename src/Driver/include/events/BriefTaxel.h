@@ -16,4 +16,3 @@ NSVR_PLUGIN_RETURN(int) NSVR_Provider_Consume_BriefTaxel(NSVR_Provider* plugin, 
 }
 #endif
 
-REGISTER_INTERFACE(BriefTaxel)

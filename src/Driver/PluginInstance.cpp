@@ -96,6 +96,27 @@ int PluginInstance::RegisterInterface(NSVR_RegParams params)
 	return 1;
 }
 
+int PluginInstance::RegisterInterface2(NSVR_Consumer_Handler_t callback, const char * region, const char*iface, void * client_data)
+{
+
+	m_interfaces2[region].emplace_back(iface, callback, client_data);
+	return 1;
+}
+
+
+std::vector<PluginInstance::ClientData> PluginInstance::getProviders2(const std::string& region, const std::string& iface) {
+	std::vector<PluginInstance::ClientData> copiedResults;
+	if (m_interfaces2.find(region) != m_interfaces2.end())
+	{
+		auto &atRegion = m_interfaces2.at(region);
+		for (const auto& clientData : atRegion) {
+			if (clientData.Interface == iface) {
+				copiedResults.push_back(clientData);
+			}
+		}
+	}
+	return copiedResults;
+}
 std::vector<NSVR_Provider*> PluginInstance::getProviders(const std::string& region, const std::string& iface)
 {
 	std::vector<NSVR_Provider*> matchingProviders;
@@ -125,5 +146,9 @@ PluginInstance::PluginInstance(PluginInstance && old) :
 {
 }
 
-
-
+PluginInstance::ClientData::ClientData(std::string iface, NSVR_Consumer_Handler_t cb, void * ud):
+	Interface(iface),
+	Callback(cb),
+	Data(ud)
+{
+}

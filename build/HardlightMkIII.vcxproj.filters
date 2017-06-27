@@ -27,6 +27,9 @@
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>Driver\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\AudioEvent.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h">
       <Filter>Driver\include\events</Filter>
     </ClInclude>
@@ -34,6 +37,9 @@
       <Filter>Driver\include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h">
       <Filter>Driver\include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h">

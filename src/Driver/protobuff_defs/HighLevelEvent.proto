@@ -5,10 +5,22 @@ package NullSpaceIPC;
 
 
 message SimpleHaptic {
-	uint32 effect = 1;
-	float strength = 2;
-	float duration = 3;
+	repeated string regions = 1;
+	uint32 effect = 2;
+	float strength = 3;
+	float duration = 4;
 }
+
+message RealtimeHaptic {
+	message Magnitude {
+		string region = 1;
+		float strength = 2;
+	}
+	
+	repeated Magnitude magnitudes = 1;
+
+}
+
 
 message PlaybackEvent {
 	enum Command {
@@ -18,12 +30,13 @@ message PlaybackEvent {
 		CANCEL = 3;
 	}
 	Command command = 1;
+	
 }
 message HighLevelEvent {
 	uint64 parent_id = 1;
-	string region = 2;
 	oneof events {
-		PlaybackEvent playback_event = 3;
-		SimpleHaptic simple_haptic = 4;
+		PlaybackEvent playback_event = 2;
+		SimpleHaptic simple_haptic = 3;
+		RealtimeHaptic realtime_haptic = 4;
 	}
 }

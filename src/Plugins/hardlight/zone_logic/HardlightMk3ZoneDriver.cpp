@@ -92,35 +92,68 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 	}
 }
 
-void Hardlight_Mk3_ZoneDriver::createOneshot(Location location, uint32_t effect, float strength)
+
+void Hardlight_Mk3_ZoneDriver::consume(const NSVR_BriefTaxel * taxel)
 {
 	BasicHapticEventData d;
 	d.area = static_cast<uint32_t>(m_area); //areaFlag at this point
-	d.duration = 0.0; //test to see if this needs to be .25
-	d.effect = effect;
-	d.strength = strength;
-	//Note: we are using max value of uint64_t as an arbitrary choice, since we were not provided with one
-	//If something legitimately got this value, then it would potentially affect this effect. 
-	//I think the odds are low.
-	//Maybe it should be rearchitected. 
 
+	NSVR_BriefTaxel_GetEffect(taxel, &d.effect);
+	NSVR_BriefTaxel_GetStrength(taxel, &d.strength);
+
+	d.duration = 0.0;
 	m_retainedModel.Put(LiveBasicHapticEvent(std::numeric_limits<ParentId>::max(), m_gen(), std::move(d)));
 	transitionInto(Mode::Retained);
 }
 
-void Hardlight_Mk3_ZoneDriver::createCont(uint64_t id, Location loc, uint32_t effect, float strength, float duration)
+void Hardlight_Mk3_ZoneDriver::consume(const NSVR_LastingTaxel * haptic)
 {
 	BasicHapticEventData d;
+	uint64_t id;
 	d.area = static_cast<uint32_t>(m_area); //areaFlag at this point
-	d.duration = duration;
-	d.effect = effect;
-	d.strength = strength;
+	NSVR_LastingTaxel_GetId(haptic, &id);
+	NSVR_LastingTaxel_GetEffect(haptic, &d.effect);
+	NSVR_LastingTaxel_GetStrength(haptic, &d.strength);
+	NSVR_LastingTaxel_GetDuration(haptic, &d.duration);
+
 	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(d)));
 	transitionInto(Mode::Retained);
+}
+
+void Hardlight_Mk3_ZoneDriver::consume(const NSVR_PlaybackEvent * event)
+{
+	uint64_t id;
+	NSVR_PlaybackEvent_Command command;
+	NSVR_PlaybackEvent_GetId(event, &id);
+	NSVR_PlaybackEvent_GetCommand(event, &command);
+
+	switch (command) {
+	case NSVR_PlaybackEvent_Command_Unpause:
+		m_retainedModel.Play(id);
+		break;
+	case NSVR_PlaybackEvent_Command_Pause:
+		m_retainedModel.Pause(id);
+		break;
+	case NSVR_PlaybackEvent_Command_Cancel:
+		m_retainedModel.Remove(id);
+	default:
+		break;
+	}
 
 }
 
+	
 
+
+
+void Hardlight_Mk3_ZoneDriver::consume(const NSVR_RealtimeEvent* realtime)
+{
+
+	float volume = 0;
+	NSVR_RealtimeEvent_GetStrength(realtime, &volume);
+	m_rtpModel.ChangeVolume(static_cast<int>(volume * 255));
+	transitionInto(Mode::Realtime);
+}
 
 //void Hardlight_Mk3_ZoneDriver::controlRetained(boost::uuids::uuid handle, NSVR_PlaybackCommand command)
 //{
