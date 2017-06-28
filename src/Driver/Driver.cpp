@@ -107,7 +107,9 @@ bool Driver::StartThread()
 	m_curveEngineUpdate.SetEvent([this]() {
 		constexpr auto fraction_of_second = (1.0f / 1000.f);
 		auto dt = 5 * fraction_of_second;
+
 		//m_curveEngine.Update(dt);
+
 	});
 
 	m_curveEngineUpdate.Start();

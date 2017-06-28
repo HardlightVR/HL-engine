@@ -43,5 +43,8 @@ private:
 	HardwareInterface m_hardware;
 
 	void handleTracking();
+
 	//CurveEngine m_curveEngine;
+
+
 };

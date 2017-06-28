@@ -67,7 +67,9 @@ private:
 	std::string m_fileName;
 	bool m_loaded;
 
+
 	HardwareDataModel& m_model;
+
 
 	std::unordered_map<std::string, std::vector<ClientData>> m_interfaces;
 

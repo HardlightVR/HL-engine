@@ -3,6 +3,7 @@
 #include "PluginInstance.h"
 
 
+
 NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(
 	NSVR_Core * core, 
 	NSVR_Consumer_Handler_t callback, 
@@ -13,6 +14,7 @@ NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(
 {
 
 	return AS_TYPE(PluginInstance, core)->RegisterInterface(callback, iface, region, client_data);
+
 }
 
 

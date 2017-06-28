@@ -29,8 +29,9 @@ HardwareInterface::~HardwareInterface()
 void HardwareInterface::InstallFilter(EventSelector selector, EventReceiver receiver)
 {
 	InstalledFilter filter;
-	filter.Receive = receiver;
-	filter.Select = selector;
+
+	filter.Receiver = receiver;
+	filter.Selector = selector;
 	m_filters.push_back(std::move(filter));
 }
 
