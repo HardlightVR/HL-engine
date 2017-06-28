@@ -33,7 +33,7 @@ template<typename THapticType>
 inline void PluginManager::Dispatch(const std::string& region, const std::string& iface, const THapticType * input)
 {
 	for (auto& plugin : m_plugins) {
-		plugin.second->Dispatch2(region, iface, input);
+		plugin.second->Dispatch(region, iface, input);
 	}
 }
 

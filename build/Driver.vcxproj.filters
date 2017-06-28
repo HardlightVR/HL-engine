@@ -24,6 +24,7 @@
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
+    <ClInclude Include="..\src\Driver\CurveEngine.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
     <ClInclude Include="..\src\Driver\Encoder.h" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
+    <ClCompile Include="..\src\Driver\CurveEngine.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />

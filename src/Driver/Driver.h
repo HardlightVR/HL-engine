@@ -7,7 +7,7 @@
 #include "PluginManager.h"
 
 
-
+#include "CurveEngine.h"
 class IoService;
 
 class Driver {
@@ -25,6 +25,7 @@ private:
 	Encoder _encoder;
 
 	
+	ScheduledEvent m_curveEngineUpdate;
 
 	ScheduledEvent m_hapticsPull;
 	ScheduledEvent m_statusPush;
@@ -41,4 +42,6 @@ private:
 	HardwareInterface m_hardware;
 
 	void handleTracking();
+
+	CurveEngine m_curveEngine;
 };
