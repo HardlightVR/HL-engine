@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include "boost\optional.hpp"
 #include "SharedCommunication/SharedTypes.h"
-#include "Synchronizer.h"
 enum class Imu;
 class ImuConsumer 
 {
@@ -11,7 +10,7 @@ public:
 	ImuConsumer();
 	~ImuConsumer();
 	boost::optional<NullSpace::SharedMemory::Quaternion> GetOrientation(Imu imu);
-	void ConsumePacket(packet packet);
+//	void ConsumePacket(packet packet);
 	void AssignMapping(uint32_t key, Imu id);
 private:
 	std::unordered_map<Imu, NullSpace::SharedMemory::Quaternion> _quaternions;

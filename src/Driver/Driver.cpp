@@ -19,25 +19,25 @@
 #include "events/LastingTaxel.h"
 #include "events/BriefTaxel.h"
 
-void extractDrvData(const packet& packet) {
-	//as status register:
-	uint8_t whichDrv = packet.raw[4];
-	uint8_t whichReg = packet.raw[5];
-	uint8_t data = packet.raw[3];
-
-	bool over_current = data & 0x01;
-	bool over_temperature = data & 0x02;
-	
-	bool mode = data & (0x07);
-
-	bool standby = data & 0b00100000;
-
-
-
-	BOOST_LOG_TRIVIAL(info) << "[DriverMain] DRVDIAG " << int(whichDrv) << "," <<int(over_current) << "," << int(over_temperature);
-
-	
-}
+//void extractDrvData(const packet& packet) {
+//	//as status register:
+//	uint8_t whichDrv = packet.raw[4];
+//	uint8_t whichReg = packet.raw[5];
+//	uint8_t data = packet.raw[3];
+//
+//	bool over_current = data & 0x01;
+//	bool over_temperature = data & 0x02;
+//	
+//	bool mode = data & (0x07);
+//
+//	bool standby = data & 0b00100000;
+//
+//
+//
+//	BOOST_LOG_TRIVIAL(info) << "[DriverMain] DRVDIAG " << int(whichDrv) << "," <<int(over_current) << "," << int(over_temperature);
+//
+//	
+//}
 
 Driver::Driver() :
 	m_io(new IoService()),
@@ -46,7 +46,6 @@ Driver::Driver() :
 	m_hapticsPull(m_io->GetIOService(), boost::posix_time::millisec(5)),
 	m_commandPull(m_io->GetIOService(), boost::posix_time::millisec(50)),
 	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
-	m_imus(),
 	m_cachedTracking({}),
 	m_pluginManager({"HardlightPlugin"}),
 	m_hardware(m_io, m_pluginManager)
@@ -206,20 +205,20 @@ void Driver::handleTracking()
 {
 	NullSpace::SharedMemory::TrackingUpdate update = m_cachedTracking;
 
-	if (auto quat = m_imus.GetOrientation(Imu::Chest)) {
-		update.chest = *quat;
-	}
+	//if (auto quat = m_imus.GetOrientation(Imu::Chest)) {
+	//	update.chest = *quat;
+	//}
 
-	if (auto quat = m_imus.GetOrientation(Imu::Left_Upper_Arm)) {
-		update.left_upper_arm = *quat;
-	}
+	//if (auto quat = m_imus.GetOrientation(Imu::Left_Upper_Arm)) {
+	//	update.left_upper_arm = *quat;
+	//}
 
-	if (auto quat = m_imus.GetOrientation(Imu::Right_Upper_Arm)) {
-		update.right_upper_arm = *quat;
-	}
-	
-	m_cachedTracking = update;
+	//if (auto quat = m_imus.GetOrientation(Imu::Right_Upper_Arm)) {
+	//	update.right_upper_arm = *quat;
+	//}
+	//
+	//m_cachedTracking = update;
 
-	m_messenger.WriteTracking(update);
+	//m_messenger.WriteTracking(update);
 }
 

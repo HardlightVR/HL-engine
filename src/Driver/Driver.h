@@ -3,7 +3,6 @@
 #include "HardwareInterface.h"
 #include "Encoder.h"
 #include "SharedCommunication/ScheduledEvent.h"
-#include "ImuConsumer.h"
 
 #include "PluginManager.h"
 
@@ -26,7 +25,6 @@ private:
 	Encoder _encoder;
 
 	
-	ImuConsumer m_imus;
 
 	ScheduledEvent m_hapticsPull;
 	ScheduledEvent m_statusPush;

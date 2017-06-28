@@ -78,6 +78,9 @@
     <ClInclude Include="..\src\plugins\hardlight\ILogger.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\ImuConsumer.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -180,6 +183,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\ImuConsumer.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp">

@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "ImuConsumer.h"
-#include "Synchronizer.h"
 #include "Enums.h"
 ImuConsumer::ImuConsumer()
 {

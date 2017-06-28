@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Consumers">
-      <UniqueIdentifier>{C47B8307-30E6-377E-7924-E923E5CD15D3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Json">
       <UniqueIdentifier>{7F9B877C-6BD2-880D-14BF-6E1000D5040F}</UniqueIdentifier>
     </Filter>
@@ -31,12 +28,6 @@
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
     <ClInclude Include="..\src\Driver\Atom.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
-    <ClInclude Include="..\src\Driver\Consumers\FifoConsumer.h">
-      <Filter>Consumers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\Consumers\IPacketConsumer.h">
-      <Filter>Consumers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
     <ClInclude Include="..\src\Driver\Encoder.h" />
@@ -44,10 +35,7 @@
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\HardwareInterface.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
-    <ClInclude Include="..\src\Driver\ICommunicationAdapter.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
-    <ClInclude Include="..\src\Driver\IPacketConsumer.h" />
-    <ClInclude Include="..\src\Driver\ImuConsumer.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
     <ClInclude Include="..\src\Driver\Json\JsonKeyValueConfig.h">
       <Filter>Json</Filter>
@@ -65,8 +53,6 @@
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
     <ClInclude Include="..\src\Driver\NSDriverApi.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
-    <ClInclude Include="..\src\Driver\Packet.h" />
-    <ClInclude Include="..\src\Driver\PacketDispatcher.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
     <ClInclude Include="..\src\Driver\RegionRegistry.h" />
@@ -103,10 +89,7 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\SuitPacket.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
-    <ClInclude Include="..\src\Driver\Synchronizer.h" />
-    <ClInclude Include="..\src\Driver\enumser.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h">
       <Filter>events_impl</Filter>
     </ClInclude>
@@ -216,27 +199,17 @@
       <Filter>protobuff_defs</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
-    <ClInclude Include="..\src\Driver\suit_packet.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\zmq.hpp" />
-    <ClInclude Include="..\src\Driver\zmq_addon.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\Atom.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
-    <ClCompile Include="..\src\Driver\Consumers\FifoConsumer.cpp">
-      <Filter>Consumers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Driver\Consumers\IPacketConsumer.cpp">
-      <Filter>Consumers</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareInterface.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
-    <ClCompile Include="..\src\Driver\ImuConsumer.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
       <Filter>Json</Filter>
@@ -247,17 +220,12 @@
     <ClCompile Include="..\src\Driver\MyTestLog.cpp" />
     <ClCompile Include="..\src\Driver\NSDriverApi.cpp" />
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
-    <ClCompile Include="..\src\Driver\Packet.cpp" />
-    <ClCompile Include="..\src\Driver\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
     <ClCompile Include="..\src\Driver\PluginManager.cpp" />
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
       <Filter>SharedCommunication</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Driver\SuitPacket.cpp" />
-    <ClCompile Include="..\src\Driver\Synchronizer.cpp" />
-    <ClCompile Include="..\src\Driver\enumser.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp">
       <Filter>events_impl</Filter>
     </ClCompile>
