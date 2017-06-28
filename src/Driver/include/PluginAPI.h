@@ -45,7 +45,6 @@ extern "C" {
 
 	//Right now, temporary until we have auto json-configuration
 	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, NSVR_Core* core);
-	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(NSVR_Core* core, NSVR_RegParams params);
 
 	typedef struct NSVR_GenericEvent_t NSVR_GenericEvent;
 
@@ -56,7 +55,7 @@ extern "C" {
 		const NSVR_GenericEvent* event
 	);
 
-	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode2(
+	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(
 		NSVR_Core* core,
 		NSVR_Consumer_Handler_t callback,
 	

@@ -25,6 +25,14 @@ HardwareInterface::~HardwareInterface()
 	
 }
 
+void HardwareInterface::InstallFilter(EventSelector selector, EventReceiver receiver)
+{
+	InstalledFilter filter;
+	filter.Receiver = receiver;
+	filter.Selector = selector;
+	m_filters.push_back(std::move(filter));
+}
+
 
 void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event)
 {
@@ -68,5 +76,10 @@ void HardwareInterface::generateRealtimeCommands(const NullSpaceIPC::HighLevelEv
 		realtime.Strength = magnitude.strength();
 		m_pluginManager.Dispatch(magnitude.region(), "realtime", AS_TYPE(NSVR_RealtimeEvent, &realtime));
 	}
+}
+
+void HardwareInterface::generateCurve(const NullSpaceIPC::HighLevelEvent & event)
+{
+	//m_curveEngine.GenerateCurve(event.parent_id(), event.curve_haptic_event());
 }
 

@@ -27,8 +27,7 @@ public:
 	bool Load();
 
 	bool Configure();
-	int RegisterInterface(NSVR_RegParams params);
-	int RegisterInterface2(NSVR_Consumer_Handler_t callback, const char* region, const char* iface, void* client_data);
+	int RegisterInterface(NSVR_Consumer_Handler_t callback, const char* region, const char* iface, void* client_data);
 	bool Unload();
 	bool IsLoaded() const;
 	std::string GetFileName() const;
@@ -46,10 +45,9 @@ public:
 	void Broadcast(const std::string& iface, const THapticType* input);
 
 	template<class THapticType>
-	void PluginInstance::Dispatch2(const std::string& region, const std::string& iface, const THapticType* input);
+	void PluginInstance::Dispatch(const std::string& region, const std::string& iface, const THapticType* input);
 private:
-	std::vector<NSVR_Provider*> getProviders(const std::string& region, const std::string& iface);
-	std::vector<PluginInstance::ClientData> PluginInstance::getProviders2(const std::string& region, const std::string& iface);
+	std::vector<PluginInstance::ClientData> PluginInstance::getProviders(const std::string& region, const std::string& iface);
 
 	typedef std::function<int(NSVR_Plugin**)> plugin_creator_t;
 	typedef std::function<int(NSVR_Plugin**)> plugin_destructor_t;
@@ -66,20 +64,8 @@ private:
 	std::string m_fileName;
 	bool m_loaded;
 
-	struct Interface {
-		std::string Name;
-		NSVR_Provider* Provider;
-		Interface(std::string name, NSVR_Provider* provider) : Name(name), Provider(provider) {}
-	};
 
-	struct InterfaceList {
-		std::vector<Interface> Interfaces;
-		InterfaceList(): Interfaces() {};
-		InterfaceList(std::vector<Interface>&& i) : Interfaces(std::move(i)) {}
-	};
-	std::unordered_map<std::string, InterfaceList> m_interfaces;
-
-	std::unordered_map<std::string, std::vector<ClientData>> m_interfaces2;
+	std::unordered_map<std::string, std::vector<ClientData>> m_interfaces;
 
 
 };
@@ -99,8 +85,8 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 
 
 template<class THapticType>
-void PluginInstance::Dispatch2(const std::string& region, const std::string& iface, const THapticType* input) {
-	std::vector<PluginInstance::ClientData> callbacks = getProviders2(region, iface);
+void PluginInstance::Dispatch(const std::string& region, const std::string& iface, const THapticType* input) {
+	std::vector<PluginInstance::ClientData> callbacks = getProviders(region, iface);
 	for (const PluginInstance::ClientData& clientData : callbacks) {
 		clientData.Callback(clientData.Data, region.c_str(), iface.c_str(), AS_TYPE(const NSVR_GenericEvent, input));
 	}
@@ -109,8 +95,8 @@ void PluginInstance::Dispatch2(const std::string& region, const std::string& ifa
 template<class THapticType>
 inline void PluginInstance::Broadcast(const std::string& iface,  const THapticType * input)
 {
-	for (const auto& region : m_interfaces2) {
-		std::vector<PluginInstance::ClientData> callbacks = getProviders2(region.first, iface);
+	for (const auto& region : m_interfaces) {
+		std::vector<PluginInstance::ClientData> callbacks = getProviders(region.first, iface);
 		for (const auto& clientData : callbacks) {
 			clientData.Callback(clientData.Data, region.first.c_str(), iface.c_str(), AS_TYPE(const NSVR_GenericEvent, input));
 		}

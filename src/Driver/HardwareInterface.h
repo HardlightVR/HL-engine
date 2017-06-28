@@ -16,7 +16,18 @@ public:
 	HardwareInterface(std::shared_ptr<IoService> io, PluginManager& manager); 
 	~HardwareInterface();
 
+	using EventSelector = std::function<bool(const NullSpaceIPC::HighLevelEvent&)>;
+	using EventReceiver = std::function<void(const NullSpaceIPC::HighLevelEvent&)>;
+
+	void InstallFilter(EventSelector selector, EventReceiver receiver);
+
 	void ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event) {
+
+		for (const auto& filter : m_filters) {
+			if (filter.Select(event)) { filter.Receive(event); }
+		}
+
+
 		switch (event.events_case()) {
 		case NullSpaceIPC::HighLevelEvent::kSimpleHaptic:
 			generateLowLevelSimpleHapticEvents(event);
@@ -27,6 +38,8 @@ public:
 		case NullSpaceIPC::HighLevelEvent::kRealtimeHaptic:
 			generateRealtimeCommands(event);
 			break;
+		case NullSpaceIPC::HighLevelEvent::kCurveHaptic:
+			generateCurve(event);
 		case NullSpaceIPC::HighLevelEvent::EVENTS_NOT_SET:
 			//fall-through
 		default:
@@ -52,6 +65,12 @@ public:
 
 private:
 
+	struct InstalledFilter {
+		HardwareInterface::EventReceiver Receive;
+		HardwareInterface::EventSelector Select;
+	};
+
+	std::vector<InstalledFilter> m_filters;
 
 
 	bool m_running;
@@ -63,5 +82,6 @@ private:
 	void generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event);
 	void generatePlaybackCommands(const NullSpaceIPC::HighLevelEvent& event);
 	void generateRealtimeCommands(const NullSpaceIPC::HighLevelEvent& event);
+	void generateCurve(const NullSpaceIPC::HighLevelEvent& event);
 };
 
