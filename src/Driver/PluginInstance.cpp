@@ -22,16 +22,24 @@ bool PluginInstance::Load()
 
 	m_loaded = true;
 
-
-	return m_creator(&m_rawPtr);
+	if (m_creator) {
+		return m_creator(&m_rawPtr);
+	}	
+	else {
+		return false;
+	}
 	
 }
 
 //precondition: successfully loaded
 bool PluginInstance::Configure()
 {
-	m_configure(m_rawPtr, AS_TYPE(NSVR_Core, this));
-	return true;
+	if (m_configure) {
+		return m_configure(m_rawPtr, AS_TYPE(NSVR_Core, this));
+	}
+	else {
+		return false;
+	}
 }
 
 bool PluginInstance::Link()

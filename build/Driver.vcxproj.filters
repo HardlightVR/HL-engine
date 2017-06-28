@@ -62,10 +62,19 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedTracking.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedVector.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedObject.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedQueue.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedTracking.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\ScheduledEvent.h">
@@ -81,6 +90,9 @@
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\WriteableSharedObject.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\readablesharedvector.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h">

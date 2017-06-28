@@ -3,13 +3,14 @@
 #include "SharedCommunication\WritableSharedObject.h"
 #include "SharedCommunication\OwnedReadableSharedQueue.h"
 #include "SharedCommunication\OwnedWritableSharedQueue.h"
+#include "SharedCommunication\OwnedWritableSharedTracking.h"
 #include "SharedCommunication\SharedTypes.h"
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "protobuff_defs/DriverCommand.pb.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
 
 #include <memory>
-using namespace boost::interprocess;
+
 using namespace NullSpace::SharedMemory;
 
 class DriverMessenger
@@ -20,6 +21,7 @@ public:
 	~DriverMessenger();
 	void WriteTracking(TrackingUpdate t);
 	void WriteSuits(SuitsConnectionInfo s);
+	
 	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
@@ -46,6 +48,7 @@ private:
 	//Read commands from here, such as ENABLE_TRACKING, DISABLE_TRACKING
 	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
+	std::unique_ptr<OwnedWritableSharedTracking> m_tracking;
 	std::atomic<bool> _running;
 
 	boost::asio::deadline_timer m_sentinelTimer;

@@ -24,10 +24,10 @@ void HardlightDevice::RegisterDrivers(NSVR_Core* core)
 	for (auto& driver : m_drivers) {
 		std::string region = translator.ToRegionFromLocation(driver->GetLocation());
 
-		NSVR_Core_RegisterNode2(core, &zoneDriverCallback<NSVR_BriefTaxel>, region.c_str(), "brief-taxel", driver.get());
-		NSVR_Core_RegisterNode2(core, &zoneDriverCallback<NSVR_LastingTaxel>, region.c_str(), "lasting-taxel", driver.get());
-		NSVR_Core_RegisterNode2(core, &zoneDriverCallback<NSVR_PlaybackEvent>, region.c_str(), "playback-controls", driver.get());
-		NSVR_Core_RegisterNode2(core, &zoneDriverCallback<NSVR_RealtimeEvent>, region.c_str(), "realtime", driver.get());
+		NSVR_Core_RegisterNode(core, &zoneDriverCallback<NSVR_BriefTaxel>, region.c_str(), "brief-taxel", driver.get());
+		NSVR_Core_RegisterNode(core, &zoneDriverCallback<NSVR_LastingTaxel>, region.c_str(), "lasting-taxel", driver.get());
+		NSVR_Core_RegisterNode(core, &zoneDriverCallback<NSVR_PlaybackEvent>, region.c_str(), "playback-controls", driver.get());
+		NSVR_Core_RegisterNode(core, &zoneDriverCallback<NSVR_RealtimeEvent>, region.c_str(), "realtime", driver.get());
 
 	}
 	

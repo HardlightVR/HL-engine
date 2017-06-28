@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "DriverMessenger.h"
 #include "Encoder.h"
+
+
+
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	_running{true},
 	_process([](void const*, std::size_t) {}),
@@ -15,7 +18,10 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	OwnedWritableSharedQueue::remove("ns-logging-data");
 	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<std::time_t>::remove("ns-sentinel");
+	
 
+
+	m_tracking = std::make_unique<OwnedWritableSharedTracking>();
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_trackingData = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>>("ns-tracking-data");
 	m_suitConnectionInfo = std::make_unique<WritableSharedObject<SuitsConnectionInfo>>("ns-suit-data");
@@ -27,7 +33,13 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 
 	TrackingUpdate nullTracking = {};
 	SuitsConnectionInfo nullSuits = {};
-	m_trackingData->Write(nullTracking);
+
+	NullSpace::SharedMemory::Quaternion nullQuat = {};
+	
+	m_tracking->Insert("chest", nullQuat);
+	m_tracking->Insert("left_upper_arm", nullQuat);
+	m_tracking->Insert("right_upper_arm", nullQuat);
+
 	m_suitConnectionInfo->Write(nullSuits);
 	
 	startSentinel();
@@ -53,9 +65,12 @@ DriverMessenger::~DriverMessenger()
 
 }
 
+//Precondition: The keys were initialized already using Insert on m_tracking
 void DriverMessenger::WriteTracking(TrackingUpdate t)
 {
-	m_trackingData->Write(t);
+	m_tracking->Update("chest", t.chest);
+	m_tracking->Update("left_upper_arm", t.left_upper_arm);
+	m_tracking->Update("right_upper_arm", t.right_upper_arm);
 }
 
 void DriverMessenger::WriteSuits(SuitsConnectionInfo s)

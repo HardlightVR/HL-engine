@@ -43,5 +43,5 @@ private:
 
 	void handleTracking();
 
-	CurveEngine m_curveEngine;
+	//CurveEngine m_curveEngine;
 };

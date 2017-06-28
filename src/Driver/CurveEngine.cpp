@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "CurveEngine.h"
 #include "HardwareInterface.h"
+void CurveEngine::GenerateCurve(uint64_t id, const NullSpaceIPC::CurveHaptic & haptic)
+{
+}
 void CurveEngine::Update(float dt)
 {
 }
