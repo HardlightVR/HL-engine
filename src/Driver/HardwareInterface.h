@@ -6,10 +6,10 @@
 #include "events/BriefTaxel.h"
 #include "events_impl/BriefTaxel.h"
 #include "events_impl/LastingTaxel.h"
-#include "RegionRegistry.h"
 #include "Enums.h"
 class Synchronizer;
 class IoService;
+class PluginManager;
 class HardwareInterface
 {
 public:

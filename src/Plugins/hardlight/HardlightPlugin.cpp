@@ -13,9 +13,20 @@ HardlightPlugin::HardlightPlugin() :
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5))
 
 {
-
+	
 	m_adapter->SetMonitor(m_monitor);
+
+	m_monitor->SetDisconnectHandler([&]() {
+		NSVR_Core_ConnectionStatus_Submit(m_core, false);
+	});
+
+	m_monitor->SetReconnectHandler([&]() {
+		NSVR_Core_ConnectionStatus_Submit(m_core, true);
+	});
+
+
 	m_adapter->Connect();
+	
 	m_synchronizer->BeginSync();
 	
 	m_eventPull.SetEvent([&]() {
@@ -25,6 +36,8 @@ HardlightPlugin::HardlightPlugin() :
 	
 		auto commands = m_device.GenerateHardwareCommands(dt);
 		m_firmware.Execute(commands);
+
+	
 		
 	});
 
@@ -44,8 +57,7 @@ HardlightPlugin::~HardlightPlugin()
 int HardlightPlugin::Configure(NSVR_Core* core)
 {
 	m_device.RegisterDrivers(core);
-	
-
+	m_core = core;
 	return 1;
 }
 

@@ -10,6 +10,8 @@
 #include "events/briefTaxel.h"
 #include "events/lastingTaxel.h"
 #include <boost/log/trivial.hpp>
+
+#include "HardwareDataModel.h"
 class RegionRegistry;
 class PluginInstance
 {
@@ -21,7 +23,7 @@ public:
 		ClientData(std::string iface, NSVR_Consumer_Handler_t cb, void* ud);
 	};
 
-	explicit PluginInstance(std::string fileName);
+	PluginInstance(std::string fileName, HardwareDataModel& model);
 	~PluginInstance();
 	bool Link();
 	bool Load();
@@ -36,10 +38,11 @@ public:
 
 	PluginInstance(const PluginInstance&) = delete;
 	const PluginInstance& operator=(const PluginInstance&) = delete;
-	PluginInstance(PluginInstance&&);
+	PluginInstance(PluginInstance&&) = delete;
 
 	
-
+	int UpdateTracking(const char* region, const NSVR_Core_Quaternion* update);
+	int UpdateDeviceStatus(bool connected);
 
 	template<class THapticType>
 	void Broadcast(const std::string& iface, const THapticType* input);
@@ -64,6 +67,7 @@ private:
 	std::string m_fileName;
 	bool m_loaded;
 
+	HardwareDataModel& m_model;
 
 	std::unordered_map<std::string, std::vector<ClientData>> m_interfaces;
 

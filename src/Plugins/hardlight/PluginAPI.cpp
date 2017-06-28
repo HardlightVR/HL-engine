@@ -10,7 +10,6 @@
 
 
 
-
 NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin ** pluginPtr)
 {
 	Locator::initialize();

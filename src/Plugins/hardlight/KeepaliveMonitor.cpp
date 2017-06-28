@@ -12,7 +12,8 @@ KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterfac
 	_pingInterval(boost::posix_time::milliseconds(500)),
 	MAX_FAILED_PINGS(2), //unused now
 	_failedPingCount(0), //unused now
-	_pingTime(0)
+	_pingTime(0),
+	_isConnected(false)
 	
 {
 
@@ -40,7 +41,12 @@ void KeepaliveMonitor::scheduleResponseTimer()
 
 void KeepaliveMonitor::SetDisconnectHandler(std::function<void()> handler)
 {
-	_disconnectHandler = handler;
+	_disconnectHandler.push_back(std::move(handler));
+}
+
+void KeepaliveMonitor::SetReconnectHandler(std::function<void()> handler)
+{
+	_reconnectHandler.push_back(std::move(handler));
 }
 
 void KeepaliveMonitor::ReceivePing()
@@ -75,6 +81,12 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_r
 
 
 	if (ping_recd) {
+		if (!_isConnected) {
+			for (const auto& handler : _reconnectHandler) {
+				handler();
+			}
+			_isConnected = true;
+		}
 		BOOST_LOG_TRIVIAL(info) << "[Keepalive] got response";
 
 		//Timer was canceled - this is the most common execution of this function.
@@ -86,7 +98,10 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_r
 		schedulePingTimer();
 	}
 	else {
-		_disconnectHandler();
+		_isConnected = false;
+		for (const auto& handler : _disconnectHandler) {
+			handler();
+		}
 	}
 
 }

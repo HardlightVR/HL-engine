@@ -31,16 +31,18 @@ extern "C" {
 
 	enum NSVR_Region {NSVR_Region_None, NSVR_Region_LeftChest, NSVR_Region_RightChest};
 
+	typedef struct NSVR_Core_Quaternion_t  {
+		float w;
+		float x;
+		float y;
+		float z;
+	} NSVR_Core_Quaternion;
+
 
 	typedef struct NSVR_Provider_t NSVR_Provider;
 	typedef struct NSVR_Plugin_t NSVR_Plugin;
 	typedef struct NSVR_Core_t NSVR_Core;
 	
-	typedef struct NSVR_RegParams_t {
-		const char* Region;
-		const char* Interface;
-		NSVR_Provider* Provider;
-	} NSVR_RegParams;
 
 
 	//Right now, temporary until we have auto json-configuration
@@ -64,7 +66,9 @@ extern "C" {
 		void* client_data 
 	);
 
-
+	NSVR_CORE_RETURN(int) NSVR_Core_Tracking_Submit(NSVR_Core* core, const char* region, const NSVR_Core_Quaternion* update);
+	NSVR_CORE_RETURN(int) NSVR_Core_ConnectionStatus_Submit(NSVR_Core* core, bool isDeviceConnected);
+	
 	NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin** pluginPtr);
 
 	NSVR_PLUGIN_RETURN(int) NSVR_Free(NSVR_Plugin** ptr);

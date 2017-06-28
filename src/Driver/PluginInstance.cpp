@@ -2,9 +2,29 @@
 #include "PluginInstance.h"
 #include <boost/type_index.hpp>
 #include <iostream>
-#include "RegionRegistry.h"
-PluginInstance::PluginInstance(std::string fileName) : m_fileName(fileName), m_loaded{ false }
+PluginInstance::PluginInstance(std::string fileName, HardwareDataModel& model) :
+	m_fileName(fileName), 
+	m_loaded{ false },
+	m_model(model)
 {
+}
+
+int PluginInstance::UpdateTracking(const char* region, const NSVR_Core_Quaternion* update)
+{
+	m_model.Update(region, *update);
+	return 1;
+}
+
+int PluginInstance::UpdateDeviceStatus(bool connected)
+{
+	if (connected) {
+		m_model.SetDeviceConnected();
+	}
+	else {
+		m_model.SetDeviceDisconnected();
+	}
+
+	return 1;
 }
 
 PluginInstance::~PluginInstance()
@@ -123,17 +143,6 @@ std::vector<PluginInstance::ClientData> PluginInstance::getProviders(const std::
 }
 
 
-PluginInstance::PluginInstance(PluginInstance && old) : 
-	  m_lib(std::move(old.m_lib))
-	, m_creator(std::move(old.m_creator))
-	, m_destructor(std::move(old.m_destructor))
-	, m_displayName(std::move(old.m_displayName))
-	, m_fileName(std::move(old.m_fileName))
-	, m_loaded(std::move(old.m_loaded))
-	//be sure to update when we add new function defs. Should only be about 5-10 total.
-	//He whispered. Hoping. 
-{
-}
 
 PluginInstance::ClientData::ClientData(std::string iface, NSVR_Consumer_Handler_t cb, void * ud):
 	Interface(iface),

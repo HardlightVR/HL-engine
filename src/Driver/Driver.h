@@ -3,7 +3,7 @@
 #include "HardwareInterface.h"
 #include "Encoder.h"
 #include "SharedCommunication/ScheduledEvent.h"
-
+#include "HardwareCoordinator.h"
 #include "PluginManager.h"
 
 
@@ -37,11 +37,11 @@ private:
 	void handleCommands();
 
 	NullSpace::SharedMemory::TrackingUpdate m_cachedTracking;
-	
+	HardwareCoordinator m_coordinator;
+
 	PluginManager m_pluginManager;   
 	HardwareInterface m_hardware;
 
 	void handleTracking();
-
 	//CurveEngine m_curveEngine;
 };

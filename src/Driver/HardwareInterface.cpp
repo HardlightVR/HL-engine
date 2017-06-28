@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HardwareInterface.h"
 #include "IoService.h"
+#include "PluginManager.h"
 #include "Locator.h"
 #include "events_impl/PlaybackEvent.h"
 #include "events_impl/RealtimeEvent.h"

@@ -15,6 +15,8 @@ public:
 	//Set what happens when the monitor detects a suit disconnect
 	void SetDisconnectHandler(std::function<void()>);
 
+	void SetReconnectHandler(std::function<void()>);
+
 	//Tell the monitor that ping data has been received
 	void ReceivePing();
 
@@ -36,8 +38,8 @@ private:
 	const std::size_t MAX_FAILED_PINGS;
 
 	//Function which is called when monitor detects a disconnect
-	std::function<void()> _disconnectHandler;
-
+	std::vector<std::function<void()>> _disconnectHandler;
+	std::vector<std::function<void()>> _reconnectHandler;
 	//The port which we are operating on
 	
 	//How long we wait for a response before timing out
@@ -59,7 +61,7 @@ private:
 	void schedulePingTimer();
 	void scheduleResponseTimer();
 
-
+	bool _isConnected;
 	/**
 	Explanation of ping-response scheme
 	===================================

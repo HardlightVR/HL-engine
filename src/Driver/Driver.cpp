@@ -48,13 +48,15 @@ Driver::Driver() :
 	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_curveEngineUpdate(m_io->GetIOService(), boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
-	m_pluginManager({"HardlightPlugin"}),
+	m_coordinator(m_messenger),
+	m_pluginManager(m_coordinator, {"HardlightPlugin"}),
 	m_hardware(m_io, m_pluginManager)
 
 
 {
 	m_pluginManager.LoadAll();
 
+	
 
 	using namespace boost::log;
 

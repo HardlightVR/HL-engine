@@ -32,6 +32,6 @@ private:
 
 	bool m_running;
 
-	
+	NSVR_Core* m_core;
 
 };

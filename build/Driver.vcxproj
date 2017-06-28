@@ -306,6 +306,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
+    <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
+    <ClInclude Include="..\src\Driver\HardwareDataModel.h" />
     <ClInclude Include="..\src\Driver\HardwareInterface.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
@@ -322,7 +324,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
-    <ClInclude Include="..\src\Driver\RegionRegistry.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h" />
@@ -364,6 +365,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareDataModel.cpp" />
     <ClCompile Include="..\src\Driver\HardwareInterface.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
