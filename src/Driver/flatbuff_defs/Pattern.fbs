@@ -1,9 +1,0 @@
-include "HapticFrame.fbs";
-
-namespace NullSpace.HapticFiles;
-
-table Pattern {
-	items:[HapticFrame];
-}
-
-root_type Pattern;

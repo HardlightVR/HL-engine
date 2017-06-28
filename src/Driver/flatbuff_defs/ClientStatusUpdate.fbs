@@ -1,9 +1,0 @@
-namespace NullSpace.Communication;
-
-enum Status:short {Playing, Stopped, Paused}
-
-table ClientStatusUpdate {
-	clientStatus:Status;
-}
-
-root_type ClientStatusUpdate;
