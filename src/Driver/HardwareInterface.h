@@ -3,11 +3,11 @@
 #include "DriverMessenger.h"
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
-#include "Atom.h"
 #include "events/BriefTaxel.h"
 #include "events_impl/BriefTaxel.h"
 #include "events_impl/LastingTaxel.h"
 #include "RegionRegistry.h"
+#include "Enums.h"
 class Synchronizer;
 class IoService;
 class HardwareInterface

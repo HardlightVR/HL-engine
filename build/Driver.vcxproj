@@ -299,7 +299,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
   <ItemGroup>
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
-    <ClInclude Include="..\src\Driver\Atom.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
@@ -339,27 +338,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\events_impl\LastingTaxel.h" />
     <ClInclude Include="..\src\Driver\events_impl\PlaybackEvent.h" />
     <ClInclude Include="..\src\Driver\events_impl\RealtimeEvent.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\ClientStatusUpdate_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\EnginePacket_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Events_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\ExecutionCommand_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Experience_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticEffect_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticFrame_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticPacket_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticSample_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\LogMessage_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedHapticFrame_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedPattern_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedSequence_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Node_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Pattern_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Sequence_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\SuitStatusUpdate_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffectArray_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffect_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\TrackingUpdate_generated.h" />
-    <ClInclude Include="..\src\Driver\flatbuff_defs\instructions_generated.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\events\AudioEvent.h" />
     <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h" />
@@ -376,7 +354,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
-    <ClCompile Include="..\src\Driver\Atom.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />

@@ -10,9 +10,6 @@
     <Filter Include="events_impl">
       <UniqueIdentifier>{CB8FD5D3-3745-4EC9-C039-48A02CEE44CD}</UniqueIdentifier>
     </Filter>
-    <Filter Include="flatbuff_defs">
-      <UniqueIdentifier>{508FBA42-BC4F-3679-858A-7FF6F1097B55}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
     </Filter>
@@ -26,7 +23,6 @@
   <ItemGroup>
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
-    <ClInclude Include="..\src\Driver\Atom.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
@@ -102,69 +98,6 @@
     <ClInclude Include="..\src\Driver\events_impl\RealtimeEvent.h">
       <Filter>events_impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\ClientStatusUpdate_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\EnginePacket_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Events_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\ExecutionCommand_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Experience_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticEffect_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticFrame_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticPacket_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\HapticSample_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\LogMessage_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedHapticFrame_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedPattern_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\MixedSequence_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Node_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Pattern_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\Sequence_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\SuitStatusUpdate_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffectArray_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\TinyEffect_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\TrackingUpdate_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\flatbuff_defs\instructions_generated.h">
-      <Filter>flatbuff_defs</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -203,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
-    <ClCompile Include="..\src\Driver\Atom.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
