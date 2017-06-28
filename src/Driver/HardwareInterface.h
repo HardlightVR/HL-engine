@@ -1,12 +1,9 @@
 #pragma once
 #include <boost\thread\mutex.hpp>
-#include "FirmwareInterface.h"
 #include "DriverMessenger.h"
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
 #include "Atom.h"
-#include "KeepaliveMonitor.h"
-#include "PacketDispatcher.h"
 #include "events/BriefTaxel.h"
 #include "events_impl/BriefTaxel.h"
 #include "events_impl/LastingTaxel.h"
@@ -44,12 +41,12 @@ public:
 	void DisableTracking();
 
 
-	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& options);
+//	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& options);
 	void EnableIntrigMode(Location pad);
 	void EnableRtpMode(Location pad);
 
 	void RequestSuitVersion();
-	void RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)>);
+//	void RegisterPacketCallback(SuitPacket::PacketType p, std::function<void(packet p)>);
 
 	void RawCommand(const std::string& command);
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "DriverMessenger.h"
 #include "HardwareInterface.h"
-#include "FirmwareInterface.h"
 #include "Encoder.h"
 #include "SharedCommunication/ScheduledEvent.h"
 #include "ImuConsumer.h"

@@ -42,16 +42,12 @@
     <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
-    <ClInclude Include="..\src\Driver\FirmwareInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareInterface.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\ICommunicationAdapter.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
     <ClInclude Include="..\src\Driver\IPacketConsumer.h" />
     <ClInclude Include="..\src\Driver\ImuConsumer.h" />
-    <ClInclude Include="..\src\Driver\Instruction.h" />
-    <ClInclude Include="..\src\Driver\InstructionBuilder.h" />
-    <ClInclude Include="..\src\Driver\InstructionSet.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
     <ClInclude Include="..\src\Driver\Json\JsonKeyValueConfig.h">
       <Filter>Json</Filter>
@@ -63,7 +59,6 @@
       <Filter>Json</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
-    <ClInclude Include="..\src\Driver\KeepaliveMonitor.h" />
     <ClInclude Include="..\src\Driver\Locator.h" />
     <ClInclude Include="..\src\Driver\LoggingUtils.h" />
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
@@ -239,18 +234,13 @@
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
-    <ClCompile Include="..\src\Driver\FirmwareInterface.cpp" />
     <ClCompile Include="..\src\Driver\HardwareInterface.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
     <ClCompile Include="..\src\Driver\ImuConsumer.cpp" />
-    <ClCompile Include="..\src\Driver\Instruction.cpp" />
-    <ClCompile Include="..\src\Driver\InstructionBuilder.cpp" />
-    <ClCompile Include="..\src\Driver\InstructionSet.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
       <Filter>Json</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Driver\KeepaliveMonitor.cpp" />
     <ClCompile Include="..\src\Driver\Locator.cpp" />
     <ClCompile Include="..\src\Driver\LoggingUtils.cpp" />
     <ClCompile Include="..\src\Driver\MessengerLogger.cpp" />

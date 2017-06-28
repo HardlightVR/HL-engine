@@ -13,7 +13,6 @@
 #include "events_impl/LastingTaxel.h"
 #include "events_impl/BriefTaxel.h"
 
-#include "FirmwareInterface.h"
 
 //remove following two
 #include "PluginInstance.h"
@@ -170,11 +169,11 @@ void Driver::handleCommands()
 				break;
 			case NullSpaceIPC::DriverCommand_Command_ENABLE_AUDIO:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Enabling audio mode for all pads";
-				FirmwareInterface::AudioOptions options;
-				options.AudioMin =  command.params().at("audio_min");
-				options.AudioMax = command.params().at("audio_max");
-				options.PeakTime = command.params().at("peak_time");
-				options.Filter = command.params().at("filter");
+				//FirmwareInterface::AudioOptions options;
+				//options.AudioMin =  command.params().at("audio_min");
+				//options.AudioMax = command.params().at("audio_max");
+				//options.PeakTime = command.params().at("peak_time");
+				//options.Filter = command.params().at("filter");
 				for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
 				//	m_hardware.EnableAudioMode(static_cast<Location>(loc), options);
 				}
