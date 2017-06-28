@@ -300,7 +300,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
     <ClInclude Include="..\src\Driver\Atom.h" />
-    <ClInclude Include="..\src\Driver\BoostSerialAdapter.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\Consumers\FifoConsumer.h" />
     <ClInclude Include="..\src\Driver\Consumers\IPacketConsumer.h" />
@@ -396,7 +395,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\Atom.cpp" />
-    <ClCompile Include="..\src\Driver\BoostSerialAdapter.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\Consumers\FifoConsumer.cpp" />
     <ClCompile Include="..\src\Driver\Consumers\IPacketConsumer.cpp" />

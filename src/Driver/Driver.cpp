@@ -66,13 +66,13 @@ Driver::Driver() :
 
 	core::get()->add_sink(sink);
 	
-	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::ImuData, [this](auto packet) {
+	/*m_hardware.RegisterPacketCallback(SuitPacket::PacketType::ImuData, [this](auto packet) {
 		m_imus.ConsumePacket(packet); 
 	});
-
+*/
 	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Booting";
 
-	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
+	/*m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
 		SuitVersionInfo version(packet);
 		BOOST_LOG_TRIVIAL(info) << "[DriverMain] Suit diagnostics: Running firmware v" << version.Major << "." << version.Minor;
 
@@ -88,12 +88,12 @@ Driver::Driver() :
 		else if (version.Major == 2 && version.Minor == 4) {
 			m_imus.AssignMapping(3, Imu::Chest);
 		}
-	});
+	});*/
 
-	m_hardware.RegisterPacketCallback(SuitPacket::PacketType::DrvStatus, [&](auto packet) {
+	/*m_hardware.RegisterPacketCallback(SuitPacket::PacketType::DrvStatus, [&](auto packet) {
 		extractDrvData(packet);
 
-	});
+	});*/
 
 }
 
@@ -147,7 +147,7 @@ void Driver::handleHaptics()
 
 void Driver::handleStatus()
 {
-	m_messenger.WriteSuits(m_hardware.PollDevice());
+	//m_messenger.WriteSuits(m_hardware.PollDevice());
 }
 
 void DoForEachBit(std::function<void(Location l)> fn, uint32_t bits) {
@@ -162,11 +162,11 @@ void Driver::handleCommands()
 			case NullSpaceIPC::DriverCommand_Command_DISABLE_TRACKING:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Disabling tracking";
 
-				m_hardware.DisableTracking();
+				//m_hardware.DisableTracking();
 				break;
 			case NullSpaceIPC::DriverCommand_Command_ENABLE_TRACKING:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Enabling tracking";
-				m_hardware.EnableTracking();
+				//m_hardware.EnableTracking();
 				break;
 			case NullSpaceIPC::DriverCommand_Command_ENABLE_AUDIO:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Enabling audio mode for all pads";
@@ -176,24 +176,24 @@ void Driver::handleCommands()
 				options.PeakTime = command.params().at("peak_time");
 				options.Filter = command.params().at("filter");
 				for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
-					m_hardware.EnableAudioMode(static_cast<Location>(loc), options);
+				//	m_hardware.EnableAudioMode(static_cast<Location>(loc), options);
 				}
 				break;
 			case NullSpaceIPC::DriverCommand_Command_DISABLE_AUDIO:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Disabling audio mode for all pads";
 			
 				for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
-					m_hardware.EnableIntrigMode(static_cast<Location>(loc));
+				//	m_hardware.EnableIntrigMode(static_cast<Location>(loc));
 				}
 				break;
 			case NullSpaceIPC::DriverCommand_Command_RAW_COMMAND:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Submitting raw command to the suit";
-				m_hardware.RawCommand(command.raw_command());
+				//m_hardware.RawCommand(command.raw_command());
 				break;
 			case NullSpaceIPC::DriverCommand_Command_DUMP_DEVICE_DIAGNOSTICS:
 				BOOST_LOG_TRIVIAL(info) << "[DriverMain] Requesting device diagnostics..";
 				for (int loc = (int)Location::Lower_Ab_Right; loc != (int) Location::Error; loc++) {
-					m_hardware.ReadDriverData(static_cast<Location>(loc));
+				//	m_hardware.ReadDriverData(static_cast<Location>(loc));
 				}
 				break;
 			default: 

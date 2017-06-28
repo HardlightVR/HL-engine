@@ -30,7 +30,6 @@
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
     <ClInclude Include="..\src\Driver\Atom.h" />
-    <ClInclude Include="..\src\Driver\BoostSerialAdapter.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\Consumers\FifoConsumer.h">
       <Filter>Consumers</Filter>
@@ -230,7 +229,6 @@
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\Atom.cpp" />
-    <ClCompile Include="..\src\Driver\BoostSerialAdapter.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\Consumers\FifoConsumer.cpp">
       <Filter>Consumers</Filter>

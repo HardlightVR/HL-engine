@@ -26,7 +26,6 @@ public:
 	void DisableTracking();
 	void RequestSuitVersion();
 	void ReadDriverData(Location loc, Register reg);
-	void ResetDrivers();
 
 	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions&);
 	void EnableIntrigMode(Location pad);

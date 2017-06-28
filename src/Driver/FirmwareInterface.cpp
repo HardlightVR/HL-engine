@@ -118,10 +118,6 @@ void FirmwareInterface::ReadDriverData(Location loc, Register reg)
 	); 
 }
 
-void FirmwareInterface::ResetDrivers()
-{
-	VerifyThenExecute(_builder.UseInstruction("RESET_DRIVERS"));
-}
 
 void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
 	if (builder.Verify()) {
