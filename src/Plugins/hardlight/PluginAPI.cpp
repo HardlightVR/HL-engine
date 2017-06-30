@@ -20,11 +20,12 @@ NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin ** pluginPtr)
 	return 1;
 }
 
-NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, NSVR_Core* core) {
 
-	return AS_TYPE(HardlightPlugin, pluginPtr)->Configure(core);
-	
+NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin * pluginPtr, NSVR_Configuration * config)
+{
+	return AS_TYPE(HardlightPlugin, pluginPtr)->Configure(config);
 }
+
 
 
 

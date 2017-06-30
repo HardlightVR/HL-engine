@@ -41,14 +41,13 @@ extern "C" {
 
 	typedef struct NSVR_Provider_t NSVR_Provider;
 	typedef struct NSVR_Plugin_t NSVR_Plugin;
-	typedef struct NSVR_Core_t NSVR_Core;
+	typedef struct NSVR_Core_Ctx_s NSVR_Core_Ctx;
 	
 
 
-	//Right now, temporary until we have auto json-configuration
-	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, NSVR_Core* core);
-
 	typedef struct NSVR_GenericEvent_t NSVR_GenericEvent;
+
+
 
 	typedef void(*NSVR_Consumer_Handler_t)(
 		void* client_data,
@@ -57,17 +56,20 @@ extern "C" {
 		const NSVR_GenericEvent* event
 	);
 
-	NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(
-		NSVR_Core* core,
-		NSVR_Consumer_Handler_t callback,
-	
-		const char* region,
-		const char* iface,
-		void* client_data 
-	);
 
-	NSVR_CORE_RETURN(int) NSVR_Core_Tracking_Submit(NSVR_Core* core, const char* region, const NSVR_Core_Quaternion* update);
-	NSVR_CORE_RETURN(int) NSVR_Core_ConnectionStatus_Submit(NSVR_Core* core, bool isDeviceConnected);
+
+	typedef int(*NSVR_Core_TrackingCallback)(NSVR_Core_Ctx* core, const char* region, const NSVR_Core_Quaternion* quat);
+	typedef int(*NSVR_Core_StatusCallback)(NSVR_Core_Ctx* core, bool isDeviceConnected);
+	typedef int(*NSVR_Core_RegisterNodeCallback)(NSVR_Core_Ctx* core, NSVR_Consumer_Handler_t, const char* region, const char* iface, void* user_data);
+	typedef struct NSVR_Configuration_s  NSVR_Configuration;
+
+
+	//Right now, temporary until we have auto json-configuration
+	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, NSVR_Configuration* config);
+
+	NSVR_CORE_RETURN(int) NSVR_Configuration_GetCallback(NSVR_Configuration* config, const char* name, void** outCallback,NSVR_Core_Ctx** outContext);
+
+
 	
 	NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin** pluginPtr);
 

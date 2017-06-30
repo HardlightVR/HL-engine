@@ -4,30 +4,34 @@
 
 
 
-NSVR_CORE_RETURN(int) NSVR_Core_RegisterNode(
-	NSVR_Core * core, 
-	NSVR_Consumer_Handler_t callback, 
-	const char * iface, 
-	const char* region,
-	void * client_data
-)
+NSVR_CORE_RETURN(int) NSVR_Configuration_GetCallback(NSVR_Configuration * config, const char * name, void ** outCallback, NSVR_Core_Ctx** context)
 {
 
-	return AS_TYPE(PluginInstance, core)->RegisterInterface(callback, iface, region, client_data);
+	if (strcmp(name, "tracking") == 0) {
+		
+	
+		return 1;
+	}
+	else if (strcmp(name, "status") == 0) {
+		*outCallback = config->StatusCallback.callback;
+		*context = config->StatusCallback.context;
+		return 1;
 
+	}
+	else if (strcmp(name, "register-node") == 0) {
+		*outCallback = config->RegisterNodeCallback.callback;
+		*context = config->RegisterNodeCallback.context;
+		return 1;
+
+	}
+	else {
+		return -1;
+	}
 }
 
 
 
 
-NSVR_CORE_RETURN(int) NSVR_Core_Tracking_Submit(NSVR_Core* core, const char* region, const NSVR_Core_Quaternion* update)
-{
-	return AS_TYPE(PluginInstance, core)->UpdateTracking(region, update);
-}
 
 
-NSVR_CORE_RETURN(int) NSVR_Core_ConnectionStatus_Submit(NSVR_Core* core, bool isDeviceConnected)
-{
-	return AS_TYPE(PluginInstance, core)->UpdateDeviceStatus(isDeviceConnected);
-}
 

@@ -12,7 +12,26 @@
 #include <boost/log/trivial.hpp>
 
 #include "HardwareDataModel.h"
-class RegionRegistry;
+
+typedef int(*NSVR_Core_InternalStatusCallback)(NSVR_Core_Ctx*, bool);
+
+
+typedef struct NSVR_Callback_s {
+	void* callback;
+	NSVR_Core_Ctx* context;
+} NSVR_Callback;
+
+typedef struct NSVR_Configuration_s {
+	NSVR_Callback StatusCallback;
+	NSVR_Callback RegisterNodeCallback;
+	
+
+} NSVR_Configuration;
+
+
+struct FunctionTable {
+
+};
 class PluginInstance
 {
 public:
@@ -30,6 +49,8 @@ public:
 
 	bool Configure();
 	int RegisterInterface(NSVR_Consumer_Handler_t callback, const char* region, const char* iface, void* client_data);
+;
+
 	bool Unload();
 	bool IsLoaded() const;
 	std::string GetFileName() const;
@@ -41,8 +62,7 @@ public:
 	PluginInstance(PluginInstance&&) = delete;
 
 	
-	int UpdateTracking(const char* region, const NSVR_Core_Quaternion* update);
-	int UpdateDeviceStatus(bool connected);
+
 
 	template<class THapticType>
 	void Broadcast(const std::string& iface, const THapticType* input);
@@ -54,7 +74,7 @@ private:
 
 	typedef std::function<int(NSVR_Plugin**)> plugin_creator_t;
 	typedef std::function<int(NSVR_Plugin**)> plugin_destructor_t;
-	typedef std::function<int(NSVR_Plugin*, NSVR_Core*)> plugin_configure_t;
+	typedef std::function<int(NSVR_Plugin*, NSVR_Configuration*)> plugin_configure_t;
 	std::unique_ptr<boost::dll::shared_library> m_lib;
 	
 	NSVR_Plugin* m_rawPtr;

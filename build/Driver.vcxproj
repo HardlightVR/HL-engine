@@ -306,6 +306,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
+    <ClInclude Include="..\src\Driver\FunctionPointerTemplates.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareDataModel.h" />
     <ClInclude Include="..\src\Driver\HardwareInterface.h" />

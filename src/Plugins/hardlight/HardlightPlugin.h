@@ -11,11 +11,26 @@
 #include "IoService.h"
 #include "zone_logic/hardlightdevice.h"
 #include "ScheduledEvent.h"
+#include <functional>
+
+
+struct nsvr_callback {
+	void* callback;
+	NSVR_Core_Ctx* context;
+
+	template<typename TCoreCallback, typename...Args>
+	void call(Args&&...args) {
+		TCoreCallback fn = static_cast<TCoreCallback>(callback);
+		(fn)(context, std::forward<Args>(args)...);
+	}
+
+};
+
 class HardlightPlugin {
 public:
 	HardlightPlugin();
 	~HardlightPlugin();
-	int Configure(NSVR_Core* core);
+	int Configure(NSVR_Configuration* config);
 private:
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;
@@ -32,6 +47,8 @@ private:
 
 	bool m_running;
 
-	NSVR_Core* m_core;
+	
+	std::unordered_map<std::string, nsvr_callback> m_coreApi;
+
 
 };

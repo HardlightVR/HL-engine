@@ -17,13 +17,12 @@ HardlightPlugin::HardlightPlugin() :
 	m_adapter->SetMonitor(m_monitor);
 
 	m_monitor->SetDisconnectHandler([&]() {
-		NSVR_Core_ConnectionStatus_Submit(m_core, false);
+		m_coreApi["status"].call<NSVR_Core_StatusCallback>(false);
 	});
 
 	m_monitor->SetReconnectHandler([&]() {
-		NSVR_Core_ConnectionStatus_Submit(m_core, true);
+		m_coreApi["status"].call<NSVR_Core_StatusCallback>(true);
 	});
-
 
 	m_adapter->Connect();
 	
@@ -54,10 +53,26 @@ HardlightPlugin::~HardlightPlugin()
 
 
 
-int HardlightPlugin::Configure(NSVR_Core* core)
+
+
+
+
+
+int HardlightPlugin::Configure(NSVR_Configuration* config)
 {
-	m_device.RegisterDrivers(core);
-	m_core = core;
+	auto functions = { "status", "register-node" };
+
+	for (const auto& func : functions) {
+		nsvr_callback fnpointer;
+		NSVR_Configuration_GetCallback(config, func, &fnpointer.callback, &fnpointer.context);
+		m_coreApi.insert(std::make_pair(func, std::move(fnpointer)));
+	}
+
+	m_device.RegisterDrivers([&](NSVR_Consumer_Handler_t consumer, const char* region, const char* iface, void* user_data) {
+		m_coreApi.at("register-node")
+			.call<NSVR_Core_RegisterNodeCallback>(consumer, region, iface, user_data);
+	});
+
 	return 1;
 }
 

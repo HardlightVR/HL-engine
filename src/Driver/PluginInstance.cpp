@@ -1,7 +1,11 @@
 #include "stdafx.h"
 #include "PluginInstance.h"
+
 #include <boost/type_index.hpp>
 #include <iostream>
+
+#include "FunctionPointerTemplates.h"
+
 PluginInstance::PluginInstance(std::string fileName, HardwareDataModel& model) :
 	m_fileName(fileName), 
 	m_loaded{ false },
@@ -9,23 +13,8 @@ PluginInstance::PluginInstance(std::string fileName, HardwareDataModel& model) :
 {
 }
 
-int PluginInstance::UpdateTracking(const char* region, const NSVR_Core_Quaternion* update)
-{
-	m_model.Update(region, *update);
-	return 1;
-}
 
-int PluginInstance::UpdateDeviceStatus(bool connected)
-{
-	if (connected) {
-		m_model.SetDeviceConnected();
-	}
-	else {
-		m_model.SetDeviceDisconnected();
-	}
 
-	return 1;
-}
 
 PluginInstance::~PluginInstance()
 {
@@ -51,11 +40,48 @@ bool PluginInstance::Load()
 	
 }
 
+//Helper function to assign a lambda and context to an NSVR_Callback.
+template<typename TContext, typename TCallable>
+void registerCallback(NSVR_Callback* callback, TContext& context, TCallable&& lambda) {
+	//We need it to be static because we can't point to a temp lambda
+	static auto static_pointer = to_function_pointer(lambda);
+
+	constexpr bool is_same = std::is_same<TContext*, typename function_traits<TCallable>::ctx>::value;
+	static_assert(is_same, "You must pass in the same type for the context and your lambda!");
+	callback->callback = static_pointer;
+	callback->context = reinterpret_cast<NSVR_Core_Ctx*>(&context);
+}
+
+
 //precondition: successfully loaded
 bool PluginInstance::Configure()
 {
+	NSVR_Configuration config;
+
+	registerCallback(&config.StatusCallback, m_model, [](HardwareDataModel* model, bool status) {
+		if (status) {
+			model->SetDeviceConnected();
+		}
+		else {
+			model->SetDeviceDisconnected();
+		}
+	});
+	
+
+	registerCallback(&config.RegisterNodeCallback, *this, 
+		[](PluginInstance* me,
+			NSVR_Consumer_Handler_t handler,
+			const char* region,
+			const char* iface,
+			void* user_data) {
+
+		me->RegisterInterface(handler, region, iface, user_data);
+	});
+
+
+
 	if (m_configure) {
-		return m_configure(m_rawPtr, AS_TYPE(NSVR_Core, this));
+		return m_configure(m_rawPtr, &config);
 	}
 	else {
 		return false;

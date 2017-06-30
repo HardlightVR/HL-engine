@@ -9,8 +9,8 @@ typedef struct NSVR_Core_t NSVR_Core;
 class HardlightDevice {
 public:
 	HardlightDevice();
-
-	void RegisterDrivers(NSVR_Core* core);
+	using RegisterFunc = std::function<void(NSVR_Consumer_Handler_t, const char*, const char*, void*)>;
+	void RegisterDrivers(const RegisterFunc& registerFunc);
 
 
 	CommandBuffer GenerateHardwareCommands(float dt);

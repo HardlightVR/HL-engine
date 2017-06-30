@@ -24,7 +24,7 @@ public:
 	void ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event) {
 
 		for (const auto& filter : m_filters) {
-			if (filter.Select(event)) { filter.Receive(event); }
+			if (filter.Selector(event)) { filter.Receiver(event); }
 		}
 
 
@@ -66,8 +66,8 @@ public:
 private:
 
 	struct InstalledFilter {
-		HardwareInterface::EventReceiver Receive;
-		HardwareInterface::EventSelector Select;
+		HardwareInterface::EventReceiver Receiver;
+		HardwareInterface::EventSelector Selector;
 	};
 
 	std::vector<InstalledFilter> m_filters;
