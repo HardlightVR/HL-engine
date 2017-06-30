@@ -10,10 +10,10 @@ class OwnedWritableSharedVector
 {
 
 public:
-	using test = boost::interprocess::offset_ptr<void, boost::int32_t, boost::uint64_t>;
+	using ptr_t = boost::interprocess::offset_ptr<void, boost::int32_t, boost::uint64_t>;
 	using my_managed_shared_memory = boost::interprocess::basic_managed_shared_memory<
 		char,
-		boost::interprocess::rbtree_best_fit<boost::interprocess::mutex_family, test>,
+		boost::interprocess::rbtree_best_fit<boost::interprocess::mutex_family, ptr_t>,
 		boost::interprocess::iset_index>;
 
 	using TAlloc = boost::interprocess::allocator<T, my_managed_shared_memory::segment_manager>;

@@ -49,18 +49,26 @@ HardlightPlugin::HardlightPlugin() :
 		m_coreApi.at("tracking").call<NSVR_Core_TrackingCallback>(id.c_str(), &quat);
 	});
 
+	
 	m_imus.AssignMapping(0x12, Imu::Chest, "chest");
 
-	auto then = std::chrono::high_resolution_clock::now();
-	m_mockTracking.SetEvent([&, then]() {
-		auto s = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - then);
+	
+	m_mockTracking.SetEvent([&]() {
+		static float begin = 0;
+		
 		packet fakeTrackingData;
-		fakeTrackingData.raw[2] = 0x33;
+		memset(&fakeTrackingData.raw, 0, 16);
+
+		float ms = begin;
+
+		fakeTrackingData.raw[2] = 0x99;
 		fakeTrackingData.raw[11] = 0x12;
 
-		fakeTrackingData.raw[3] = s.count() & 0x0F;
-		fakeTrackingData.raw[4] = s.count() & 0x0F;
+		memcpy(&fakeTrackingData.raw[3], &ms, sizeof(ms));
+	//	fakeTrackingData.raw[7] = s.count() & 0x0F;
 		m_dispatcher.Dispatch(fakeTrackingData);
+		begin += 0.05f;
+		if (begin >= 1.0) { begin = -1.0f; }
 	
 	});
 

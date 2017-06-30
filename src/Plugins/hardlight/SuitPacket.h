@@ -11,6 +11,7 @@ public:
 		DrvStatus = 0x15,
 		ImuData = 0x33,
 		FifoOverflow = 0x34,
+		DummyTracking = 0x99,
 		Undefined
 	};
 	static SuitPacket::PacketType Type(const packet& p) {

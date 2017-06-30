@@ -22,6 +22,8 @@ public:
 private:
 	boost::optional<TrackingCallback> m_callback;
 	void consumePacket(packet packet);
+	void consumePacketDummy(packet packet);
+
 	std::unordered_map<Imu, NSVR_Core_Quaternion> m_quaternions;
 	NSVR_Core_Quaternion parseQuaternion(const uint8_t* rec) const;
 	std::unordered_map<uint32_t, std::pair<Imu, std::string>> m_mapping;

@@ -38,7 +38,6 @@ public:
 	}
 
 	~OwnedReadableSharedQueue() {
-		boost::interprocess::message_queue::remove(m_name.c_str());
 	}
 	
 	std::size_t GetNumMessageAvailable() {
