@@ -10,9 +10,13 @@ class ReadableSharedVector
 {
 
 public:
-	
-	using TVector = boost::interprocess::vector<T>;
+	using test = boost::interprocess::offset_ptr<void, boost::int32_t, boost::uint64_t>;
 
+	using my_managed_shared_memory = boost::interprocess::basic_managed_shared_memory<
+		char,
+		boost::interprocess::rbtree_best_fit<boost::interprocess::mutex_family, test>,
+		boost::interprocess::iset_index>;
+	using TVector = boost::interprocess::vector<T>;
 	ReadableSharedVector(const std::string& memName, const std::string& vecName) :
 
 		m_memName(memName),
@@ -20,12 +24,12 @@ public:
 		m_segment()
 		
 	{
-		m_segment = boost::interprocess::managed_shared_memory(boost::interprocess::open_only, m_memName.c_str());
-
+		m_segment = my_managed_shared_memory(boost::interprocess::open_only, m_memName.c_str());
+		assert(m_segment.check_sanity());
 		m_vector = m_segment.find<TVector>(m_vecName.c_str()).first;
-		if (m_vector == 0) {
-			BOOST_LOG_TRIVIAL(error) << "[SharedMem] Unable to construct tracking memory!";
-		}
+		//if (m_vector == 0) {
+			//BOOST_LOG_TRIVIAL(error) << "[SharedMem] Unable to construct tracking memory!";
+	//	}
 	}
 
 	std::size_t size() const {
@@ -54,7 +58,7 @@ public:
 private:
 	std::string m_memName;
 	std::string m_vecName;
-	boost::interprocess::managed_shared_memory m_segment;
+	my_managed_shared_memory m_segment;
 	TVector* m_vector;
 	
 
