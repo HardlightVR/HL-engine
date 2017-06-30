@@ -42,14 +42,16 @@ bool PluginInstance::Load()
 
 //Helper function to assign a lambda and context to an NSVR_Callback.
 template<typename TContext, typename TCallable>
-void registerCallback(NSVR_Callback* callback, TContext& context, TCallable&& lambda) {
+void registerCallback(NSVR_Configuration* config, const std::string& name, TContext& context, TCallable&& lambda) {
 	//We need it to be static because we can't point to a temp lambda
 	static auto static_pointer = to_function_pointer(lambda);
 
 	constexpr bool is_same = std::is_same<TContext*, typename function_traits<TCallable>::ctx>::value;
 	static_assert(is_same, "You must pass in the same type for the context and your lambda!");
-	callback->callback = static_pointer;
-	callback->context = reinterpret_cast<NSVR_Core_Ctx*>(&context);
+	
+
+	config->Callbacks[name].callback = static_pointer;
+	config->Callbacks[name].context = reinterpret_cast<NSVR_Core_Ctx*>(&context);
 }
 
 
@@ -58,7 +60,7 @@ bool PluginInstance::Configure()
 {
 	NSVR_Configuration config;
 
-	registerCallback(&config.StatusCallback, m_model, [](HardwareDataModel* model, bool status) {
+	registerCallback(&config, "status", m_model, [](HardwareDataModel* model, bool status) {
 		if (status) {
 			model->SetDeviceConnected();
 		}
@@ -66,9 +68,13 @@ bool PluginInstance::Configure()
 			model->SetDeviceDisconnected();
 		}
 	});
+
+	registerCallback(&config, "tracking", m_model, [](HardwareDataModel* model, const char* key, const NSVR_Core_Quaternion* quat) {
+		model->Update(std::string(key), *quat);
+	});
 	
 
-	registerCallback(&config.RegisterNodeCallback, *this, 
+	registerCallback(&config, "register-node", *this, 
 		[](PluginInstance* me,
 			NSVR_Consumer_Handler_t handler,
 			const char* region,

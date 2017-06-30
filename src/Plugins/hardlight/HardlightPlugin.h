@@ -12,7 +12,7 @@
 #include "zone_logic/hardlightdevice.h"
 #include "ScheduledEvent.h"
 #include <functional>
-
+#include "ImuConsumer.h"
 
 struct nsvr_callback {
 	void* callback;
@@ -45,8 +45,12 @@ private:
 
 	ScheduledEvent m_eventPull;
 
+
 	bool m_running;
 
+	ImuConsumer m_imus;
+
+	ScheduledEvent m_mockTracking;
 	
 	std::unordered_map<std::string, nsvr_callback> m_coreApi;
 

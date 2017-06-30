@@ -32,6 +32,8 @@ public:
 	{
 		
 		m_vector = m_segment.construct<TVector>(m_vecName.c_str())(m_alloc);
+		assert(0 == strcmp(my_managed_shared_memory::get_instance_name(m_vector), m_vecName.c_str()));
+		assert(1 == my_managed_shared_memory::get_instance_length(m_vector));
 		assert(m_segment.check_sanity());
 
 		if (m_vector == 0) {
@@ -51,7 +53,14 @@ public:
 
 	void Update(std::size_t index, T item) noexcept {
 		if (m_vector != nullptr) {
-			m_vector->operator[](index) = std::move(item);
+			(*m_vector)[index] = item;
+			
+			std::cout << "Begin shared mem quats\n";
+			for (const auto& a: *m_vector) {
+				std::cout << a.x << ", " << a.y << ", " << a.z << ", " << a.w << '\n';
+			}
+			std::cout << "End shared mem quats\n";
+
 		}
 	}
 

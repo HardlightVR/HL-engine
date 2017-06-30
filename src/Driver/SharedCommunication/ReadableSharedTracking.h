@@ -25,6 +25,15 @@ public:
 
 	}
 	
+	NullSpace::SharedMemory::Quaternion TryRead(const char* key, const NullSpace::SharedMemory::Quaternion& def) {
+		if (auto possibleKey = m_keys->Find(key)) {
+			std::size_t index = *possibleKey;
+			return m_quaternions->Get(index);
+		}
+		else {
+			return def;
+		}
+	}
 
 
 private:

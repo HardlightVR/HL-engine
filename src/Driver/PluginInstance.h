@@ -21,10 +21,11 @@ typedef struct NSVR_Callback_s {
 	NSVR_Core_Ctx* context;
 } NSVR_Callback;
 
+
+
 typedef struct NSVR_Configuration_s {
-	NSVR_Callback StatusCallback;
-	NSVR_Callback RegisterNodeCallback;
-	
+
+	std::unordered_map<std::string, NSVR_Callback> Callbacks;
 
 } NSVR_Configuration;
 

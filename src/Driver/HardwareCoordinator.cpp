@@ -2,7 +2,7 @@
 #include "HardwareCoordinator.h"
 #include "SharedCommunication/SharedTypes.h"
 #include "DriverMessenger.h"
-
+#include <iostream>
 
 HardwareCoordinator::HardwareCoordinator(DriverMessenger& messenger): m_messenger(messenger)
 {
@@ -48,7 +48,10 @@ HardwareDataModel & HardwareCoordinator::Get(const std::string & name)
 
 void HardwareCoordinator::updateTrackingForMessenger(const std::string & region, NSVR_Core_Quaternion quat)
 {
+//	std::cout << "Got tracking data for region " << region << '\n';
 	NullSpace::SharedMemory::TrackingUpdate t = {};
+
+	//std::cout << quat.x << ", " << quat.y << ", " << quat.z << ", " << quat.w << '\n';
 	t.chest.w = quat.w;
 	t.chest.x = quat.x;
 	t.chest.y = quat.y;

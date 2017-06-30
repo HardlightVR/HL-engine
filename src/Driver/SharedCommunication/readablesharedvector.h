@@ -16,7 +16,11 @@ public:
 		char,
 		boost::interprocess::rbtree_best_fit<boost::interprocess::mutex_family, test>,
 		boost::interprocess::iset_index>;
-	using TVector = boost::interprocess::vector<T>;
+
+
+
+	using TAlloc = boost::interprocess::allocator<T, my_managed_shared_memory::segment_manager>;
+	using TVector = boost::interprocess::vector<T, TAlloc>;
 	ReadableSharedVector(const std::string& memName, const std::string& vecName) :
 
 		m_memName(memName),
@@ -27,9 +31,12 @@ public:
 		m_segment = my_managed_shared_memory(boost::interprocess::open_only, m_memName.c_str());
 		assert(m_segment.check_sanity());
 		m_vector = m_segment.find<TVector>(m_vecName.c_str()).first;
-		//if (m_vector == 0) {
-			//BOOST_LOG_TRIVIAL(error) << "[SharedMem] Unable to construct tracking memory!";
-	//	}
+		
+		assert(0 == strcmp(my_managed_shared_memory::get_instance_name(m_vector), m_vecName.c_str()));
+		assert(1 == my_managed_shared_memory::get_instance_length(m_vector));
+		if (m_vector == 0) {
+			BOOST_LOG_TRIVIAL(error) << "[SharedMem] Unable to construct tracking memory!";
+		}
 	}
 
 	std::size_t size() const {
@@ -41,7 +48,7 @@ public:
 	}
 
 	boost::optional<std::size_t> Find(const T& item) const {
-		int pos = std::find(m_vector->cbegin(), m_vector->cend(), item) - m_vector->cbegin();
+		std::size_t pos = std::find(m_vector->cbegin(), m_vector->cend(), item) - m_vector->cbegin();
 		if (pos < m_vector->size()) {
 			return pos;
 		}
