@@ -50,7 +50,7 @@ Driver::Driver() :
 	m_cachedTracking({}),
 	m_coordinator(m_messenger),
 	m_pluginManager(m_coordinator, {"HardlightPlugin"}),
-	m_hardware(m_io, m_pluginManager)
+	m_hardware(m_io, m_coordinator)
 
 
 {

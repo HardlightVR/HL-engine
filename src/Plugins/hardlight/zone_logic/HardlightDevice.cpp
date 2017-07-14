@@ -15,23 +15,77 @@ HardlightDevice::HardlightDevice()
 	}
 }
 
+struct driver_with_region {
+	Hardlight_Mk3_ZoneDriver* driver;
+	const char* region;
+};
+
+struct brief_haptic {
+	float duration;
+};
+
+struct lasting_haptic {
+
+};
+struct playback_control {
+
+};
 
 
-void HardlightDevice::RegisterDrivers(const RegisterFunc& registerFunc)
-{
 
-	auto& translator = Locator::Translator();
-	for (auto& driver : m_drivers) {
-		std::string region = translator.ToRegionFromLocation(driver->GetLocation());
-		registerFunc(&zoneDriverCallback<NSVR_BriefTaxel>, region.c_str(), "brief-taxel", driver.get());
-		registerFunc(&zoneDriverCallback<NSVR_LastingTaxel>, region.c_str(), "lasting-taxel", driver.get());
-		registerFunc(&zoneDriverCallback<NSVR_PlaybackEvent>, region.c_str(), "playback-controls", driver.get());
-		registerFunc(&zoneDriverCallback<NSVR_RealtimeEvent>, region.c_str(), "realtime", driver.get());
 
+void handle_event(void* event,  nsvr_cevent_type type,  void* user_data) {
+	Hardlight_Mk3_ZoneDriver* driver = static_cast<Hardlight_Mk3_ZoneDriver*>(user_data);
+
+
+	switch (type) {
+	case nsvr_cevent_type_brief_haptic:
+		driver->consume(static_cast<nsvr_cevent_brief_haptic*>(event));
+		break;
+	case nsvr_cevent_type_lasting_haptic:
+		driver->consume(static_cast<nsvr_cevent_lasting_haptic*>(event));
+		break;
+	case nsvr_cevent_type_playback_statechange:
+		driver->consume(static_cast<nsvr_cevent_playback_statechange*>(event));
+		break;
+	default:
+		break;
 	}
 	
+	
 }
+void HardlightDevice::RegisterDrivers(nsvr_core_ctx* ctx)
+{
+	nsvr_cevent_callback briefCallback;
 
+	briefCallback.handler = handle_event;
+	briefCallback.targetVersion = nsvr_cevent_brief_haptic_latest;
+	briefCallback.user_data = this;
+
+	nsvr_register_cevent_hook(ctx, nsvr_cevent_type_brief_haptic, briefCallback);
+
+	/*auto& translator = Locator::Translator();
+	for (auto& driver : m_drivers) {
+		std::string region = translator.ToRegionFromLocation(driver->GetLocation());
+		const char* region_str = region.c_str();
+		Hardlight_Mk3_ZoneDriver* driver_ptr = driver.get();
+		
+
+		registerFunc(&makeCallback<NSVR_BriefTaxel>, region_str, "brief-taxel", driver_ptr);
+		registerFunc(&makeCallback<NSVR_LastingTaxel>, region_str, "lasting-taxel", driver_ptr);
+		registerFunc(&makeCallback<NSVR_PlaybackEvent>, region_str, "playback-controls", driver_ptr);
+		registerFunc(&makeCallback<NSVR_RealtimeEvent>, region_str, "realtime", driver_ptr);
+
+	}*/
+	
+}
+void HardlightDevice::handle(nsvr_cevent * event)
+{
+	//nsvr_cevent_getregion(event);
+	//m_drivers.at(region)->briefHaptic(event);
+
+
+}
 
 CommandBuffer HardlightDevice::GenerateHardwareCommands(float dt)
 {
@@ -43,6 +97,8 @@ CommandBuffer HardlightDevice::GenerateHardwareCommands(float dt)
 	return result;
 		
 }
+
+
 
 //DisplayResults HardlightDevice::QueryDrivers()
 //{

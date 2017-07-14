@@ -2,6 +2,7 @@
 #include "HardlightPlugin.h"
 #include "PluginAPI.h"
 #include <iostream>
+#include <typeinfo>
 HardlightPlugin::HardlightPlugin() :
 	m_io(std::make_shared<IoService>()),
 	m_dispatcher(),
@@ -12,18 +13,19 @@ HardlightPlugin::HardlightPlugin() :
 	m_device(),
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
 	m_imus(m_dispatcher),
-	m_mockTracking(m_io->GetIOService(), boost::posix_time::millisec(16))
+	m_mockTracking(m_io->GetIOService(), boost::posix_time::millisec(16)),
+	m_coreApi()
 
 {
 	
 	m_adapter->SetMonitor(m_monitor);
 
 	m_monitor->SetDisconnectHandler([&]() {
-		m_coreApi["status"].call<NSVR_Core_StatusCallback>(false);
+	//	m_coreApi["status"].call<nsvr_core_status_cb>(false);
 	});
 
 	m_monitor->SetReconnectHandler([&]() {
-		m_coreApi["status"].call<NSVR_Core_StatusCallback>(true);
+		//m_coreApi["status"].call<nsvr_core_status_cb>(true);
 	});
 
 	m_adapter->Connect();
@@ -46,7 +48,7 @@ HardlightPlugin::HardlightPlugin() :
 	m_eventPull.Start();
 
 	m_imus.OnTracking([&](const std::string& id, NSVR_Core_Quaternion quat) {
-		m_coreApi.at("tracking").call<NSVR_Core_TrackingCallback>(id.c_str(), &quat);
+		//m_coreApi.at("tracking").call<nsvr_core_tracking_cb>(id.c_str(), &quat);
 	});
 
 	
@@ -88,24 +90,24 @@ HardlightPlugin::~HardlightPlugin()
 
 
 
-
-
-
-int HardlightPlugin::Configure(NSVR_Configuration* config)
-{
-	auto functions = { "status", "register-node", "tracking" };
-
-	for (const auto& func : functions) {
-		nsvr_callback fnpointer = {};
-		if (NSVR_Configuration_GetCallback(config, func, &fnpointer.callback, &fnpointer.context)) {
-			m_coreApi.insert(std::make_pair(func, std::move(fnpointer)));
-		}
+template<typename T, typename...Args>
+void getCallback(HardlightPlugin::core_callbacks* callbacks, const NSVR_Configuration* config, const std::string& cbName) {
+	nsvr_callback fnpointer = {};
+	if (NSVR_Configuration_GetCallback(config, cbName.c_str(), &fnpointer)) {
+		callbacks.callbacks->insert(std::make_pair(typeid(T).name(), fnpointer));
 	}
+}
 
-	m_device.RegisterDrivers([&](NSVR_Consumer_Handler_t consumer, const char* region, const char* iface, void* user_data) {
-		m_coreApi.at("register-node")
-			.call<NSVR_Core_RegisterNodeCallback>(consumer, region, iface, user_data);
-	});
+
+int HardlightPlugin::Configure(nsvr_core_ctx* core)
+{
+	m_device.RegisterDrivers(core);
+	//
+	//nsvr_register_cevent_hook(core, nsvr_cevent_type::nsvr_cevent_brief_haptic, handle_event, )
+	//m_device.RegisterDrivers([&](nsvr_cevent_handler consumer, const char* region, const char* iface, void* user_data) {
+	//	nsvr_register_cevent_hook(core, nsvr_cevent_type::nsvr_cevent_basic_haptic
+	//	m_coreApi.call<nsvr_core_register_node_cb>(consumer, region, iface, user_data);
+	//});
 
 	return 1;
 }

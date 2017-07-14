@@ -5,13 +5,13 @@
 #include "Locator.h"
 #include "events_impl/PlaybackEvent.h"
 #include "events_impl/RealtimeEvent.h"
-
-HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, PluginManager& plugins) :
+#include "HardwareCoordinator.h"
+HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, HardwareCoordinator& plugins) :
 
 
 	
 	m_running(true),
-	m_pluginManager(plugins)
+	m_coordinator(plugins)
 	
 
 {
@@ -45,7 +45,7 @@ void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::H
 		taxel.Effect = simple_event.effect();
 		taxel.Strength = simple_event.strength();
 		for (const auto& region : simple_event.regions()) {
-			m_pluginManager.Dispatch(region, "brief-taxel", AS_TYPE(NSVR_BriefTaxel, &taxel));
+			m_coordinator.dispatch(nsvr_cevent_type_brief_haptic, BriefH)
 		}
 	}
 	else {
@@ -55,7 +55,7 @@ void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::H
 		taxel.Duration = simple_event.duration();
 		taxel.Id = event.parent_id();
 		for (const auto& region : simple_event.regions()) {
-			m_pluginManager.Dispatch(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
+		//	m_pluginManager.Dispatch(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
 		}
 	}
 }
@@ -66,7 +66,7 @@ void HardwareInterface::generatePlaybackCommands(const NullSpaceIPC::HighLevelEv
 	nsvr::events::PlaybackEvent playback;
 	playback.Command = static_cast<NSVR_PlaybackEvent_Command>(playback_event.command());
 	playback.Id = event.parent_id();
-	m_pluginManager.Broadcast("playback-controls", AS_TYPE(NSVR_PlaybackEvent, &playback));
+//	m_pluginManager.Broadcast("playback-controls", AS_TYPE(NSVR_PlaybackEvent, &playback));
 
 }
 
@@ -76,7 +76,7 @@ void HardwareInterface::generateRealtimeCommands(const NullSpaceIPC::HighLevelEv
 	for (const auto& magnitude : realtime_event.magnitudes()) {
 		nsvr::events::RealtimeEvent realtime;
 		realtime.Strength = magnitude.strength();
-		m_pluginManager.Dispatch(magnitude.region(), "realtime", AS_TYPE(NSVR_RealtimeEvent, &realtime));
+		//m_pluginManager.Dispatch(magnitude.region(), "realtime", AS_TYPE(NSVR_RealtimeEvent, &realtime));
 	}
 }
 

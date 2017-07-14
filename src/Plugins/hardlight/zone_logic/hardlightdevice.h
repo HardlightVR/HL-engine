@@ -9,8 +9,8 @@ typedef struct NSVR_Core_t NSVR_Core;
 class HardlightDevice {
 public:
 	HardlightDevice();
-	using RegisterFunc = std::function<void(NSVR_Consumer_Handler_t, const char*, const char*, void*)>;
-	void RegisterDrivers(const RegisterFunc& registerFunc);
+//	using RegisterFunc = std::function<void(nsvr_event_handler, const char*, const char*, void*)>;
+	void RegisterDrivers(nsvr_core_ctx* ctx);
 
 
 	CommandBuffer GenerateHardwareCommands(float dt);
@@ -20,6 +20,7 @@ public:
 
 
 	//virtual DisplayResults QueryDrivers() override;
+	void handle(nsvr_cevent* event);
 private:
 
 	std::vector<std::unique_ptr<Hardlight_Mk3_ZoneDriver>> m_drivers;
@@ -27,7 +28,7 @@ private:
 
 };
 template<typename THaptic>
-void zoneDriverCallback(void* client_data, const char* region, const char* iface, const NSVR_GenericEvent* event) {
+void makeCallback(void* client_data, const char* region, const char* iface, const NSVR_GenericEvent* event) {
 	Hardlight_Mk3_ZoneDriver* driver = static_cast<Hardlight_Mk3_ZoneDriver*>(client_data);
 	driver->consume(AS_TYPE(const THaptic, event));
 }

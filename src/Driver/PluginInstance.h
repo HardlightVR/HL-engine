@@ -13,19 +13,18 @@
 
 #include "HardwareDataModel.h"
 
-typedef int(*NSVR_Core_InternalStatusCallback)(NSVR_Core_Ctx*, bool);
 
 
-typedef struct NSVR_Callback_s {
+typedef struct nsvr_callback {
 	void* callback;
-	NSVR_Core_Ctx* context;
-} NSVR_Callback;
+	nsvr_core_ctx* context;
+} nsvr_callback;
 
 
 
 typedef struct NSVR_Configuration_s {
 
-	std::unordered_map<std::string, NSVR_Callback> Callbacks;
+	std::unordered_map<std::string, nsvr_callback> Callbacks;
 
 } NSVR_Configuration;
 
@@ -36,12 +35,7 @@ struct FunctionTable {
 class PluginInstance
 {
 public:
-	struct ClientData {
-		std::string Interface;
-		NSVR_Consumer_Handler_t Callback;
-		void* Data;
-		ClientData(std::string iface, NSVR_Consumer_Handler_t cb, void* ud);
-	};
+
 
 	PluginInstance(std::string fileName, HardwareDataModel& model);
 	~PluginInstance();
@@ -49,7 +43,6 @@ public:
 	bool Load();
 
 	bool Configure();
-	int RegisterInterface(NSVR_Consumer_Handler_t callback, const char* region, const char* iface, void* client_data);
 ;
 
 	bool Unload();
@@ -65,13 +58,8 @@ public:
 	
 
 
-	template<class THapticType>
-	void Broadcast(const std::string& iface, const THapticType* input);
 
-	template<class THapticType>
-	void PluginInstance::Dispatch(const std::string& region, const std::string& iface, const THapticType* input);
 private:
-	std::vector<PluginInstance::ClientData> PluginInstance::getProviders(const std::string& region, const std::string& iface);
 
 	typedef std::function<int(NSVR_Plugin**)> plugin_creator_t;
 	typedef std::function<int(NSVR_Plugin**)> plugin_destructor_t;
@@ -92,7 +80,6 @@ private:
 	HardwareDataModel& m_model;
 
 
-	std::unordered_map<std::string, std::vector<ClientData>> m_interfaces;
 
 
 };
@@ -115,7 +102,7 @@ template<class THapticType>
 void PluginInstance::Dispatch(const std::string& region, const std::string& iface, const THapticType* input) {
 	std::vector<PluginInstance::ClientData> callbacks = getProviders(region, iface);
 	for (const PluginInstance::ClientData& clientData : callbacks) {
-		clientData.Callback(clientData.Data, region.c_str(), iface.c_str(), AS_TYPE(const NSVR_GenericEvent, input));
+		clientData.Callback(clientData.Data, region.c_str(), iface.c_str(), AS_TYPE(const nsvr_event_generic, input));
 	}
 }
 
@@ -125,7 +112,7 @@ inline void PluginInstance::Broadcast(const std::string& iface,  const THapticTy
 	for (const auto& region : m_interfaces) {
 		std::vector<PluginInstance::ClientData> callbacks = getProviders(region.first, iface);
 		for (const auto& clientData : callbacks) {
-			clientData.Callback(clientData.Data, region.first.c_str(), iface.c_str(), AS_TYPE(const NSVR_GenericEvent, input));
+			clientData.Callback(clientData.Data, region.first.c_str(), iface.c_str(), AS_TYPE(const nsvr_event_generic, input));
 		}
 	}
 	

@@ -10,6 +10,8 @@
 
 
 
+
+
 NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin ** pluginPtr)
 {
 	Locator::initialize();
@@ -21,10 +23,11 @@ NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin ** pluginPtr)
 }
 
 
-NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin * pluginPtr, NSVR_Configuration * config)
+NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin * pluginPtr, nsvr_core_ctx * core)
 {
-	return AS_TYPE(HardlightPlugin, pluginPtr)->Configure(config);
+	return AS_TYPE(HardlightPlugin, pluginPtr)->Configure(core);
 }
+
 
 
 

@@ -197,6 +197,7 @@ IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.d
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>-sdl -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -307,6 +308,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\FunctionPointerTemplates.h" />
+    <ClInclude Include="..\src\Driver\HardwareCallbackInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareDataModel.h" />
     <ClInclude Include="..\src\Driver\HardwareInterface.h" />
@@ -351,6 +353,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h" />
     <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h" />
     <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h" />
+    <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h" />

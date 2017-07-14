@@ -51,7 +51,7 @@ void registerCallback(NSVR_Configuration* config, const std::string& name, TCont
 	
 
 	config->Callbacks[name].callback = static_pointer;
-	config->Callbacks[name].context = reinterpret_cast<NSVR_Core_Ctx*>(&context);
+	config->Callbacks[name].context = reinterpret_cast<nsvr_core_ctx*>(&context);
 }
 
 
@@ -60,30 +60,7 @@ bool PluginInstance::Configure()
 {
 	NSVR_Configuration config;
 
-	registerCallback(&config, "status", m_model, [](HardwareDataModel* model, bool status) {
-		if (status) {
-			model->SetDeviceConnected();
-		}
-		else {
-			model->SetDeviceDisconnected();
-		}
-	});
-
-	registerCallback(&config, "tracking", m_model, [](HardwareDataModel* model, const char* key, const NSVR_Core_Quaternion* quat) {
-		model->Update(std::string(key), *quat);
-	});
 	
-
-	registerCallback(&config, "register-node", *this, 
-		[](PluginInstance* me,
-			NSVR_Consumer_Handler_t handler,
-			const char* region,
-			const char* iface,
-			void* user_data) {
-
-		me->RegisterInterface(handler, region, iface, user_data);
-	});
-
 
 
 	if (m_configure) {
@@ -151,34 +128,3 @@ std::string PluginInstance::GetDisplayName() const
 }
 
 
-
-int PluginInstance::RegisterInterface(NSVR_Consumer_Handler_t callback, const char * region, const char*iface, void * client_data)
-{
-
-	m_interfaces[region].emplace_back(iface, callback, client_data);
-	return 1;
-}
-
-
-std::vector<PluginInstance::ClientData> PluginInstance::getProviders(const std::string& region, const std::string& iface) {
-	std::vector<PluginInstance::ClientData> copiedResults;
-	if (m_interfaces.find(region) != m_interfaces.end())
-	{
-		auto &atRegion = m_interfaces.at(region);
-		for (const auto& clientData : atRegion) {
-			if (clientData.Interface == iface) {
-				copiedResults.push_back(clientData);
-			}
-		}
-	}
-	return copiedResults;
-}
-
-
-
-PluginInstance::ClientData::ClientData(std::string iface, NSVR_Consumer_Handler_t cb, void * ud):
-	Interface(iface),
-	Callback(cb),
-	Data(ud)
-{
-}

@@ -44,6 +44,20 @@ Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area) :
 	return static_cast<::Location>(m_area);
 }
 
+void Hardlight_Mk3_ZoneDriver::consume(nsvr_cevent_brief_haptic * event)
+{
+	BasicHapticEventData d;
+	d.area = static_cast<uint32_t>(m_area); //areaFlag at this point
+	d.effect = event->effect;
+	d.strength = event->strength;
+	NSVR_BriefTaxel_GetEffect(taxel, &d.effect);
+	NSVR_BriefTaxel_GetStrength(taxel, &d.strength);
+
+	d.duration = 0.0;
+	m_retainedModel.Put(LiveBasicHapticEvent(std::numeric_limits<ParentId>::max(), m_gen(), std::move(d)));
+	transitionInto(Mode::Retained);
+}
+
 
 //boost::optional<HapticDisplayInfo> Hardlight_Mk3_ZoneDriver::QueryCurrentlyPlaying()
 //{

@@ -16,12 +16,11 @@
 
 struct nsvr_callback {
 	void* callback;
-	NSVR_Core_Ctx* context;
+	nsvr_core_ctx* context;
 
-	template<typename TCoreCallback, typename...Args>
+	template<typename TCallback, typename...TArgs>
 	void call(Args&&...args) {
-		TCoreCallback fn = static_cast<TCoreCallback>(callback);
-		(fn)(context, std::forward<Args>(args)...);
+		static_cast<TCallback>(callback)(context, std::forward<TArgs>(args)...);
 	}
 
 };
@@ -30,7 +29,9 @@ class HardlightPlugin {
 public:
 	HardlightPlugin();
 	~HardlightPlugin();
-	int Configure(NSVR_Configuration* config);
+	using CallbackTable = std::unordered_map<std::string, nsvr_callback>;
+
+	int Configure(nsvr_core_ctx* ctx);
 private:
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;
@@ -51,8 +52,19 @@ private:
 	ImuConsumer m_imus;
 
 	ScheduledEvent m_mockTracking;
-	
-	std::unordered_map<std::string, nsvr_callback> m_coreApi;
 
+	struct core_callbacks {
+		CallbackTable callbacks;
+
+		template<typename TCoreCallback, typename...TArgs>
+		void call(Args&&...args) {
+			auto cb = callbacks.at(typeid(TCoreCallback).name());
+			cb.call<TCoreCallback>(std::forward<TArgs>(args)...);
+		}
+	};
+
+	core_callbacks m_coreApi;
+
+	
 
 };

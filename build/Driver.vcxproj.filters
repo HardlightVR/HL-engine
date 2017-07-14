@@ -31,6 +31,7 @@
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\FunctionPointerTemplates.h" />
+    <ClInclude Include="..\src\Driver\HardwareCallbackInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareDataModel.h" />
     <ClInclude Include="..\src\Driver\HardwareInterface.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h">
       <Filter>include\events</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
       <Filter>protobuff_defs</Filter>
     </ClInclude>

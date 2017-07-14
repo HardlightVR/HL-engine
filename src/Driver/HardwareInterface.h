@@ -9,11 +9,11 @@
 #include "Enums.h"
 class Synchronizer;
 class IoService;
-class PluginManager;
+class HardwareCoordinator;
 class HardwareInterface
 {
 public:
-	HardwareInterface(std::shared_ptr<IoService> io, PluginManager& manager); 
+	HardwareInterface(std::shared_ptr<IoService> io,HardwareCoordinator& manager); 
 	~HardwareInterface();
 
 	using EventSelector = std::function<bool(const NullSpaceIPC::HighLevelEvent&)>;
@@ -76,7 +76,7 @@ private:
 	bool m_running;
 
 
-	PluginManager& m_pluginManager;
+	HardwareCoordinator& m_coordinator;
 
 
 	void generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event);

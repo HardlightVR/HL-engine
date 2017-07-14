@@ -11,6 +11,8 @@
 #include "../include/events/PlaybackEvent.h"
 #include "../include/events/RealtimeEvent.h"
 
+#include "PluginAPI.h"
+
 class Hardlight_Mk3_ZoneDriver {
 public:
 	CommandBuffer update(float dt);
@@ -20,6 +22,10 @@ public:
 	Location GetLocation();
 
 	//boost::optional<HapticDisplayInfo> QueryCurrentlyPlaying();
+	void consume(nsvr_cevent_brief_haptic* event);
+	void consume(nsvr_cevent_lasting_haptic* event);
+	void consume(nsvr_cevent_playback_statechange* event);
+	void consume(nsvr_cevent_realtime_request* event);
 
 	void consume(const NSVR_BriefTaxel* taxel);
 	void consume(const NSVR_LastingTaxel * haptic);
