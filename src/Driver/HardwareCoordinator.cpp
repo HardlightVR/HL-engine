@@ -3,7 +3,7 @@
 #include "SharedCommunication/SharedTypes.h"
 #include "DriverMessenger.h"
 #include <iostream>
-
+#include "cevent_internal.h"
 HardwareCoordinator::HardwareCoordinator(DriverMessenger& messenger): m_messenger(messenger)
 {
 	
@@ -16,7 +16,7 @@ HardwareCoordinator::~HardwareCoordinator()
 void HardwareCoordinator::Register(nsvr_cevent_type type, nsvr_cevent_handler handler, unsigned int targetVersion, void * user_data)
 {
 	user_event_handler eventHandler;
-	eventHandler.handler = handler;
+	eventHandler.invoke = handler;
 	eventHandler.user_data = user_data;
 	eventHandler.target_version = targetVersion;
 
@@ -26,33 +26,11 @@ void HardwareCoordinator::Register(nsvr_cevent_type type, nsvr_cevent_handler ha
 
 
 
-brief_haptic getBriefHapticVersion(const unsigned int version, float strength, int effect, const char* region) {
-	if (version == 1) {
-		return nsvr_cevent_brief_haptic_v1{};
-	}
-	else if (version == 2) {
-		return nsvr_cevent_brief_haptic_v2{};
-	}
-	else {
-		return boost::blank{};
-	}
-	
-}
-
-//latest interface
-void HardwareCoordinator::dispatchBriefHaptic(float strength, int effect, const char* region) {
-	for (auto& handler : m_handlers[nsvr_cevent_type_brief_haptic]) {
-		brief_haptic thing = getBriefHapticVersion(handler.target_version, strength, effect, region);
-
-		void* ptr = boost::apply_visitor([](auto& x) -> void* { return std::addressof(x); }, thing);
-		handler.handler(ptr, nsvr_cevent_type_brief_haptic, handler.user_data);
-	}
-}
-
 HardwareDataModel & HardwareCoordinator::Get(const std::string & name)
 {
-	/*if (m_hardware.find(name) == m_hardware.end()) {
-		m_hardware[name] = HardwareDataModel(*this);
+	if (m_hardware.find(name) == m_hardware.end()) {
+		m_hardware.insert(std::make_pair(name, HardwareDataModel(*this)));
+
 		m_hardware.at(name).OnTrackingUpdate([&](auto region, auto quat) { updateTrackingForMessenger(region, quat); });
 		m_hardware.at(name).OnDeviceConnect([&]() {
 			SuitsConnectionInfo info = { };
@@ -78,8 +56,8 @@ HardwareDataModel & HardwareCoordinator::Get(const std::string & name)
 			m_messenger.WriteSuits(info);
 		});
 	}
-	return m_hardware.at(name);*/
-	return HardwareDataModel();
+	return m_hardware.at(name);
+	
 }
 
 void HardwareCoordinator::updateTrackingForMessenger(const std::string & region, NSVR_Core_Quaternion quat)
@@ -96,10 +74,3 @@ void HardwareCoordinator::updateTrackingForMessenger(const std::string & region,
 	m_messenger.WriteTracking(t);
 }
 
-HardwareCoordinator::BriefHapticArgs::BriefHapticArgs(uint32_t effect, float strnegth, const char * region)
-	: effect(effect),
-	strength(strnegth),
-	region(region)
-
-{
-}

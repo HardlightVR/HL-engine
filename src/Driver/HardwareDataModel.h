@@ -3,7 +3,12 @@
 
 #include "PluginAPI.h"
 
-#include "pevent.h"
+
+namespace nsvr {
+	namespace pevents {
+		class pevent;
+	}
+}
 class HardwareCoordinator;
 class HardwareDataModel {
 public:

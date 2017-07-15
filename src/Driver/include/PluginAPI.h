@@ -23,7 +23,7 @@
 #define NSVR_CORE_RETURN(ReturnType) NSVR_CORE_API ReturnType __cdecl
 #define NSVR_PLUGIN_RETURN(ReturnType) NSVR_PLUGIN_API ReturnType __cdecl
 
-#define NSVR_CORE_EVENT_DECL(name, version) \
+#define NSVR_CORE_EVENT(name, version) \
 struct nsvr_cevent_##name##_v##version 
 
 
@@ -61,7 +61,9 @@ extern "C" {
 	enum nsvr_pevent_type {
 		nsvr_pevent_unknown = 0,
 		nsvr_pevent_device_connected = 1,
-		nsvr_pevent_device_disconnected = 2
+		nsvr_pevent_device_disconnected = 2,
+		nsvr_pevent_tracking_update = 3
+
 	};
 
 	enum nsvr_cevent_type {
@@ -112,24 +114,46 @@ extern "C" {
 
 
 
-	NSVR_CORE_EVENT_DECL(brief_haptic, 1) {
-		int effect;
+	NSVR_CORE_EVENT(brief_haptic, 1) {
+		uint32_t effect;
 		float strength;
+		const char* region;
 	};
 
-	NSVR_CORE_EVENT_DECL(brief_haptic, 2) {
-		uint32_t whacky;
+	NSVR_CORE_EVENT_LATEST(brief_haptic, 1);
+
+
+	NSVR_CORE_EVENT(lasting_haptic, 1) {
+		uint64_t id;
+		uint32_t effect;
+		float strength;
+		float duration;
+		const char* region;
+	};
+	
+	NSVR_CORE_EVENT_LATEST(lasting_haptic, 1);
+
+
+
+
+	enum nsvr_playback_statechange_command {
+		nsvr_playback_statechange_unknown = 0,
+		nsvr_playback_statechange_pause = 1,
+		nsvr_playback_statechange_unpause = 2,
+		nsvr_playback_statechange_cancel = 3
 	};
 
-	NSVR_CORE_EVENT_LATEST(brief_haptic, 2);
+
+	NSVR_CORE_EVENT(playback_statechange, 1) {
+		uint64_t effect_id;
+		enum nsvr_playback_statechange_command command;
+	};
+
+	NSVR_CORE_EVENT_LATEST(playback_statechange, 1);
 
 
 
-
-
-
-
-
+	NSVR_CORE_                                                                                             
 
 
 	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, nsvr_core_ctx* core);
@@ -140,23 +164,34 @@ extern "C" {
 	typedef struct nsvr_cevent_callback {
 		nsvr_cevent_handler handler;
 		void* user_data;
-		unsigned int targetVersion;
 	} nsvr_cevent_callback;
 
+	typedef void(*nsvr_pevent_handler)(void* event, nsvr_pevent_type, void* user_data);
+	typedef struct nsvr_pevent_callback {
+		nsvr_pevent_handler handler;
+		void* user_data;
+	};
 	/******/
 	//For plugin to receive data from core
-	NSVR_CORE_RETURN(int) nsvr_register_cevent_hook(nsvr_core_ctx* core, nsvr_cevent_type eventType, nsvr_cevent_callback cb);
+	NSVR_CORE_RETURN(int) nsvr_register_cevent_hook(nsvr_core_ctx* core, nsvr_cevent_type eventType, unsigned int targetVersion, nsvr_cevent_callback cb);
+
 
 	//For Core to receive data from plugin
 	//NSVR_CORE_RETURN(int) nsvr_register_polling_function(
-	
+	NSVR_PLUGIN_RETURN(int) nsvr_register_pevent_hook(NSVR_Plugin**, nsvr_pevent_type eventType, nsvr_pevent_callback cb);
+ 	
 	NSVR_CORE_RETURN(int) nsvr_pevent_create(nsvr_pevent** event, nsvr_pevent_type type);
 	NSVR_CORE_RETURN(int) nsvr_pevent_destroy(nsvr_pevent** event);
-	NSVR_CORE_RETURN(int) nsvr_pevent_raise(nsvr_core_ctx* core, nsvr_pevent* event);
+	NSVR_CORE_RETURN(int) nsvr_raise_pevent(nsvr_core_ctx* core, nsvr_pevent* event);
 	
 
-	
-	/******/
+	NSVR_CORE_RETURN(int) nsvr_pevent_setdeviceid(nsvr_pevent* event, uint32_t device_id);
+
+	//Only valid on tracking type event
+	NSVR_CORE_RETURN(int) nsvr_pevent_settrackingstate(nsvr_pevent* event, NSVR_Core_Quaternion* quat);
+		
+		
+		/******/
 
 	
 	//

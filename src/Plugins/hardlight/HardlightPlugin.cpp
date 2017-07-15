@@ -14,7 +14,7 @@ HardlightPlugin::HardlightPlugin() :
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
 	m_imus(m_dispatcher),
 	m_mockTracking(m_io->GetIOService(), boost::posix_time::millisec(16)),
-	m_coreApi()
+	m_core{nullptr}
 
 {
 	
@@ -48,6 +48,15 @@ HardlightPlugin::HardlightPlugin() :
 	m_eventPull.Start();
 
 	m_imus.OnTracking([&](const std::string& id, NSVR_Core_Quaternion quat) {
+
+		if (m_core != nullptr) {
+			nsvr_pevent* event = nullptr;
+			nsvr_pevent_create(&event, nsvr_pevent_tracking_update);
+			nsvr_pevent_settrackingstate(event, &quat);
+			nsvr_raise_pevent(m_core, event);
+			nsvr_pevent_destroy(&event);
+			assert(event == nullptr);
+		}
 		//m_coreApi.at("tracking").call<nsvr_core_tracking_cb>(id.c_str(), &quat);
 	});
 
@@ -90,17 +99,9 @@ HardlightPlugin::~HardlightPlugin()
 
 
 
-template<typename T, typename...Args>
-void getCallback(HardlightPlugin::core_callbacks* callbacks, const NSVR_Configuration* config, const std::string& cbName) {
-	nsvr_callback fnpointer = {};
-	if (NSVR_Configuration_GetCallback(config, cbName.c_str(), &fnpointer)) {
-		callbacks.callbacks->insert(std::make_pair(typeid(T).name(), fnpointer));
-	}
-}
-
-
 int HardlightPlugin::Configure(nsvr_core_ctx* core)
 {
+	m_core = core;
 	m_device.RegisterDrivers(core);
 	//
 	//nsvr_register_cevent_hook(core, nsvr_cevent_type::nsvr_cevent_brief_haptic, handle_event, )

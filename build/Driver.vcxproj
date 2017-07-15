@@ -197,7 +197,6 @@ IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.d
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>-sdl -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
-      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -343,6 +342,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SharedCommunication\readablesharedvector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
+    <ClInclude Include="..\src\Driver\cevent_internal.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h" />
     <ClInclude Include="..\src\Driver\events_impl\LastingTaxel.h" />
     <ClInclude Include="..\src\Driver\events_impl\PlaybackEvent.h" />
@@ -399,11 +399,13 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\src\Driver\cevent_internal.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\LastingTaxel.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\PlaybackEvent.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\RealtimeEvent.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
+    <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>

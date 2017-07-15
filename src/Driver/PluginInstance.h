@@ -63,7 +63,7 @@ private:
 
 	typedef std::function<int(NSVR_Plugin**)> plugin_creator_t;
 	typedef std::function<int(NSVR_Plugin**)> plugin_destructor_t;
-	typedef std::function<int(NSVR_Plugin*, NSVR_Configuration*)> plugin_configure_t;
+	typedef std::function<int(NSVR_Plugin*, nsvr_core_ctx*)> plugin_configure_t;
 	std::unique_ptr<boost::dll::shared_library> m_lib;
 	
 	NSVR_Plugin* m_rawPtr;

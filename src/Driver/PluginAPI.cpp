@@ -22,15 +22,29 @@ NSVR_CORE_RETURN(int) nsvr_pevent_create(nsvr_pevent ** event, nsvr_pevent_type 
 
 
 
-NSVR_CORE_RETURN(int) nsvr_register_cevent_hook(nsvr_core_ctx* core, nsvr_cevent_type eventType, nsvr_cevent_callback cb){
+NSVR_CORE_RETURN(int) nsvr_register_cevent_hook(nsvr_core_ctx* core, nsvr_cevent_type eventType, unsigned int version, nsvr_cevent_callback cb){
 	if (core == nullptr) { return -1; }
 	HardwareDataModel* model = reinterpret_cast<HardwareDataModel*>(core);
 	auto& coordinator = model->GetParentCoordinator();
-	coordinator.Register(eventType, cb.handler, cb.targetVersion, cb.user_data);
+	coordinator.Register(eventType, cb.handler, version, cb.user_data);
 	return 1;
 
 }
-NSVR_CORE_RETURN(int) nsvr_pevent_raise(nsvr_core_ctx* core, nsvr_pevent* event) {
+
+NSVR_CORE_RETURN(int) nsvr_pevent_setdeviceid(nsvr_pevent* event, uint32_t device_id)
+{
+	reinterpret_cast<nsvr::pevents::pevent*>(event)->device_id = device_id;
+	return 1;
+}
+
+NSVR_CORE_RETURN(int) nsvr_pevent_settrackingstate(nsvr_pevent * event, NSVR_Core_Quaternion * quat)
+{
+	reinterpret_cast<nsvr::pevents::tracking_update*>(event)->quat = *quat;
+	return 1;
+}
+
+
+NSVR_CORE_RETURN(int) nsvr_raise_pevent(nsvr_core_ctx* core, nsvr_pevent* event) {
 	if (event == nullptr) {
 		return -1;
 	}

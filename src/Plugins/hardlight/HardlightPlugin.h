@@ -14,22 +14,12 @@
 #include <functional>
 #include "ImuConsumer.h"
 
-struct nsvr_callback {
-	void* callback;
-	nsvr_core_ctx* context;
 
-	template<typename TCallback, typename...TArgs>
-	void call(Args&&...args) {
-		static_cast<TCallback>(callback)(context, std::forward<TArgs>(args)...);
-	}
-
-};
 
 class HardlightPlugin {
 public:
 	HardlightPlugin();
 	~HardlightPlugin();
-	using CallbackTable = std::unordered_map<std::string, nsvr_callback>;
 
 	int Configure(nsvr_core_ctx* ctx);
 private:
@@ -45,7 +35,7 @@ private:
 	std::unique_ptr<Synchronizer> m_synchronizer;
 
 	ScheduledEvent m_eventPull;
-
+	nsvr_core_ctx* m_core;
 
 	bool m_running;
 
@@ -53,17 +43,6 @@ private:
 
 	ScheduledEvent m_mockTracking;
 
-	struct core_callbacks {
-		CallbackTable callbacks;
-
-		template<typename TCoreCallback, typename...TArgs>
-		void call(Args&&...args) {
-			auto cb = callbacks.at(typeid(TCoreCallback).name());
-			cb.call<TCoreCallback>(std::forward<TArgs>(args)...);
-		}
-	};
-
-	core_callbacks m_coreApi;
 
 	
 

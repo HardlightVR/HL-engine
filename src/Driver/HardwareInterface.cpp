@@ -6,17 +6,11 @@
 #include "events_impl/PlaybackEvent.h"
 #include "events_impl/RealtimeEvent.h"
 #include "HardwareCoordinator.h"
+#include "cevent_internal.h"
 HardwareInterface::HardwareInterface(std::shared_ptr<IoService> ioService, HardwareCoordinator& plugins) :
-
-
-	
 	m_running(true),
 	m_coordinator(plugins)
-	
-
 {
-
-
 }
 
 
@@ -39,23 +33,28 @@ void HardwareInterface::InstallFilter(EventSelector selector, EventReceiver rece
 void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::HighLevelEvent& event)
 {
 	const auto& simple_event = event.simple_haptic();
+	using namespace nsvr::cevents;
+
+	uint32_t effect = static_cast<uint32_t>(simple_event.effect());
 
 	if (simple_event.duration() == 0.0f) {
-		nsvr::events::BriefTaxel taxel = { 0 };
-		taxel.Effect = simple_event.effect();
-		taxel.Strength = simple_event.strength();
 		for (const auto& region : simple_event.regions()) {
-			m_coordinator.dispatch(nsvr_cevent_type_brief_haptic, BriefH)
+			m_coordinator.dispatch<BriefHaptic>(
+				effect, 
+				simple_event.strength(), 
+				region.c_str()
+			);
 		}
 	}
 	else {
-		nsvr::events::LastingTaxel taxel = { 0 };
-		taxel.Effect = simple_event.effect();
-		taxel.Strength = simple_event.strength();
-		taxel.Duration = simple_event.duration();
-		taxel.Id = event.parent_id();
 		for (const auto& region : simple_event.regions()) {
-		//	m_pluginManager.Dispatch(region, "lasting-taxel", AS_TYPE(NSVR_LastingTaxel, &taxel));
+			m_coordinator.dispatch<LastingHaptic>(
+				effect, 
+				simple_event.strength(), 
+				simple_event.duration(), 
+				region.c_str(),
+				event.parent_id()
+			);
 		}
 	}
 }
@@ -63,10 +62,8 @@ void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::H
 void HardwareInterface::generatePlaybackCommands(const NullSpaceIPC::HighLevelEvent& event)
 {
 	const auto& playback_event = event.playback_event();
-	nsvr::events::PlaybackEvent playback;
-	playback.Command = static_cast<NSVR_PlaybackEvent_Command>(playback_event.command());
-	playback.Id = event.parent_id();
-//	m_pluginManager.Broadcast("playback-controls", AS_TYPE(NSVR_PlaybackEvent, &playback));
+	auto command = static_cast<nsvr_playback_statechange_command>(playback_event.command());
+	m_coordinator.dispatch<nsvr::cevents::PlaybackStateChange>(event.parent_id(), command);
 
 }
 
@@ -74,8 +71,8 @@ void HardwareInterface::generateRealtimeCommands(const NullSpaceIPC::HighLevelEv
 {
 	const auto& realtime_event = event.realtime_haptic();
 	for (const auto& magnitude : realtime_event.magnitudes()) {
-		nsvr::events::RealtimeEvent realtime;
-		realtime.Strength = magnitude.strength();
+	//	nsvr::events::RealtimeEvent realtime;
+	//	realtime.Strength = magnitude.strength();
 		//m_pluginManager.Dispatch(magnitude.region(), "realtime", AS_TYPE(NSVR_RealtimeEvent, &realtime));
 	}
 }

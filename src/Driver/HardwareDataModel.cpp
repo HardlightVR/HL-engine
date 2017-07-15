@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "HardwareDataModel.h"
 #include "HardwareCoordinator.h"
+#include "pevent.h"
+
 
 template<typename T, typename ...Args> 
 void notify(const T& container, Args&&...args) {
@@ -8,14 +10,12 @@ void notify(const T& container, Args&&...args) {
 		cb(std::forward<Args>(args)...);
 	}
 }
-HardwareDataModel::HardwareDataModel(HardwareCoordinator & parentCoordinator) : m_parent(parentCoordinator)
+HardwareDataModel::HardwareDataModel(HardwareCoordinator & parentCoordinator) : m_parent(parentCoordinator),
+m_trackingData(),
+m_trackingSubscribers()
 {
 }
 
-HardwareDataModel::HardwareDataModel()
-{
-
-}
 
 void HardwareDataModel::OnTrackingUpdate(TrackingCallback callback)
 {
@@ -53,7 +53,17 @@ void HardwareDataModel::SetDeviceDisconnected()
 
 void HardwareDataModel::Raise(const nsvr::pevents::pevent& event)
 {
-	std::cout << "Received event of type " << event.type << "!\n";
+	switch (event.type) {
+	case nsvr_pevent_device_connected:
+		static_cast<const nsvr::pevents::device_connected*>(&event);
+		break;
+	case nsvr_pevent_device_disconnected:
+		break;
+	case nsvr_pevent_tracking_update:
+		NSVR_Core_Quaternion q = static_cast<const nsvr::pevents::tracking_update*>(&event)->quat;
+		std::cout << "Got a tracking update: " << q.w << ", " << q.x << "\n";
+		break;
+	}
 }
 
 HardwareCoordinator & HardwareDataModel::GetParentCoordinator()

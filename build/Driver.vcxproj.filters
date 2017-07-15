@@ -102,6 +102,7 @@
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
+    <ClInclude Include="..\src\Driver\cevent_internal.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h">
       <Filter>events_impl</Filter>
     </ClInclude>
@@ -178,6 +179,7 @@
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
       <Filter>SharedCommunication</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Driver\cevent_internal.cpp" />
     <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp">
       <Filter>events_impl</Filter>
     </ClCompile>
@@ -191,6 +193,7 @@
       <Filter>events_impl</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\main.cpp" />
+    <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <Filter>protobuff_defs</Filter>
     </ClCompile>

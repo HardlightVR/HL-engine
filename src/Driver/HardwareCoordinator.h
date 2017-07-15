@@ -1,8 +1,7 @@
 #pragma once
-
+#include <type_traits>
 
 #include "HardwareDataModel.h"
-typedef boost::variant<boost::blank, nsvr_cevent_brief_haptic_v1, nsvr_cevent_brief_haptic_v2> brief_haptic;
 
 class DriverMessenger;
 class HardwareCoordinator
@@ -13,30 +12,20 @@ public:
 
 	void Register(nsvr_cevent_type type, nsvr_cevent_handler handler, unsigned int, void* user_data);
 	HardwareDataModel& Get(const std::string& name);
-	void dispatchBriefHaptic(float strength, int effect, const char* region);
 
-	template<class TEventVariant, class TArgs>
-	void dispatch(nsvr_cevent_type type, const TArgs& args);
+	//template<class TArgs>
+//	void dispatch(const TArgs& args);
 
-	struct BriefHapticArgs {
-		uint32_t effect;
-		float strength;
-		const char* region;
-		BriefHapticArgs(uint32_t effect, float strnegth, const char* region);
-	};
-
-	template<class THapticVariant, class TLatestEvent>
-	THapticVariant getVersion(const unsigned int version, const TLatestEvent&);
-
-	template<>
-	brief_haptic getVersion(const unsigned int version, const BriefHapticArgs& args);
+	template<class TEvent, class...TArgs>
+	void dispatch(TArgs&&...);
 
 private:
+	
 	DriverMessenger& m_messenger;
 	std::unordered_map<std::string, HardwareDataModel> m_hardware;
 
 	struct user_event_handler {
-		nsvr_cevent_handler handler;
+		nsvr_cevent_handler invoke;
 		void* user_data;
 		unsigned int target_version;
 	};
@@ -44,43 +33,49 @@ private:
 	void updateTrackingForMessenger(const std::string& region, NSVR_Core_Quaternion quat);
 };
 
+template<typename T, typename = void>
+struct has_event_type : std::false_type { };
 
+template<typename T>
+struct has_event_type<T, decltype(std::declval<T>().event_type, void())> : std::true_type { };
 
-template<class THapticVariant, class TLatestEvent>
-inline THapticVariant HardwareCoordinator::getVersion(const unsigned int version, const TLatestEvent &)
+//template<class TArgs>
+//inline void HardwareCoordinator::dispatch(const TArgs& args)
+//{
+//	
+//	static_assert(has_event_type<TArgs>::value, "Event must specify which event type it is (add a const static nsvr_event_type member variable)");
+//	using namespace nsvr::cevents;
+//	for (auto& handler : m_handlers[TArgs::event_type]) {
+//
+//		auto correct_version = args.getVersion(handler.target_version);
+//
+//		if (correct_version.which() != 0) { //.which() index #0 is boost::blank, aka version not found
+//			void* extracted_void_ptr = boost::apply_visitor([](auto& x) -> void* { return std::addressof(x); }, correct_version);
+//			handler.invoke(extracted_void_ptr, TArgs::event_type, handler.user_data);
+//		}
+//		else {
+//			std::cout << "Unknown version or event type\n";
+//		}
+//	}
+//}
+
+template<class TEvent, class ...TArgs>
+inline void HardwareCoordinator::dispatch(TArgs && ...args)
 {
-	return THapticVariant();
-}
 
-template<>
-inline brief_haptic HardwareCoordinator::getVersion(const unsigned int version, const BriefHapticArgs & args)
-{
-	if (version == 1) {
-		nsvr_cevent_brief_haptic_v1 v1;
-		v1.effect = args.effect;
-		v1.strength = args.strength;
-		return v1;
-	}
-	else if (version == 2) {
-		nsvr_cevent_brief_haptic_v2 v2;
-		v2.whacky = 32;
-		return v2;
-	}
-}
+	static_assert(has_event_type<TEvent>::value, "Event must specify which event type it is (add a const static nsvr_event_type member variable)");
+	using namespace nsvr::cevents;
+	for (auto& handler : m_handlers[TEvent::event_type]) {
+		TEvent args2(std::forward<TArgs>(args)...);
+		auto correct_version = args2.getVersion(handler.target_version);
 
-
-
-template<class TEventVariant, class TArgs>
-void HardwareCoordinator::dispatch(nsvr_cevent_type type, const TArgs& args)
-{
-	for (auto& handler : m_handlers[type]) {
-		TEventVariant thing = getVersion<TEventVariant>(handler.target_version, args);
-		if (thing.which() != 0) {
-			void* ptr = boost::apply_visitor([](auto& x) -> void* { return std::addressof(x); }, thing);
-			handler.handler(ptr, type, handler.user_data);
+		if (correct_version.which() != 0) { //.which() index 0 is boost::blank, aka version not found
+			void* extracted_void_ptr = boost::apply_visitor([](auto& x) -> void* { return std::addressof(x); }, correct_version);
+			handler.invoke(extracted_void_ptr, TEvent::event_type, handler.user_data);
 		}
 		else {
-			std::cout << "Unknown version\n";
+			std::cout << "Unknown version or event type\n";
 		}
 	}
 }
+
