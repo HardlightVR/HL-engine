@@ -13,10 +13,19 @@ HardlightDevice::HardlightDevice()
 	auto& translator = Locator::Translator();
 	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
 		std::string locstring = translator.ToRegionFromLocation(Location(loc));
+
+		//I'm just going to go ahead and memory leak these for now. 
+		//Must wrap the API in c++ objects.
+		nsvr_node* newNode;
+		nsvr_node_create(&newNode);
+		nsvr_node_setdisplayname(newNode, locstring.c_str());
+
 		m_drivers.insert(std::make_pair(
 			locstring, 
-			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
+			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc), newNode))
 		);
+
+		nsvr_node_create()
 	}
 }
 
@@ -25,47 +34,46 @@ HardlightDevice::HardlightDevice()
 
 void HardlightDevice::RegisterDrivers(nsvr_core_ctx* ctx)
 {
-	nsvr_cevent_callback cevent_handler;
+	nsvr_request_callback cevent_handler;
 	cevent_handler.user_data = this;
 
-	cevent_handler.handler = [](void* event, nsvr_cevent_type type, void* user_data) {
+	cevent_handler.handler = [](nsvr_request* event, nsvr_request_type type, void* user_data) {
 		HardlightDevice* driver = static_cast<HardlightDevice*>(user_data);
 		driver->handle(type, event);
 	};
 
-	nsvr_register_cevent_hook(ctx, 
-		nsvr_cevent_type_brief_haptic, 
-		nsvr_cevent_brief_haptic_latest, 
+	nsvr_register_request_hook(ctx, 
+		nsvr_request_type_brief_haptic, 
+
 		cevent_handler
 	);
 
-	nsvr_register_cevent_hook(ctx, 
-		nsvr_cevent_type_lasting_haptic, 
-		nsvr_cevent_lasting_haptic_latest, 
+	nsvr_register_request_hook(ctx,
+		nsvr_request_type_lasting_haptic, 
 		cevent_handler
 	);
 
-	nsvr_register_cevent_hook(ctx, 
-		nsvr_cevent_type_playback_statechange, 
-		nsvr_cevent_playback_statechange_latest,
+	nsvr_register_request_hook(ctx,
+		nsvr_request_type_playback_statechange, 
 		cevent_handler
 	);
 	
 }
 
-void HardlightDevice::handle(nsvr_cevent_type type, void * event)
+void HardlightDevice::handle(nsvr_request_type type, nsvr_request * event)
 {
 	switch (type) {
-	case nsvr_cevent_type_brief_haptic:
-		execute_region_specific<nsvr_cevent_brief_haptic>(event);
+	case nsvr_request_type_brief_haptic:
+		executeBrief(event);
 		break;
-	case nsvr_cevent_type_lasting_haptic:
-		execute_region_specific<nsvr_cevent_lasting_haptic>(event);
+	case nsvr_request_type_lasting_haptic:
+		executeLasting(event);
 		break;
-	case nsvr_cevent_type_playback_statechange:
-		for (auto& driver : m_drivers) {
-			driver.second->consume(static_cast<nsvr_cevent_playback_statechange*>(event));
-		}
+	case nsvr_request_type_playback_statechange:
+		executePlaybackChange(event);
+	//	for (auto& driver : m_drivers) {
+		//	driver.second->consume(static_cast<nsvr_request_playback_statechange*>(event));
+		//}
 		break;
 	default:
 		break;
@@ -74,6 +82,49 @@ void HardlightDevice::handle(nsvr_cevent_type type, void * event)
 
 }
 
+void HardlightDevice::executeBrief(nsvr_request * event)
+{
+	
+
+	BasicHapticEventData data = {};
+	data.duration = 0.0f;
+	nsvr_request_briefhaptic_geteffect(event, &data.effect);
+	nsvr_request_briefhaptic_getstrength(event, &data.strength);
+
+	char region[32];
+	nsvr_request_briefhaptic_getregion(event, region);
+
+	if (m_drivers.find(region) != m_drivers.end()) {
+		m_drivers.at(region)->consumeBrief(std::move(data));
+	}
+}
+
+void HardlightDevice::executeLasting(nsvr_request * event)
+{
+	BasicHapticEventData data = {};
+	uint64_t id;
+	nsvr_request_lastinghaptic_getduration(event, &data.duration);
+	nsvr_request_lastinghaptic_geteffect(event, &data.effect);
+	nsvr_request_lastinghaptic_getstrength(event, &data.strength);
+	nsvr_request_lastinghaptic_getid(event, &id);
+	char region[32];
+	nsvr_request_briefhaptic_getregion(event, region);
+	if (m_drivers.find(region) != m_drivers.end()) {
+		m_drivers.at(region)->consumeLasting(std::move(data), id);
+	}
+
+}
+
+void HardlightDevice::executePlaybackChange(nsvr_request * event)
+{
+	uint64_t id;
+	nsvr_playback_statechange_command command;
+	nsvr_request_playback_statechange_getid(event, &id);
+	nsvr_request_playback_statechange_getcommand(event, &command);
+	for (auto& driver : m_drivers) {
+		driver.second->controlEffect(id, command);
+	}
+}
 CommandBuffer HardlightDevice::GenerateHardwareCommands(float dt)
 {
 	CommandBuffer result;

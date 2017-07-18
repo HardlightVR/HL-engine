@@ -24,12 +24,12 @@
 #define NSVR_PLUGIN_RETURN(ReturnType) NSVR_PLUGIN_API ReturnType __cdecl
 
 #define NSVR_CORE_EVENT(name, version) \
-struct nsvr_cevent_##name##_v##version 
+struct nsvr_request_##name##_v##version 
 
 
 #define NSVR_CORE_EVENT_LATEST(name, version) \
-const unsigned int nsvr_cevent_##name##_latest = version; \
-typedef struct nsvr_cevent_##name##_v##version nsvr_cevent_##name
+const unsigned int nsvr_request_##name##_latest = version; \
+typedef struct nsvr_request_##name##_v##version nsvr_request_##name
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,88 +51,72 @@ extern "C" {
 	typedef struct NSVR_Core_Ctx_s nsvr_core_ctx;
 
 
-
-
-
-
-
-
-
-	enum nsvr_pevent_type {
-		nsvr_pevent_unknown = 0,
-		nsvr_pevent_device_connected = 1,
-		nsvr_pevent_device_disconnected = 2,
-		nsvr_pevent_tracking_update = 3
+	enum nsvr_device_event_type {
+		nsvr_device_event_unknown = 0,
+		nsvr_device_event_device_connected = 1,
+		nsvr_device_event_device_disconnected = 2,
+		nsvr_device_event_tracking_update = 3
+		
 
 	};
 
-	enum nsvr_cevent_type {
-		nsvr_cevent_type_unknown = 0,
-		nsvr_cevent_type_brief_haptic = 1,
-		nsvr_cevent_type_lasting_haptic = 2,
-		nsvr_cevent_type_playback_statechange = 3,
-		nsvr_cevent_type_realtime_request = 4
+	enum nsvr_request_type {
+		nsvr_request_type_unknown = 0,
+		nsvr_request_type_brief_haptic = 1,
+		nsvr_request_type_lasting_haptic = 2,
+		nsvr_request_type_playback_statechange = 3,
+		nsvr_request_type_realtime_request = 4
 	
 
 	};
 	
-	//Broadcast problem
-	//The old plugins need to be able to interpret new event versions correctly
-	//Because say we broadcast BriefTaxelv1. Then service upgrades and now we broadcast BriefTaxelv2.
-	//Oops, old plugin behavior changed: sure, maybe they don't crash, simply ignore it. But they stop
-	//working. 
+
 	/*
-	
-	Principles:
-
-	never change a struct once its in the wild
-	provide backwards compatibility in the coreDLL, by sending old struct types to plugins
-	who don't know about the new types
-	need a translator component F(targetVersionOfStruct, latestStructArgs) -> oldStruct 
-	within the plugin. So the service always intends to send the latest version, but it gets
-	translated down as necessary. 
-	
+	We have nsvr_device_event
+		- a device specific event that has happened on the hardware side
+		- and is now bubbling up to the runtime
+	We have nsvr_request
+		- a request for the hardware to perform some action
+		- such as play a brief haptic effect
 	
 	*/
 
+	typedef struct nsvr_device nsvr_device;
+	typedef struct nsvr_node nsvr_node;
+
+	NSVR_CORE_RETURN(int) nsvr_node_create(nsvr_node** node);
+	NSVR_CORE_RETURN(int) nsvr_node_setdisplayname(nsvr_node* node, const char* name);
+	NSVR_CORE_RETURN(int) nsvr_node_destroy(nsvr_node** node);
+	
+	
+	typedef struct nsvr_querystate nsvr_querystate;
+	NSVR_CORE_RETURN(int) nsvr_querystate_create(nsvr_querystate** querystate);
+	NSVR_CORE_RETURN(int) nsvr_querystate_register(nsvr_querystate* querystate, nsvr_core_ctx* core);
+		//querystate_setdevice
+	NSVR_CORE_RETURN(int) nsvr_querystate_addnode(nsvr_querystate* state, nsvr_node* node, float x, float y, float z);
+	NSVR_CORE_RETURN(int) nsvr_querystate_updatenode(nsvr_node* node, bool active);
+
+
 	
 
 
-	typedef struct nsvr_pevent nsvr_pevent;
+	typedef struct nsvr_request nsvr_request;
 
 
-	typedef struct nsvr_cevent nsvr_cevent;
+	typedef struct nsvr_device_event nsvr_device_event;
 
-
-
-
-
-
-
-
+	NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request* cevent, nsvr_request_type* outType);
+	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
+	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getstrength(nsvr_request* cevent, float* outStrength);
+	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getregion(nsvr_request* cevent, char* outRegion); 
 
 
 
-
-	NSVR_CORE_EVENT(brief_haptic, 1) {
-		uint32_t effect;
-		float strength;
-		const char* region;
-	};
-
-	NSVR_CORE_EVENT_LATEST(brief_haptic, 1);
-
-
-	NSVR_CORE_EVENT(lasting_haptic, 1) {
-		uint64_t id;
-		uint32_t effect;
-		float strength;
-		float duration;
-		const char* region;
-	};
-	
-	NSVR_CORE_EVENT_LATEST(lasting_haptic, 1);
-
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getid(nsvr_request* cevent, uint64_t* outId);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getstrength(nsvr_request* cevent, float* outStrength);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* cevent, float* outDuration);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion);
 
 
 
@@ -144,51 +128,40 @@ extern "C" {
 	};
 
 
-	NSVR_CORE_EVENT(playback_statechange, 1) {
-		uint64_t effect_id;
-		enum nsvr_playback_statechange_command command;
-	};
 
-	NSVR_CORE_EVENT_LATEST(playback_statechange, 1);
+
+	NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getid(nsvr_request* cevent, uint64_t* outId);
+	NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getcommand(nsvr_request* cevent, nsvr_playback_statechange_command* outCommand);
 
 
 
-	NSVR_CORE_                                                                                             
+
 
 
 	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, nsvr_core_ctx* core);
 
 
-	typedef void(*nsvr_cevent_handler)(void* event, nsvr_cevent_type type, void* user_data);
+	typedef void(*nsvr_request_handler)(nsvr_request* event, nsvr_request_type type, void* user_data);
 
-	typedef struct nsvr_cevent_callback {
-		nsvr_cevent_handler handler;
+	typedef struct nsvr_request_callback {
+		nsvr_request_handler handler;
 		void* user_data;
-	} nsvr_cevent_callback;
+	} nsvr_request_callback;
 
-	typedef void(*nsvr_pevent_handler)(void* event, nsvr_pevent_type, void* user_data);
-	typedef struct nsvr_pevent_callback {
-		nsvr_pevent_handler handler;
-		void* user_data;
-	};
 	/******/
 	//For plugin to receive data from core
-	NSVR_CORE_RETURN(int) nsvr_register_cevent_hook(nsvr_core_ctx* core, nsvr_cevent_type eventType, unsigned int targetVersion, nsvr_cevent_callback cb);
+	NSVR_CORE_RETURN(int) nsvr_register_request_hook(nsvr_core_ctx* core, nsvr_request_type eventType, nsvr_request_callback cb);
 
 
-	//For Core to receive data from plugin
-	//NSVR_CORE_RETURN(int) nsvr_register_polling_function(
-	NSVR_PLUGIN_RETURN(int) nsvr_register_pevent_hook(NSVR_Plugin**, nsvr_pevent_type eventType, nsvr_pevent_callback cb);
- 	
-	NSVR_CORE_RETURN(int) nsvr_pevent_create(nsvr_pevent** event, nsvr_pevent_type type);
-	NSVR_CORE_RETURN(int) nsvr_pevent_destroy(nsvr_pevent** event);
-	NSVR_CORE_RETURN(int) nsvr_raise_pevent(nsvr_core_ctx* core, nsvr_pevent* event);
+	NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event** event, nsvr_device_event_type type);
+
+	NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event);
+	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core_ctx* core, nsvr_device_event* event);
 	
 
-	NSVR_CORE_RETURN(int) nsvr_pevent_setdeviceid(nsvr_pevent* event, uint32_t device_id);
+	NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, uint32_t device_id);
 
-	//Only valid on tracking type event
-	NSVR_CORE_RETURN(int) nsvr_pevent_settrackingstate(nsvr_pevent* event, NSVR_Core_Quaternion* quat);
+	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event* event, NSVR_Core_Quaternion* quat);
 		
 		
 		/******/

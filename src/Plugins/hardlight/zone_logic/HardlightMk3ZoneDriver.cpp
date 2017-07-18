@@ -22,19 +22,30 @@ CommandBuffer Hardlight_Mk3_ZoneDriver::update(float dt)
 		result.insert(result.end(), retainedCommands.begin(), retainedCommands.end());
 	}
 
+
+
+	if (auto event = m_retainedModel.GetCurrentlyPlayingEvent()) {
+		auto realEvent = *event;
+		nsvr_querystate_updatenode(m_querynode, true);
+	}
+	else {
+		nsvr_querystate_updatenode(m_querynode, false);
+	}
+
 	return result;
 
 }
 
 
 
-Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area) :
+Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area, nsvr_node* node) :
 	m_area(area),
 	m_currentMode(Mode::Retained),
 	m_commands(),
 	m_rtpModel(m_area),
 	m_retainedModel(m_area),
-	m_mutex()
+	m_mutex(),
+	m_querynode(node)
 {
 
 }
@@ -93,37 +104,24 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 	}
 }
 
-void Hardlight_Mk3_ZoneDriver::consume(const nsvr_cevent_brief_haptic * event)
+
+void Hardlight_Mk3_ZoneDriver::consumeBrief(BasicHapticEventData data)
 {
-	BasicHapticEventData d;
-	d.area = static_cast<uint32_t>(m_area); //areaFlag at this point
-	d.effect = event->effect;
-	d.strength = event->strength;
-	d.duration = 0.0;
-	m_retainedModel.Put(LiveBasicHapticEvent(std::numeric_limits<ParentId>::max(), m_gen(), std::move(d)));
+	data.area = static_cast<uint32_t>(m_area);
+	m_retainedModel.Put(LiveBasicHapticEvent(std::numeric_limits<ParentId>::max(), m_gen(), std::move(data)));
 	transitionInto(Mode::Retained);
 }
 
 
-void Hardlight_Mk3_ZoneDriver::consume(const nsvr_cevent_lasting_haptic * haptic)
-{
-	BasicHapticEventData d;
-	uint64_t id;
-	d.area = static_cast<uint32_t>(m_area); //areaFlag at this point
-	id = haptic->id;
-	d.effect = haptic->effect;
-	d.strength = haptic->strength;
-	d.duration = haptic->duration;
 
-	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(d)));
+void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data, uint64_t id) {
+	data.area = static_cast<uint32_t>(m_area);
+	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data)));
 	transitionInto(Mode::Retained);
 }
 
-void Hardlight_Mk3_ZoneDriver::consume(const nsvr_cevent_playback_statechange * event)
+void Hardlight_Mk3_ZoneDriver::controlEffect(uint64_t id, nsvr_playback_statechange_command command)
 {
-	uint64_t id = event->effect_id;
-	auto command = event->command;
-
 
 	switch (command) {
 	case nsvr_playback_statechange_unpause:
@@ -137,21 +135,19 @@ void Hardlight_Mk3_ZoneDriver::consume(const nsvr_cevent_playback_statechange * 
 	default:
 		break;
 	}
-
 }
 
-	
 
 
 
-void Hardlight_Mk3_ZoneDriver::consume(const NSVR_RealtimeEvent* realtime)
-{
-
-	float volume = 0;
-	NSVR_RealtimeEvent_GetStrength(realtime, &volume);
-	m_rtpModel.ChangeVolume(static_cast<int>(volume * 255));
-	transitionInto(Mode::Realtime);
-}
+//void Hardlight_Mk3_ZoneDriver::consume(const NSVR_RealtimeEvent* realtime)
+//{
+//
+//	float volume = 0;
+//	NSVR_RealtimeEvent_GetStrength(realtime, &volume);
+//	m_rtpModel.ChangeVolume(static_cast<int>(volume * 255));
+//	transitionInto(Mode::Realtime);
+//}
 
 //void Hardlight_Mk3_ZoneDriver::controlRetained(boost::uuids::uuid handle, NSVR_PlaybackCommand command)
 //{

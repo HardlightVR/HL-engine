@@ -13,7 +13,7 @@ HardwareCoordinator::~HardwareCoordinator()
 {
 }
 
-void HardwareCoordinator::Register(nsvr_cevent_type type, nsvr_cevent_handler handler, unsigned int targetVersion, void * user_data)
+void HardwareCoordinator::Register(nsvr_request_type type, nsvr_request_handler handler, unsigned int targetVersion, void * user_data)
 {
 	user_event_handler eventHandler;
 	eventHandler.invoke = handler;

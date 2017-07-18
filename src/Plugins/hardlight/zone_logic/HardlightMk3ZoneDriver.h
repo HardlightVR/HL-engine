@@ -17,17 +17,15 @@ class Hardlight_Mk3_ZoneDriver {
 public:
 	CommandBuffer update(float dt);
 
-	Hardlight_Mk3_ZoneDriver(Location area);
+	Hardlight_Mk3_ZoneDriver(Location area, nsvr_node* node);
 
 	Location GetLocation();
 
 	//boost::optional<HapticDisplayInfo> QueryCurrentlyPlaying();
-	void consume(const nsvr_cevent_brief_haptic* event);
-	void consume(const nsvr_cevent_lasting_haptic* event);
-	void consume(const nsvr_cevent_playback_statechange* event);
-
-
-	void consume(const NSVR_RealtimeEvent* realtime);
+	
+	void consumeBrief(BasicHapticEventData data);
+	void consumeLasting(BasicHapticEventData data, uint64_t id);
+	void controlEffect(uint64_t id, nsvr_playback_statechange_command command);
 	//void realtime(uint16_t volume);
 private:
 	::Location m_area;
@@ -42,4 +40,5 @@ private:
 	ParentId m_parentId;
 	std::mutex m_mutex;
 	CommandBuffer m_commands;
+	nsvr_node* m_querynode;
 };

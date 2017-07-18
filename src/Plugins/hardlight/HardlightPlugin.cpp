@@ -18,6 +18,8 @@ HardlightPlugin::HardlightPlugin() :
 
 {
 	
+	nsvr_querystate_create(&m_querystate);
+
 	m_adapter->SetMonitor(m_monitor);
 
 	m_monitor->SetDisconnectHandler([&]() {
@@ -50,11 +52,15 @@ HardlightPlugin::HardlightPlugin() :
 	m_imus.OnTracking([&](const std::string& id, NSVR_Core_Quaternion quat) {
 
 		if (m_core != nullptr) {
-			nsvr_pevent* event = nullptr;
-			nsvr_pevent_create(&event, nsvr_pevent_tracking_update);
-			nsvr_pevent_settrackingstate(event, &quat);
-			nsvr_raise_pevent(m_core, event);
-			nsvr_pevent_destroy(&event);
+
+			nsvr_device_event* event = nullptr;
+			nsvr_device_event_create(&event, nsvr_device_event_tracking_update);
+			nsvr_device_event_settrackingstate(event, &quat);
+			nsvr_device_event_raise(m_core, event);
+
+			nsvr_device_event_destroy(&event);
+
+
 			assert(event == nullptr);
 		}
 		//m_coreApi.at("tracking").call<nsvr_core_tracking_cb>(id.c_str(), &quat);
@@ -104,9 +110,9 @@ int HardlightPlugin::Configure(nsvr_core_ctx* core)
 	m_core = core;
 	m_device.RegisterDrivers(core);
 	//
-	//nsvr_register_cevent_hook(core, nsvr_cevent_type::nsvr_cevent_brief_haptic, handle_event, )
-	//m_device.RegisterDrivers([&](nsvr_cevent_handler consumer, const char* region, const char* iface, void* user_data) {
-	//	nsvr_register_cevent_hook(core, nsvr_cevent_type::nsvr_cevent_basic_haptic
+	//nsvr_register_cevent_hook(core, nsvr_request_type::nsvr_request_brief_haptic, handle_event, )
+	//m_device.RegisterDrivers([&](nsvr_request_handler consumer, const char* region, const char* iface, void* user_data) {
+	//	nsvr_register_cevent_hook(core, nsvr_request_type::nsvr_request_basic_haptic
 	//	m_coreApi.call<nsvr_core_register_node_cb>(consumer, region, iface, user_data);
 	//});
 

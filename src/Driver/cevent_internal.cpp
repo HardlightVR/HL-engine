@@ -13,15 +13,12 @@ BriefHaptic::BriefHaptic(uint32_t effect, float strength, const char * region)
 {
 }
 
-brief_haptic_versions BriefHaptic::getVersion(unsigned int version) const
+nsvr_request_type BriefHaptic::getType() const
 {
-	if (version == 1) {
-		return nsvr_cevent_brief_haptic_v1{ effect, strength, region };
-	}
-	
-	return boost::blank{};
+	return request_type;
 }
 
+const nsvr_request_type BriefHaptic::request_type = nsvr_request_type_brief_haptic;
 
 
 
@@ -34,14 +31,12 @@ LastingHaptic::LastingHaptic(uint32_t effect, float strength, float duration, co
 {
 }
 
-nsvr::cevents::lasting_haptic_versions LastingHaptic::getVersion(unsigned int version) const
+nsvr_request_type LastingHaptic::getType() const
 {
-	if (version == 1) {
-		return nsvr_cevent_lasting_haptic_v1 { parent_id, effect, strength, duration, region };
-	}
-
-	return boost::blank{};
+	return request_type;
 }
+
+const nsvr_request_type LastingHaptic::request_type = nsvr_request_type_lasting_haptic;
 
 PlaybackStateChange::PlaybackStateChange(uint64_t parent_id, nsvr_playback_statechange_command command)
 	: parent_id(parent_id)
@@ -49,14 +44,11 @@ PlaybackStateChange::PlaybackStateChange(uint64_t parent_id, nsvr_playback_state
 {
 }
 
-nsvr::cevents::playback_statechange_versions PlaybackStateChange::getVersion(unsigned int version) const
+nsvr_request_type PlaybackStateChange::getType() const
 {
-	if (version == 1) {
-		return nsvr_cevent_playback_statechange_v1{ parent_id, command };
-	}
-
-	return boost::blank{};
+	return request_type;
 }
 
+const nsvr_request_type PlaybackStateChange::request_type = nsvr_request_type_playback_statechange;
 }
 }

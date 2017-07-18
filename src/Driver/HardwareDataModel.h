@@ -6,7 +6,7 @@
 
 namespace nsvr {
 	namespace pevents {
-		class pevent;
+		class device_event;
 	}
 }
 class HardwareCoordinator;
@@ -25,9 +25,11 @@ public:
 	void SetDeviceConnected();
 	void SetDeviceDisconnected();
 
-	void Raise(const nsvr::pevents::pevent& event);
+	void Raise(const nsvr::pevents::device_event& event);
 
 	HardwareCoordinator& GetParentCoordinator();
+
+	void beginMeasuring(nsvr_querystate * querystate);
 private:
 	//unsustainable
 	std::vector<TrackingCallback> m_trackingSubscribers;
@@ -38,4 +40,5 @@ private:
 
 	HardwareCoordinator& m_parent;
 	bool m_connected;
+	
 };

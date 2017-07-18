@@ -6,38 +6,25 @@
 namespace nsvr {
 namespace cevents {
 
+	struct request_base {
+		virtual ~request_base() {}
+		virtual nsvr_request_type getType() const = 0;
+	};
 
-//List any versions of cevents here, with their own variants as needed
-
-//Intent: brief haptic sensation
-using brief_haptic_versions = boost::variant<boost::blank
-	, nsvr_cevent_brief_haptic_v1
->;
-
-
-//Intent: haptic sensation with a duration
-using lasting_haptic_versions = boost::variant<boost::blank
-	, nsvr_cevent_lasting_haptic_v1
->;
-
-//Intent: control the playback of a haptic effect
-using playback_statechange_versions = boost::variant<boost::blank
-	, nsvr_cevent_playback_statechange_v1
->;
-
-
-struct BriefHaptic {
+	
+struct BriefHaptic : public request_base {
 	BriefHaptic(uint32_t effect, float strength, const char* region);
 
 	uint32_t effect;
 	float strength;
 	const char* region;
+	static const nsvr_request_type request_type;
 
-	const static nsvr_cevent_type event_type = nsvr_cevent_type_brief_haptic;
-	nsvr::cevents::brief_haptic_versions getVersion(unsigned int version) const;
+	nsvr_request_type getType() const override;
+
 };
 
-struct LastingHaptic {
+struct LastingHaptic :public request_base {
 	LastingHaptic(uint32_t effect, float strength, float duration, const char* region, uint64_t parent_id);
 
 	uint32_t effect;
@@ -46,20 +33,21 @@ struct LastingHaptic {
 	const char* region;
 	uint64_t parent_id;
 
-	const static nsvr_cevent_type event_type = nsvr_cevent_type_lasting_haptic;
-	nsvr::cevents::lasting_haptic_versions getVersion(unsigned int version) const;
+	static const nsvr_request_type request_type;
+	nsvr_request_type getType() const override;
+
 
 };
 
 
-struct PlaybackStateChange {
+struct PlaybackStateChange : public request_base{
 	PlaybackStateChange(uint64_t parent_id, nsvr_playback_statechange_command command);
 
 	uint64_t parent_id;
 	nsvr_playback_statechange_command command;
+	nsvr_request_type getType() const override;
 
-	const static nsvr_cevent_type event_type = nsvr_cevent_type_playback_statechange;
-	nsvr::cevents::playback_statechange_versions getVersion(unsigned int version) const;
+	static const nsvr_request_type request_type;
 
 };
 

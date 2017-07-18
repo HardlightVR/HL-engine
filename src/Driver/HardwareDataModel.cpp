@@ -16,6 +16,15 @@ m_trackingSubscribers()
 {
 }
 
+//called every 1ms
+void measure() {
+	if (total_elapsed < 16) {
+		sample(querystate);
+	}
+	else {
+		submit_sampling_frame(querystate->id, this)
+	}
+}
 
 void HardwareDataModel::OnTrackingUpdate(TrackingCallback callback)
 {
@@ -51,17 +60,20 @@ void HardwareDataModel::SetDeviceDisconnected()
 	notify(m_onDisconnectSubscribers);
 }
 
-void HardwareDataModel::Raise(const nsvr::pevents::pevent& event)
+void HardwareDataModel::Raise(const nsvr::pevents::device_event& event)
 {
 	switch (event.type) {
-	case nsvr_pevent_device_connected:
-		static_cast<const nsvr::pevents::device_connected*>(&event);
+	case nsvr_device_event_device_connected:
+		//static_cast<const nsvr::pevents::device_connected*>(&event);
 		break;
-	case nsvr_pevent_device_disconnected:
+	case nsvr_device_event_device_disconnected:
 		break;
-	case nsvr_pevent_tracking_update:
+	case nsvr_device_event_tracking_update:
 		NSVR_Core_Quaternion q = static_cast<const nsvr::pevents::tracking_update*>(&event)->quat;
 		std::cout << "Got a tracking update: " << q.w << ", " << q.x << "\n";
+		
+		break;
+	default:
 		break;
 	}
 }
@@ -69,4 +81,9 @@ void HardwareDataModel::Raise(const nsvr::pevents::pevent& event)
 HardwareCoordinator & HardwareDataModel::GetParentCoordinator()
 {
 	return m_parent;
+}
+
+void HardwareDataModel::beginMeasuring(nsvr_querystate * querystate)
+{
+	querystate->
 }
