@@ -44,6 +44,10 @@ bool PluginManager::linkAll()
 		if (!m_plugins.at(pluginName)->Link()) {
 			std::cout << "Warning: unable to link " << pluginName << '\n';
 		}
+
+		if (!m_plugins.at(pluginName)->ParseManifest()) {
+
+		}
 	}
 
 	return true;

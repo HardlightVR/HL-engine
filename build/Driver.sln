@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Driver", "Driver.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HardlightMkIII", "HardlightMkIII.vcxproj", "{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenVR", "OpenVR.vcxproj", "{7F884AC8-6B2A-759E-54E5-88F24026FCEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|UnitTestWin32 = Debug|UnitTestWin32
@@ -39,6 +41,18 @@ Global
 		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win32.Build.0 = Release|Win32
 		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win64.ActiveCfg = Release Win64|Win32
 		{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}.Release|Win64.Build.0 = Release Win64|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Debug|UnitTestWin32.ActiveCfg = Debug UnitTestWin32|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Debug|UnitTestWin32.Build.0 = Debug UnitTestWin32|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Debug|Win32.Build.0 = Debug|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Debug|Win64.ActiveCfg = Debug Win64|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Debug|Win64.Build.0 = Debug Win64|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Release|UnitTestWin32.ActiveCfg = Release UnitTestWin32|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Release|UnitTestWin32.Build.0 = Release UnitTestWin32|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Release|Win32.ActiveCfg = Release|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Release|Win32.Build.0 = Release|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Release|Win64.ActiveCfg = Release Win64|Win32
+		{7F884AC8-6B2A-759E-54E5-88F24026FCEE}.Release|Win64.Build.0 = Release Win64|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

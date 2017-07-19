@@ -21,10 +21,6 @@ namespace nsvr {
 		}
 
 
-		uint32_t device_event::getId()
-		{
-			return device_id;
-		}
 		device_connected::device_connected()
 			: device_event(nsvr_device_event_type::nsvr_device_event_device_connected)
 		{}

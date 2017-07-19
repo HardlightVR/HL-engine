@@ -6,6 +6,7 @@
 
 #include "FunctionPointerTemplates.h"
 
+#include "DriverConfigParser.h"
 PluginInstance::PluginInstance(std::string fileName, HardwareDataModel& model) :
 	m_fileName(fileName), 
 	m_loaded{ false },
@@ -18,6 +19,26 @@ PluginInstance::PluginInstance(std::string fileName, HardwareDataModel& model) :
 
 PluginInstance::~PluginInstance()
 {
+}
+
+bool PluginInstance::ParseManifest()
+{
+	std::string manifestFilename = m_fileName + "_manifest.json";
+	if (!DriverConfigParser::IsValidConfig(manifestFilename)) {
+		std::cout << manifestFilename << " is not a valid config file\n";
+		return false;
+	}
+
+	try {
+		HardwareDescriptor descriptor = DriverConfigParser::ParseConfig(manifestFilename);
+	}
+	catch (const std::exception& error) {
+		std::cout << "Unable to parse descriptor for " << m_fileName << '\n';
+		return false;
+	}
+
+	return true;
+
 }
 
 
@@ -40,19 +61,6 @@ bool PluginInstance::Load()
 	
 }
 
-//Helper function to assign a lambda and context to an NSVR_Callback.
-template<typename TContext, typename TCallable>
-void registerCallback(NSVR_Configuration* config, const std::string& name, TContext& context, TCallable&& lambda) {
-	//We need it to be static because we can't point to a temp lambda
-	static auto static_pointer = to_function_pointer(lambda);
-
-	constexpr bool is_same = std::is_same<TContext*, typename function_traits<TCallable>::ctx>::value;
-	static_assert(is_same, "You must pass in the same type for the context and your lambda!");
-	
-
-	config->Callbacks[name].callback = static_pointer;
-	config->Callbacks[name].context = reinterpret_cast<nsvr_core_ctx*>(&context);
-}
 
 
 //precondition: successfully loaded

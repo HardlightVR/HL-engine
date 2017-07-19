@@ -65,7 +65,9 @@ extern "C" {
 		nsvr_request_type_brief_haptic = 1,
 		nsvr_request_type_lasting_haptic = 2,
 		nsvr_request_type_playback_statechange = 3,
-		nsvr_request_type_realtime_request = 4
+		nsvr_request_type_realtime_request = 4,
+		nsvr_request_type_preset_erm_waveform = 5,
+		nsvr_request_type_direct_erm_drive = 6
 	
 
 	};
@@ -84,6 +86,7 @@ extern "C" {
 	typedef struct nsvr_device nsvr_device;
 	typedef struct nsvr_node nsvr_node;
 
+	//node_settype(nodetype::haptic?)
 	NSVR_CORE_RETURN(int) nsvr_node_create(nsvr_node** node);
 	NSVR_CORE_RETURN(int) nsvr_node_setdisplayname(nsvr_node* node, const char* name);
 	NSVR_CORE_RETURN(int) nsvr_node_destroy(nsvr_node** node);
@@ -97,7 +100,14 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_querystate_updatenode(nsvr_node* node, bool active);
 
 
+	//Realization
+	//Some things that we support might be like advanced Oculus or OpenVR drivers
+	//they have preestablished haptics
+
+	//other things are just low level drivers 
+	//and want us to do the bulk of the work
 	
+	//this sort of necessitates two different api designs?
 
 
 	typedef struct nsvr_request nsvr_request;
@@ -109,6 +119,7 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
 	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getstrength(nsvr_request* cevent, float* outStrength);
 	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getregion(nsvr_request* cevent, char* outRegion); 
+
 
 
 
@@ -138,7 +149,6 @@ extern "C" {
 
 
 
-	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, nsvr_core_ctx* core);
 
 
 	typedef void(*nsvr_request_handler)(nsvr_request* event, nsvr_request_type type, void* user_data);
@@ -150,7 +160,7 @@ extern "C" {
 
 	/******/
 	//For plugin to receive data from core
-	NSVR_CORE_RETURN(int) nsvr_register_request_hook(nsvr_core_ctx* core, nsvr_request_type eventType, nsvr_request_callback cb);
+	NSVR_CORE_RETURN(int) nsvr_register_request_handler(nsvr_core_ctx* core, nsvr_request_type eventType, nsvr_request_callback cb);
 
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event** event, nsvr_device_event_type type);
@@ -158,16 +168,39 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event);
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core_ctx* core, nsvr_device_event* event);
 	
+	typedef struct nsvr_direct_request nsvr_direct_request;
+	typedef struct nsvr_buffered_request nsvr_buffered_request;
+	typedef struct nsvr_preset_request nsvr_preset_request;
+
+
+	typedef enum nsvr_preset_family {
+		nsvr_preset_family_unknown = 0,
+		nsvr_preset_family_bump = 1,
+		nsvr_preset_family_click = 2
+	} nsvr_preset_family;
+
+	NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request* req, nsvr_preset_family* outFamily);
+	NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request* req, float* outStrength);
+
+	typedef void(*nsvr_direct_handler)(nsvr_direct_request* req, void* client_data);
+	typedef void(*nsvr_buffered_handler)(nsvr_buffered_request* req, void* client_data);
+	typedef void(*nsvr_preset_handler)(nsvr_preset_request* req, void* client_data);
+
+	//should incorporate region at a lower level than x_getregion. Maybe as a param?
+	NSVR_CORE_RETURN(int) nsvr_register_preset_handler(nsvr_core_ctx* core, nsvr_preset_handler handler, void* client_data);
+	NSVR_CORE_RETURN(int) nsvr_register_buffered_handler(nsvr_core_ctx* core, nsvr_buffered_handler handler, void* client_data);
+	NSVR_CORE_RETURN(int) nsvr_register_direct_handler(nsvr_core_ctx* core, nsvr_direct_handler, void* client_data);
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, uint32_t device_id);
 
-	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event* event, NSVR_Core_Quaternion* quat);
+	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event* event, const char* region, NSVR_Core_Quaternion* quat);
 		
 		
 		/******/
 
 	
-	//
+	NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin* pluginPtr, nsvr_core_ctx* core);
+
 	NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin** pluginPtr);
 
 

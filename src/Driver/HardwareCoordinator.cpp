@@ -31,30 +31,30 @@ HardwareDataModel & HardwareCoordinator::Get(const std::string & name)
 	if (m_hardware.find(name) == m_hardware.end()) {
 		m_hardware.insert(std::make_pair(name, HardwareDataModel(*this)));
 
-		m_hardware.at(name).OnTrackingUpdate([&](auto region, auto quat) { updateTrackingForMessenger(region, quat); });
-		m_hardware.at(name).OnDeviceConnect([&]() {
-			SuitsConnectionInfo info = { };
-			info.SuitsFound[0] = true;
-			info.Suits[0].Id = 1;
-			info.Suits[0].Status = NullSpace::SharedMemory::Connected;
-			m_messenger.WriteSuits(info);
-		});
+		//m_hardware.at(name).OnTrackingUpdate([&](auto region, auto quat) { updateTrackingForMessenger(region, quat); });
+		//m_hardware.at(name).OnDeviceConnect([&]() {
+		//	SuitsConnectionInfo info = { };
+		//	info.SuitsFound[0] = true;
+		//	info.Suits[0].Id = 1;
+		//	info.Suits[0].Status = NullSpace::SharedMemory::Connected;
+		//	m_messenger.WriteSuits(info);
+		//});
 
-		m_hardware.at(name).OnDeviceConnect([&]() {
-			std::cout << name << " CONNECTED\n";
-		});
+		//m_hardware.at(name).OnDeviceConnect([&]() {
+		//	std::cout << name << " CONNECTED\n";
+		//});
 
-		m_hardware.at(name).OnDeviceDisconnect([&]() {
-			std::cout << name << " DISCONNECTED\n";
-		});
+		//m_hardware.at(name).OnDeviceDisconnect([&]() {
+		//	std::cout << name << " DISCONNECTED\n";
+		//});
 
-		m_hardware.at(name).OnDeviceDisconnect([&]() {
-			SuitsConnectionInfo info = { };
-			info.SuitsFound[0] = true;
-			info.Suits[0].Id = 1;
-			info.Suits[0].Status = NullSpace::SharedMemory::Disconnected;
-			m_messenger.WriteSuits(info);
-		});
+		//m_hardware.at(name).OnDeviceDisconnect([&]() {
+		//	SuitsConnectionInfo info = { };
+		//	info.SuitsFound[0] = true;
+		//	info.Suits[0].Id = 1;
+		//	info.Suits[0].Status = NullSpace::SharedMemory::Disconnected;
+		//	m_messenger.WriteSuits(info);
+		//});
 	}
 	return m_hardware.at(name);
 	
@@ -73,4 +73,5 @@ void HardwareCoordinator::updateTrackingForMessenger(const std::string & region,
 
 	m_messenger.WriteTracking(t);
 }
+
 

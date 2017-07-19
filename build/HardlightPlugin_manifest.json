@@ -1,0 +1,46 @@
+{  
+   "name":"Hardlight MKIII Haptic Suit",
+   "manifest-version":1,
+   "concept":"suit",
+
+   "nodes":[  
+      {  
+         "name":"HardlightMkIII Chest Left DRV",
+         "region":"chest_left",
+         "capabilities":[  
+            {  
+               "interface":"preset-erm-waveform"
+            }, 
+            {
+               "interface":"direct-erm-drive"
+            },
+            {
+               "interface":"brief-haptic"
+            }
+         ]
+      },
+      {  
+         "name":"HardlightMkIII Chest Right DRV",
+         "region":"chest_right",
+         "capabilities":[  
+            {  
+               "interface":"preset-erm-waveform"
+            }, 
+            {
+               "interface":"direct-erm-drive"
+            }
+         ]
+      },
+      {  
+         "name":"HardlightMkIII Chest LED",
+         "region":"chest",
+         "capabilities":[  
+            {  
+               "interface":"direct-led-drive"
+            }
+         ]
+      }
+
+   ]
+}
+

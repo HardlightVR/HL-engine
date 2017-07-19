@@ -6,7 +6,7 @@
 #include "cevent_internal.h"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid.hpp>
-
+#include "nsvr_preset.h"
 #define NULL_ARGUMENT_CHECKS
 
 
@@ -110,9 +110,41 @@ NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event ** event, nsvr_
 }
 
 
+NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request * req, nsvr_preset_family * outFamily)
+{
+	*outFamily = req->family;
+	return NSVR_SUCCESS;
+}
 
+NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request * req, float * outStrength)
+{
+	*outStrength = req->strength;
+	return NSVR_SUCCESS;
+}
 
-NSVR_CORE_RETURN(int) nsvr_register_request_hook(nsvr_core_ctx* core, nsvr_request_type eventType,nsvr_request_callback cb){
+NSVR_CORE_RETURN(int) nsvr_register_preset_handler(nsvr_core_ctx * core, nsvr_preset_handler handler, void * client_data)
+{
+	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
+	lowlevel.RegisterPreset(handler, client_data);
+	return 1;
+}
+
+NSVR_CORE_RETURN(int) nsvr_register_buffered_handler(nsvr_core_ctx * core, nsvr_buffered_handler handler, void * client_data)
+{
+	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
+	lowlevel.RegisterBuffered(handler, client_data);
+	return 1;
+}
+
+NSVR_CORE_RETURN(int) nsvr_register_direct_handler(nsvr_core_ctx * core, nsvr_direct_handler handler, void * client_data)
+{
+	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
+	lowlevel.RegisterDirect(handler, client_data);
+	return 1;
+
+}
+
+NSVR_CORE_RETURN(int) nsvr_register_request_handler(nsvr_core_ctx* core, nsvr_request_type eventType,nsvr_request_callback cb){
 	RETURN_IF_NULL(core);
 
 
@@ -131,12 +163,12 @@ NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, ui
 	return 1;
 }
 
-NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, NSVR_Core_Quaternion * quat)
+NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, NSVR_Core_Quaternion * quat)
 {
 	RETURN_IF_NULL(event);
-
+	AS_TYPE(nsvr::pevents::tracking_update, event)->region = std::string(region);
 	AS_TYPE(nsvr::pevents::tracking_update, event)->quat = *quat;
-	return 1;
+	return NSVR_SUCCESS;
 }
 
 
@@ -161,7 +193,8 @@ NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event) {
 NSVR_CORE_RETURN(int) nsvr_querystate_register(nsvr_querystate * querystate, nsvr_core_ctx * core)
 {
 	HardwareDataModel* model = AS_TYPE(HardwareDataModel, core);
-	model->beginMeasuring(querystate);
+	//todo: implement
+
 	return NSVR_SUCCESS;
 }
 NSVR_CORE_RETURN(int) NSVR_Configuration_GetCallback(const NSVR_Configuration * config, const char * name, nsvr_callback* callback)

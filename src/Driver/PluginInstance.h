@@ -39,6 +39,7 @@ public:
 
 	PluginInstance(std::string fileName, HardwareDataModel& model);
 	~PluginInstance();
+	bool ParseManifest();
 	bool Link();
 	bool Load();
 

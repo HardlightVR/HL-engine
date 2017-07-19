@@ -1,0 +1,26 @@
+{
+   "name" : "Vive Controllers",
+   "concept" : "controller",
+   "nodes" : [
+      {
+         "name" : "Vive controller left pad",
+         "region" : "hand_left",
+         "capabilities" : [
+            {
+               "interface" : "buffered-pla-drive"
+
+            }
+         ]
+      },
+      {
+         "name" : "Vive controller right pad",
+         "region" : "hand_right",
+         "capabilities" : [
+            {
+               "interface" : "buffered-pla-drive"
+            }
+         ]
+      }
+
+   ]
+}

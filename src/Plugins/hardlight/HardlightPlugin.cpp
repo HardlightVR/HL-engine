@@ -55,7 +55,7 @@ HardlightPlugin::HardlightPlugin() :
 
 			nsvr_device_event* event = nullptr;
 			nsvr_device_event_create(&event, nsvr_device_event_tracking_update);
-			nsvr_device_event_settrackingstate(event, &quat);
+			nsvr_device_event_settrackingstate(event, id.c_str(), &quat);
 			nsvr_device_event_raise(m_core, event);
 
 			nsvr_device_event_destroy(&event);

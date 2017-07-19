@@ -25,7 +25,6 @@ HardlightDevice::HardlightDevice()
 			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc), newNode))
 		);
 
-		nsvr_node_create()
 	}
 }
 
@@ -42,21 +41,30 @@ void HardlightDevice::RegisterDrivers(nsvr_core_ctx* ctx)
 		driver->handle(type, event);
 	};
 
-	nsvr_register_request_hook(ctx, 
+	nsvr_register_request_handler(ctx, 
 		nsvr_request_type_brief_haptic, 
 
 		cevent_handler
 	);
 
-	nsvr_register_request_hook(ctx,
+	nsvr_register_request_handler(ctx,
 		nsvr_request_type_lasting_haptic, 
 		cevent_handler
 	);
 
-	nsvr_register_request_hook(ctx,
+	nsvr_register_request_handler(ctx,
 		nsvr_request_type_playback_statechange, 
 		cevent_handler
 	);
+
+
+	nsvr_register_preset_handler(ctx, [](nsvr_preset_request* req, void* ud) {
+		HardlightDevice* hd = static_cast<HardlightDevice*>(ud);
+		nsvr_preset_family fam;
+		nsvr_preset_request_getfamily(req, &fam);
+
+		std::cout << "Got preset request: family is " << fam << "!\n";
+	}, this);
 	
 }
 

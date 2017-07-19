@@ -9,10 +9,10 @@ namespace nsvr {
 		public:
 			virtual ~device_event() {}
 			device_event(nsvr_device_event_type type);
+			static device_event* make(nsvr_device_event_type type);
 			nsvr_device_event_type type;
 			uint32_t device_id;
-			static device_event* make(nsvr_device_event_type type);
-			uint32_t getId();
+			
 		};
 
 
@@ -24,6 +24,7 @@ namespace nsvr {
 		class tracking_update : public device_event {
 		public:
 			tracking_update();
+			std::string region;
 			NSVR_Core_Quaternion quat;
 		};
 		

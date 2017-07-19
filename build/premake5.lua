@@ -143,7 +143,7 @@ project "HardlightMkIII"
 
 	--shared_comms_incl_dir = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/src/Driver/SharedCommunication"
 	boost_incl_dir = "D:/Libraries/boost/boost_1_61_0"
-	protobuf_def_incl_dir = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/src/Driver/protobuff_defs"
+	--protobuf_def_incl_dir = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/src/Driver/protobuff_defs"
 	disablewarnings {"4800"}
 
 
@@ -236,6 +236,105 @@ project "HardlightMkIII"
 		links { "Driver"}
 		libdirs {
 			nsvr_core_win32_dir_release
+		}
+
+	filter {"system:Windows"}
+		defines {"_WINDOWS", "_USRDLL"}
+
+	filter {"system:Windows", "configurations:Debug"}
+		buildoptions {"-D_SCL_SECURE_NO_WARNINGS"}
+
+
+
+
+
+
+
+project "OpenVR"
+	targetdir "bin/Plugins/%{cfg.buildcfg}/%{cfg.platform}"
+	targetname "OpenVRPlugin"
+	
+
+	
+	disablewarnings {"4800"}
+
+
+	includedirs {
+		"../src/plugins/openvr",
+		"C:/Users/NullSpace Team/Documents/openvr/headers",
+		"../src/Driver/include"
+			}
+
+	
+	flags {
+		"MultiProcessorCompile",
+		"C++11"
+
+	}
+
+	files {
+		"../src/plugins/openvr/**.cpp",
+		"../src/plugins/openvr/**.h",
+		"../src/Driver/include/**.h"
+	}
+
+	
+
+	pchheader "stdafx.h"
+	pchsource "../src/plugins/openvr/stdafx.cpp"
+
+	--nsvr_core_win32_dir_debug = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/build/bin/Debug/Win32"
+	--nsvr_core_win32_dir_release = "C:/Users/NullSpace Team/Documents/NS_Unreal_SDK/build/bin/Release/Win32"
+
+	nsvr_core_win32_dir_debug = "../build/bin/Debug/Win32"
+	nsvr_core_win32_dir_release = "../build/bin/Release/Win32"
+
+	openvr_win32_dir = "C:/Users/NullSpace Team/Documents/openvr/lib/win32"
+
+	filter {"files:**.pb.cc"}
+		flags {'NoPCH'}
+	
+
+
+	filter {"platforms:Win32 or platforms:Win64"}
+		kind "SharedLib"
+
+	filter {"platforms:UnitTestWin32"}
+		kind "ConsoleApp"
+
+
+
+	filter "platforms:*Win32*" 
+		system "Windows"
+		architecture "x86"
+
+		defines {"WIN32", "_WIN32_WINNT=0x0A00"}
+		
+	filter "platforms:Win32" 
+	postbuildcommands {
+			"{COPY} %{cfg.targetdir}/OpenVRPlugin.dll bin/Debug/UnitTestWin32",		
+			-- see note at top [0]
+			"{COPY} %{cfg.targetdir}/OpenVRPlugin.dll ../build/"		
+
+
+		}
+	filter "configurations:Debug"
+		defines {"DEBUG", "_DEBUG"}
+		symbols "On"
+		optimize "Off"
+		links {"Driver", "openvr_api"}
+		libdirs {
+			nsvr_core_win32_dir_debug,
+			openvr_win32_dir
+		}
+
+	filter "configurations:Release"
+		defines {"NDEBUG"}
+		optimize "On" 
+		links { "Driver", "openvr_api"}
+		libdirs {
+			nsvr_core_win32_dir_release,
+			openvr_win32_dir
 		}
 
 	filter {"system:Windows"}

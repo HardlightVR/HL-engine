@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Driver">
+      <UniqueIdentifier>{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Driver\include">
+      <UniqueIdentifier>{A4187720-90E6-6A26-797A-DB4C65E7468B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Driver\include\events">
+      <UniqueIdentifier>{2838D3B0-94A4-8EAB-5D98-2609C9C3B013}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins">
+      <UniqueIdentifier>{07D1A6B5-73B0-2551-7CC8-B027E8268CB2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\openvr">
+      <UniqueIdentifier>{B0468080-9C14-7486-85A8-E4AC711550EB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Driver\include\PluginAPI.h">
+      <Filter>Driver\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\AudioEvent.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h">
+      <Filter>Driver\include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h">
+      <Filter>plugins\openvr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\openvr\stdafx.h">
+      <Filter>plugins\openvr</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\plugins\openvr\ExportedAPI.cpp">
+      <Filter>plugins\openvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\openvr\OpenVRWrapper.cpp">
+      <Filter>plugins\openvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\openvr\main.cpp">
+      <Filter>plugins\openvr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\openvr\stdafx.cpp">
+      <Filter>plugins\openvr</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
