@@ -73,16 +73,16 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* ceven
 }
 
 
-NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getid(nsvr_request * cevent, uint64_t * outId)
-{
-	*outId = AS_TYPE(nsvr::cevents::PlaybackStateChange, cevent)->parent_id;
-	return NSVR_SUCCESS;
-}
-
-NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getcommand(nsvr_request* cevent, nsvr_playback_statechange_command* outCommand) {
-	*outCommand = AS_TYPE(nsvr::cevents::PlaybackStateChange, cevent)->command;
-	return NSVR_SUCCESS;
-}
+//NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getid(nsvr_request * cevent, uint64_t * outId)
+//{
+//	*outId = AS_TYPE(nsvr::cevents::PlaybackStateChange, cevent)->parent_id;
+//	return NSVR_SUCCESS;
+//}
+//
+//NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getcommand(nsvr_request* cevent, nsvr_playback_statechange_command* outCommand) {
+//	*outCommand = AS_TYPE(nsvr::cevents::PlaybackStateChange, cevent)->command;
+//	return NSVR_SUCCESS;
+//}
 NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion)
 {
 	auto lasting = AS_TYPE(nsvr::cevents::LastingHaptic, cevent);
@@ -122,38 +122,41 @@ NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request * req,
 	return NSVR_SUCCESS;
 }
 
-NSVR_CORE_RETURN(int) nsvr_register_preset_handler(nsvr_core_ctx * core, nsvr_preset_handler handler, void * client_data)
+struct nsvr_playback_handle {
+	uint64_t id;
+};
+NSVR_CORE_RETURN(int) nsvr_playback_handle_getid(nsvr_playback_handle * handle, uint64_t * outId)
+{
+	*outId = handle->id;
+	return NSVR_SUCCESS;
+}
+
+
+
+NSVR_CORE_RETURN(int) nsvr_register_preset_handler(nsvr_core * core, nsvr_preset_handler handler, void * client_data)
 {
 	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
 	lowlevel.RegisterPreset(handler, client_data);
 	return 1;
 }
 
-NSVR_CORE_RETURN(int) nsvr_register_buffered_handler(nsvr_core_ctx * core, nsvr_buffered_handler handler, void * client_data)
+NSVR_CORE_RETURN(int) nsvr_register_buffered_handler(nsvr_core * core, nsvr_buffered_handler handler, void * client_data)
 {
 	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
 	lowlevel.RegisterBuffered(handler, client_data);
 	return 1;
 }
 
-NSVR_CORE_RETURN(int) nsvr_register_direct_handler(nsvr_core_ctx * core, nsvr_direct_handler handler, void * client_data)
+
+
+NSVR_CORE_RETURN(int) nsvr_register_request_handler(nsvr_core* core, nsvr_request_type type, nsvr_basic_request_handler handler, void* client_data)
 {
-	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
-	lowlevel.RegisterDirect(handler, client_data);
-	return 1;
-
-}
-
-NSVR_CORE_RETURN(int) nsvr_register_request_handler(nsvr_core_ctx* core, nsvr_request_type eventType,nsvr_request_callback cb){
-	RETURN_IF_NULL(core);
-
-
 	HardwareDataModel* model = AS_TYPE(HardwareDataModel, core);
 	auto& coordinator = model->GetParentCoordinator();
-	coordinator.Register(eventType, cb.handler, 1, cb.user_data);
-	return 1;
-
+	coordinator.Register(type, handler, 1, client_data);
+	return NSVR_SUCCESS;
 }
+
 
 NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, uint32_t device_id)
 {
@@ -163,7 +166,7 @@ NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, ui
 	return 1;
 }
 
-NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, NSVR_Core_Quaternion * quat)
+NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, nsvr_quaternion * quat)
 {
 	RETURN_IF_NULL(event);
 	AS_TYPE(nsvr::pevents::tracking_update, event)->region = std::string(region);
@@ -172,7 +175,7 @@ NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * eve
 }
 
 
-NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core_ctx* core, nsvr_device_event* event) {
+NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event* event) {
 	RETURN_IF_NULL(core);
 	RETURN_IF_NULL(event);
 	
@@ -190,7 +193,7 @@ NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event) {
 
 }
 
-NSVR_CORE_RETURN(int) nsvr_querystate_register(nsvr_querystate * querystate, nsvr_core_ctx * core)
+NSVR_CORE_RETURN(int) nsvr_querystate_register(nsvr_querystate * querystate, nsvr_core * core)
 {
 	HardwareDataModel* model = AS_TYPE(HardwareDataModel, core);
 	//todo: implement

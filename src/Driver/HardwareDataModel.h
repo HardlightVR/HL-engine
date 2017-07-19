@@ -24,7 +24,7 @@ public:
 
 private:
 	
-	std::unordered_map<std::string, NSVR_Core_Quaternion> m_trackingData;
+	std::unordered_map<std::string, nsvr_quaternion> m_trackingData;
 	LowLevelInterface m_lowlevel;
 	HardwareCoordinator& m_parent;
 	bool m_connected;

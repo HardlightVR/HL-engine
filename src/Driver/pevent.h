@@ -25,7 +25,7 @@ namespace nsvr {
 		public:
 			tracking_update();
 			std::string region;
-			NSVR_Core_Quaternion quat;
+			nsvr_quaternion quat;
 		};
 		
 

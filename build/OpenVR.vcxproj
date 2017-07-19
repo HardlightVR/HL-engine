@@ -281,11 +281,6 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
-    <ClInclude Include="..\src\Driver\include\events\AudioEvent.h" />
-    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h" />
-    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h" />
-    <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h" />
-    <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h" />
     <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h" />
     <ClInclude Include="..\src\plugins\openvr\stdafx.h" />
   </ItemGroup>

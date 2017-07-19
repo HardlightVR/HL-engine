@@ -39,17 +39,17 @@ struct LastingHaptic :public request_base {
 
 };
 
-
-struct PlaybackStateChange : public request_base{
-	PlaybackStateChange(uint64_t parent_id, nsvr_playback_statechange_command command);
-
-	uint64_t parent_id;
-	nsvr_playback_statechange_command command;
-	nsvr_request_type getType() const override;
-
-	static const nsvr_request_type request_type;
-
-};
+//
+//struct PlaybackStateChange : public request_base{
+//	PlaybackStateChange(uint64_t parent_id, nsvr_playback_statechange_command command);
+//
+//	uint64_t parent_id;
+//	nsvr_playback_statechange_command command;
+//	nsvr_request_type getType() const override;
+//
+//	static const nsvr_request_type request_type;
+//
+//};
 
 }
 }

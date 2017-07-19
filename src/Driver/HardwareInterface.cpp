@@ -62,9 +62,9 @@ void HardwareInterface::generateLowLevelSimpleHapticEvents(const NullSpaceIPC::H
 void HardwareInterface::generatePlaybackCommands(const NullSpaceIPC::HighLevelEvent& event)
 {
 	const auto& playback_event = event.playback_event();
-	auto command = static_cast<nsvr_playback_statechange_command>(playback_event.command());
-	m_coordinator.dispatch<nsvr::cevents::PlaybackStateChange>(event.parent_id(), command);
-
+//	auto command = static_cast<nsvr_playback_statechange_command>(playback_event.command());
+//	m_coordinator.dispatch<nsvr::cevents::PlaybackStateChange>(event.parent_id(), command);
+	//todo: REPLACE
 }
 
 void HardwareInterface::generateRealtimeCommands(const NullSpaceIPC::HighLevelEvent& event)

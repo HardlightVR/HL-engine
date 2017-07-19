@@ -13,7 +13,7 @@ HardwareCoordinator::~HardwareCoordinator()
 {
 }
 
-void HardwareCoordinator::Register(nsvr_request_type type, nsvr_request_handler handler, unsigned int targetVersion, void * user_data)
+void HardwareCoordinator::Register(nsvr_request_type type, nsvr_basic_request_handler handler, unsigned int targetVersion, void * user_data)
 {
 	user_event_handler eventHandler;
 	eventHandler.invoke = handler;
@@ -60,7 +60,7 @@ HardwareDataModel & HardwareCoordinator::Get(const std::string & name)
 	
 }
 
-void HardwareCoordinator::updateTrackingForMessenger(const std::string & region, NSVR_Core_Quaternion quat)
+void HardwareCoordinator::updateTrackingForMessenger(const std::string & region, nsvr_quaternion quat)
 {
 //	std::cout << "Got tracking data for region " << region << '\n';
 	NullSpace::SharedMemory::TrackingUpdate t = {};

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -13,9 +13,6 @@
     <Filter Include="include">
       <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\events">
-      <UniqueIdentifier>{6D7B514B-5949-4551-42DD-B5772E4A21B6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="protobuff_defs">
       <UniqueIdentifier>{BD9239EB-A960-2DF1-92F4-9D177E610956}</UniqueIdentifier>
     </Filter>
@@ -26,6 +23,7 @@
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\CurveEngine.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
+    <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
     <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
@@ -50,6 +48,7 @@
     <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\Driver\Locator.h" />
     <ClInclude Include="..\src\Driver\LoggingUtils.h" />
+    <ClInclude Include="..\src\Driver\LowLevelInterface.h" />
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
     <ClInclude Include="..\src\Driver\NSDriverApi.h" />
@@ -118,21 +117,7 @@
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\AudioEvent.h">
-      <Filter>include\events</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h">
-      <Filter>include\events</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h">
-      <Filter>include\events</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h">
-      <Filter>include\events</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h">
-      <Filter>include\events</Filter>
-    </ClInclude>
+    <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
       <Filter>protobuff_defs</Filter>
@@ -151,15 +136,13 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
-    <ClInclude Include="..\src\Driver\LowLevelInterface.h" />
-    <ClInclude Include="..\src\Driver\nsvr_preset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\CurveEngine.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
+    <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
@@ -172,6 +155,7 @@
     </ClCompile>
     <ClCompile Include="..\src\Driver\Locator.cpp" />
     <ClCompile Include="..\src\Driver\LoggingUtils.cpp" />
+    <ClCompile Include="..\src\Driver\LowLevelInterface.cpp" />
     <ClCompile Include="..\src\Driver\MessengerLogger.cpp" />
     <ClCompile Include="..\src\Driver\MyTestLog.cpp" />
     <ClCompile Include="..\src\Driver\NSDriverApi.cpp" />
@@ -213,7 +197,5 @@
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
-    <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
-    <ClCompile Include="..\src\Driver\LowLevelInterface.cpp" />
   </ItemGroup>
 </Project>

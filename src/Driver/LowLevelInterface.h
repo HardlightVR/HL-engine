@@ -19,15 +19,14 @@ struct callback {
 class HardwareCoordinator;
 class LowLevelInterface {
 public:
-	struct direct {};
-	struct preset {};
+
 //way too strong coupling here..
 	LowLevelInterface(HardwareCoordinator& coordinator);
-	void RegisterDirect(nsvr_direct_handler handler, void* user_data);
+	//void RegisterDirect(nsvr_direct_handler handler, void* user_data);
 	void RegisterBuffered(nsvr_buffered_handler handler, void* user_data);
 	void RegisterPreset(nsvr_preset_handler handler, void* user_data);
 
-	void Direct(nsvr_direct_request* request);
+	//void Direct(nsvr_direct_request* request);
 
 	void Preset(nsvr_preset_request* request);
 
@@ -36,7 +35,7 @@ public:
 private:
 	
 	HardwareCoordinator& coordinator;
-	callback<nsvr_direct_handler, nsvr_direct_request> direct_handler;
+	//callback<nsvr_direct_handler, nsvr_direct_request> direct_handler;
 	callback<nsvr_preset_handler, nsvr_preset_request> preset_handler;
 	callback<nsvr_buffered_handler, nsvr_buffered_request> buffered_handler;
 

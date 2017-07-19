@@ -325,7 +325,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
     <ClInclude Include="..\src\Driver\NSDriverApi.h" />
-    <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
@@ -351,11 +350,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\events_impl\PlaybackEvent.h" />
     <ClInclude Include="..\src\Driver\events_impl\RealtimeEvent.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
-    <ClInclude Include="..\src\Driver\include\events\AudioEvent.h" />
-    <ClInclude Include="..\src\Driver\include\events\BriefTaxel.h" />
-    <ClInclude Include="..\src\Driver\include\events\LastingTaxel.h" />
-    <ClInclude Include="..\src\Driver\include\events\PlaybackEvent.h" />
-    <ClInclude Include="..\src\Driver\include\events\RealtimeEvent.h" />
+    <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h" />

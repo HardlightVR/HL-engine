@@ -10,7 +10,7 @@ public:
 	HardwareCoordinator(DriverMessenger& messenger);
 	~HardwareCoordinator();
 
-	void Register(nsvr_request_type type, nsvr_request_handler handler, unsigned int, void* user_data);
+	void Register(nsvr_request_type type, nsvr_basic_request_handler handler, unsigned int, void* user_data);
 	HardwareDataModel& Get(const std::string& name);
 
 	//template<class TArgs>
@@ -25,12 +25,12 @@ private:
 	std::unordered_map<std::string, HardwareDataModel> m_hardware;
 
 	struct user_event_handler {
-		nsvr_request_handler invoke;
+		nsvr_basic_request_handler invoke;
 		void* user_data;
 		unsigned int target_version;
 	};
 	std::unordered_map<nsvr_request_type, std::vector<user_event_handler>> m_handlers;
-	void updateTrackingForMessenger(const std::string& region, NSVR_Core_Quaternion quat);
+	void updateTrackingForMessenger(const std::string& region, nsvr_quaternion quat);
 
 };
 
@@ -51,7 +51,7 @@ inline void HardwareCoordinator::dispatch(TArgs && ...args)
 		TEvent args2(std::forward<TArgs>(args)...);
 
 		nsvr_request* r = reinterpret_cast<nsvr_request*>(&args2);
-		handler.invoke(r, TEvent::request_type, handler.user_data);
+		handler.invoke(r, handler.user_data);
 	
 	}
 }
