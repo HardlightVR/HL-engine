@@ -172,16 +172,14 @@ extern "C" {
 	typedef struct nsvr_buffered_request nsvr_buffered_request;
 	typedef struct nsvr_preset_request nsvr_preset_request;
 
-
+	/** LOWLEVEL HAPTIC DEVICE API **/
 	typedef enum nsvr_preset_family {
 		nsvr_preset_family_unknown = 0,
 		nsvr_preset_family_bump = 1,
 		nsvr_preset_family_click = 2
 	} nsvr_preset_family;
 
-	NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request* req, nsvr_preset_family* outFamily);
-	NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request* req, float* outStrength);
-
+	
 	typedef void(*nsvr_direct_handler)(nsvr_direct_request* req, void* client_data);
 	typedef void(*nsvr_buffered_handler)(nsvr_buffered_request* req, void* client_data);
 	typedef void(*nsvr_preset_handler)(nsvr_preset_request* req, void* client_data);
@@ -190,6 +188,19 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_register_preset_handler(nsvr_core_ctx* core, nsvr_preset_handler handler, void* client_data);
 	NSVR_CORE_RETURN(int) nsvr_register_buffered_handler(nsvr_core_ctx* core, nsvr_buffered_handler handler, void* client_data);
 	NSVR_CORE_RETURN(int) nsvr_register_direct_handler(nsvr_core_ctx* core, nsvr_direct_handler, void* client_data);
+
+	NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request* req, nsvr_preset_family* outFamily);
+	NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request* req, float* outStrength);
+	/** END LOWLEVEL API **/
+
+	/** BEGIN HIGHLEVEL API **/
+	struct nsvr_playback_system_fntable {
+
+	};
+	NSVR_CORE_RETURN(int) nsvr_register_playback_system()
+	/** END HIGHLEVEL API/
+
+
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, uint32_t device_id);
 
