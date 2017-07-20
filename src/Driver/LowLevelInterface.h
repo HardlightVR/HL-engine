@@ -10,7 +10,7 @@ struct callback {
 	
 	callback(T handler, void* ud);
 	callback();
-	void invoke(Argument* argument);
+	void invoke(Argument argument);
 	bool initialized() { return handler != nullptr; }
 };
 
@@ -19,20 +19,20 @@ struct callback {
 class HardwareCoordinator;
 
 struct buffered_api {
-	callback<nsvr_plugin_buffer_api::nsvr_buffered_handler, nsvr_buffered_request> submit_buffer;
+	callback<nsvr_plugin_buffer_api::nsvr_buffered_handler, nsvr_buffered_request*> submit_buffer;
 	bool initialized() { return submit_buffer.initialized(); }
 };
 
 struct preset_api {
-	callback<nsvr_plugin_preset_api::nsvr_preset_handler, nsvr_preset_request> submit_preset;
+	callback<nsvr_plugin_preset_api::nsvr_preset_handler, nsvr_preset_request*> submit_preset;
 	bool initialized() { return submit_preset.initialized(); }
 };
 
 
 struct playback_api {
-	callback<nsvr_plugin_playback_api::nsvr_playback_cancel, nsvr_playback_handle> submit_cancel;
-	callback<nsvr_plugin_playback_api::nsvr_playback_pause, nsvr_playback_handle> submit_pause;
-	callback<nsvr_plugin_playback_api::nsvr_playback_unpause, nsvr_playback_handle> submit_unpause;
+	callback<nsvr_plugin_playback_api::nsvr_playback_cancel, uint64_t> submit_cancel;
+	callback<nsvr_plugin_playback_api::nsvr_playback_pause, uint64_t> submit_pause;
+	callback<nsvr_plugin_playback_api::nsvr_playback_unpause, uint64_t> submit_unpause;
 	bool initialized() { return submit_cancel.initialized() && submit_pause.initialized() && submit_unpause.initialized(); }
 };
 
@@ -46,7 +46,7 @@ public:
 
 	void Preset(nsvr_preset_request* request);
 	void Buffered(nsvr_buffered_request* request);
-	void Playback(uint32_t command, nsvr_playback_handle* handle);
+	void Playback(uint32_t command, uint64_t handle);
 
 
 	void Register(nsvr_plugin_buffer_api* api);
@@ -77,7 +77,7 @@ inline callback<T, Argument>::callback() : handler(nullptr), user_data(nullptr)
 }
 
 template<typename T, typename Argument>
-inline void callback<T, Argument>::invoke(Argument * argument)
+inline void callback<T, Argument>::invoke(Argument  argument)
 {
 	handler(argument, user_data);
 }

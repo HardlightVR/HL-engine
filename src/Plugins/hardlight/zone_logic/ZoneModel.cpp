@@ -6,7 +6,14 @@ void ZoneModel::Put(LiveBasicHapticEvent event) {
 }
 
 void ZoneModel::Remove(ParentId id) {
-	incomingCommands.push(UserCommand(id, UserCommand::Command::Remove));
+	//incomingCommands.push(UserCommand(id, UserCommand::Command::Remove));
+
+
+	//Had to actually remove the effects at this time to satisfy constraint that nsvr_playback_handle is only
+	//valid from the time that an effect is received to the time the cancel command is 
+	std::lock_guard<std::mutex> guard(eventsLock);
+	removeAllChildren(id);
+	
 }
 
 void ZoneModel::Play(ParentId id) {
@@ -27,6 +34,8 @@ const ZoneModel::PlayingContainer& ZoneModel::PlayingEvents() {
 
 
 CommandBuffer ZoneModel::Update(float dt) {
+
+	std::lock_guard<std::mutex> guard(eventsLock);
 
 	updateExistingEvents(dt);
 	removeExpiredEvents();
@@ -143,7 +152,8 @@ ZoneModel::ZoneModel(Location area) :
 	playingEvents(),
 	stateChanger(area),
 	incomingEvents(512),
-	incomingCommands(512)
+	incomingCommands(512),
+	eventsLock()
 {
 
 }
@@ -162,8 +172,8 @@ void copy_then_remove_if(std::vector<T>& from, std::vector<T>& to, Predicate pre
 
 
 struct is_child_of {
-	ParentId id;
-	is_child_of(ParentId id) : id(id) {}
+	const ParentId& id;
+	is_child_of(const ParentId& id) : id(id) {}
 	bool operator()(const LiveBasicHapticEvent& e) {
 		return e.isChildOf(id);
 	}

@@ -16,17 +16,15 @@ public:
 
 	void handle(nsvr_request* event);
 
-	void Pause(nsvr_playback_handle* handle);
-	void Cancel(nsvr_playback_handle* handle);
-	void Unpause(nsvr_playback_handle* handle);
+	void Pause(ParentId  handle);
+	void Cancel(ParentId  handle);
+	void Unpause(ParentId  handle);
 private:
 
 	std::unordered_map<std::string, std::unique_ptr<Hardlight_Mk3_ZoneDriver>> m_drivers;
 	template<typename T>
 	void execute_region_specific(void* regioned_event);
-	void executeBrief(nsvr_request * event);
 	void executeLasting(nsvr_request * event);
-	void executePlaybackChange(nsvr_request * event);
 };
 
 template<typename T>

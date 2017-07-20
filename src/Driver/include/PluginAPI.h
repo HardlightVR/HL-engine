@@ -196,9 +196,9 @@ extern "C" {
 	NSVR_CORE_RETURN(bool) nsvr_playback_handle_equal(nsvr_playback_handle* lhs, nsvr_playback_handle* rhs);
 	
 	typedef struct nsvr_plugin_playback_api {
-		typedef void(*nsvr_playback_pause)(nsvr_playback_handle* handle, void* client_data);
-		typedef void(*nsvr_playback_unpause)(nsvr_playback_handle* handle, void* client_data);
-		typedef void(*nsvr_playback_cancel)(nsvr_playback_handle* handle, void* client_data);
+		typedef void(*nsvr_playback_pause)(uint64_t request_id, void* client_data);
+		typedef void(*nsvr_playback_unpause)(uint64_t request_id, void* client_data);
+		typedef void(*nsvr_playback_cancel)(uint64_t request_id, void* client_data);
 
 		nsvr_playback_pause pause_handler;
 		nsvr_playback_unpause unpause_handler;
@@ -207,7 +207,7 @@ extern "C" {
 	} nsvr_plugin_playback_api;
 
 	NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core* core, nsvr_plugin_playback_api* api);
-	NSVR_CORE_RETURN(int) nsvr_request_gethandle(nsvr_request* request, nsvr_playback_handle** handle);
+	NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request* request, uint64_t* request_id);
 
 
 

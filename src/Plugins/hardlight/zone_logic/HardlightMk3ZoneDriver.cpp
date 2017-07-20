@@ -24,14 +24,6 @@ CommandBuffer Hardlight_Mk3_ZoneDriver::update(float dt)
 
 
 
-	if (auto event = m_retainedModel.GetCurrentlyPlayingEvent()) {
-		auto realEvent = *event;
-		nsvr_querystate_updatenode(m_querynode, true);
-	}
-	else {
-		nsvr_querystate_updatenode(m_querynode, false);
-	}
-
 	return result;
 
 }
@@ -105,22 +97,16 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 }
 
 
-void Hardlight_Mk3_ZoneDriver::consumeBrief(BasicHapticEventData data)
-{
-	data.area = static_cast<uint32_t>(m_area);
-	m_retainedModel.Put(LiveBasicHapticEvent(std::numeric_limits<ParentId>::max(), m_gen(), std::move(data)));
-	transitionInto(Mode::Retained);
-}
 
 
 
-void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data, nsvr_playback_handle* id) {
+void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data,ParentId id) {
 	data.area = static_cast<uint32_t>(m_area);
 	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data)));
 	transitionInto(Mode::Retained);
 }
 
-void Hardlight_Mk3_ZoneDriver::controlEffect(nsvr_playback_handle* handle, int command)
+void Hardlight_Mk3_ZoneDriver::controlEffect(ParentId handle, int command)
 {
 
 	switch (command) {

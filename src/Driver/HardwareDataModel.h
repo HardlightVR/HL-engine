@@ -21,7 +21,7 @@ public:
 
 	LowLevelInterface& LowLevel();
 
-	void Playback(uint32_t command, nsvr_playback_handle* handle);
+	void Playback(uint32_t command, uint64_t handle);
 
 private:
 	

@@ -21,7 +21,7 @@ public:
 
 
 
-	void HardwareCoordinator::Playback(uint32_t command, nsvr_playback_handle* existingHandle);
+	void HardwareCoordinator::Playback(uint32_t command,uint64_t existingHandle);
 
 private:
 	

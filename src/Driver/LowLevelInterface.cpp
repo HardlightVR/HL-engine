@@ -21,7 +21,7 @@ void LowLevelInterface::Buffered(nsvr_buffered_request * request)
 	}
 }
 
-void LowLevelInterface::Playback(uint32_t command, nsvr_playback_handle* handle)
+void LowLevelInterface::Playback(uint32_t command, uint64_t handle)
 {
 	if (!playback_impl.initialized()) { return; }
 	

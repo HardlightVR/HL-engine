@@ -4,7 +4,7 @@
 
 
 LiveBasicHapticEvent::LiveBasicHapticEvent() :
-	parentId(),
+	handle(0),
 	uniqueId(),
 	currentTime(0),
 	isPlaying(false),
@@ -15,8 +15,8 @@ LiveBasicHapticEvent::LiveBasicHapticEvent() :
 	}
 }
 
-LiveBasicHapticEvent::LiveBasicHapticEvent(ParentId  parentId, boost::uuids::uuid uniqueId, BasicHapticEventData data) :
-	parentId(parentId),
+LiveBasicHapticEvent::LiveBasicHapticEvent(ParentId  handle, boost::uuids::uuid uniqueId, BasicHapticEventData data) :
+	handle(handle),
 	uniqueId(uniqueId),
 	currentTime(0),
 	isPlaying(true),
@@ -60,9 +60,10 @@ bool LiveBasicHapticEvent::isOneshot() const
 	return eventData.duration == 0;
 }
 
-bool LiveBasicHapticEvent::isChildOf(ParentId parentId) const
+bool LiveBasicHapticEvent::isChildOf(const ParentId& handle) const
 {
-	return nsvr_playback_handle_equal(this->parentId, parentId);
+	return this->handle == handle;
 	//return this->parentId == parentId;
 }
+
 

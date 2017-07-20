@@ -19,8 +19,8 @@ HardwareCoordinator::HardwareCoordinator(DriverMessenger& messenger, EventDispat
 		const auto& playback_event = event.playback_event();
 
 		nsvr_playback_handle* existingPtr = &m_activeEffects.at(event.parent_id());
-
-		this->Playback(playback_event.command(), existingPtr);
+		assert(existingPtr != nullptr);
+		this->Playback(playback_event.command(), existingPtr->id);
 		
 		if (playback_event.command() == 3) { //cancel
 			//we now invalidate the playback_handle ptr by erasing from here
@@ -123,7 +123,7 @@ void HardwareCoordinator::Dispatch(const NullSpaceIPC::SimpleHaptic& event, nsvr
 	
 }
 
-void HardwareCoordinator::Playback(uint32_t command, nsvr_playback_handle* existingHandle)
+void HardwareCoordinator::Playback(uint32_t command, uint64_t existingHandle)
 {
 	for (auto& device : m_hardware) {
 		device.second.Playback(command, existingHandle);

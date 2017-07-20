@@ -43,13 +43,13 @@ void HardlightDevice::RegisterDrivers(nsvr_core* ctx)
 
 	nsvr_plugin_playback_api playback_api;
 	playback_api.client_data = this;
-	playback_api.pause_handler = [](nsvr_playback_handle* handle, void* client_data) {
+	playback_api.pause_handler = [](uint64_t handle, void* client_data) {
 		AS_TYPE(HardlightDevice, client_data)->Pause(handle);
 	};
-	playback_api.cancel_handler = [](nsvr_playback_handle* handle, void* client_data) {
+	playback_api.cancel_handler = [](uint64_t handle, void* client_data) {
 		AS_TYPE(HardlightDevice, client_data)->Cancel(handle);
 	};
-	playback_api.unpause_handler = [](nsvr_playback_handle* handle, void* client_data) {
+	playback_api.unpause_handler = [](uint64_t handle, void* client_data) {
 		AS_TYPE(HardlightDevice, client_data)->Unpause(handle);
 	};
 
@@ -73,43 +73,27 @@ void HardlightDevice::handle( nsvr_request * event)
 
 }
 
-void HardlightDevice::Pause(nsvr_playback_handle * handle)
+void HardlightDevice::Pause(ParentId handle)
 {
 	for (auto& driver : m_drivers) {
 		driver.second->controlEffect(handle, 1);
 	}
 }
 
-void HardlightDevice::Cancel(nsvr_playback_handle * handle)
+void HardlightDevice::Cancel(ParentId  handle)
 {
 	for (auto& driver : m_drivers) {
 		driver.second->controlEffect(handle, 3);
 	}
 }
 
-void HardlightDevice::Unpause(nsvr_playback_handle * handle)
+void HardlightDevice::Unpause(ParentId  handle)
 {
 	for (auto& driver : m_drivers) {
 		driver.second->controlEffect(handle, 2);
 	}
 }
 
-void HardlightDevice::executeBrief(nsvr_request * event)
-{
-	
-
-	/*BasicHapticEventData data = {};
-	data.duration = 0.0f;
-	nsvr_request_briefhaptic_geteffect(event, &data.effect);
-	nsvr_request_briefhaptic_getstrength(event, &data.strength);
-
-	char region[32];
-	nsvr_request_briefhaptic_getregion(event, region);
-
-	if (m_drivers.find(region) != m_drivers.end()) {
-		m_drivers.at(region)->consumeBrief(std::move(data));
-	}*/
-}
 
 void HardlightDevice::executeLasting(nsvr_request * event)
 {
@@ -117,12 +101,13 @@ void HardlightDevice::executeLasting(nsvr_request * event)
 	nsvr_request_lastinghaptic_getduration(event, &data.duration);
 	nsvr_request_lastinghaptic_geteffect(event, &data.effect);
 	nsvr_request_lastinghaptic_getstrength(event, &data.strength);
-	nsvr_playback_handle* handle;
-	nsvr_request_gethandle(event, &handle);
+	
 
 	char region[32];
 	nsvr_request_lastinghaptic_getregion(event, region);
 
+	ParentId handle;
+	nsvr_request_gethandle(event, &handle);
 	if (m_drivers.find(region) != m_drivers.end()) {
 		m_drivers.at(region)->consumeLasting(std::move(data), handle);
 	}
@@ -159,7 +144,7 @@ CommandBuffer HardlightDevice::GenerateHardwareCommands(float dt)
 //
 
 
-ZoneModel::UserCommand::UserCommand(): id(), command(Command::Unknown)
+ZoneModel::UserCommand::UserCommand(): id(0), command(Command::Unknown)
 {
 }
 

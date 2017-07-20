@@ -90,15 +90,15 @@ bool PluginInstance::Link()
 
 	std::cout << "Loaded " << m_fileName << ".\n";
 
-	if (!tryLoad(m_lib, "NSVR_Init", m_creator)) {
+	if (!tryLoad(m_lib, "NSVR_Plugin_Init", m_creator)) {
 		return false;
 	}
 
-	if (!tryLoad(m_lib, "NSVR_Free", m_destructor)) {
+	if (!tryLoad(m_lib, "NSVR_Plugin_Free", m_destructor)) {
 		return false;
 	}
 	
-	if (!tryLoad(m_lib, "NSVR_Configure", m_configure)) {
+	if (!tryLoad(m_lib, "NSVR_Plugin_Configure", m_configure)) {
 		return false;
 	}
 

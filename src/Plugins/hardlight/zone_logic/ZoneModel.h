@@ -6,6 +6,7 @@
 #include "MotorStateChanger.h"
 #include "HardwareCommands.h"
 #include <vector>
+#include <mutex>
 class ZoneModel {
 public:
 
@@ -56,4 +57,6 @@ private:
 	void removeExpiredEvents();
 	void handleNewCommands();
 	void handleNewEvents();
+
+	std::mutex eventsLock;
 };

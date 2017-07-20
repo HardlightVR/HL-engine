@@ -20,9 +20,8 @@ public:
 
 	//boost::optional<HapticDisplayInfo> QueryCurrentlyPlaying();
 	
-	void consumeBrief(BasicHapticEventData data);
-	void consumeLasting(BasicHapticEventData data, nsvr_playback_handle*);
-	void controlEffect(nsvr_playback_handle* handle, int command);
+	void consumeLasting(BasicHapticEventData data, ParentId);
+	void controlEffect(ParentId handle, int command);
 	//void realtime(uint16_t volume);
 private:
 	::Location m_area;
@@ -34,7 +33,6 @@ private:
 	enum class Mode {Retained, Realtime};
 	void transitionInto(Mode mode);
 	Mode m_currentMode;
-	ParentId m_parentId;
 	std::mutex m_mutex;
 	CommandBuffer m_commands;
 	nsvr_node* m_querynode;

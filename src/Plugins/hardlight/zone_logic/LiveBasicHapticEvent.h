@@ -3,7 +3,10 @@
 #include <stdint.h>
 #include "PluginAPI.h"
 
-using ParentId = nsvr_playback_handle*;
+
+
+
+using ParentId = uint64_t;
 
 class BasicHapticEventData {
 public:
@@ -16,16 +19,17 @@ public:
 class LiveBasicHapticEvent {
 public:
 	LiveBasicHapticEvent();
-	LiveBasicHapticEvent(ParentId parentId, boost::uuids::uuid uniqueId, BasicHapticEventData data);
+	LiveBasicHapticEvent(ParentId handle, boost::uuids::uuid uniqueId, BasicHapticEventData data);
 	const BasicHapticEventData& Data() const;
 	bool operator==(const LiveBasicHapticEvent& other) const;
 	void update(float dt);
 	bool isFinished() const;
 	bool isContinuous() const;
 	bool isOneshot() const;
-	bool isChildOf(ParentId parentId) const;
+	bool isChildOf(const ParentId& handle) const;
+
 private:
-	ParentId parentId;
+	ParentId handle;
 	boost::uuids::uuid uniqueId;
 	float currentTime;
 	bool isPlaying;

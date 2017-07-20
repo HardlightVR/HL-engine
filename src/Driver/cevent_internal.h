@@ -11,7 +11,7 @@ namespace cevents {
 
 		virtual nsvr_request_type getType() const = 0;
 
-		virtual nsvr_playback_handle* getHandle() const { return nullptr; }
+		virtual nsvr_playback_handle* getHandle() const { return handle; }
 		
 		nsvr_playback_handle* handle;
 	

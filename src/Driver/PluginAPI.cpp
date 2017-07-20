@@ -53,10 +53,9 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* ceven
 NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion)
 {
 	auto lasting = AS_TYPE(nsvr::cevents::LastingHaptic, cevent);
-	if (memcpy_s(outRegion, 32, lasting->region, strlen(lasting->region)) == 0) {
+	if (strcpy_s(outRegion, 32, lasting->region) == 0) {
 		return NSVR_SUCCESS;
-	}
-	else {
+	} else {
 		return -1;
 	}
 }
@@ -102,17 +101,13 @@ NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_p
 	return NSVR_SUCCESS;
 }
 
-NSVR_CORE_RETURN(int) nsvr_request_gethandle(nsvr_request * request, nsvr_playback_handle ** handle)
+NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* request_id)
 {
-	nsvr_playback_handle* ptr = AS_TYPE(nsvr::cevents::request_base, request)->getHandle();
-	if (ptr == nullptr) {
-		return -1;
-	}
-	else {
-		*handle = ptr;
-		return NSVR_SUCCESS;
-	}
+	*request_id = AS_TYPE(nsvr::cevents::request_base, request)->getHandle()->id;
+	return NSVR_SUCCESS;
+
 }
+
 
 
 
