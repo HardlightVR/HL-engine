@@ -1,6 +1,6 @@
 #pragma once
 #include "DriverMessenger.h"
-#include "HardwareInterface.h"
+#include "EventDispatcher.h"
 #include "Encoder.h"
 #include "SharedCommunication/ScheduledEvent.h"
 #include "HardwareCoordinator.h"
@@ -24,7 +24,8 @@ private:
 	DriverMessenger m_messenger;
 	Encoder _encoder;
 
-	
+	EventDispatcher m_eventDispatcher;
+
 	ScheduledEvent m_curveEngineUpdate;
 
 	ScheduledEvent m_hapticsPull;
@@ -40,7 +41,6 @@ private:
 	HardwareCoordinator m_coordinator;
 
 	PluginManager m_pluginManager;   
-	HardwareInterface m_hardware;
 
 	void handleTracking();
 

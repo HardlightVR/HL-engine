@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PluginAPI.h"
-#include "events/brieftaxel.h"
-#include "events/LastingTaxel.h"
+
 #include "Locator.h"
 #include "EnumTranslator.h"
 
@@ -12,12 +11,12 @@
 
 
 
-NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin ** pluginPtr)
+NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Init(nsvr_plugin ** pluginPtr)
 {
 	Locator::initialize();
 	Locator::provide(new EnumTranslator());
 
-	*pluginPtr = AS_TYPE(NSVR_Plugin, new HardlightPlugin());
+	*pluginPtr = AS_TYPE(nsvr_plugin, new HardlightPlugin());
 
 	return 1;
 }
@@ -25,7 +24,7 @@ NSVR_PLUGIN_RETURN(int) NSVR_Init(NSVR_Plugin ** pluginPtr)
 
 
 
-NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin * pluginPtr, nsvr_core_ctx * core)
+NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Configure(nsvr_plugin * pluginPtr, nsvr_core * core)
 {
 	return AS_TYPE(HardlightPlugin, pluginPtr)->Configure(core);
 }
@@ -34,13 +33,12 @@ NSVR_PLUGIN_RETURN(int) NSVR_Configure(NSVR_Plugin * pluginPtr, nsvr_core_ctx * 
 
 
 
-NSVR_PLUGIN_RETURN(int) NSVR_Free(NSVR_Plugin ** ptr)
+NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Free(nsvr_plugin ** ptr)
 {
 	delete AS_TYPE(HardlightPlugin, *ptr);
 	*ptr = nullptr;
 	return 1;
 }
-
 
 
 

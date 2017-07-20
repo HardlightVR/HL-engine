@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <unordered_map>
 class PluginManager;
-class HardwareInterface;
+class EventDispatcher;
 
 
 
@@ -15,7 +15,7 @@ public:
 	void GenerateCurve(uint64_t id, const NullSpaceIPC::CurveHaptic& haptic);
 	void Update(float dt);
 
-	CurveEngine(PluginManager& manager, HardwareInterface& hardware);
+	CurveEngine(PluginManager& manager, EventDispatcher& hardware);
 private:
 	PluginManager& m_dispatcher;
 	void changePlaybackState(uint64_t id, NullSpaceIPC::PlaybackEvent_Command);

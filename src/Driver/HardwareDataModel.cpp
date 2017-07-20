@@ -43,3 +43,8 @@ LowLevelInterface & HardwareDataModel::LowLevel()
 	return m_lowlevel;
 }
 
+void HardwareDataModel::Playback(uint32_t command, nsvr_playback_handle* handle)
+{
+	m_lowlevel.Playback(command, handle);
+}
+

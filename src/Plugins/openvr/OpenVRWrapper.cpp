@@ -34,16 +34,19 @@ OpenVRWrapper::~OpenVRWrapper()
 
 }
 
-void OpenVRWrapper::Configure(nsvr_core_ctx* core)
+void OpenVRWrapper::Configure(nsvr_core* core)
 {
-
-	
-	nsvr_register_preset_handler(core, [](nsvr_preset_request* req, void* ud) {
+	nsvr_plugin_preset_api preset;
+	preset.client_data = this;
+	preset.preset_handler = [](nsvr_preset_request* req, void* ud) {
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
 		float strength;
 		nsvr_preset_request_getstrength(req, &strength);
 		wrapper->triggerHapticPulse(strength);
-	}, this);
+	};
+
+	nsvr_register_preset_api(core, &preset);
+	
 }
 
 void OpenVRWrapper::update()
@@ -79,7 +82,7 @@ void OpenVRWrapper::process(const vr::VREvent_t&  event)
 	{
 		nsvr_device_event* devent;
 		nsvr_device_event_create(&devent, nsvr_device_event_device_connected);
-		nsvr_device_event_setdeviceid(devent, event.trackedDeviceIndex);
+		//nsvr_device_event_setdeviceid(devent, event.trackedDeviceIndex);
 		nsvr_device_event_raise(core, devent);
 		nsvr_device_event_destroy(&devent);
 		break;
@@ -88,7 +91,7 @@ void OpenVRWrapper::process(const vr::VREvent_t&  event)
 	{
 		nsvr_device_event* devent;
 		nsvr_device_event_create(&devent, nsvr_device_event_device_disconnected);
-		nsvr_device_event_setdeviceid(devent, event.trackedDeviceIndex);
+		//nsvr_device_event_setdeviceid(devent, event.trackedDeviceIndex);
 		nsvr_device_event_raise(core, devent);
 		nsvr_device_event_destroy(&devent);
 		break;

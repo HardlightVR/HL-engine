@@ -6,10 +6,7 @@
 #include "RtpModel.h"
 #include <boost/uuid/random_generator.hpp>
 #include "HardwareCommands.h"
-#include "../include/events/BriefTaxel.h"
-#include "../include/events/LastingTaxel.h"
-#include "../include/events/PlaybackEvent.h"
-#include "../include/events/RealtimeEvent.h"
+
 
 #include "PluginAPI.h"
 
@@ -24,8 +21,8 @@ public:
 	//boost::optional<HapticDisplayInfo> QueryCurrentlyPlaying();
 	
 	void consumeBrief(BasicHapticEventData data);
-	void consumeLasting(BasicHapticEventData data, uint64_t id);
-	void controlEffect(uint64_t id, nsvr_playback_statechange_command command);
+	void consumeLasting(BasicHapticEventData data, nsvr_playback_handle*);
+	void controlEffect(nsvr_playback_handle* handle, int command);
 	//void realtime(uint16_t volume);
 private:
 	::Location m_area;

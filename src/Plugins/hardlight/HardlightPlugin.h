@@ -21,7 +21,7 @@ public:
 	HardlightPlugin();
 	~HardlightPlugin();
 
-	int Configure(nsvr_core_ctx* ctx);
+	int Configure(nsvr_core* ctx);
 private:
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;
@@ -35,7 +35,7 @@ private:
 	std::unique_ptr<Synchronizer> m_synchronizer;
 
 	ScheduledEvent m_eventPull;
-	nsvr_core_ctx* m_core;
+	nsvr_core* m_core;
 
 	bool m_running;
 

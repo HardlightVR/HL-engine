@@ -7,6 +7,7 @@
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid.hpp>
 #include "nsvr_preset.h"
+#include "nsvr_playback_handle.h"
 #define NULL_ARGUMENT_CHECKS
 
 
@@ -30,32 +31,8 @@ NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request * cevent, nsvr_request_t
 	*outType = AS_CTYPE(nsvr::cevents::request_base, cevent)->getType();
 	return NSVR_SUCCESS;
 }
-NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect) {
-	*outEffect = AS_TYPE(nsvr::cevents::BriefHaptic, cevent)->effect;
-	return NSVR_SUCCESS;
-}
-NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getstrength(nsvr_request* cevent, float* outStrength) {
-	*outStrength = AS_TYPE(nsvr::cevents::BriefHaptic, cevent)->strength;
-	return NSVR_SUCCESS;
-}
-NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getregion(nsvr_request* cevent, char* outRegion) {
-	//precondition: buffer outRegion must be able to hold 32 characters
-	//postcondition: will write a string into the buffer not exceeding 32 characters, and will be null terminated
-	auto brief = AS_TYPE(nsvr::cevents::BriefHaptic, cevent);
-	if (strcpy_s(outRegion, 32, brief->region) == 0) {
-		
-		return NSVR_SUCCESS;
-	}
-	else {
-		return -1;
-	}
-}
 
 
-NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getid(nsvr_request* cevent, uint64_t* outId) {
-	*outId = AS_TYPE(nsvr::cevents::LastingHaptic, cevent)->parent_id;
-	return NSVR_SUCCESS;
-}
 NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect)
 {
 	*outEffect = AS_TYPE(nsvr::cevents::LastingHaptic, cevent)->effect;
@@ -73,16 +50,6 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* ceven
 }
 
 
-//NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getid(nsvr_request * cevent, uint64_t * outId)
-//{
-//	*outId = AS_TYPE(nsvr::cevents::PlaybackStateChange, cevent)->parent_id;
-//	return NSVR_SUCCESS;
-//}
-//
-//NSVR_CORE_RETURN(int) nsvr_request_playback_statechange_getcommand(nsvr_request* cevent, nsvr_playback_statechange_command* outCommand) {
-//	*outCommand = AS_TYPE(nsvr::cevents::PlaybackStateChange, cevent)->command;
-//	return NSVR_SUCCESS;
-//}
 NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion)
 {
 	auto lasting = AS_TYPE(nsvr::cevents::LastingHaptic, cevent);
@@ -122,40 +89,53 @@ NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request * req,
 	return NSVR_SUCCESS;
 }
 
-struct nsvr_playback_handle {
-	uint64_t id;
-};
+
 NSVR_CORE_RETURN(int) nsvr_playback_handle_getid(nsvr_playback_handle * handle, uint64_t * outId)
 {
 	*outId = handle->id;
 	return NSVR_SUCCESS;
 }
 
-
-
-NSVR_CORE_RETURN(int) nsvr_register_preset_handler(nsvr_core * core, nsvr_preset_handler handler, void * client_data)
+NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_playback_api * api)
 {
-	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
-	lowlevel.RegisterPreset(handler, client_data);
-	return 1;
-}
-
-NSVR_CORE_RETURN(int) nsvr_register_buffered_handler(nsvr_core * core, nsvr_buffered_handler handler, void * client_data)
-{
-	auto& lowlevel = AS_TYPE(HardwareDataModel, core)->LowLevel();
-	lowlevel.RegisterBuffered(handler, client_data);
-	return 1;
-}
-
-
-
-NSVR_CORE_RETURN(int) nsvr_register_request_handler(nsvr_core* core, nsvr_request_type type, nsvr_basic_request_handler handler, void* client_data)
-{
-	HardwareDataModel* model = AS_TYPE(HardwareDataModel, core);
-	auto& coordinator = model->GetParentCoordinator();
-	coordinator.Register(type, handler, 1, client_data);
+	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
 	return NSVR_SUCCESS;
 }
+
+NSVR_CORE_RETURN(int) nsvr_request_gethandle(nsvr_request * request, nsvr_playback_handle ** handle)
+{
+	nsvr_playback_handle* ptr = AS_TYPE(nsvr::cevents::request_base, request)->getHandle();
+	if (ptr == nullptr) {
+		return -1;
+	}
+	else {
+		*handle = ptr;
+		return NSVR_SUCCESS;
+	}
+}
+
+
+
+NSVR_CORE_RETURN(int) nsvr_register_buffer_api(nsvr_core * core, nsvr_plugin_buffer_api * api)
+{
+	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
+	return NSVR_SUCCESS;
+}
+
+NSVR_CORE_RETURN(int) nsvr_register_preset_api(nsvr_core * core, nsvr_plugin_preset_api * api)
+{
+	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
+	return NSVR_SUCCESS;
+}
+
+NSVR_CORE_RETURN(int)  nsvr_register_request_api(nsvr_core* core, nsvr_plugin_request_api* api)
+{
+	auto& coord = AS_TYPE(HardwareDataModel, core)->GetParentCoordinator();
+	coord.Register(api->request_type, api->request_handler, 1, api->client_data);
+	return NSVR_SUCCESS;
+}
+
+
 
 
 NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, uint32_t device_id)
@@ -234,6 +214,7 @@ struct nsvr_node {
 
 
 
+
 NSVR_CORE_RETURN(int) nsvr_node_create(nsvr_node ** node)
 {
 	*node = new nsvr_node{};
@@ -283,4 +264,9 @@ NSVR_CORE_RETURN(int) nsvr_querystate_updatenode(nsvr_node * node, bool active)
 {
 	node->active = active;
 	return NSVR_SUCCESS;
+}
+
+NSVR_CORE_RETURN(bool) nsvr_playback_handle_equal(nsvr_playback_handle * lhs, nsvr_playback_handle * rhs)
+{
+	return lhs->id == rhs->id;
 }

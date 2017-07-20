@@ -14,7 +14,7 @@ class PacketDispatcher;
 class ImuConsumer 
 {
 public:
-	using TrackingCallback = std::function<void(const std::string&, NSVR_Core_Quaternion)>;
+	using TrackingCallback = std::function<void(const std::string&, nsvr_quaternion)>;
 	ImuConsumer(PacketDispatcher&);
 	void OnTracking(TrackingCallback);
 	~ImuConsumer();
@@ -24,8 +24,8 @@ private:
 	void consumePacket(packet packet);
 	void consumePacketDummy(packet packet);
 
-	std::unordered_map<Imu, NSVR_Core_Quaternion> m_quaternions;
-	NSVR_Core_Quaternion parseQuaternion(const uint8_t* rec) const;
+	std::unordered_map<Imu, nsvr_quaternion> m_quaternions;
+	nsvr_quaternion parseQuaternion(const uint8_t* rec) const;
 	std::unordered_map<uint32_t, std::pair<Imu, std::string>> m_mapping;
 };
 

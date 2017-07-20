@@ -7,8 +7,7 @@
 #include <boost/function.hpp>
 #include <boost/dll.hpp>
 
-#include "events/briefTaxel.h"
-#include "events/lastingTaxel.h"
+
 #include <boost/log/trivial.hpp>
 
 #include "HardwareDataModel.h"
@@ -17,7 +16,7 @@
 
 typedef struct nsvr_callback {
 	void* callback;
-	nsvr_core_ctx* context;
+	nsvr_core* context;
 } nsvr_callback;
 
 
@@ -62,12 +61,12 @@ public:
 
 private:
 
-	typedef std::function<int(NSVR_Plugin**)> plugin_creator_t;
-	typedef std::function<int(NSVR_Plugin**)> plugin_destructor_t;
-	typedef std::function<int(NSVR_Plugin*, nsvr_core_ctx*)> plugin_configure_t;
+	typedef std::function<int(nsvr_plugin**)> plugin_creator_t;
+	typedef std::function<int(nsvr_plugin**)> plugin_destructor_t;
+	typedef std::function<int(nsvr_plugin*, nsvr_core*)> plugin_configure_t;
 	std::unique_ptr<boost::dll::shared_library> m_lib;
 	
-	NSVR_Plugin* m_rawPtr;
+	nsvr_plugin* m_rawPtr;
 
 	plugin_creator_t m_creator;
 	plugin_destructor_t m_destructor;

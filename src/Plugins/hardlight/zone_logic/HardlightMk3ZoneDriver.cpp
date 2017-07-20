@@ -114,24 +114,24 @@ void Hardlight_Mk3_ZoneDriver::consumeBrief(BasicHapticEventData data)
 
 
 
-void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data, uint64_t id) {
+void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data, nsvr_playback_handle* id) {
 	data.area = static_cast<uint32_t>(m_area);
 	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data)));
 	transitionInto(Mode::Retained);
 }
 
-void Hardlight_Mk3_ZoneDriver::controlEffect(uint64_t id, nsvr_playback_statechange_command command)
+void Hardlight_Mk3_ZoneDriver::controlEffect(nsvr_playback_handle* handle, int command)
 {
 
 	switch (command) {
-	case nsvr_playback_statechange_unpause:
-		m_retainedModel.Play(id);
+	case 1:
+		m_retainedModel.Pause(handle);
 		break;
-	case nsvr_playback_statechange_pause:
-		m_retainedModel.Pause(id);
+	case 2:
+		m_retainedModel.Play(handle);
 		break;
-	case nsvr_playback_statechange_cancel:
-		m_retainedModel.Remove(id);
+	case 3:
+		m_retainedModel.Remove(handle);
 	default:
 		break;
 	}

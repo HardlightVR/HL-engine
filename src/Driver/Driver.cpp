@@ -7,17 +7,15 @@
 #include <boost/log/trivial.hpp>
 #include "MyTestLog.h"
 #include "Driver.h"
-
+#include "Enums.h"
 #include "IoService.h"
 
-#include "events_impl/LastingTaxel.h"
-#include "events_impl/BriefTaxel.h"
+
 
 
 //remove following two
 #include "PluginInstance.h"
-#include "events/LastingTaxel.h"
-#include "events/BriefTaxel.h"
+
 
 //void extractDrvData(const packet& packet) {
 //	//as status register:
@@ -48,9 +46,9 @@ Driver::Driver() :
 	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_curveEngineUpdate(m_io->GetIOService(), boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
-	m_coordinator(m_messenger),
+	m_coordinator(m_messenger, m_eventDispatcher),
 	m_pluginManager(m_coordinator, {"HardlightPlugin", "OpenVRPlugin"}),
-	m_hardware(m_io, m_coordinator)
+	m_eventDispatcher()
 
 
 {
@@ -96,6 +94,8 @@ Driver::Driver() :
 
 	});*/
 
+	
+	
 }
 
 Driver::~Driver()
@@ -149,7 +149,7 @@ void Driver::handleHaptics()
 	//note: changed to ReadEvents instead of ReadHaptics
 	if (auto commands = m_messenger.ReadEvents()) {
 		for (const auto& command : *commands) {
-			m_hardware.ReceiveHighLevelEvent(command);
+			m_eventDispatcher.ReceiveHighLevelEvent(command);
 		}
 	}
 

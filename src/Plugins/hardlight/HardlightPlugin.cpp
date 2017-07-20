@@ -49,13 +49,13 @@ HardlightPlugin::HardlightPlugin() :
 
 	m_eventPull.Start();
 
-	m_imus.OnTracking([&](const std::string& id, NSVR_Core_Quaternion quat) {
+	m_imus.OnTracking([&](const std::string& id, nsvr_quaternion quat) {
 
 		if (m_core != nullptr) {
 
 			nsvr_device_event* event = nullptr;
 			nsvr_device_event_create(&event, nsvr_device_event_tracking_update);
-			nsvr_device_event_settrackingstate(event, id.c_str(), &quat);
+//			nsvr_device_event_settrackingstate(event, id.c_str(), &quat);
 			nsvr_device_event_raise(m_core, event);
 
 			nsvr_device_event_destroy(&event);
@@ -105,7 +105,7 @@ HardlightPlugin::~HardlightPlugin()
 
 
 
-int HardlightPlugin::Configure(nsvr_core_ctx* core)
+int HardlightPlugin::Configure(nsvr_core* core)
 {
 	m_core = core;
 	m_device.RegisterDrivers(core);

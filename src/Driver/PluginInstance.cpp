@@ -72,7 +72,7 @@ bool PluginInstance::Configure()
 
 
 	if (m_configure) {
-		return m_configure(m_rawPtr, reinterpret_cast<nsvr_core_ctx*>(&m_model));
+		return m_configure(m_rawPtr, reinterpret_cast<nsvr_core*>(&m_model));
 	}
 	else {
 		return false;

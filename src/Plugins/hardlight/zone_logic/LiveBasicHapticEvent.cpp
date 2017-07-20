@@ -62,10 +62,7 @@ bool LiveBasicHapticEvent::isOneshot() const
 
 bool LiveBasicHapticEvent::isChildOf(ParentId parentId) const
 {
-	return this->parentId == parentId;
+	return nsvr_playback_handle_equal(this->parentId, parentId);
+	//return this->parentId == parentId;
 }
 
-uint64_t LiveBasicHapticEvent::GetParentId()
-{
-	return parentId;
-}

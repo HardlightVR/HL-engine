@@ -12,7 +12,7 @@
 #endif  
 #else
 #define NSVR_CORE_API
-#define NSVR_PLUGIN_API
+#define nsvr_plugin_API
 #endif
 
 
@@ -66,6 +66,9 @@ extern "C" {
 
 	// For communicating with the core, create a device_event and call event_raise on it. 
 	// See documentation specific to each of these event types.
+
+	typedef struct nsvr_device_event nsvr_device_event;
+
 	enum nsvr_device_event_type {
 		nsvr_device_event_unknown = 0,
 		nsvr_device_event_device_connected = 1,
@@ -77,10 +80,11 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event* event);
 	NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event);
 
-	
 	//////////////////////////
 	// Basic Implementation //
 	//////////////////////////
+
+
 
 	// You must first implement these three functions in your DLL:
 
@@ -95,25 +99,31 @@ extern "C" {
 
 
 	// If you have a buffered-style API with calls similar to SubmitHapticData(void* amplitudes, int length),
-	// implement the nsvr_buffered_request interface by calling nsvr_register_buffered_handler with your callback.  
+	// implement the buffer_api interface
 
 	typedef struct nsvr_buffered_request nsvr_buffered_request;
-	typedef void(*nsvr_buffered_handler)(nsvr_buffered_request* request, void* client_data);
 
-	// Registers your handler with the core
-	NSVR_CORE_RETURN(int) nsvr_register_buffered_handler(nsvr_core* core, nsvr_buffered_handler handler, void* client_data);
+	typedef struct nsvr_plugin_buffer_api {
+		typedef void(*nsvr_buffered_handler)(nsvr_buffered_request*, void*);
+		nsvr_buffered_handler buffered_handler;
+		void* client_data;
+	} nsvr_plugin_buffer_api;
 
+	NSVR_CORE_RETURN(int) nsvr_register_buffer_api(nsvr_core* core, nsvr_plugin_buffer_api* api);
 
 	// If you have a "preset"-style API with calls similar to TriggerSpecialEffect() or TriggerPulse(int microseconds),
-	// implement the nsvr_preset_request interface by calling nsvr_register_preset_handler with your callback.
+	// implement the preset_api interface
 
 	typedef struct nsvr_preset_request nsvr_preset_request;
-	typedef void(*nsvr_preset_handler)(nsvr_preset_request* req, void* client_data);
 
-	// Registers your handler with the core
-	NSVR_CORE_RETURN(int) nsvr_register_preset_handler(nsvr_core* core, nsvr_preset_handler handler, void* client_data);
+	typedef struct nsvr_plugin_preset_api {
+		typedef void(*nsvr_preset_handler)(nsvr_preset_request*, void*);
+		nsvr_preset_handler preset_handler;
+		void* client_data;
+	} nsvr_plugin_preset_api;
+
+	NSVR_CORE_RETURN(int) nsvr_register_preset_api(nsvr_core* core, nsvr_plugin_preset_api* api);
 	
-	// To retrieve information about a received preset_request, use the following functions.
 
 	// A preset family specifies a certain feeling which your haptic device produces. 
 	typedef enum nsvr_preset_family {
@@ -121,7 +131,6 @@ extern "C" {
 		nsvr_preset_family_bump = 1,
 		nsvr_preset_family_click = 2
 	} nsvr_preset_family;
-
 
 	// outFamily is the family of the given preset
 	NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request* req, nsvr_preset_family* outFamily);
@@ -139,17 +148,29 @@ extern "C" {
 	// We request your software to perform complex haptic behavior through the following event types:
 	enum nsvr_request_type {
 		nsvr_request_type_unknown = 0,
-		nsvr_request_type_brief_haptic = 1,
-		nsvr_request_type_lasting_haptic = 2,
+		nsvr_request_type_lasting_haptic = 1,
 	};
 
-	
 	typedef struct nsvr_request nsvr_request;
-	typedef void(*nsvr_basic_request_handler)(nsvr_request* request, void* client_data);
 
-	// Register a your request handler for a specific nsvr_request_type with the core
-	NSVR_CORE_RETURN(int) nsvr_register_request_handler(nsvr_core* core, nsvr_request_type type, nsvr_basic_request_handler handler, void* client_data);
+	typedef struct nsvr_plugin_request_api {
+		typedef void(*nsvr_request_handler)(nsvr_request*, void*);
+		nsvr_request_handler request_handler;
+		nsvr_request_type request_type;
+		void* client_data;
+	} nsvr_request_api;
 	
+	// Register a your request handler for a specific nsvr_request_type with the core
+	NSVR_CORE_RETURN(int) nsvr_register_request_api(nsvr_core* core, nsvr_plugin_request_api* api);
+	
+	NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request* cevent, nsvr_request_type* outType);
+
+
+
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getstrength(nsvr_request* cevent, float* outStrength);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* cevent, float* outDuration);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion);
 
 	// Possible future APIs (unstable) 
 	typedef struct nsvr_node nsvr_node;
@@ -171,42 +192,26 @@ extern "C" {
 	/////////////////////////////
 
 	typedef struct nsvr_playback_handle nsvr_playback_handle;
-	NSVR_CORE_RETURN(int) nsvr_playback_handle_getid(nsvr_playback_handle* handle, uint64_t* outId);
+
+	NSVR_CORE_RETURN(bool) nsvr_playback_handle_equal(nsvr_playback_handle* lhs, nsvr_playback_handle* rhs);
 	
-	typedef void(*nsvr_playback_pause)(nsvr_playback_handle* handle, void* client_data);
-	typedef void(*nsvr_playback_unpause)(nsvr_playback_handle* handle, void* client_data);
-	typedef void(*nsvr_playback_cancel)(nsvr_playback_handle* handle, void* client_data);
+	typedef struct nsvr_plugin_playback_api {
+		typedef void(*nsvr_playback_pause)(nsvr_playback_handle* handle, void* client_data);
+		typedef void(*nsvr_playback_unpause)(nsvr_playback_handle* handle, void* client_data);
+		typedef void(*nsvr_playback_cancel)(nsvr_playback_handle* handle, void* client_data);
 
-	struct nsvr_playback_requirements {
-		
+		nsvr_playback_pause pause_handler;
+		nsvr_playback_unpause unpause_handler;
+		nsvr_playback_cancel cancel_handler;
+		void* client_data;
+	} nsvr_plugin_playback_api;
 
-		nsvr_playback_pause pause_fn;
-		nsvr_playback_unpause unpause_fn;
-		nsvr_playback_cancel cancel_fn;
-
-
-		
-	};
-
-	typedef void(*nsvr_advanced_request_handler)(nsvr_playback_handle* handle, nsvr_request* request, void* client_data);
-	nsvr_advanced_request_handler request_fn;
-
-
-	typedef struct nsvr_device_event nsvr_device_event;
-
-	NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request* cevent, nsvr_request_type* outType);
-	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
-	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getstrength(nsvr_request* cevent, float* outStrength);
-	NSVR_CORE_RETURN(int) nsvr_request_briefhaptic_getregion(nsvr_request* cevent, char* outRegion);
+	NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core* core, nsvr_plugin_playback_api* api);
+	NSVR_CORE_RETURN(int) nsvr_request_gethandle(nsvr_request* request, nsvr_playback_handle** handle);
 
 
 
-
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getid(nsvr_request* cevent, uint64_t* outId);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getstrength(nsvr_request* cevent, float* outStrength);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* cevent, float* outDuration);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion);
+	
 
 
 

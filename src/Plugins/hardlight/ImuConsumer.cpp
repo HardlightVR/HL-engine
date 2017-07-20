@@ -49,7 +49,7 @@ void ImuConsumer::consumePacketDummy(packet packet)
 	if (id != Imu::Unknown) {
 		float x;
 		memcpy(&x, &packet.raw[3], sizeof(x));
-		NSVR_Core_Quaternion q = { 0 };
+		nsvr_quaternion q = { 0 };
 		q.x = x;
 		q.w = 1.0f;
 		m_quaternions[id] = q;
@@ -59,7 +59,7 @@ void ImuConsumer::consumePacketDummy(packet packet)
 	}
 }
 
-NSVR_Core_Quaternion ImuConsumer::parseQuaternion(const uint8_t * rec) const
+nsvr_quaternion ImuConsumer::parseQuaternion(const uint8_t * rec) const
 {
 	int offset = 3;
 	float q[4];
@@ -73,7 +73,7 @@ NSVR_Core_Quaternion ImuConsumer::parseQuaternion(const uint8_t * rec) const
 		}
 	}
 
-	NSVR_Core_Quaternion quat;
+	nsvr_quaternion quat;
 	quat.w = q[0];
 	quat.x = q[1];
 	quat.y = q[2];

@@ -13,6 +13,9 @@
     <Filter Include="include">
       <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\events">
+      <UniqueIdentifier>{6D7B514B-5949-4551-42DD-B5772E4A21B6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="protobuff_defs">
       <UniqueIdentifier>{BD9239EB-A960-2DF1-92F4-9D177E610956}</UniqueIdentifier>
     </Filter>
@@ -28,11 +31,11 @@
     <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
+    <ClInclude Include="..\src\Driver\EventDispatcher.h" />
     <ClInclude Include="..\src\Driver\FunctionPointerTemplates.h" />
     <ClInclude Include="..\src\Driver\HardwareCallbackInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareDataModel.h" />
-    <ClInclude Include="..\src\Driver\HardwareInterface.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
@@ -102,21 +105,16 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\cevent_internal.h" />
-    <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h">
-      <Filter>events_impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\events_impl\LastingTaxel.h">
-      <Filter>events_impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\events_impl\PlaybackEvent.h">
-      <Filter>events_impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\events_impl\RealtimeEvent.h">
+    <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h">
       <Filter>events_impl</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
+      <Filter>include\events</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
@@ -145,9 +143,9 @@
     <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
+    <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareDataModel.cpp" />
-    <ClCompile Include="..\src\Driver\HardwareInterface.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
@@ -167,18 +165,6 @@
       <Filter>SharedCommunication</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\cevent_internal.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp">
-      <Filter>events_impl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Driver\events_impl\LastingTaxel.cpp">
-      <Filter>events_impl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Driver\events_impl\PlaybackEvent.cpp">
-      <Filter>events_impl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Driver\events_impl\RealtimeEvent.cpp">
-      <Filter>events_impl</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">

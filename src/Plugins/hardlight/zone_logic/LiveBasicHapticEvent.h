@@ -1,8 +1,9 @@
 #pragma once
 #include <boost/uuid/uuid.hpp>
 #include <stdint.h>
+#include "PluginAPI.h"
 
-using ParentId = uint64_t;
+using ParentId = nsvr_playback_handle*;
 
 class BasicHapticEventData {
 public:
@@ -23,7 +24,6 @@ public:
 	bool isContinuous() const;
 	bool isOneshot() const;
 	bool isChildOf(ParentId parentId) const;
-	uint64_t GetParentId();
 private:
 	ParentId parentId;
 	boost::uuids::uuid uniqueId;

@@ -307,11 +307,11 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
+    <ClInclude Include="..\src\Driver\EventDispatcher.h" />
     <ClInclude Include="..\src\Driver\FunctionPointerTemplates.h" />
     <ClInclude Include="..\src\Driver\HardwareCallbackInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareDataModel.h" />
-    <ClInclude Include="..\src\Driver\HardwareInterface.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
@@ -345,11 +345,10 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\cevent_internal.h" />
-    <ClInclude Include="..\src\Driver\events_impl\BriefTaxel.h" />
-    <ClInclude Include="..\src\Driver\events_impl\LastingTaxel.h" />
-    <ClInclude Include="..\src\Driver\events_impl\PlaybackEvent.h" />
-    <ClInclude Include="..\src\Driver\events_impl\RealtimeEvent.h" />
+    <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
+    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
+    <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h" />
@@ -368,9 +367,9 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
+    <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareDataModel.cpp" />
-    <ClCompile Include="..\src\Driver\HardwareInterface.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
@@ -400,10 +399,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\Driver\cevent_internal.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\BriefTaxel.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\LastingTaxel.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\PlaybackEvent.cpp" />
-    <ClCompile Include="..\src\Driver\events_impl\RealtimeEvent.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">

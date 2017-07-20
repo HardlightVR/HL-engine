@@ -13,7 +13,6 @@ class HardwareCoordinator;
 class HardwareDataModel {
 public:
 	HardwareDataModel(HardwareCoordinator& parentCoordinator);
-	HardwareDataModel();
 
 
 	void Raise(const nsvr::pevents::device_event& event);
@@ -21,6 +20,8 @@ public:
 	HardwareCoordinator& GetParentCoordinator();
 
 	LowLevelInterface& LowLevel();
+
+	void Playback(uint32_t command, nsvr_playback_handle* handle);
 
 private:
 	
