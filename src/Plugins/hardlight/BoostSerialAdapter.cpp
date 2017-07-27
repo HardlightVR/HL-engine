@@ -15,7 +15,7 @@ BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 	m_port(nullptr),
 	m_io(io),
 	m_suitReconnectionTimeout(boost::posix_time::milliseconds(50)),
-	m_initialConnectTimeout(boost::posix_time::milliseconds(300)),
+	m_initialConnectTimeout(boost::posix_time::milliseconds(3000)),
 	m_suitReconnectionTimer(io)
 {
 	std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
@@ -125,7 +125,7 @@ bool BoostSerialAdapter::IsConnected() const
 void BoostSerialAdapter::SetMonitor(std::shared_ptr<KeepaliveMonitor> monitor)
 {
 	m_keepaliveMonitor = monitor;	
-	m_keepaliveMonitor->SetDisconnectHandler([this]() { beginReconnectionProcess(); });
+	m_keepaliveMonitor->OnDisconnect([this]() { beginReconnectionProcess(); });
 
 }
 
@@ -245,11 +245,12 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string portName)
 {
 	try {
+	
 		port.open(portName);
-		//port.set_option(boost::asio::serial_port::baud_rate(115200));
-		////port.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
-		//port.set_option(boost::asio::serial_port::parity());
-		//port.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
+		port.set_option(boost::asio::serial_port::baud_rate(115200));
+		port.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
+		port.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
+		port.set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
 	
 		if (!port.is_open()) {
 			return false;

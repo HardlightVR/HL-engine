@@ -103,7 +103,7 @@ NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_p
 
 NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* request_id)
 {
-	*request_id = AS_TYPE(nsvr::cevents::request_base, request)->getHandle()->id;
+	*request_id  = AS_TYPE(nsvr::cevents::request_base, request)->getHandle()->id;
 	return NSVR_SUCCESS;
 
 }
@@ -166,6 +166,12 @@ NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event) {
 	*event = nullptr;
 	return 1;
 
+}
+
+NSVR_CORE_RETURN(int) nsvr_device_setid(nsvr_device_event * event, uint64_t id)
+{
+	AS_TYPE(nsvr::pevents::device_event, event)->device_id = id;
+	return 1;
 }
 
 NSVR_CORE_RETURN(int) nsvr_querystate_register(nsvr_querystate * querystate, nsvr_core * core)

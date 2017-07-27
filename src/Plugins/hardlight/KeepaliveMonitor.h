@@ -1,8 +1,8 @@
 #pragma once
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/deadline_timer.hpp>
-#include <functional>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <functional>
 
 
 class FirmwareInterface;
@@ -10,50 +10,39 @@ class KeepaliveMonitor
 {
 public:
 	KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterface& fi);
-	~KeepaliveMonitor();
-
-	//Set what happens when the monitor detects a suit disconnect
-	void SetDisconnectHandler(std::function<void()>);
-
-	void SetReconnectHandler(std::function<void()>);
-
-	//Tell the monitor that ping data has been received
-	void ReceivePing();
-
-	//Tell monitor to begin pinging and waiting for responses
+	// Tell monitor to begin pinging and waiting for responses
 	void BeginMonitoring();
 
-	//Use this for adaptive load. When the api is getting slammed, we need to be more lenient
-	void SetMaxAllowedResponseTime(boost::posix_time::millisec max);
+	// Inform the monitor that ping data has been received
+	void ReceivePing();
 
+
+	// Subscribe to disconnect and reconnect events
+	void OnDisconnect(std::function<void()>);
+	void OnReconnect(std::function<void()>);
 private:
-	FirmwareInterface& m_fi;
-	//keep track of how many pings sent after initial connection loss
-	unsigned int _failedPingCount;
-
-	//instantaneous ping time, updated whenever receive a new ping
-	long long _pingTime;
-
-	//total allowed ping failures before issuing a disconnect
-	const std::size_t MAX_FAILED_PINGS;
-
-	//Function which is called when monitor detects a disconnect
-	std::vector<std::function<void()>> _disconnectHandler;
-	std::vector<std::function<void()>> _reconnectHandler;
-	//The port which we are operating on
+	FirmwareInterface& m_firmware;
 	
-	//How long we wait for a response before timing out
-	boost::posix_time::milliseconds _responseTimeout;
+	bool m_isConnected;
 
-	//Timer for handling response timeout
-	boost::asio::deadline_timer _responseTimer;
+	// Ping time, updated whenever we receive a new ping
+	long long m_lastestPingTime;
 
-	//Minimum wait time before a ping
-	boost::posix_time::milliseconds _pingInterval;
+	// How long we wait between sending pings
+	boost::posix_time::milliseconds m_pingInterval;
 
-	//Timer for handling pings
-	boost::asio::deadline_timer _pingTimer;
+	// Timer responsible for firing ping events
+	boost::asio::deadline_timer m_pingTimer;
+
+	// How long we wait for a response before timing out
+	boost::posix_time::milliseconds m_responseTimeout;
+
+	// Timer for handling response timeout
+	boost::asio::deadline_timer m_responseTimer;
 	
+	std::vector<std::function<void()>> m_disconnectHandlers;
+	std::vector<std::function<void()>> m_reconnectHandlers;
+
 	void doKeepAlivePing();
 	void onReceiveResponse(const boost::system::error_code& ec);
 
@@ -61,7 +50,10 @@ private:
 	void schedulePingTimer();
 	void scheduleResponseTimer();
 
-	bool _isConnected;
+
+	void raiseDisconnect();
+	void raiseReconnect();
+
 	/**
 	Explanation of ping-response scheme
 	===================================

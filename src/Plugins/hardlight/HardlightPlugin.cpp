@@ -3,6 +3,7 @@
 #include "PluginAPI.h"
 #include <iostream>
 #include <typeinfo>
+#include "PluginAPIWrapper.h"
 HardlightPlugin::HardlightPlugin() :
 	m_io(std::make_shared<IoService>()),
 	m_dispatcher(),
@@ -22,12 +23,21 @@ HardlightPlugin::HardlightPlugin() :
 
 	m_adapter->SetMonitor(m_monitor);
 
-	m_monitor->SetDisconnectHandler([&]() {
-	//	m_coreApi["status"].call<nsvr_core_status_cb>(false);
+	m_monitor->OnDisconnect([&]() {
+		//nsvr::Event event{nsvr_device_event_device_disconnected};
+		//event.raise(m_core);
+
+		nsvr_device_event* event;
+		nsvr_device_event_create(&event, nsvr_device_event_device_disconnected);
+		nsvr_device_event_raise(m_core, event);
+		nsvr_device_event_destroy(&event);
 	});
 
-	m_monitor->SetReconnectHandler([&]() {
-		//m_coreApi["status"].call<nsvr_core_status_cb>(true);
+	m_monitor->OnReconnect([&]() {
+		nsvr_device_event* event;
+		nsvr_device_event_create(&event, nsvr_device_event_device_connected);
+		nsvr_device_event_raise(m_core, event);
+		nsvr_device_event_destroy(&event);
 	});
 
 	m_adapter->Connect();
@@ -55,15 +65,13 @@ HardlightPlugin::HardlightPlugin() :
 
 			nsvr_device_event* event = nullptr;
 			nsvr_device_event_create(&event, nsvr_device_event_tracking_update);
-//			nsvr_device_event_settrackingstate(event, id.c_str(), &quat);
+			nsvr_device_event_settrackingstate(event, id.c_str(), &quat);
 			nsvr_device_event_raise(m_core, event);
-
 			nsvr_device_event_destroy(&event);
 
 
 			assert(event == nullptr);
 		}
-		//m_coreApi.at("tracking").call<nsvr_core_tracking_cb>(id.c_str(), &quat);
 	});
 
 	

@@ -52,7 +52,7 @@ extern "C" {
 	//
 	// If you implement the >>Basic API<<, we will command your hardware with the simplest primitives
 	// available. This is appropriate for devices like controllers, or if your API only supports buffered or 
-	// preset haptic capabilities.
+	// "preset" haptic capabilities.
 	// 
 	// If you implement the >>Standard API<<, we will pass off more complex events to your software for more precise
 	// processing that we cannot perform. For example, the transition from a long lived-effect to a short effect requires
@@ -60,12 +60,17 @@ extern "C" {
 	// of the hardware, which can enable richer features such as emulation modes for developers. 
 	//
 	// If you implement the >>Extended API<<, your software promises to deliver complex playback capabilities, 
-	// such as starting, stopping, and canceling effects. Additionally, this opens the door for ducking, layering,
+	// such as starting, stopping, and canceling effects. Additionally, this opens the door for us to perform ducking, layering,
 	// and compositing operations.
 
 
 	// For communicating with the core, create a device_event and call event_raise on it. 
 	// See documentation specific to each of these event types.
+
+	/////////////////////////////////
+	// Communicating with the Core //
+	/////////////////////////////////
+
 
 	typedef struct nsvr_device_event nsvr_device_event;
 
@@ -79,6 +84,10 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event** event, nsvr_device_event_type type);
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event* event);
 	NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event);
+
+	NSVR_CORE_RETURN(int) nsvr_device_setid(nsvr_device_event* event, uint64_t id);
+
+	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, nsvr_quaternion * quat);
 
 	//////////////////////////
 	// Basic Implementation //
@@ -132,10 +141,10 @@ extern "C" {
 		nsvr_preset_family_click = 2
 	} nsvr_preset_family;
 
-	// outFamily is the family of the given preset
+	// To retrieve information about a preset request, use these functions
+
 	NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request* req, nsvr_preset_family* outFamily);
 	
-	// outStrength is the strength of the given preset
 	NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request* req, float* outStrength);
 
 	
@@ -160,12 +169,9 @@ extern "C" {
 		void* client_data;
 	} nsvr_request_api;
 	
-	// Register a your request handler for a specific nsvr_request_type with the core
 	NSVR_CORE_RETURN(int) nsvr_register_request_api(nsvr_core* core, nsvr_plugin_request_api* api);
 	
 	NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request* cevent, nsvr_request_type* outType);
-
-
 
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getstrength(nsvr_request* cevent, float* outStrength);
@@ -191,9 +197,7 @@ extern "C" {
 	// Extended Implementation //
 	/////////////////////////////
 
-	typedef struct nsvr_playback_handle nsvr_playback_handle;
 
-	NSVR_CORE_RETURN(bool) nsvr_playback_handle_equal(nsvr_playback_handle* lhs, nsvr_playback_handle* rhs);
 	
 	typedef struct nsvr_plugin_playback_api {
 		typedef void(*nsvr_playback_pause)(uint64_t request_id, void* client_data);

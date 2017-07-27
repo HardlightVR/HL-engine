@@ -107,7 +107,7 @@ void HardlightDevice::executeLasting(nsvr_request * event)
 	nsvr_request_lastinghaptic_getregion(event, region);
 
 	ParentId handle;
-	nsvr_request_gethandle(event, &handle);
+	nsvr_request_getid(event, &handle);
 	if (m_drivers.find(region) != m_drivers.end()) {
 		m_drivers.at(region)->consumeLasting(std::move(data), handle);
 	}

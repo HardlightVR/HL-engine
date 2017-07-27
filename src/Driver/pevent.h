@@ -11,7 +11,7 @@ namespace nsvr {
 			device_event(nsvr_device_event_type type);
 			static device_event* make(nsvr_device_event_type type);
 			nsvr_device_event_type type;
-			uint32_t device_id;
+			uint64_t device_id;
 			
 		};
 

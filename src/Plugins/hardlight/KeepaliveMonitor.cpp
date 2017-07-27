@@ -1,108 +1,108 @@
 #include "stdafx.h"
 #include "KeepaliveMonitor.h"
-#include "Locator.h"
 #include <boost\log\trivial.hpp> 
-#include <boost\asio\serial_port.hpp>
 #include "FirmwareInterface.h"
+
 KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterface& fi):
-	m_fi(fi),
-	_responseTimer(io), 
-	_responseTimeout(boost::posix_time::milliseconds(3000)),
-	_pingTimer(io),
-	_pingInterval(boost::posix_time::milliseconds(500)),
-	MAX_FAILED_PINGS(2), //unused now
-	_failedPingCount(0), //unused now
-	_pingTime(0),
-	_isConnected(false)
+	m_firmware(fi),
+	
+	m_responseTimer(io), 
+	m_responseTimeout(boost::posix_time::milliseconds(3000)),
+	
+	m_pingTimer(io),
+	m_pingInterval(boost::posix_time::milliseconds(500)),
+	
+	m_lastestPingTime(0),
+	m_isConnected(false)
 	
 {
 
 }
 
-
-
-KeepaliveMonitor::~KeepaliveMonitor()
-{
-	
-}
-
-void KeepaliveMonitor::schedulePingTimer()
-{
-	_pingTimer.expires_from_now(_pingInterval);
-	_pingTimer.async_wait([&](auto& ec) { doKeepAlivePing(); });
-}
-
-void KeepaliveMonitor::scheduleResponseTimer()
-{
-	_responseTimer.expires_from_now(_responseTimeout);
-	_responseTimer.async_wait([&](auto& ec) { onReceiveResponse(ec); });
-}
-
-
-void KeepaliveMonitor::SetDisconnectHandler(std::function<void()> handler)
-{
-	_disconnectHandler.push_back(std::move(handler));
-}
-
-void KeepaliveMonitor::SetReconnectHandler(std::function<void()> handler)
-{
-	_reconnectHandler.push_back(std::move(handler));
-}
-
-void KeepaliveMonitor::ReceivePing()
-{
-	
-	_responseTimer.cancel();
-}
 
 void KeepaliveMonitor::BeginMonitoring()
 {
 	schedulePingTimer();
 }
 
-
-
-void KeepaliveMonitor::SetMaxAllowedResponseTime(boost::posix_time::millisec max)
+void KeepaliveMonitor::schedulePingTimer()
 {
-	_responseTimeout = max;
+	m_pingTimer.expires_from_now(m_pingInterval);
+	m_pingTimer.async_wait([&](auto& ec) { doKeepAlivePing(); });
 }
+
 
 void KeepaliveMonitor::doKeepAlivePing()
 {
 	BOOST_LOG_TRIVIAL(info) << "[Keepalive] Doing ping";
-	m_fi.Ping();
-	
+	m_firmware.Ping();
+
 	scheduleResponseTimer();
-	
 }
 
-void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_recd)
+
+void KeepaliveMonitor::scheduleResponseTimer()
 {
+	m_responseTimer.expires_from_now(m_responseTimeout);
+	m_responseTimer.async_wait([&](auto& ec) { onReceiveResponse(ec); });
+}
 
-
-	if (ping_recd) {
-		if (!_isConnected) {
-			for (const auto& handler : _reconnectHandler) {
-				handler();
-			}
-			_isConnected = true;
-		}
+void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_received)
+{
+	if (ping_received) {
 		BOOST_LOG_TRIVIAL(info) << "[Keepalive] got response";
 
-		//Timer was canceled - this is the most common execution of this function.
-		//Most likely triggered by the adapter seeing a ping response and calling ReceivePing()
-	
-		//store ping-response time for aid in debugging and logging
-		_pingTime = _responseTimeout.total_milliseconds() - _responseTimer.expires_from_now().total_milliseconds();
-		std::cout << "The ping time from send to receive was " << _pingTime << " ms\n";
+		if (!m_isConnected) {
+			raiseReconnect();
+			m_isConnected = true;
+		}
+
+		m_lastestPingTime = m_responseTimeout.total_milliseconds() 
+			- m_responseTimer.expires_from_now().total_milliseconds();
+		std::cout << "The ping time from send to receive was " << m_lastestPingTime << " ms\n";
 		schedulePingTimer();
 	}
 	else {
-		_isConnected = false;
-		for (const auto& handler : _disconnectHandler) {
-			handler();
-		}
+		m_isConnected = false;
+		raiseDisconnect();
 	}
-
 }
+
+void KeepaliveMonitor::raiseReconnect()
+{
+	for (const auto& handler : m_reconnectHandlers) {
+		handler();
+	}
+}
+
+void KeepaliveMonitor::raiseDisconnect()
+{
+	for (const auto& handler : m_disconnectHandlers) {
+		handler();
+	}
+}
+
+void KeepaliveMonitor::ReceivePing()
+{
+	m_responseTimer.cancel();
+}
+
+void KeepaliveMonitor::OnDisconnect(std::function<void()> handler)
+{
+	m_disconnectHandlers.push_back(std::move(handler));
+}
+
+void KeepaliveMonitor::OnReconnect(std::function<void()> handler)
+{
+	m_reconnectHandlers.push_back(std::move(handler));
+}
+
+
+
+
+
+
+
+
+
 

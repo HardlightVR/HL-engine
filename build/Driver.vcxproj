@@ -314,6 +314,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\HardwareDataModel.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
+    <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
     <ClInclude Include="..\src\Driver\Json\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\Driver\Json\json-forwards.h" />
