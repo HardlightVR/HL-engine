@@ -19,7 +19,6 @@ HardlightPlugin::HardlightPlugin() :
 
 {
 	
-	nsvr_querystate_create(&m_querystate);
 
 	m_adapter->SetMonitor(m_monitor);
 
@@ -116,7 +115,7 @@ HardlightPlugin::~HardlightPlugin()
 int HardlightPlugin::Configure(nsvr_core* core)
 {
 	m_core = core;
-	m_device.RegisterDrivers(core);
+	m_device.Configure(core);
 	//
 	//nsvr_register_cevent_hook(core, nsvr_request_type::nsvr_request_brief_haptic, handle_event, )
 	//m_device.RegisterDrivers([&](nsvr_request_handler consumer, const char* region, const char* iface, void* user_data) {

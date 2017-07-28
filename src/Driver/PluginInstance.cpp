@@ -4,17 +4,19 @@
 #include <boost/type_index.hpp>
 #include <iostream>
 
-#include "FunctionPointerTemplates.h"
 
 #include "DriverConfigParser.h"
-PluginInstance::PluginInstance(std::string fileName, HardwareDataModel& model) :
+PluginInstance::PluginInstance(std::string fileName) :
 	m_fileName(fileName), 
 	m_loaded{ false },
-	m_model(model)
+	m_pluginApi{},
+	register_fn{},
+	m_registry(),
+	m_eventHandler(),
+	m_facade(m_registry, m_eventHandler)
+	
 {
 }
-
-
 
 
 PluginInstance::~PluginInstance()
@@ -50,14 +52,16 @@ bool PluginInstance::Load()
 		return true;
 	}
 
-	m_loaded = true;
 
-	if (m_creator) {
-		return m_creator(&m_rawPtr);
+	if (register_fn) {
+		register_fn(&m_pluginApi);
+
+		m_loaded = m_pluginApi.init(&m_rawPtr);
+		
 	}	
-	else {
-		return false;
-	}
+	
+	return m_loaded;
+	
 	
 }
 
@@ -66,23 +70,18 @@ bool PluginInstance::Load()
 //precondition: successfully loaded
 bool PluginInstance::Configure()
 {
-	NSVR_Configuration config;
-
+	if (m_pluginApi.configure) {
+		return m_pluginApi.configure(m_rawPtr, reinterpret_cast<nsvr_core*>(&m_facade));
+	}
 	
-
-
-	if (m_configure) {
-		return m_configure(m_rawPtr, reinterpret_cast<nsvr_core*>(&m_model));
-	}
-	else {
-		return false;
-	}
+	return false;
 }
 
 bool PluginInstance::Link()
 {
 	boost::system::error_code loadFailure;
 	m_lib = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
+	
 	if (loadFailure) {
 		std::cout << "Failed to load " << m_fileName << ": " << loadFailure.message() << ".\n";
 		return false;
@@ -90,18 +89,9 @@ bool PluginInstance::Link()
 
 	std::cout << "Loaded " << m_fileName << ".\n";
 
-	if (!tryLoad(m_lib, "NSVR_Plugin_Init", m_creator)) {
+	if (!tryLoad(m_lib, "nsvr_plugin_register", register_fn)) {
 		return false;
 	}
-
-	if (!tryLoad(m_lib, "NSVR_Plugin_Free", m_destructor)) {
-		return false;
-	}
-	
-	if (!tryLoad(m_lib, "NSVR_Plugin_Configure", m_configure)) {
-		return false;
-	}
-
 	
 	return true;
 
@@ -111,8 +101,9 @@ bool PluginInstance::Link()
 bool PluginInstance::Unload()
 {
 	bool result = false;
-	if (m_destructor) {
-		result = m_destructor(&m_rawPtr);
+	if (m_pluginApi.free) {
+		result = m_pluginApi.free(m_rawPtr);
+		m_rawPtr = nullptr;
 	}
 	m_lib.reset();
 

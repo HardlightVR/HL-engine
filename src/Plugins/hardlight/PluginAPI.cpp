@@ -8,38 +8,26 @@
 #include <iostream>
 
 
-
-
-
-NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Init(nsvr_plugin ** pluginPtr)
+NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api * api)
 {
-	Locator::initialize();
-	Locator::provide(new EnumTranslator());
+	api->init = [](nsvr_plugin** plugin) {
+		Locator::initialize();
+		Locator::provide(new EnumTranslator());
+		*plugin = AS_TYPE(nsvr_plugin, new HardlightPlugin());
+		return 1;
+	};
 
-	*pluginPtr = AS_TYPE(nsvr_plugin, new HardlightPlugin());
+	api->free = [](nsvr_plugin* plugin) {
+		delete AS_TYPE(HardlightPlugin, plugin);
+		return 1;
+	};
+
+	api->configure = [](nsvr_plugin* plugin, nsvr_core* core) {
+		return AS_TYPE(HardlightPlugin, plugin)->Configure(core);
+	};
 
 	return 1;
 }
-
-
-
-
-NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Configure(nsvr_plugin * pluginPtr, nsvr_core * core)
-{
-	return AS_TYPE(HardlightPlugin, pluginPtr)->Configure(core);
-}
-
-
-
-
-
-NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Free(nsvr_plugin ** ptr)
-{
-	delete AS_TYPE(HardlightPlugin, *ptr);
-	*ptr = nullptr;
-	return 1;
-}
-
 
 
 

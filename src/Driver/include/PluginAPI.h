@@ -33,44 +33,50 @@ extern "C" {
 	// Opaque type representing the core API provided to you
 	typedef struct nsvr_core nsvr_core;
 
-	typedef struct nsvr_quaternion {
-		float w;
-		float x;
-		float y;
-		float z;
-	} nsvr_quaternion;
 
-	
 
-	
-	
-	
-	// The API requirements are divided into 3 levels: Basic, Standard, and Extended.
-	// 
-	// The goal is to get you up and running as soon as possible, adding additional complexity
-	// when it is desired or available in your stack.
-	//
-	// If you implement the >>Basic API<<, we will command your hardware with the simplest primitives
+	// As a plugin author, you may implement three levels of functionality.
+	 
+	// If you implement the Basic Requirements, we will command your hardware with the simplest primitives
 	// available. This is appropriate for devices like controllers, or if your API only supports buffered or 
 	// "preset" haptic capabilities.
-	// 
-	// If you implement the >>Standard API<<, we will pass off more complex events to your software for more precise
-	// processing that we cannot perform. For example, the transition from a long lived-effect to a short effect requires
-	// specific knowledge of your hardware and firmware. Additionally, your software will provide an interface to query the status
-	// of the hardware, which can enable richer features such as emulation modes for developers. 
-	//
-	// If you implement the >>Extended API<<, your software promises to deliver complex playback capabilities, 
-	// such as starting, stopping, and canceling effects. Additionally, this opens the door for us to perform ducking, layering,
-	// and compositing operations.
+	
+	// If you implement the Standard Requirements, we will pass more complex events to your plugin for processing 
+	// that we cannot perform. For example, the haptic transition from a long-lived effect to a short, abrupt effect
+	// requires hardware and firmware-specific knowledge. 
+
+	// If you implement the Extended Requirements, your plugin will deliver complex playback capabilities, 
+	// such as starting, stopping, and canceling effects. Additionally, this will allow the core to perform ducking, 
+	// layering, and compositing operations.
 
 
-	// For communicating with the core, create a device_event and call event_raise on it. 
-	// See documentation specific to each of these event types.
 
-	/////////////////////////////////
-	// Communicating with the Core //
-	/////////////////////////////////
+	/////////////////////////
+	// Plugin Registration //
+	/////////////////////////
 
+	typedef struct nsvr_plugin_api {
+		typedef int(*nsvr_plugin_init)(nsvr_plugin** plugin);
+		typedef int(*nsvr_plugin_configure)(nsvr_plugin* plugin, nsvr_core* core);
+		typedef int(*nsvr_plugin_free)(nsvr_plugin* plugin);
+
+		nsvr_plugin_init init;
+		nsvr_plugin_configure configure;
+		nsvr_plugin_free free;
+	} nsvr_plugin_api;
+
+
+	// This is the only function that your plugin must export.
+	NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api* api);
+
+
+
+	///////////////////////////
+	// Raising device events //
+	///////////////////////////
+
+	// Communication with the core is achieved by raising events.
+	// For instance, when a device is connected, you may raise the device_connected event.
 
 	typedef struct nsvr_device_event nsvr_device_event;
 
@@ -79,7 +85,7 @@ extern "C" {
 		nsvr_device_event_device_connected = 1,
 		nsvr_device_event_device_disconnected = 2,
 		nsvr_device_event_tracking_update = 3
-	};
+	}; 
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event** event, nsvr_device_event_type type);
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event* event);
@@ -87,25 +93,23 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_device_setid(nsvr_device_event* event, uint64_t id);
 
+
+	typedef struct nsvr_quaternion {
+		float w;
+		float x;
+		float y;
+		float z;
+	} nsvr_quaternion;
+
 	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, nsvr_quaternion * quat);
 
+	
+	
 	//////////////////////////
 	// Basic Implementation //
 	//////////////////////////
 
-
-
-	// You must first implement these three functions in your DLL:
-
-	// Perform initialization routines such as instantiating an entry point class, and returning it
-	NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Init(nsvr_plugin** plugin);
-
-	// Opportunity to register various callbacks with the core
-	NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Configure(nsvr_plugin* plugin, nsvr_core* core);
-
-	// Cleanup and destroy the plugin
-	NSVR_PLUGIN_RETURN(int) NSVR_Plugin_Free(nsvr_plugin** plugin);
-
+	
 
 	// If you have a buffered-style API with calls similar to SubmitHapticData(void* amplitudes, int length),
 	// implement the buffer_api interface
@@ -185,12 +189,18 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_node_destroy(nsvr_node** node);
 
 
-	typedef struct nsvr_querystate nsvr_querystate;
-	NSVR_CORE_RETURN(int) nsvr_querystate_create(nsvr_querystate** querystate);
-	NSVR_CORE_RETURN(int) nsvr_querystate_register(nsvr_querystate* querystate, nsvr_core* core);
-	NSVR_CORE_RETURN(int) nsvr_querystate_addnode(nsvr_querystate* state, nsvr_node* node, float x, float y, float z);
-	NSVR_CORE_RETURN(int) nsvr_querystate_updatenode(nsvr_node* node, bool active);
 
+	typedef enum nsvr_sampling_nodestate {
+		nsvr_sampling_nodestate_unknown = 0,
+		nsvr_sampling_nodestate_active = 1,
+		nsvr_sampling_nodestate_inactive = 2
+	} nsvr_sampling_nodestate;
+	typedef struct nsvr_plugin_sampling_api {
+		typedef void(*nsvr_sampling_querystate)(const char* nodeName, nsvr_sampling_nodestate* outState, void* client_data);
+		nsvr_sampling_querystate query_handler;
+		void* client_data;
+	} nsvr_plugin_sampling_api;
+	NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core* core, nsvr_plugin_sampling_api* api);
 
 
 	/////////////////////////////

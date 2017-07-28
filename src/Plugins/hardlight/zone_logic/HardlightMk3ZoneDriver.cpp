@@ -30,14 +30,13 @@ CommandBuffer Hardlight_Mk3_ZoneDriver::update(float dt)
 
 
 
-Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area, nsvr_node* node) :
+Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area) :
 	m_area(area),
 	m_currentMode(Mode::Retained),
 	m_commands(),
 	m_rtpModel(m_area),
 	m_retainedModel(m_area),
-	m_mutex(),
-	m_querynode(node)
+	m_mutex()
 {
 
 }
@@ -48,6 +47,22 @@ Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area, nsvr_node* n
 }
 
 
+
+bool Hardlight_Mk3_ZoneDriver::IsPlaying()
+{
+	if (m_currentMode == Mode::Retained) {
+		if (auto event = m_retainedModel.GetCurrentlyPlayingEvent()) {
+			return true;
+		}
+	}
+	else {
+		if (m_rtpModel.GetVolume() > 0) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 //boost::optional<HapticDisplayInfo> Hardlight_Mk3_ZoneDriver::QueryCurrentlyPlaying()
 //{

@@ -7,7 +7,9 @@
 #include "nsvr_playback_handle.h"
 #include "EventDispatcher.h"
 
-HardwareCoordinator::HardwareCoordinator(DriverMessenger& messenger, EventDispatcher& dispatcher) : m_messenger(messenger)
+HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, EventDispatcher& dispatcher)
+	: m_messenger(messenger)
+	, m_pollDataModels(io, boost::posix_time::milliseconds(16))
 {
 	dispatcher.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		m_activeEffects[event.parent_id()] = { event.parent_id() };
@@ -29,10 +31,19 @@ HardwareCoordinator::HardwareCoordinator(DriverMessenger& messenger, EventDispat
 		}
 		
 	});
+
+	m_pollDataModels.SetEvent([&]() {
+		for (const auto& hardware : m_hardware) {
+			//hardware.second.
+		}
+	});
+
+	m_pollDataModels.Start();
 }
 
 HardwareCoordinator::~HardwareCoordinator()
 {
+	m_pollDataModels.Stop();
 }
 
 void HardwareCoordinator::Register(nsvr_request_type type, nsvr_request_api::nsvr_request_handler handler, unsigned int targetVersion, void * user_data)

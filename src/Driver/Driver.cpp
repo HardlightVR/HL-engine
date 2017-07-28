@@ -13,10 +13,6 @@
 
 
 
-//remove following two
-#include "PluginInstance.h"
-
-
 //void extractDrvData(const packet& packet) {
 //	//as status register:
 //	uint8_t whichDrv = packet.raw[4];
@@ -46,7 +42,7 @@ Driver::Driver() :
 	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_curveEngineUpdate(m_io->GetIOService(), boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
-	m_coordinator(m_messenger, m_eventDispatcher),
+	m_coordinator(m_io->GetIOService(), m_messenger, m_eventDispatcher),
 	m_pluginManager(m_coordinator, {"HardlightPlugin", "OpenVRPlugin"}),
 	m_eventDispatcher()
 

@@ -283,6 +283,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
+    <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h" />
     <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h" />

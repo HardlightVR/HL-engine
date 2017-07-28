@@ -21,6 +21,11 @@ namespace nsvr {
 			device_connected();
 		};
 
+		class device_disconnected : public device_event {
+		public:
+			device_disconnected();
+		};
+
 		class tracking_update : public device_event {
 		public:
 			tracking_update();

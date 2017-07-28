@@ -1,8 +1,8 @@
 #pragma once
-#include "PluginInstance.h"
-#include <array>
+#include <vector>
+#include <string>
 #include <memory>
-#include "HardwareDataModel.h"
+#include "PluginInstance.h"
 
 class HardwareCoordinator;
 class PluginManager {

@@ -1,49 +1,27 @@
 #pragma once
 #include <string>
-#include <unordered_map>
-#include "../include/PluginAPI.h"
-
-#include <chrono>
-#include <boost/function.hpp>
+#include <memory>
 #include <boost/dll.hpp>
-
-
 #include <boost/log/trivial.hpp>
+#include "PluginAPI.h"
 
-#include "HardwareDataModel.h"
-
-
-
-typedef struct nsvr_callback {
-	void* callback;
-	nsvr_core* context;
-} nsvr_callback;
-
-
-
-typedef struct NSVR_Configuration_s {
-
-	std::unordered_map<std::string, nsvr_callback> Callbacks;
-
-} NSVR_Configuration;
-
-
-struct FunctionTable {
-
-};
+#include "CoreFacade.h"
+#include "PluginApiRegistry.h"
+#include "PluginEventHandler.h"
 class PluginInstance
 {
 public:
 
 
-	PluginInstance(std::string fileName, HardwareDataModel& model);
+	PluginInstance(std::string fileName);
 	~PluginInstance();
+	
 	bool ParseManifest();
 	bool Link();
 	bool Load();
 
 	bool Configure();
-;
+
 
 	bool Unload();
 	bool IsLoaded() const;
@@ -57,29 +35,29 @@ public:
 
 	
 
-
-
 private:
+	std::unique_ptr<boost::dll::shared_library> m_dll;
 
-	typedef std::function<int(nsvr_plugin**)> plugin_creator_t;
-	typedef std::function<int(nsvr_plugin**)> plugin_destructor_t;
-	typedef std::function<int(nsvr_plugin*, nsvr_core*)> plugin_configure_t;
-	std::unique_ptr<boost::dll::shared_library> m_lib;
+
+	typedef std::function<int(nsvr_plugin_api*)> plugin_registration_t;
+	plugin_registration_t m_pluginRegisterFunction;
+
+	nsvr_plugin_api m_pluginFunctions;
+	nsvr_plugin* m_pluginPointer;
+
+
 	
-	nsvr_plugin* m_rawPtr;
 
-	plugin_creator_t m_creator;
-	plugin_destructor_t m_destructor;
-	plugin_configure_t m_configure;
-
+	
 	std::string m_displayName;
 	std::string m_fileName;
 	bool m_loaded;
 
 
-	HardwareDataModel& m_model;
 
-
+	PluginApiRegistry m_registry;
+	PluginEventHandler m_eventHandler;
+	CoreFacade m_facade;
 
 
 };

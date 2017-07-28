@@ -111,6 +111,9 @@ NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* reque
 
 
 
+
+
+
 NSVR_CORE_RETURN(int) nsvr_register_buffer_api(nsvr_core * core, nsvr_plugin_buffer_api * api)
 {
 	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
@@ -174,100 +177,13 @@ NSVR_CORE_RETURN(int) nsvr_device_setid(nsvr_device_event * event, uint64_t id)
 	return 1;
 }
 
-NSVR_CORE_RETURN(int) nsvr_querystate_register(nsvr_querystate * querystate, nsvr_core * core)
+
+
+
+
+NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core * core, nsvr_plugin_sampling_api * api)
 {
-	HardwareDataModel* model = AS_TYPE(HardwareDataModel, core);
-	//todo: implement
-
-	return NSVR_SUCCESS;
-}
-NSVR_CORE_RETURN(int) NSVR_Configuration_GetCallback(const NSVR_Configuration * config, const char * name, nsvr_callback* callback)
-{
-
-	RETURN_IF_NULL(config);
-	RETURN_IF_NULL(name);
-	RETURN_IF_NULL(callback);
-
-	if (config->Callbacks.find(name) != config->Callbacks.end()) {
-		const auto& cb = config->Callbacks.at(name);
-		callback->callback = cb.callback;
-		callback->context = cb.context;
-		return 1;
-	}
-	
-	return -1;
-
+	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
+	return 1;
 }
 
-
-
-
-
-struct nsvr_node {
-	boost::uuids::uuid id;
-	std::string displayname;
-	bool active;
-	nsvr_node() : id(boost::uuids::random_generator()()), active{false}
-	{
-
-	}
-};
-
-
-
-
-NSVR_CORE_RETURN(int) nsvr_node_create(nsvr_node ** node)
-{
-	*node = new nsvr_node{};
-	return NSVR_SUCCESS;
-}
-
-NSVR_CORE_RETURN(int) nsvr_node_setdisplayname(nsvr_node* node, const char* name) {
-	node->displayname = std::string(name);
-	return NSVR_SUCCESS;
-}
-
-NSVR_CORE_RETURN(int) nsvr_node_destroy(nsvr_node** node) {
-	delete *node;
-	*node = nullptr;
-	return NSVR_SUCCESS;
-}
-
-
-struct nsvr_querystate {
-	struct vec3 {
-		float x; float y; float z;
-	};
-	struct graph_node {
-		vec3 location;
-		nsvr_node* node;
-	};
-	std::vector<graph_node> nodes;
-};
-
-NSVR_CORE_RETURN(int) nsvr_querystate_create(nsvr_querystate ** querystate)
-{
-	*querystate = new nsvr_querystate{};
-	return NSVR_SUCCESS;
-}
-
-NSVR_CORE_RETURN(int) nsvr_querystate_addnode(nsvr_querystate* state, nsvr_node * node, float x, float y, float z)
-{
-	nsvr_querystate::graph_node newNode;
-	newNode.location = nsvr_querystate::vec3{ x, y, z };
-	newNode.node = node;
-	state->nodes.push_back(std::move(newNode));
-	return NSVR_SUCCESS;
-
-	
-}
-NSVR_CORE_RETURN(int) nsvr_querystate_updatenode(nsvr_node * node, bool active)
-{
-	node->active = active;
-	return NSVR_SUCCESS;
-}
-
-NSVR_CORE_RETURN(bool) nsvr_playback_handle_equal(nsvr_playback_handle * lhs, nsvr_playback_handle * rhs)
-{
-	return lhs->id == rhs->id;
-}

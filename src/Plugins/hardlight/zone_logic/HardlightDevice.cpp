@@ -13,15 +13,10 @@ HardlightDevice::HardlightDevice()
 	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
 		std::string locstring = translator.ToRegionFromLocation(Location(loc));
 
-		//I'm just going to go ahead and memory leak these for now. 
-		//Must wrap the API in c++ objects.
-		nsvr_node* newNode;
-		nsvr_node_create(&newNode);
-		nsvr_node_setdisplayname(newNode, locstring.c_str());
-
+		std::cout << locstring << '\n';
 		m_drivers.insert(std::make_pair(
 			locstring, 
-			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc), newNode))
+			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
 		);
 
 	}
@@ -30,7 +25,7 @@ HardlightDevice::HardlightDevice()
 
 
 
-void HardlightDevice::RegisterDrivers(nsvr_core* ctx)
+void HardlightDevice::Configure(nsvr_core* ctx)
 {
 	nsvr_plugin_request_api request_api;
 	request_api.client_data = this;
@@ -54,6 +49,16 @@ void HardlightDevice::RegisterDrivers(nsvr_core* ctx)
 	};
 
 	nsvr_register_playback_api(ctx, &playback_api);
+
+
+
+	nsvr_plugin_sampling_api sampling_api;
+	sampling_api.client_data = this;
+	sampling_api.query_handler = [](const char* node, nsvr_sampling_nodestate* outState, void* client_data) {
+		AS_TYPE(HardlightDevice, client_data)->Query(node, outState);
+	};
+
+	nsvr_register_sampling_api(ctx, &sampling_api);
 
 	
 }
@@ -92,6 +97,22 @@ void HardlightDevice::Unpause(ParentId  handle)
 	for (auto& driver : m_drivers) {
 		driver.second->controlEffect(handle, 2);
 	}
+}
+
+int HardlightDevice::Query(const char * node, nsvr_sampling_nodestate * outState)
+{
+	if (m_drivers.find(node) != m_drivers.end()) {
+		if (m_drivers.at(node)->IsPlaying()) {
+			*outState = nsvr_sampling_nodestate_active;
+		}
+		else {
+			*outState = nsvr_sampling_nodestate_inactive;
+		}
+		return 1;
+	}
+
+	return 0;
+
 }
 
 

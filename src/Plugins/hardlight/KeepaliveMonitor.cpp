@@ -7,7 +7,7 @@ KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterfac
 	m_firmware(fi),
 	
 	m_responseTimer(io), 
-	m_responseTimeout(boost::posix_time::milliseconds(3000)),
+	m_responseTimeout(boost::posix_time::milliseconds(1000)),
 	
 	m_pingTimer(io),
 	m_pingInterval(boost::posix_time::milliseconds(500)),

@@ -199,7 +199,9 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 	}
 
 	//Okay, the port is open. Now send a ping to it.
-	m_port->async_write_some(boost::asio::buffer(m_pingData, 7), [](auto ec, auto bytes_transferred) {});
+	m_port->async_write_some(boost::asio::buffer(m_pingData, 7), [](auto ec, auto bytes_transferred) { });
+
+
 	
 	//Read from the port with a specified timeout (if the timeout is reached, we move on to the next) 
 	auto timedReader = std::make_shared<AsyncTimeout>(m_io, boost::posix_time::millisec(m_initialConnectTimeout));
@@ -217,7 +219,6 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 	});
 
 	//Begin the timeout countdown
-	timedReader->Go();
 	
 
 	m_port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this, portNames, timedReader, portName] 
@@ -240,6 +241,9 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 		//got some kind of error reading, or it wasn't a ping packet, so try the next
 		m_io.post([portNames, this]() { testOnePort(portNames);});
 	});
+
+	timedReader->Go();
+
 }
 
 bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string portName)

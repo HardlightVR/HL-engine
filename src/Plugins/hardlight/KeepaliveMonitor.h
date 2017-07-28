@@ -70,8 +70,8 @@ private:
 	|___|___|___|___|___|___|___| etc..
 	t0  t1  t2.. 
 
-	Actual real ping interval is >= _pingInterval, which is a lower bound.
-	A new ping is only sent out once a response has been received, or we reach _responseTimeout.
+	Actual observed ping interval is >= m_pingInterval, which is only lower bound.
+	A new ping is only sent out once a response has been received, or we reach m_responseTimeout.
 	*/
 };
 

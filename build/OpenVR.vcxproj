@@ -281,6 +281,7 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
+    <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
     <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h" />
     <ClInclude Include="..\src\plugins\openvr\stdafx.h" />

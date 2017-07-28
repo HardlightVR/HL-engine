@@ -11,6 +11,8 @@ namespace nsvr {
 			switch (type) {
 			case nsvr_device_event_device_connected:
 				return new device_connected;
+			case nsvr_device_event_device_disconnected:
+				return new device_disconnected;
 			case nsvr_device_event_tracking_update:
 				return new tracking_update;
 			default:
@@ -19,6 +21,7 @@ namespace nsvr {
 			}
 
 		}
+
 
 
 		device_connected::device_connected()
@@ -32,6 +35,12 @@ namespace nsvr {
 		{
 		}
 
+
+		device_disconnected::device_disconnected()
+			: device_event(nsvr_device_event_type::nsvr_device_event_device_disconnected)
+		{
+
+		}
 
 	}
 }

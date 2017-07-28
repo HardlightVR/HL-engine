@@ -9,7 +9,7 @@ typedef struct NSVR_Core_t NSVR_Core;
 class HardlightDevice {
 public:
 	HardlightDevice();
-	void RegisterDrivers(nsvr_core* ctx);
+	void Configure(nsvr_core* ctx);
 
 
 	CommandBuffer GenerateHardwareCommands(float dt);
@@ -19,6 +19,8 @@ public:
 	void Pause(ParentId  handle);
 	void Cancel(ParentId  handle);
 	void Unpause(ParentId  handle);
+	int Query(const char* node, nsvr_sampling_nodestate* outState);
+
 private:
 
 	std::unordered_map<std::string, std::unique_ptr<Hardlight_Mk3_ZoneDriver>> m_drivers;

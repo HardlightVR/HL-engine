@@ -27,6 +27,9 @@
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>Driver\include</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h">
+      <Filter>Driver\include</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
       <Filter>Driver\include\events</Filter>
     </ClInclude>
