@@ -99,7 +99,7 @@ NSVR_CORE_RETURN(int) nsvr_playback_handle_getid(nsvr_playback_handle * handle, 
 
 NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* request_id)
 {
-	*request_id  = AS_TYPE(nsvr::cevents::request_base, request)->getHandle()->id;
+	*request_id  = AS_TYPE(nsvr::cevents::request_base, request)->getHandle();
 	return NSVR_SUCCESS;
 
 }
