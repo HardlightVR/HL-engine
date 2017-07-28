@@ -33,13 +33,13 @@ bool PluginManager::UnloadAll()
 bool PluginManager::linkAll()
 {
 	for (const std::string& pluginName : m_pluginNames) {
-
-		m_plugins.emplace(std::make_pair(pluginName, 
-			std::make_shared<PluginInstance>(
-				pluginName, 
-				m_coordinator.Get(pluginName)
-			)
-		));
+		//todo: fix
+	//	m_plugins.emplace(std::make_pair(pluginName, 
+		//	std::make_shared<PluginInstance>(
+		//		pluginName, 
+				//m_coordinator.Get(pluginName)
+			//)
+	//	));
 
 		if (!m_plugins.at(pluginName)->Link()) {
 			std::cout << "Warning: unable to link " << pluginName << '\n';

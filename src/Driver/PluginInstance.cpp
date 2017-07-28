@@ -9,8 +9,8 @@
 PluginInstance::PluginInstance(std::string fileName) :
 	m_fileName(fileName), 
 	m_loaded{ false },
-	m_pluginApi{},
-	register_fn{},
+	m_pluginFunctions{},
+	m_pluginRegisterFunction{},
 	m_registry(),
 	m_eventHandler(),
 	m_facade(m_registry, m_eventHandler)
@@ -53,10 +53,10 @@ bool PluginInstance::Load()
 	}
 
 
-	if (register_fn) {
-		register_fn(&m_pluginApi);
+	if (m_pluginRegisterFunction) {
+		m_pluginRegisterFunction(&m_pluginFunctions);
 
-		m_loaded = m_pluginApi.init(&m_rawPtr);
+		m_loaded = m_pluginFunctions.init(&m_pluginPointer);
 		
 	}	
 	
@@ -70,8 +70,8 @@ bool PluginInstance::Load()
 //precondition: successfully loaded
 bool PluginInstance::Configure()
 {
-	if (m_pluginApi.configure) {
-		return m_pluginApi.configure(m_rawPtr, reinterpret_cast<nsvr_core*>(&m_facade));
+	if (m_pluginFunctions.configure) {
+		return m_pluginFunctions.configure(m_pluginPointer, reinterpret_cast<nsvr_core*>(&m_facade));
 	}
 	
 	return false;
@@ -80,7 +80,7 @@ bool PluginInstance::Configure()
 bool PluginInstance::Link()
 {
 	boost::system::error_code loadFailure;
-	m_lib = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
+	m_dll = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
 	
 	if (loadFailure) {
 		std::cout << "Failed to load " << m_fileName << ": " << loadFailure.message() << ".\n";
@@ -89,7 +89,7 @@ bool PluginInstance::Link()
 
 	std::cout << "Loaded " << m_fileName << ".\n";
 
-	if (!tryLoad(m_lib, "nsvr_plugin_register", register_fn)) {
+	if (!tryLoad(m_dll, "nsvr_plugin_register", m_pluginRegisterFunction)) {
 		return false;
 	}
 	
@@ -101,11 +101,11 @@ bool PluginInstance::Link()
 bool PluginInstance::Unload()
 {
 	bool result = false;
-	if (m_pluginApi.free) {
-		result = m_pluginApi.free(m_rawPtr);
-		m_rawPtr = nullptr;
+	if (m_pluginFunctions.free) {
+		result = m_pluginFunctions.free(m_pluginPointer);
+		m_pluginPointer = nullptr;
 	}
-	m_lib.reset();
+	m_dll.reset();
 
 	m_loaded = false;
 	return result;

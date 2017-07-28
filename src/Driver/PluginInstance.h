@@ -6,7 +6,7 @@
 #include "PluginAPI.h"
 
 #include "CoreFacade.h"
-#include "PluginApiRegistry.h"
+#include "PluginCapabilities.h"
 #include "PluginEventHandler.h"
 class PluginInstance
 {
@@ -45,17 +45,12 @@ private:
 	nsvr_plugin_api m_pluginFunctions;
 	nsvr_plugin* m_pluginPointer;
 
-
-	
-
-	
 	std::string m_displayName;
 	std::string m_fileName;
 	bool m_loaded;
 
 
-
-	PluginApiRegistry m_registry;
+	PluginCapabilities m_registry;
 	PluginEventHandler m_eventHandler;
 	CoreFacade m_facade;
 

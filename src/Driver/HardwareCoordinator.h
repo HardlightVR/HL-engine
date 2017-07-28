@@ -19,17 +19,17 @@ public:
 	//void Register(nsvr_request_type type, nsvr_plugin_request_api::nsvr_request_handler handler, unsigned int, void* user_data);
 	//HardwareDataModel& Get(const std::string& name);
 
-	//void dispatch_event(nsvr::cevents::request_base& event);
+	void dispatch_event(nsvr::cevents::request_base& event);
 
 
 
 	//void HardwareCoordinator::Playback(uint32_t command,uint64_t existingHandle);
 
-	void AddHardwareDevice(std::unique_ptr<IHardwareDevice> hardware);
+	//void AddHardwareDevice(std::unique_ptr<IHardwareDevice> hardware);
 private:
 	
 	DriverMessenger& m_messenger;
-	std::unordered_map<std::string, HardwareDataModel> m_hardware;
+//	std::unordered_map<std::string, HardwareDataModel> m_hardware;
 
 	struct user_event_handler {
 		nsvr_plugin_request_api::nsvr_request_handler invoke;

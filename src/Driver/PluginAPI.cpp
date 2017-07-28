@@ -95,11 +95,7 @@ NSVR_CORE_RETURN(int) nsvr_playback_handle_getid(nsvr_playback_handle * handle, 
 	return NSVR_SUCCESS;
 }
 
-NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_playback_api * api)
-{
-	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
-	return NSVR_SUCCESS;
-}
+
 
 NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* request_id)
 {
@@ -110,29 +106,38 @@ NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* reque
 
 
 
-
+NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_playback_api * api)
+{
+	AS_TYPE(CoreFacade, core)->RegisterPluginApi<playback_api>(api);
+	return NSVR_SUCCESS;
+}
 
 
 
 NSVR_CORE_RETURN(int) nsvr_register_buffer_api(nsvr_core * core, nsvr_plugin_buffer_api * api)
 {
-	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
+	AS_TYPE(CoreFacade, core)->RegisterPluginApi<buffered_api>(api);
 	return NSVR_SUCCESS;
 }
 
 NSVR_CORE_RETURN(int) nsvr_register_preset_api(nsvr_core * core, nsvr_plugin_preset_api * api)
 {
-	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
+	AS_TYPE(CoreFacade, core)->RegisterPluginApi<preset_api>(api);
 	return NSVR_SUCCESS;
 }
 
 NSVR_CORE_RETURN(int)  nsvr_register_request_api(nsvr_core* core, nsvr_plugin_request_api* api)
 {
-	auto& coord = AS_TYPE(HardwareDataModel, core)->GetParentCoordinator();
-	coord.Register(api->request_type, api->request_handler, 1, api->client_data);
+	AS_TYPE(CoreFacade, core)->RegisterPluginApi<request_api>(api);
 	return NSVR_SUCCESS;
 }
 
+
+NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core * core, nsvr_plugin_sampling_api * api)
+{
+	AS_TYPE(CoreFacade, core)->RegisterPluginApi<sampling_api>(api);
+	return 1;
+}
 
 
 
@@ -157,7 +162,7 @@ NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event
 	RETURN_IF_NULL(core);
 	RETURN_IF_NULL(event);
 	
-	AS_TYPE(HardwareDataModel, core)->Raise(*AS_TYPE(nsvr::pevents::device_event, event));
+//	AS_TYPE(HardwareDataModel, core)->Raise(*AS_TYPE(nsvr::pevents::device_event, event));
 	return 1;
 }
 
@@ -180,10 +185,4 @@ NSVR_CORE_RETURN(int) nsvr_device_setid(nsvr_device_event * event, uint64_t id)
 
 
 
-
-NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core * core, nsvr_plugin_sampling_api * api)
-{
-	AS_TYPE(HardwareDataModel, core)->LowLevel().Register(api);
-	return 1;
-}
 

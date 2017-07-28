@@ -7,27 +7,29 @@ namespace nsvr {
 	}
 }
 
-class PluginApiRegistry;
+class PluginCapabilities;
 class PluginEventHandler;
 
 // This is the entrypoint that all plugin functions call into once they are configured.
 // It simply reroutes to the appropriate components in the core.
 class CoreFacade {
 public:
-	CoreFacade(PluginApiRegistry& apiRegistry, PluginEventHandler& eventHandler);
+	CoreFacade(PluginCapabilities& apiRegistry, PluginEventHandler& eventHandler);
 
 
 	void RaisePluginEvent(const nsvr::pevents::device_event& event);
 
-
-	void RegisterPluginApi(nsvr_plugin_sampling_api* api);
-	void RegisterPluginApi(nsvr_plugin_playback_api* api);
-	void RegisterPluginApi(nsvr_plugin_preset_api* api);
-	void RegisterPluginApi(nsvr_plugin_buffer_api* api);
-
 	
+	template<typename InternalApi, typename ExternalApi>
+	void RegisterPluginApi(ExternalApi* api);
 private:
-	PluginApiRegistry& m_apiRegistry;
+	PluginCapabilities& m_apiRegistry;
 	PluginEventHandler& m_eventHandler;
 	
 };
+
+template<typename InternalApi, typename ExternalApi>
+inline void CoreFacade::RegisterPluginApi(ExternalApi * api)
+{
+	m_apiRegistry.Register<InternalApi>(api);
+}

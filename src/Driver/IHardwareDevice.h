@@ -8,5 +8,6 @@ public:
 	bool has_capability(const std::string& capability);
 
 	virtual void BufferedPlayback() {}
+	virtual void 
 
 };
