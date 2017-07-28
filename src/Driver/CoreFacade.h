@@ -11,7 +11,7 @@ class PluginCapabilities;
 class PluginEventHandler;
 
 // This is the entrypoint that all plugin functions call into once they are configured.
-// It simply reroutes to the appropriate components in the core.
+// It simply reroutes to the appropriate components.
 class CoreFacade {
 public:
 	CoreFacade(PluginCapabilities& apiRegistry, PluginEventHandler& eventHandler);
@@ -23,7 +23,7 @@ public:
 	template<typename InternalApi, typename ExternalApi>
 	void RegisterPluginApi(ExternalApi* api);
 private:
-	PluginCapabilities& m_apiRegistry;
+	PluginCapabilities& m_pluginCapabilities;
 	PluginEventHandler& m_eventHandler;
 	
 };
@@ -31,5 +31,5 @@ private:
 template<typename InternalApi, typename ExternalApi>
 inline void CoreFacade::RegisterPluginApi(ExternalApi * api)
 {
-	m_apiRegistry.Register<InternalApi>(api);
+	m_pluginCapabilities.Register<InternalApi>(api);
 }

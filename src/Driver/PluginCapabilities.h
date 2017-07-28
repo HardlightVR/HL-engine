@@ -124,7 +124,7 @@ public:
 	void Register(ExternalApi* api);
 	
 	template<typename T>
-	const T* GetApi(const std::string& name);
+	T* GetApi(const std::string& name);
 private:
 	std::unordered_map<std::string, std::unique_ptr<plugin_api>> m_apis;
 };
@@ -143,11 +143,11 @@ inline void PluginCapabilities::Register(ExternalApi * api)
 // Returns nullptr if the api identified by name is not found, or if the api is 
 // found but the supplied type is wrong.
 template<typename T>
-inline const T * PluginCapabilities::GetApi(const std::string & name)
+inline T * PluginCapabilities::GetApi(const std::string & name)
 {
 	if (m_apis.find(name) != m_apis.end()) {
 		auto ptr = m_apis.at(name).get();
-		return dynamic_cast<const T*>(ptr);
+		return dynamic_cast<T*>(ptr);
 	}
 	else {
 		BOOST_LOG_TRIVIAL(warning) << "[PluginCapabilities] The request plugin API '" << name << "' was not found!";

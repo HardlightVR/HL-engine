@@ -26,6 +26,7 @@
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\CoreFacade.h" />
     <ClInclude Include="..\src\Driver\CurveEngine.h" />
+    <ClInclude Include="..\src\Driver\DeviceContainer.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\CoreFacade.cpp" />
     <ClCompile Include="..\src\Driver\CurveEngine.cpp" />
+    <ClCompile Include="..\src\Driver\DeviceContainer.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
@@ -150,6 +152,7 @@
     <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
+    <ClCompile Include="..\src\Driver\IHardwareDevice.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
       <Filter>Json</Filter>

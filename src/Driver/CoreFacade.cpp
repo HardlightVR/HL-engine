@@ -4,9 +4,9 @@
 #include "PluginEventHandler.h"
 
 
-CoreFacade::CoreFacade(PluginCapabilities& apiRegistry, PluginEventHandler& eventHandler)
+CoreFacade::CoreFacade(PluginCapabilities& capabilities, PluginEventHandler& eventHandler)
 	: m_eventHandler(eventHandler)
-	, m_apiRegistry(apiRegistry)
+	, m_pluginCapabilities(capabilities)
 {
 
 }

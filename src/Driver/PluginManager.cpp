@@ -2,11 +2,11 @@
 #include "PluginManager.h"
 #include <iostream>
 #include <bitset>
-#include "HardwareCoordinator.h"
-PluginManager::PluginManager(HardwareCoordinator& hw, std::vector<std::string> plugins) 
+#include "DeviceContainer.h"
+PluginManager::PluginManager(DeviceContainer& hw, std::vector<std::string> plugins) 
 	: m_pluginNames(std::move(plugins))
 	, m_plugins()
-	, m_coordinator(hw)
+	, m_deviceContainer(hw)
 {
 
 }
@@ -34,12 +34,12 @@ bool PluginManager::linkAll()
 {
 	for (const std::string& pluginName : m_pluginNames) {
 		//todo: fix
-	//	m_plugins.emplace(std::make_pair(pluginName, 
-		//	std::make_shared<PluginInstance>(
-		//		pluginName, 
-				//m_coordinator.Get(pluginName)
-			//)
-	//	));
+		m_plugins.emplace(std::make_pair(pluginName, 
+			std::make_shared<PluginInstance>(
+				pluginName,
+				m_deviceContainer
+			)
+		));
 
 		if (!m_plugins.at(pluginName)->Link()) {
 			std::cout << "Warning: unable to link " << pluginName << '\n';

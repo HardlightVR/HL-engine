@@ -4,10 +4,10 @@
 #include <memory>
 #include "PluginInstance.h"
 
-class HardwareCoordinator;
+class DeviceContainer;
 class PluginManager {
 public:
-	PluginManager(HardwareCoordinator& coordinator,std::vector<std::string> plugins);
+	PluginManager(DeviceContainer& coordinator,std::vector<std::string> plugins);
 	PluginManager(const PluginInstance&) = delete;
 	const PluginManager& operator=(const PluginManager&) = delete;
 
@@ -22,7 +22,7 @@ private:
 	bool destroyAll();
 	std::vector<std::string> m_pluginNames;
 	std::unordered_map<std::string, std::shared_ptr<PluginInstance>> m_plugins;
-	HardwareCoordinator& m_coordinator;
+	DeviceContainer& m_deviceContainer;
 	
 };
 

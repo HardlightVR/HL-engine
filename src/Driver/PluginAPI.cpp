@@ -162,7 +162,7 @@ NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event
 	RETURN_IF_NULL(core);
 	RETURN_IF_NULL(event);
 	
-//	AS_TYPE(HardwareDataModel, core)->Raise(*AS_TYPE(nsvr::pevents::device_event, event));
+	AS_TYPE(CoreFacade, core)->RaisePluginEvent(*AS_TYPE(nsvr::pevents::device_event, event));
 	return 1;
 }
 

@@ -8,12 +8,17 @@
 #include "CoreFacade.h"
 #include "PluginCapabilities.h"
 #include "PluginEventHandler.h"
+
+#include "DriverConfigParser.h"
+
+class DeviceContainer;
+
 class PluginInstance
 {
 public:
 
 
-	PluginInstance(std::string fileName);
+	PluginInstance(std::string fileName, DeviceContainer& coord);
 	~PluginInstance();
 	
 	bool ParseManifest();
@@ -50,7 +55,10 @@ private:
 	bool m_loaded;
 
 
-	PluginCapabilities m_registry;
+	DeviceContainer& m_devices;
+
+	HardwareDescriptor m_descriptor;
+	PluginCapabilities m_capabilities;
 	PluginEventHandler m_eventHandler;
 	CoreFacade m_facade;
 

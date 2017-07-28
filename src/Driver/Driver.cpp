@@ -35,6 +35,7 @@
 
 Driver::Driver() :
 	m_io(new IoService()),
+	m_devices(),
 	m_messenger(m_io->GetIOService()),
 	m_statusPush(m_io->GetIOService(), boost::posix_time::millisec(250)),
 	m_hapticsPull(m_io->GetIOService(), boost::posix_time::millisec(5)),
@@ -42,9 +43,10 @@ Driver::Driver() :
 	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
 	m_curveEngineUpdate(m_io->GetIOService(), boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
-	m_coordinator(m_io->GetIOService(), m_messenger, m_eventDispatcher),
-	m_pluginManager(m_coordinator, {"HardlightPlugin", "OpenVRPlugin"}),
-	m_eventDispatcher()
+	m_eventDispatcher(),
+
+	m_coordinator(m_devices, m_eventDispatcher),
+	m_pluginManager(m_devices,{"HardlightPlugin", "OpenVRPlugin"})
 
 
 {

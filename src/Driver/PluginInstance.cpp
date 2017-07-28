@@ -3,19 +3,29 @@
 
 #include <boost/type_index.hpp>
 #include <iostream>
-
-
-#include "DriverConfigParser.h"
-PluginInstance::PluginInstance(std::string fileName) :
+#include "IHardwareDevice.h"
+#include "DeviceContainer.h"
+PluginInstance::PluginInstance(std::string fileName, DeviceContainer& coord) :
+	m_devices(coord),
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
-	m_registry(),
+	m_capabilities(),
 	m_eventHandler(),
-	m_facade(m_registry, m_eventHandler)
+	m_facade(m_capabilities, m_eventHandler)
 	
 {
+
+	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [&](const auto& event) {
+		m_devices.AddDevice(m_descriptor.displayName, device_factories::createDevice(m_descriptor, m_capabilities, m_eventHandler));
+		std::cout << "A device was connected! inside " << m_fileName << '\n';
+	});
+
+	m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [&](const auto& event) {
+		m_devices.RemoveDevice(m_descriptor.displayName);
+		std::cout << "A device was disconnected! inside " << m_fileName << '\n';
+	});
 }
 
 
@@ -32,7 +42,7 @@ bool PluginInstance::ParseManifest()
 	}
 
 	try {
-		HardwareDescriptor descriptor = DriverConfigParser::ParseConfig(manifestFilename);
+		m_descriptor = DriverConfigParser::ParseConfig(manifestFilename);
 	}
 	catch (const std::exception& error) {
 		std::cout << "Unable to parse descriptor for " << m_fileName << '\n';

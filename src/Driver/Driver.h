@@ -6,7 +6,7 @@
 #include "HardwareCoordinator.h"
 #include "PluginManager.h"
 
-
+#include "DeviceContainer.h"
 #include "CurveEngine.h"
 class IoService;
 
@@ -19,12 +19,13 @@ public:
 	bool StartThread();
 	bool Shutdown();
 private:
+	DeviceContainer m_devices;
+	EventDispatcher m_eventDispatcher;
 
 	std::shared_ptr<IoService> m_io;
 	DriverMessenger m_messenger;
 	Encoder _encoder;
 
-	EventDispatcher m_eventDispatcher;
 
 	ScheduledEvent m_curveEngineUpdate;
 
