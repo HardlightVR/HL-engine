@@ -3,38 +3,49 @@
 #include<memory>
 #include "DriverConfigParser.h"
 #include "cevent_internal.h"
-
+#include <vector>
 class PluginCapabilities;
 class PluginEventHandler;
 
-class Device {
+class NodalDevice {
 public:
-	virtual ~Device() {}
-	virtual bool supportsRegion(const std::string& region) const = 0;
-	virtual void doRequest(const nsvr::cevents::request_base&) = 0;
+//	std::vector<std::unique_ptr<Node>> nodes;
+	void handleDeviceRequest();
+	void handleNodeRequest();
 	
-	virtual void controlPlayback(uint64_t id, uint32_t command) = 0;
 };
 
-
-
-//suit, gun, etc.
-class SuitDevice : public Device{
+class Node {
 public:
-	SuitDevice(const HardwareDescriptor&, PluginCapabilities&, PluginEventHandler&);
-	bool supportsRegion(const std::string& region) const override;
-	void doRequest(const nsvr::cevents::request_base&) override;
-	void controlPlayback(uint64_t id, uint32_t command) override;
-private:
-	PluginCapabilities& m_associatedPlugin;
-	HardwareDescriptor m_descriptor;
+	virtual ~Node() {}
+};
+
+class LedDevice : public Node {
+public:
+	LedDevice(PluginCapabilities&, PluginEventHandler&);
+
+};
+class HapticDevice : public Node {
+public:
+	HapticDevice(PluginCapabilities&, PluginEventHandler&);
+
+};
+class TrackedDevice : public Node {
+public:
+	TrackedDevice(PluginCapabilities&, PluginEventHandler&);
+
 };
 
 
 
 
 namespace device_factories {
-	std::unique_ptr<Device> createDevice(const HardwareDescriptor& description, PluginCapabilities&, PluginEventHandler&);
+	std::vector<std::unique_ptr<NodalDevice>> createDevices(
+		const HardwareDescriptor& description,
+		PluginCapabilities& capabilities,
+		PluginEventHandler& eventDispatcher);
+
+	//std::unique_ptr<NodalDevice> createDevice(const HardwareDescriptor& description, PluginCapabilities&, PluginEventHandler&);
 
 }
 

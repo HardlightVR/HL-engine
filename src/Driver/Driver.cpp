@@ -63,10 +63,6 @@ Driver::Driver() :
 
 	core::get()->add_sink(sink);
 	
-	/*m_hardware.RegisterPacketCallback(SuitPacket::PacketType::ImuData, [this](auto packet) {
-		m_imus.ConsumePacket(packet); 
-	});
-*/
 	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Booting";
 
 	/*m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
@@ -216,6 +212,7 @@ void Driver::handleTracking()
 {
 	NullSpace::SharedMemory::TrackingUpdate update = m_cachedTracking;
 
+	
 	//if (auto quat = m_imus.GetOrientation(Imu::Chest)) {
 	//	update.chest = *quat;
 	//}

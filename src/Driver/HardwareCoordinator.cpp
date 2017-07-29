@@ -7,6 +7,17 @@
 #include "nsvr_playback_handle.h"
 #include "EventDispatcher.h"
 #include "DeviceContainer.h"
+
+
+struct matches_region {
+	bool operator()(Node* node) {
+		if (true /*node->region == chest_left*/) {
+			result = "chest_left";
+		}
+		return true;
+	}
+	std::string result;
+};
 HardwareCoordinator::HardwareCoordinator(DeviceContainer& devices, EventDispatcher& dispatcher):
 	 m_devices(devices)
 {
@@ -18,7 +29,10 @@ HardwareCoordinator::HardwareCoordinator(DeviceContainer& devices, EventDispatch
 
 	
 
-		m_devices.ForEachHapticDeviceInRegion(regions, [&](Device* device, const char* region) {
+		m_devices.ForEachNode(matches_region(), [](Node* node, std::string result) {
+
+		});
+	/*	m_devices.ForEachHapticDeviceInRegion(regions, [&](NodalDevice* device, const char* region) {
 			auto lasting = nsvr::cevents::LastingHaptic(
 				simple_haptic.effect(),
 				simple_haptic.strength(),
@@ -27,16 +41,16 @@ HardwareCoordinator::HardwareCoordinator(DeviceContainer& devices, EventDispatch
 				);
 			lasting.handle = event.parent_id();
 			device->doRequest(lasting);
-		});
+		});*/
 
 	});
 
 	dispatcher.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		const auto& playback_event = event.playback_event();
 
-		m_devices.ForEachDevice([&](Device* device) {
+		/*m_devices.ForEachDevice([&](NodalDevice* device) {
 			device->controlPlayback(event.parent_id(), playback_event.command());
-		});
+		});*/
 		
 	});
 
@@ -60,40 +74,6 @@ HardwareCoordinator::~HardwareCoordinator()
 
 
 
-//HardwareDataModel & HardwareCoordinator::Get(const std::string & name)
-//{
-//	if (m_hardware.find(name) == m_hardware.end()) {
-//		m_hardware.insert(std::make_pair(name, HardwareDataModel(*this)));
-//
-//		//m_hardware.at(name).OnTrackingUpdate([&](auto region, auto quat) { updateTrackingForMessenger(region, quat); });
-//		//m_hardware.at(name).OnDeviceConnect([&]() {
-//		//	SuitsConnectionInfo info = { };
-//		//	info.SuitsFound[0] = true;
-//		//	info.Suits[0].Id = 1;
-//		//	info.Suits[0].Status = NullSpace::SharedMemory::Connected;
-//		//	m_messenger.WriteSuits(info);
-//		//});
-//
-//		//m_hardware.at(name).OnDeviceConnect([&]() {
-//		//	std::cout << name << " CONNECTED\n";
-//		//});
-//
-//		//m_hardware.at(name).OnDeviceDisconnect([&]() {
-//		//	std::cout << name << " DISCONNECTED\n";
-//		//});
-//
-//		//m_hardware.at(name).OnDeviceDisconnect([&]() {
-//		//	SuitsConnectionInfo info = { };
-//		//	info.SuitsFound[0] = true;
-//		//	info.Suits[0].Id = 1;
-//		//	info.Suits[0].Status = NullSpace::SharedMemory::Disconnected;
-//		//	m_messenger.WriteSuits(info);
-//		//});
-//	}
-//	return m_hardware.at(name);
-//	
-//}
-//
 void HardwareCoordinator::dispatch_event(nsvr::cevents::request_base& event)
 {
 

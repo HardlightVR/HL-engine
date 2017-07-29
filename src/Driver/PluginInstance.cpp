@@ -18,12 +18,16 @@ PluginInstance::PluginInstance(std::string fileName, DeviceContainer& coord) :
 {
 
 	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [&](const auto& event) {
-		m_devices.AddDevice(m_descriptor.displayName, device_factories::createDevice(m_descriptor, m_capabilities, m_eventHandler));
+//		m_devices.AddDevice(m_descriptor.displayName, device_factories::createDevice(m_descriptor, m_capabilities, m_eventHandler));
+		
+		auto devices = device_factories::createDevices(m_descriptor, m_capabilities, m_eventHandler);
+		m_devices.AddDevice(m_descriptor.displayName, std::move(devices));
+		
 		std::cout << "A device was connected! inside " << m_fileName << '\n';
 	});
 
 	m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [&](const auto& event) {
-		m_devices.RemoveDevice(m_descriptor.displayName);
+	//	m_devices.RemoveDevice(m_descriptor.displayName);
 		std::cout << "A device was disconnected! inside " << m_fileName << '\n';
 	});
 }

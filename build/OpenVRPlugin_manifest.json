@@ -1,24 +1,22 @@
 {
    "name" : "Vive Controllers",
+   "manifest-version":1,
    "concept" : "controller",
    "nodes" : [
       {
          "name" : "Vive controller left pad",
          "region" : "hand_left",
+         "type" : "haptic",
          "capabilities" : [
-            {
-               "interface" : "buffered-pla-drive"
-
-            }
+           "buffered"
          ]
       },
       {
          "name" : "Vive controller right pad",
          "region" : "hand_right",
+         "type" : "haptic",
          "capabilities" : [
-            {
-               "interface" : "buffered-pla-drive"
-            }
+            "buffered"
          ]
       }
 

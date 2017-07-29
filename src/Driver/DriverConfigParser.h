@@ -2,32 +2,32 @@
 
 #include <string>
 #include <vector>
+
 #include <boost/variant.hpp>
 #include <unordered_set>
 
-struct brief_haptic_interface {
-	
-};
-
-struct lasting_haptic_interface {
-};
-
-struct direct_drive_interface {
-};
 
 class NodeDescriptor {
 public:
-	using Capability = boost::variant<
-		brief_haptic_interface,
-		lasting_haptic_interface,
-		direct_drive_interface
-	>;
+	enum class NodeType {
+		Unknown = 0,
+		Haptic,
+		Tracker,
+		Led
+	};
+	enum class Capability {
+		Unknown = 0,
+		Preset,
+		Buffered,
+		Dynamic
+	};
 
 	NodeDescriptor();
 
 	std::string displayName;
 	std::string region;
-	std::vector<Capability> capabilities;
+	std::unordered_set<Capability> capabilities;
+	NodeType nodeType;
 };
 
 class HardwareDescriptor {
@@ -35,7 +35,8 @@ public:
 	enum class Concept {
 		Unknown = 0,
 		Suit,
-		Gun
+		Gun,
+		Controller
 	};
 	HardwareDescriptor();
 
@@ -43,6 +44,8 @@ public:
 	Concept concept;
 	std::vector<NodeDescriptor> nodes;
 	unsigned int fileVersion;
+	static std::unordered_map<std::string, HardwareDescriptor::Concept> concept_map;
+
 };
 class DriverConfigParser {
 
@@ -52,8 +55,14 @@ public:
 	static HardwareDescriptor ParseConfig(const std::string& path);
 
 
-
-
-private:
 	static void parseNodes(HardwareDescriptor& descriptor, const Json::Value& nodes);
+	//static NodeDescriptor::Capability parseCapability(const std::string& param1);
+	//static NodeDescriptor::NodeType parseNodeType(const std::string& param1);
+
+
+	
+
+	static std::unordered_map<std::string, NodeDescriptor::Capability> capability_map;
+	static std::unordered_map<std::string, NodeDescriptor::NodeType> node_type_map;
+
 };

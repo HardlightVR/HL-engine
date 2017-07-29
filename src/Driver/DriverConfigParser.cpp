@@ -2,6 +2,26 @@
 #include "DriverConfigParser.h"
 #include <boost/filesystem.hpp>
 #include <fstream>
+
+
+std::unordered_map<std::string, NodeDescriptor::Capability> DriverConfigParser::capability_map = {
+	{"preset", NodeDescriptor::Capability::Preset},
+	{"buffered", NodeDescriptor::Capability::Buffered},
+	{"dynamic", NodeDescriptor::Capability::Dynamic}
+};
+
+std::unordered_map<std::string, NodeDescriptor::NodeType> DriverConfigParser::node_type_map = {
+	{"haptic", NodeDescriptor::NodeType::Haptic},
+	{"tracked", NodeDescriptor::NodeType::Tracker},
+	{"led", NodeDescriptor::NodeType::Led}
+};
+
+std::unordered_map<std::string, HardwareDescriptor::Concept> HardwareDescriptor::concept_map = {
+	{"suit", HardwareDescriptor::Concept::Suit},
+	{"controller", HardwareDescriptor::Concept::Controller},
+	{"gun", HardwareDescriptor::Concept::Gun}
+};
+
 DriverConfigParser::DriverConfigParser()
 {
 }
@@ -23,17 +43,7 @@ bool DriverConfigParser::IsValidConfig(const std::string& path)
 	
 }
 
-HardwareDescriptor::Concept parseConcept(const std::string& conceptStr) {
-	if (conceptStr == "suit") {
-		return HardwareDescriptor::Concept::Suit;
-	}
-	else if (conceptStr == "gun") {
-		return HardwareDescriptor::Concept::Gun;
-	}
-	else {
-		return HardwareDescriptor::Concept::Unknown;
-	}
-}
+
 HardwareDescriptor DriverConfigParser::ParseConfig(const std::string & path)
 {
 	Json::Value root;
@@ -44,11 +54,7 @@ HardwareDescriptor DriverConfigParser::ParseConfig(const std::string & path)
 
 	descriptor.fileVersion = root.get("manifest-version", 1).asUInt();
 	std::string conceptStr = root.get("concept", "unknown").asString();
-	descriptor.concept = parseConcept(conceptStr);
-
-	if (descriptor.concept == HardwareDescriptor::Concept::Unknown) {
-		throw std::runtime_error("Unknown hardware concept: " + conceptStr);
-	}
+	descriptor.concept = HardwareDescriptor::concept_map[conceptStr];
 
 	descriptor.displayName = root.get("name", "unknown").asString();
 
@@ -67,31 +73,20 @@ HardwareDescriptor DriverConfigParser::ParseConfig(const std::string & path)
 
 void DriverConfigParser::parseNodes(HardwareDescriptor& descriptor, const Json::Value& node)
 {
+	NodeDescriptor nodeDescriptor;
+
 	assert(node.isObject());
 
-	std::string nodeName = node.get("name", "unknown").asString();
-	std::string region = node.get("region", "unknown").asString();
-
-	NodeDescriptor nodeDescriptor;
-	nodeDescriptor.displayName = nodeName;
-	nodeDescriptor.region = region;
-
-	auto capabilities = node["capabilities"];
-
+	nodeDescriptor.displayName = node.get("name", "unknown").asString();
+	nodeDescriptor.region = node.get("region", "unknown").asString();
+	nodeDescriptor.nodeType = node_type_map[node.get("type", "unknown").asString()];
+	const auto& capabilities = node["capabilities"];
 	assert(capabilities.isArray());
 
-	//auto size = capabilities.size();
-
-	for (const auto& cap : capabilities) {
-		std::string interface = cap.get("interface", "unknown").asString();
-		if (interface == "direct-drive") {
-			nodeDescriptor.capabilities.push_back(direct_drive_interface{});
-		}
-		else if (interface == "brief-haptic") {
-			nodeDescriptor.capabilities.push_back(brief_haptic_interface{});
-		}
-		else if (interface == "lasting-haptic") {
-			nodeDescriptor.capabilities.push_back(lasting_haptic_interface{});
+	for (const Json::Value& cap : capabilities) {
+		NodeDescriptor::Capability parsed = capability_map[cap.asString()];
+		if (parsed != NodeDescriptor::Capability::Unknown) {
+			nodeDescriptor.capabilities.insert(parsed);
 		}
 	}
 
@@ -99,6 +94,8 @@ void DriverConfigParser::parseNodes(HardwareDescriptor& descriptor, const Json::
 
 
 }
+
+
 
 HardwareDescriptor::HardwareDescriptor()
 {

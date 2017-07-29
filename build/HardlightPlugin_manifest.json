@@ -5,30 +5,26 @@
 
    "nodes":[  
       {  
-         "name":"HardlightMkIII Chest Left DRV",
+         "type" : "haptic",
+         "name":"Chest Left DRV",
          "region":"left_upper_chest",
          "capabilities":[  
-            {  
-               "interface":"preset-erm-waveform"
-            }, 
-            {
-               "interface":"direct-erm-drive"
-            },
-            {
-               "interface":"brief-haptic"
-            }
+           "preset", "buffered", "dynamic"
          ]
       },
       {  
-         "name":"HardlightMkIII Chest Right DRV",
+         "type" : "haptic",
+         "name":"Chest Right DRV",
          "region":"right_upper_chest",
          "capabilities":[  
-            {  
-               "interface":"preset-erm-waveform"
-            }, 
-            {
-               "interface":"direct-erm-drive"
-            }
+           "preset", "buffered", "dynamic"
+         ]
+      },
+      {
+         "type" : "led",
+         "name" : "Center Chest tricolor LED",
+         "capabilities": [
+            "preset"
          ]
       }
 
