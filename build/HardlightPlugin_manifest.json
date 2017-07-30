@@ -3,10 +3,11 @@
    "manifest-version":1,
    "concept":"suit",
 
-   "nodes":[  
+   "static_nodes":[  
       {  
          "type" : "haptic",
          "name":"Chest Left DRV",
+         "id" : 1,
          "region":"left_upper_chest",
          "capabilities":[  
            "preset", "buffered", "dynamic"
@@ -14,7 +15,7 @@
       },
       {  
          "type" : "haptic",
-         "name":"Chest Right DRV",
+         "name":"Extra Hardlight Node",
          "region":"right_upper_chest",
          "capabilities":[  
            "preset", "buffered", "dynamic"
@@ -24,7 +25,7 @@
          "type" : "led",
          "name" : "Center Chest tricolor LED",
          "capabilities": [
-            "preset"
+            "preset"            
          ]
       }
 

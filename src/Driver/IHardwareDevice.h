@@ -4,48 +4,72 @@
 #include "DriverConfigParser.h"
 #include "cevent_internal.h"
 #include <vector>
-class PluginCapabilities;
-class PluginEventHandler;
 
-class NodalDevice {
-public:
-//	std::vector<std::unique_ptr<Node>> nodes;
-	void handleDeviceRequest();
-	void handleNodeRequest();
-	
-};
+#include "protobuff_defs/HighLevelEvent.pb.h"
+
+
+class PluginApis;
+class PluginEventHandler;
 
 class Node {
 public:
+	using RequestId = uint64_t;
 	virtual ~Node() {}
+	Node(uint64_t id, const std::string& name, uint32_t capability);
+	virtual void deliver(RequestId id, const nsvr::cevents::request_base&) = 0;
+	virtual std::vector<std::string> getRegions() { return std::vector<std::string>{}; }
+	uint64_t id() const;
+protected:
+	std::string m_name;
+	uint64_t m_id;
+	uint32_t m_capability;
 };
 
-class LedDevice : public Node {
+
+class NodalDevice {
 public:
-	LedDevice(PluginCapabilities&, PluginEventHandler&);
+	using Region = std::string;
+	using RequestId = uint64_t;
+	NodalDevice(std::string name, PluginApis& api);
+	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
+	void addNode(std::unique_ptr<Node>);
+	std::string name() const;
+	virtual ~NodalDevice() {}
 
+private:
+	std::string m_name;
+	std::vector<std::unique_ptr<Node>> m_nodes;
+	std::unordered_map<Region, std::vector<Node*>> m_nodesByRegion;
+	void handleSimpleHaptic(uint64_t id, const ::NullSpaceIPC::SimpleHaptic& simple);
+	void handlePlaybackEvent(uint64_t id, const ::NullSpaceIPC::PlaybackEvent& event);
+	PluginApis& m_apis;
 };
-class HapticDevice : public Node {
+
+
+class SuitDevice : public NodalDevice {
 public:
-	HapticDevice(PluginCapabilities&, PluginEventHandler&);
-
+	SuitDevice(HardwareDescriptor desc, PluginApis& cap, PluginEventHandler& ev);
 };
-class TrackedDevice : public Node {
+
+
+class HapticNode : public Node {
 public:
-	TrackedDevice(PluginCapabilities&, PluginEventHandler&);
+	HapticNode(const NodeDescriptor& info, PluginApis&, PluginEventHandler&);
+	void deliver(RequestId, const nsvr::cevents::request_base&);
+private:
+	PluginApis& m_apis;
+	std::string m_region;
 
 };
+
 
 
 
 
 namespace device_factories {
-	std::vector<std::unique_ptr<NodalDevice>> createDevices(
-		const HardwareDescriptor& description,
-		PluginCapabilities& capabilities,
-		PluginEventHandler& eventDispatcher);
 
-	//std::unique_ptr<NodalDevice> createDevice(const HardwareDescriptor& description, PluginCapabilities&, PluginEventHandler&);
+	std::unique_ptr<NodalDevice> createDevice(const HardwareDescriptor& description, PluginApis& cap, PluginEventHandler& ev);
+	//std::unique_ptr<NodalDevice> createDevice(const HardwareDescriptor& description, PluginApis&, PluginEventHandler&);
 
 }
 

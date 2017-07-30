@@ -45,9 +45,7 @@ bool PluginManager::linkAll()
 			std::cout << "Warning: unable to link " << pluginName << '\n';
 		}
 
-		if (!m_plugins.at(pluginName)->ParseManifest()) {
-
-		}
+		
 	}
 
 	return true;
@@ -67,9 +65,16 @@ bool PluginManager::instantiateAll()
 bool PluginManager::configureAll()
 {
 	for (auto& plugin : m_plugins) {
-		if (!plugin.second->Configure()) {
-			std::cout << "Warning: unable to configure " << plugin.first << '\n';
+		if (plugin.second->Configure()) {
+			if (plugin.second->ParseManifest()) {
+				plugin.second->InstantiateDevices();
+			}
+			
 
+		}
+		else {
+			std::cout << "Warning: unable to configure " << plugin.first << '\n';
+			
 		}
 	}
 

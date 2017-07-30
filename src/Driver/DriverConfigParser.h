@@ -12,21 +12,20 @@ public:
 	enum class NodeType {
 		Unknown = 0,
 		Haptic,
-		Tracker,
 		Led
 	};
 	enum class Capability {
 		Unknown = 0,
-		Preset,
-		Buffered,
-		Dynamic
+		Preset = 1 <<0,
+		Buffered = 1 << 1,
+		Dynamic = 1 << 2
 	};
 
 	NodeDescriptor();
-
+	uint64_t id;
 	std::string displayName;
 	std::string region;
-	std::unordered_set<Capability> capabilities;
+	uint32_t capabilities;
 	NodeType nodeType;
 };
 

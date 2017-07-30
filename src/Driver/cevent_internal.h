@@ -8,13 +8,14 @@ namespace cevents {
 
 	struct request_base {
 		virtual ~request_base() {}
-
-		virtual nsvr_request_type getType() const = 0;
+		request_base();
+		virtual nsvr_request_type type() const = 0;
 
 		virtual uint64_t getHandle() const { return handle; }
 		
 		uint64_t handle;
 	
+		uint64_t device_id;
 	};
 
 	
@@ -31,7 +32,7 @@ struct LastingHaptic :public request_base {
 
 
 	static const nsvr_request_type request_type;
-	nsvr_request_type getType() const override;
+	nsvr_request_type type() const override;
 
 
 };

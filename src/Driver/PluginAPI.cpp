@@ -28,7 +28,7 @@ enum returnTypes {
 };
 NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request * cevent, nsvr_request_type * outType)
 {
-	*outType = AS_CTYPE(nsvr::cevents::request_base, cevent)->getType();
+	*outType = AS_CTYPE(nsvr::cevents::request_base, cevent)->type();
 	return NSVR_SUCCESS;
 }
 
@@ -140,6 +140,11 @@ NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core * core, nsvr_plugin_s
 }
 
 
+NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_device_api* api)
+{
+	AS_TYPE(CoreFacade, core)->RegisterPluginApi<device_api>(api);
+	return 1;
+}
 
 NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, uint32_t device_id)
 {

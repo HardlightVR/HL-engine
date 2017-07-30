@@ -24,25 +24,9 @@ HardwareCoordinator::HardwareCoordinator(DeviceContainer& devices, EventDispatch
 	dispatcher.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		const auto& simple_haptic = event.simple_haptic();
 
-		std::vector<std::string> regions;
-		for (const auto& r : simple_haptic.regions()) { regions.push_back(r); }
-
-	
-
-		m_devices.ForEachNode(matches_region(), [](Node* node, std::string result) {
-
+		m_devices.All([&](NodalDevice* device) {
+			device->deliverRequest(event);
 		});
-	/*	m_devices.ForEachHapticDeviceInRegion(regions, [&](NodalDevice* device, const char* region) {
-			auto lasting = nsvr::cevents::LastingHaptic(
-				simple_haptic.effect(),
-				simple_haptic.strength(),
-				simple_haptic.duration(),
-				region
-				);
-			lasting.handle = event.parent_id();
-			device->doRequest(lasting);
-		});*/
-
 	});
 
 	dispatcher.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {

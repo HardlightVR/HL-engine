@@ -7,14 +7,14 @@ namespace nsvr {
 	}
 }
 
-class PluginCapabilities;
+class PluginApis;
 class PluginEventHandler;
 
 // This is the entrypoint that all plugin functions call into once they are configured.
 // It simply reroutes to the appropriate components.
 class CoreFacade {
 public:
-	CoreFacade(PluginCapabilities& apiRegistry, PluginEventHandler& eventHandler);
+	CoreFacade(PluginApis& apiRegistry, PluginEventHandler& eventHandler);
 
 
 	void RaisePluginEvent(const nsvr::pevents::device_event& event);
@@ -23,7 +23,7 @@ public:
 	template<typename InternalApi, typename ExternalApi>
 	void RegisterPluginApi(ExternalApi* api);
 private:
-	PluginCapabilities& m_pluginCapabilities;
+	PluginApis& m_pluginCapabilities;
 	PluginEventHandler& m_eventHandler;
 	
 };

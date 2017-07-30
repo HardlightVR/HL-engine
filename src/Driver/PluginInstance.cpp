@@ -11,17 +11,16 @@ PluginInstance::PluginInstance(std::string fileName, DeviceContainer& coord) :
 	m_loaded{ false },
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
-	m_capabilities(),
+	m_apis(),
 	m_eventHandler(),
-	m_facade(m_capabilities, m_eventHandler)
+	m_facade(m_apis, m_eventHandler)
 	
 {
 
 	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [&](const auto& event) {
-//		m_devices.AddDevice(m_descriptor.displayName, device_factories::createDevice(m_descriptor, m_capabilities, m_eventHandler));
+//		m_devices.AddDevice(m_descriptor.displayName, device_factories::createDevice(m_descriptor, m_apis, m_eventHandler));
 		
-		auto devices = device_factories::createDevices(m_descriptor, m_capabilities, m_eventHandler);
-		m_devices.AddDevice(m_descriptor.displayName, std::move(devices));
+		
 		
 		std::cout << "A device was connected! inside " << m_fileName << '\n';
 	});
@@ -47,6 +46,8 @@ bool PluginInstance::ParseManifest()
 
 	try {
 		m_descriptor = DriverConfigParser::ParseConfig(manifestFilename);
+
+		
 	}
 	catch (const std::exception& error) {
 		std::cout << "Unable to parse descriptor for " << m_fileName << '\n';
@@ -55,6 +56,11 @@ bool PluginInstance::ParseManifest()
 
 	return true;
 
+}
+
+void PluginInstance::InstantiateDevices()
+{
+	m_devices.AddDevice(device_factories::createDevice(m_descriptor, m_apis, m_eventHandler));
 }
 
 

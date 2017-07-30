@@ -6,7 +6,7 @@
 #include "PluginAPI.h"
 
 #include "CoreFacade.h"
-#include "PluginCapabilities.h"
+#include "PluginApis.h"
 #include "PluginEventHandler.h"
 
 #include "DriverConfigParser.h"
@@ -22,6 +22,7 @@ public:
 	~PluginInstance();
 	
 	bool ParseManifest();
+	void InstantiateDevices();
 	bool Link();
 	bool Load();
 
@@ -58,7 +59,7 @@ private:
 	DeviceContainer& m_devices;
 
 	HardwareDescriptor m_descriptor;
-	PluginCapabilities m_capabilities;
+	PluginApis m_apis;
 	PluginEventHandler m_eventHandler;
 	CoreFacade m_facade;
 

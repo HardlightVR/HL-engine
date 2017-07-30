@@ -69,7 +69,7 @@ extern "C" {
 	// This is the only function that your plugin must export.
 	NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api* api);
 
-
+	
 
 	///////////////////////////
 	// Raising device events //
@@ -102,7 +102,44 @@ extern "C" {
 	} nsvr_quaternion;
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, nsvr_quaternion * quat);
+	
 
+	typedef struct nsvr_device_ids {
+		uint64_t* ids;
+		unsigned int length;
+	} nsvr_device_ids;
+
+	typedef enum nsvr_device_capability {
+		nsvr_device_capability_none = 0,
+		nsvr_device_capability_preset = 1 << 0,
+		nsvr_device_capability_buffered = 1 << 1,
+		nsvr_device_capability_dynamic = 1 << 2
+	} nsvr_device_capability;
+
+	typedef enum nsvr_device_type {
+		nsvr_device_type_unknown = 0,
+		nsvr_device_type_haptic,
+		nsvr_device_type_led
+	} nsvr_device_type;
+
+	typedef struct nsvr_device_basic_info {
+		uint64_t id;
+		uint32_t type;
+		uint32_t capabilities;
+		char name[128];
+		char region[128];
+	} nsvr_device_basic_info;
+
+	typedef struct nsvr_device_request nsvr_device_request;
+	typedef struct nsvr_plugin_device_api {
+		typedef void(*nsvr_device_enumerateids)(nsvr_device_ids*, void*);
+		typedef void(*nsvr_device_getinfo)(uint64_t id, nsvr_device_basic_info* info, void*);
+		nsvr_device_enumerateids enumerateids_handler;
+		nsvr_device_getinfo getinfo_handler;
+		void* client_data;
+	} nsvr_plugin_device_api;
+
+	NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_device_api* api);
 	
 	
 	//////////////////////////
