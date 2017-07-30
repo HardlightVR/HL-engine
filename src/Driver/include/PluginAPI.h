@@ -91,7 +91,7 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event* event);
 	NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event);
 
-	NSVR_CORE_RETURN(int) nsvr_device_setid(nsvr_device_event* event, uint64_t id);
+	NSVR_CORE_RETURN(int) nsvr_device_event_setid(nsvr_device_event* event, uint64_t id);
 
 
 	typedef struct nsvr_quaternion {
@@ -105,8 +105,8 @@ extern "C" {
 	
 
 	typedef struct nsvr_device_ids {
-		uint64_t* ids;
-		unsigned int length;
+		uint64_t ids[128];
+		unsigned int device_count;
 	} nsvr_device_ids;
 
 	typedef enum nsvr_device_capability {

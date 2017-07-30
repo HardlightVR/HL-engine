@@ -2,21 +2,23 @@
    "name" : "Vive Controllers",
    "manifest-version":1,
    "concept" : "controller",
-   "nodes" : [
+   "static_nodes" : [
       {
          "name" : "Vive controller left pad",
-         "region" : "hand_left",
+         "region" : "left_upper_chest",
+         "id" : 1,
          "type" : "haptic",
          "capabilities" : [
-           "buffered"
+           "preset"
          ]
       },
       {
          "name" : "Vive controller right pad",
          "region" : "hand_right",
+         "id" : 2,
          "type" : "haptic",
          "capabilities" : [
-            "buffered"
+            "preset"
          ]
       }
 

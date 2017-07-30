@@ -181,7 +181,7 @@ NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event) {
 
 }
 
-NSVR_CORE_RETURN(int) nsvr_device_setid(nsvr_device_event * event, uint64_t id)
+NSVR_CORE_RETURN(int) nsvr_device_event_setid(nsvr_device_event * event, uint64_t id)
 {
 	AS_TYPE(nsvr::pevents::device_event, event)->device_id = id;
 	return 1;

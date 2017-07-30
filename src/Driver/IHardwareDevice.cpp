@@ -2,68 +2,9 @@
 #include "IHardwareDevice.h"
 #include "PluginInstance.h"
 #include "PluginApis.h"
+#include "nsvr_preset.h"
 
-//std::unique_ptr<NodalDevice> device_factories::createDevice(const HardwareDescriptor& description, PluginApis& c, PluginEventHandler& e)
-//{
-//	if (description.concept == HardwareDescriptor::Concept::Suit) {
-//		return std::unique_ptr<NodalDevice>(new SuitDevice(description,c,e ));
-//	} 
-//
-//	return nullptr;
-//}
-
-//
-//SuitDevice::SuitDevice(const HardwareDescriptor & d, PluginApis& c, PluginEventHandler& e)
-//	: m_associatedPlugin(c), m_descriptor(d)
-//{
-//	
-//}
-//
-//bool SuitDevice::supportsRegion(const std::string & region) const
-//{
-//	for (const auto& node : m_descriptor.nodes) {
-//		if (region == node.region) {
-//			return true;
-//		}
-//	}
-//	return false;
-//}
-//
-//void SuitDevice::doRequest(const nsvr::cevents::request_base& req)
-//{
-//
-//	//we need to emulate the apis that aren't supported. So.
-//	request_api* api = m_associatedPlugin.GetApi<request_api>("request");
-//	if (api) {
-//		api->submit_request.invoke(
-//			reinterpret_cast<nsvr_request*>(
-//				const_cast<nsvr::cevents::request_base*>(&req)
-//			)
-//		);
-//	}
-//	
-//}
-//
-//void SuitDevice::controlPlayback(uint64_t id, uint32_t command)
-//{
-//	playback_api* api = m_associatedPlugin.GetApi<playback_api>("playback");
-//	if (api) {
-//		switch (command) {
-//		case 1:
-//			api->submit_pause.invoke(id);
-//			break;
-//		case 2:
-//			api->submit_unpause.invoke(id);
-//			break;
-//		case 3:
-//			api->submit_cancel.invoke(id);
-//			break;
-//		default:
-//			BOOST_LOG_TRIVIAL(trace) << "[SuitDevice] Encountered a malformed playback request, command = " << command;
-//			break;
-//		}
-//	}
-//}
+#include <boost/log/trivial.hpp>
 
 
 
@@ -78,7 +19,7 @@ std::unique_ptr<NodalDevice> device_factories::createDevice(const HardwareDescri
 		device = std::unique_ptr<NodalDevice>(new SuitDevice{description, cap, ev});
 		break;
 	case HardwareDescriptor::Concept::Controller:
-		//device = std::unique_ptr<NodalDevice>(new ControllerDevice{description, cap, ev});
+		device = std::unique_ptr<NodalDevice>(new ControllerDevice{description, cap, ev});
 		break;
 	default:
 		BOOST_LOG_TRIVIAL(info) << "[HardwareDeviceFactory] Unrecognized concept: " << (int)description.concept << " in device " << description.displayName;
@@ -88,10 +29,58 @@ std::unique_ptr<NodalDevice> device_factories::createDevice(const HardwareDescri
 	return device;
 }
 
-NodalDevice::NodalDevice(std::string name, PluginApis& api)
-	: m_name{name}
-	, m_apis(api)
+NodalDevice::NodalDevice(HardwareDescriptor& descriptor, PluginApis& capi, PluginEventHandler& ev)
+	: m_name{descriptor.displayName}
+	, m_apis(capi)
 {
+
+	ev.Subscribe(nsvr_device_event_device_connected, [&](const nsvr::pevents::device_event& ev) {
+		if (auto device = findDevice(ev.device_id)) {
+			BOOST_LOG_TRIVIAL(info) << "The known device " << device->name() << " has connected";
+		}
+		else {
+			BOOST_LOG_TRIVIAL(info) << "Previously unknown device has connected (id = " << ev.device_id << ")";
+			if (auto api = m_apis.GetApi<device_api>("device")) {
+				nsvr_device_basic_info info{};
+				api->submit_getinfo(ev.device_id, &info);
+				BOOST_LOG_TRIVIAL(info) << "	Okay, the device is called " << info.name;
+
+			}
+		}
+	});
+
+	if (capi.SupportsApi("device")) {
+		nsvr_device_ids ids = { 0 };
+		auto api = capi.GetApi<device_api>("device");
+
+		api->submit_enumerateids(&ids);
+
+		for (std::size_t i = 0; i < ids.device_count; i++) {
+			nsvr_device_basic_info info = { 0 };
+			api->submit_getinfo(ids.ids[i], &info);
+
+			NodeDescriptor desc;
+			desc.capabilities = info.capabilities;
+			desc.displayName = info.name;
+			desc.id = ids.ids[i];
+			desc.nodeType = (NodeDescriptor::NodeType)info.type;
+			desc.region = info.region;
+			if (desc.nodeType == NodeDescriptor::NodeType::Haptic) {
+				BOOST_LOG_TRIVIAL(info) << "The device system " << m_name << " has dynamically registered a device " << info.name <<" at region " << info.region;
+				this->addNode(std::unique_ptr<Node>(new HapticNode{ desc, capi, ev }));
+			}
+
+
+		}
+	}
+	else {
+		for (const auto& node : descriptor.nodes) {
+
+			if (node.nodeType == NodeDescriptor::NodeType::Haptic) {
+				this->addNode(std::unique_ptr<Node>(new HapticNode{ node, capi, ev }));
+			}
+		}
+	}
 }
 
 void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
@@ -112,11 +101,11 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 void NodalDevice::addNode(std::unique_ptr<Node> node)
 {
 	m_nodes.push_back(std::move(node));
-	auto regions = m_nodes.back()->getRegions();
+	auto region = m_nodes.back()->getRegion();
 
-	for (const auto& region : regions) {
-		m_nodesByRegion[region].push_back(m_nodes.back().get());
-	}
+	
+	m_nodesByRegion[region].push_back(m_nodes.back().get());
+	
 
 
 }
@@ -128,16 +117,36 @@ std::string NodalDevice::name() const
 
 void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
-	if (auto api = m_apis.GetApi<request_api>("request")) {
-		for (const auto& region : simple.regions()) {
-			auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), region.c_str());
+	for (const auto& region : simple.regions()) {
+		auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), region.c_str());
+		
+		if (auto api = m_apis.GetApi<request_api>("request")) {
 			ev.handle = requestId;
 			api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
 		}
+		
+		else if (auto api = m_apis.GetApi<preset_api>("preset")) {
+			auto& interested = m_nodesByRegion[region];
+			for (auto& node : interested) {
+				node->deliver(requestId, ev);
+			}
+		}
 	}
+	
 }
 
 
+
+Node * NodalDevice::findDevice(uint64_t id)
+{
+	for (auto& node : m_nodes) {
+		if (node->id() == id) {
+			return node.get();
+		}
+	}
+
+	return nullptr;
+}
 
 void NodalDevice::handlePlaybackEvent(uint64_t id, const ::NullSpaceIPC::PlaybackEvent& event)
 {
@@ -171,47 +180,29 @@ HapticNode::HapticNode(const NodeDescriptor& info, PluginApis &c, PluginEventHan
 void HapticNode::deliver(RequestId, const nsvr::cevents::request_base & base)
 {
 	if (base.type() == nsvr_request_type_lasting_haptic) {
-		if (m_apis.SupportsApi("request")) {
+		const auto lasting = static_cast<const nsvr::cevents::LastingHaptic&>(base);
+		if (auto api = m_apis.GetApi<buffered_api>("buffered")) {
 		
-			//m_apis.GetApi<request_api>("request")->submit_request()
+			//api->submit_buffer()
+		}
+		else if (auto api = m_apis.GetApi<preset_api>("preset")) {
+			nsvr_preset_request req{};
+			req.family = static_cast<nsvr_preset_family>(lasting.effect);
+			req.strength = lasting.strength;
+			api->submit_preset(reinterpret_cast<nsvr_preset_request*>(&req));
 		}
 	}
 }
 
-SuitDevice::SuitDevice(HardwareDescriptor desc, PluginApis & capi, PluginEventHandler& ev)
-	: NodalDevice{desc.displayName, capi}
+std::string HapticNode::getRegion() const
 {
-	if (capi.SupportsApi("device")) {
-		nsvr_device_ids ids = { 0 };
-		auto api = capi.GetApi<device_api>("device");
+	return m_region;
+}
 
-		api->submit_enumerateids(&ids);
-
-		for (std::size_t i = 0; i < ids.length; i++) {
-			nsvr_device_basic_info info = { 0 };
-			api->submit_getinfo(ids.ids[i], &info);
-			
-			NodeDescriptor desc;
-			desc.capabilities = info.capabilities;
-			desc.displayName = info.name;
-			desc.id = info.id;
-			desc.nodeType = (NodeDescriptor::NodeType)info.type;
-			desc.region = info.region;
-			if (desc.nodeType== NodeDescriptor::NodeType::Haptic) {
-				this->addNode(std::unique_ptr<Node>(new HapticNode{desc, capi, ev}));
-			}
-
-
-		}
-	}
-	else {
-		for (const auto& node : desc.nodes) {
+SuitDevice::SuitDevice(HardwareDescriptor desc, PluginApis & capi, PluginEventHandler& ev)
+	: NodalDevice{desc, capi, ev}
+{
 	
-			if (node.nodeType == NodeDescriptor::NodeType::Haptic) {
-				this->addNode(std::unique_ptr<Node>(new HapticNode{ node, capi, ev }));
-			}
-		}
-	}
 
 }
 
@@ -221,4 +212,14 @@ Node::Node(uint64_t id, const std::string& name, uint32_t capability) :m_id(id),
 uint64_t Node::id() const
 {
 	return m_id;
+}
+
+std::string Node::name() const
+{
+	return m_name;
+}
+
+ControllerDevice::ControllerDevice(HardwareDescriptor desc, PluginApis & cap, PluginEventHandler & ev)
+	: NodalDevice{desc, cap, ev}
+{
 }
