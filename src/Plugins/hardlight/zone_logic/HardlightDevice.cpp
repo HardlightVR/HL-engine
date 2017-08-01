@@ -61,6 +61,8 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	nsvr_register_sampling_api(ctx, &sampling_api);
 
 	
+	nsvr_plugin_tracking_api tracking_api;
+	nsvr_register_tracking_api(ctx, &tracking_api);
 }
 
 void HardlightDevice::handle( nsvr_request * event)

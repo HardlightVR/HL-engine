@@ -12,7 +12,8 @@ std::unordered_map<std::string, NodeDescriptor::Capability> DriverConfigParser::
 
 std::unordered_map<std::string, NodeDescriptor::NodeType> DriverConfigParser::node_type_map = {
 	{"haptic", NodeDescriptor::NodeType::Haptic},
-	{"led", NodeDescriptor::NodeType::Led}
+	{"led", NodeDescriptor::NodeType::Led},
+	{"tracker", NodeDescriptor::NodeType::Tracker}
 };
 
 std::unordered_map<std::string, HardwareDescriptor::Concept> HardwareDescriptor::concept_map = {
@@ -81,14 +82,16 @@ void DriverConfigParser::parseNodes(HardwareDescriptor& descriptor, const Json::
 	nodeDescriptor.nodeType = node_type_map[node.get("type", "unknown").asString()];
 	nodeDescriptor.id = node.get("id", 0).asUInt64();
 	const auto& capabilities = node["capabilities"];
-	assert(capabilities.isArray());
 
-	for (const Json::Value& cap : capabilities) {
-		NodeDescriptor::Capability parsed = capability_map[cap.asString()];
-		nodeDescriptor.capabilities |= (uint32_t)parsed;
-		
+	if (!capabilities.isNull()) {
+		assert(capabilities.isArray());
+
+		for (const Json::Value& cap : capabilities) {
+			NodeDescriptor::Capability parsed = capability_map[cap.asString()];
+			nodeDescriptor.capabilities |= (uint32_t)parsed;
+
+		}
 	}
-
 	descriptor.nodes.push_back(std::move(nodeDescriptor));
 
 

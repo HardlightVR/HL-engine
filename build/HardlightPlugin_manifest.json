@@ -13,20 +13,11 @@
            "preset", "buffered", "dynamic"
          ]
       },
-      {  
-         "type" : "haptic",
-         "name":"Extra Hardlight Node",
-         "region":"right_upper_chest",
-         "capabilities":[  
-           "preset", "buffered", "dynamic"
-         ]
-      },
       {
-         "type" : "led",
-         "name" : "Center Chest tricolor LED",
-         "capabilities": [
-            "preset"            
-         ]
+         "type" : "tracker",
+         "name" : "Chest BNO IMU",
+         "id":5,
+         "region": "chest"
       }
 
    ]

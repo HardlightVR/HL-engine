@@ -82,7 +82,8 @@ void DriverMessenger::WriteLog(std::string s)
 {
 	//assumes null termination
 	if (!m_loggingStream->Push(s.data(), s.length() + 1)) {
-		std::cout << "Failed to push to log stream";
+		std::cout << "[DriverMessenger] Failed to write to gameplay log\n";
+		
 	}
 }
 

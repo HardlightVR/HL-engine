@@ -35,7 +35,6 @@ inline void callback<FnPtr, Arguments...>::operator()(Arguments ...argument)
 class plugin_api {
 public:
 	virtual ~plugin_api() {}
-	virtual const char* getCapabilityName() const = 0;
 };
 
 
@@ -47,8 +46,7 @@ struct buffered_api : public plugin_api {
 		nsvr_plugin_buffer_api::nsvr_buffered_handler, 
 		nsvr_buffered_request*
 	> submit_buffer;
-
-	const char* getCapabilityName() const override { return "buffered"; }
+	static constexpr const char* getCapabilityName() { return "buffered"; }
 };
 
 struct preset_api : public plugin_api {
@@ -60,7 +58,7 @@ struct preset_api : public plugin_api {
 		nsvr_preset_request*
 	> submit_preset;
 
-	const char* getCapabilityName() const override { return "preset"; }
+	static constexpr const char* getCapabilityName() { return "preset"; }
 };
 
 struct request_api : public plugin_api {
@@ -72,7 +70,7 @@ struct request_api : public plugin_api {
 		nsvr_request*
 	> submit_request;
 
-	const char* getCapabilityName() const override { return "request"; }
+	static constexpr const char* getCapabilityName() { return "request"; }
 };
 
 struct playback_api : public plugin_api {
@@ -96,7 +94,7 @@ struct playback_api : public plugin_api {
 		uint64_t
 	> submit_unpause;
 
-	const char* getCapabilityName() const override { return "playback"; }
+	static constexpr const char* getCapabilityName() { return "playback"; }
 };
 
 struct sampling_api : public plugin_api{
@@ -109,7 +107,7 @@ struct sampling_api : public plugin_api{
 		nsvr_sampling_nodestate*
 	> submit_query;
 
-	const char* getCapabilityName() const override { return "sampling"; }
+	static constexpr const char* getCapabilityName() { return "sampling"; }
 };
 
 
@@ -129,8 +127,40 @@ struct device_api : public plugin_api {
 		nsvr_device_basic_info*
 	> submit_getinfo;
 
-	const char* getCapabilityName() const override { return "device"; }
+	static constexpr const char* getCapabilityName() { return "device"; }
 
+};
+
+struct rawcommand_api : public plugin_api {
+	rawcommand_api(nsvr_plugin_rawcommand_api* api)
+		: submit_rawcommand{ api->send_handler, api->client_data } {}
+
+	callback<
+		nsvr_plugin_rawcommand_api::nsvr_rawcommand_send,
+		uint8_t*,
+		unsigned int
+	> submit_rawcommand;
+
+	static constexpr const char* getCapabilityName() { return "rawcommand"; }
+};
+
+struct tracking_api : public plugin_api {
+	tracking_api(nsvr_plugin_tracking_api* api)
+		: submit_beginstreaming{ api->beginstreaming_handler, api->client_data }
+		, submit_endstreaming{ api->endstreaming_handler, api->client_data } {}
+
+	callback<
+		nsvr_plugin_tracking_api::nsvr_tracking_beginstreaming,
+		nsvr_tracking_stream*,
+		const char*
+	> submit_beginstreaming;
+
+	callback<
+		nsvr_plugin_tracking_api::nsvr_tracking_endstreaming,
+		const char*
+	> submit_endstreaming;
+
+	static constexpr const char* getCapabilityName() { return "tracking"; }
 };
 
 // Represents the capabilities of a particular plugin, e.g. a plugin supports
@@ -145,7 +175,7 @@ public:
 	void Register(ExternalApi* api);
 	
 	template<typename T>
-	T* GetApi(const std::string& name);
+	T* GetApi();
 
 	bool SupportsApi(const std::string& name);
 private:
@@ -160,22 +190,22 @@ template<typename InternalApi, typename ExternalApi>
 inline void PluginApis::Register(ExternalApi * api)
 {
 	auto x = std::unique_ptr<plugin_api>(new InternalApi(api));
-	m_apis.emplace(std::make_pair(x->getCapabilityName(), std::move(x)));
+	m_apis.emplace(std::make_pair(InternalApi::getCapabilityName(), std::move(x)));
 }
 
 // Returns nullptr if the api identified by name is not found, or if the api is 
 // found but the supplied type is wrong.
 template<typename T>
-inline T* PluginApis::GetApi(const std::string & name)
+inline T* PluginApis::GetApi()
 {
-	if (m_apis.find(name) != m_apis.end()) {
-		auto ptr = m_apis.at(name).get();
+	if (m_apis.find(T::getCapabilityName()) != m_apis.end()) {
+		auto ptr = m_apis.at(T::getCapabilityName()).get();
 		if (T* derived_ptr = dynamic_cast<T*>(ptr)) {
 			return derived_ptr;
 		}
 	}
 	else {
-		BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API '" << name << "' was not found!";
+		BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API '" << T::getCapabilityName() << "' was not found!";
 	}
 	return nullptr;
 }

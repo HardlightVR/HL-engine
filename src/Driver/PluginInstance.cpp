@@ -5,30 +5,18 @@
 #include <iostream>
 #include "IHardwareDevice.h"
 #include "DeviceContainer.h"
-PluginInstance::PluginInstance(std::string fileName, DeviceContainer& coord) :
+PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& coord) :
 	m_devices(coord),
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
 	m_apis(),
-	m_eventHandler(),
+	m_eventHandler(io),
 	m_facade(m_apis, m_eventHandler)
 	
 {
 
-	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [&](const auto& event) {
-//		m_devices.AddDevice(m_descriptor.displayName, device_factories::createDevice(m_descriptor, m_apis, m_eventHandler));
-		
-		
-		
-		std::cout << "A device was connected! inside " << m_fileName << '\n';
-	});
-
-	m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [&](const auto& event) {
-	//	m_devices.RemoveDevice(m_descriptor.displayName);
-		std::cout << "A device was disconnected! inside " << m_fileName << '\n';
-	});
 }
 
 
@@ -49,7 +37,7 @@ bool PluginInstance::ParseManifest()
 
 		
 	}
-	catch (const std::exception& error) {
+	catch (const std::exception&) {
 		std::cout << "Unable to parse descriptor for " << m_fileName << '\n';
 		return false;
 	}

@@ -18,7 +18,7 @@ class PluginInstance
 public:
 
 
-	PluginInstance(std::string fileName, DeviceContainer& coord);
+	PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& coord);
 	~PluginInstance();
 	
 	bool ParseManifest();

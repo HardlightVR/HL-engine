@@ -8,6 +8,7 @@
 #include <boost/uuid/uuid.hpp>
 #include "nsvr_preset.h"
 #include "nsvr_playback_handle.h"
+#include <boost/variant/get.hpp>
 #define NULL_ARGUMENT_CHECKS
 
 
@@ -22,6 +23,9 @@
 #define RETURN_IF_NULL(ptr)
 #endif
 
+#define REGISTER_API(name) \
+AS_TYPE(CoreFacade, core)->RegisterPluginApi<##name##>(api); \
+return NSVR_SUCCESS;
 
 enum returnTypes {
 	NSVR_SUCCESS = 1
@@ -63,16 +67,14 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent,
 NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event ** event, nsvr_device_event_type type)
 {
 	using namespace nsvr::pevents;
-	
-	device_event* possible = device_event::make(type);
 
-	if (possible == nullptr) {
-		return -1;
-	}
-	else {
-		*event = AS_TYPE(nsvr_device_event, possible);
+	auto newEvent = std::make_unique<device_event>( type );
+	if (newEvent->valid()) {
+		*event = AS_TYPE(nsvr_device_event, newEvent.release());
 		return 1;
 	}
+	return -1;
+	
 }
 
 
@@ -102,6 +104,17 @@ NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* reque
 	*request_id  = AS_TYPE(nsvr::cevents::request_base, request)->getHandle();
 	return NSVR_SUCCESS;
 
+}
+
+NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core * core, nsvr_plugin_rawcommand_api * api)
+{
+	AS_TYPE(CoreFacade, core)->RegisterPluginApi<rawcommand_api>(api);
+	return NSVR_SUCCESS;
+}
+
+NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core * core, nsvr_plugin_tracking_api * api)
+{
+	REGISTER_API(tracking_api)
 }
 
 
@@ -157,9 +170,18 @@ NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, ui
 NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, nsvr_quaternion * quat)
 {
 	RETURN_IF_NULL(event);
-	AS_TYPE(nsvr::pevents::tracking_update, event)->region = std::string(region);
-	AS_TYPE(nsvr::pevents::tracking_update, event)->quat = *quat;
-	return NSVR_SUCCESS;
+	nsvr::pevents::device_event* realEvent = AS_TYPE(nsvr::pevents::device_event, event);
+	
+	try {
+		nsvr::pevents::tracking_event& t = boost::get<nsvr::pevents::tracking_event>(realEvent->event);
+		t.quat = *quat;
+		t.region = region;
+		return NSVR_SUCCESS;
+	}
+	catch (const boost::bad_get&) {
+		return -1;
+	}
+
 }
 
 

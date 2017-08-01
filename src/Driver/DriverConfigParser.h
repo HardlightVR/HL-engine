@@ -12,7 +12,8 @@ public:
 	enum class NodeType {
 		Unknown = 0,
 		Haptic,
-		Led
+		Led,
+		Tracker
 	};
 	enum class Capability {
 		Unknown = 0,

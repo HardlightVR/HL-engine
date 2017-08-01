@@ -84,7 +84,8 @@ extern "C" {
 		nsvr_device_event_unknown = 0,
 		nsvr_device_event_device_connected = 1,
 		nsvr_device_event_device_disconnected = 2,
-		nsvr_device_event_tracking_update = 3
+		nsvr_device_event_tracking_update = 3,
+		nsvr_device_event_diagnostics_received = 4
 	}; 
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event** event, nsvr_device_event_type type);
@@ -219,11 +220,6 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* cevent, float* outDuration);
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion);
 
-	// Possible future APIs (unstable) 
-	typedef struct nsvr_node nsvr_node;
-	NSVR_CORE_RETURN(int) nsvr_node_create(nsvr_node** node);
-	NSVR_CORE_RETURN(int) nsvr_node_setdisplayname(nsvr_node* node, const char* name);
-	NSVR_CORE_RETURN(int) nsvr_node_destroy(nsvr_node** node);
 
 
 
@@ -263,13 +259,28 @@ extern "C" {
 
 
 	
+	typedef struct nsvr_plugin_rawcommand_api {
+		typedef void(*nsvr_rawcommand_send)(uint8_t* bytes, unsigned int length, void* client_data);
+		nsvr_rawcommand_send send_handler;
+		void* client_data;
+	} nsvr_plugin_rawcommand_api;
+
+	NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core* core, nsvr_plugin_rawcommand_api* api);
 
 
+	typedef struct nsvr_tracking_stream nsvr_tracking_stream;
 
+	typedef struct nsvr_plugin_tracking_api {
+		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, const char* region, void* client_data);
+		typedef void(*nsvr_tracking_endstreaming)(const char* region, void* client_data);
 
-
+		nsvr_tracking_beginstreaming beginstreaming_handler;
+		nsvr_tracking_endstreaming endstreaming_handler;
+		void* client_data;
+	} nsvr_plugin_tracking_api;
 	
-
+	NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core* core, nsvr_plugin_tracking_api* api);
+	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
 
 
 

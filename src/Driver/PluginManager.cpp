@@ -3,10 +3,11 @@
 #include <iostream>
 #include <bitset>
 #include "DeviceContainer.h"
-PluginManager::PluginManager(DeviceContainer& hw, std::vector<std::string> plugins) 
+PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw, std::vector<std::string> plugins) 
 	: m_pluginNames(std::move(plugins))
 	, m_plugins()
 	, m_deviceContainer(hw)
+	, m_io(io)
 {
 
 }
@@ -36,6 +37,7 @@ bool PluginManager::linkAll()
 		//todo: fix
 		m_plugins.emplace(std::make_pair(pluginName, 
 			std::make_shared<PluginInstance>(
+				m_io,
 				pluginName,
 				m_deviceContainer
 			)

@@ -1,11 +1,21 @@
 #include "stdafx.h"
 #include "PluginEventHandler.h"
 
-void PluginEventHandler::Raise(const nsvr::pevents::device_event & event)
+PluginEventHandler::PluginEventHandler(boost::asio::io_service & io)
+	: m_io(io)
 {
-	for (auto& handler : m_subscribers[event.type]) {
-		handler(event);
-	}
+	
+}
+
+void PluginEventHandler::Raise(nsvr::pevents::device_event event)
+{
+	//this may not be thread safe.
+	//should check behavior of asio 
+	m_io.post([this, event]() {
+		for (auto& handler : m_subscribers[event.type]) {
+			handler(event);
+		}
+	});
 }
 
 

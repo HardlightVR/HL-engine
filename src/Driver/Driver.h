@@ -19,10 +19,13 @@ public:
 	bool StartThread();
 	bool Shutdown();
 private:
+
 	DeviceContainer m_devices;
 	EventDispatcher m_eventDispatcher;
 
-	std::shared_ptr<IoService> m_io;
+	std::shared_ptr<IoService> m_ioService;
+	boost::asio::io_service& m_io;
+
 	DriverMessenger m_messenger;
 	Encoder _encoder;
 
@@ -42,7 +45,6 @@ private:
 	HardwareCoordinator m_coordinator;
 
 	PluginManager m_pluginManager;   
-
 	void handleTracking();
 
 	//CurveEngine m_curveEngine;

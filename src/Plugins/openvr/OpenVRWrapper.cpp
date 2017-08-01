@@ -19,14 +19,7 @@ OpenVRWrapper::OpenVRWrapper() : shouldShutDown{false}
 
 	eventLoop = std::thread([this]() { update(); });
 
-	deleteMeTemporary = std::thread([this]() {
-		std::this_thread::sleep_for(std::chrono::seconds(5));
-		nsvr_device_event* ev;
-		nsvr_device_event_create(&ev, nsvr_device_event_device_connected);
-		nsvr_device_event_setid(ev, 5);
-		nsvr_device_event_raise(core, ev);
-		nsvr_device_event_destroy(&ev);
-	});
+	
 }
 
 OpenVRWrapper::~OpenVRWrapper()

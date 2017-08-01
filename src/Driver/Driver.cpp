@@ -34,19 +34,20 @@
 //}
 
 Driver::Driver() :
-	m_io(new IoService()),
+	m_ioService(new IoService()),
+	m_io(m_ioService->GetIOService()),
 	m_devices(),
-	m_messenger(m_io->GetIOService()),
-	m_statusPush(m_io->GetIOService(), boost::posix_time::millisec(250)),
-	m_hapticsPull(m_io->GetIOService(), boost::posix_time::millisec(5)),
-	m_commandPull(m_io->GetIOService(), boost::posix_time::millisec(50)),
-	m_trackingPush(m_io->GetIOService(), boost::posix_time::millisec(10)),
-	m_curveEngineUpdate(m_io->GetIOService(), boost::posix_time::millisec(5)),
+	m_messenger(m_io),
+	m_statusPush(m_io, boost::posix_time::millisec(250)),
+	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
+	m_commandPull(m_io, boost::posix_time::millisec(50)),
+	m_trackingPush(m_io, boost::posix_time::millisec(10)),
+	m_curveEngineUpdate(m_io, boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
 	m_eventDispatcher(),
 
 	m_coordinator(m_devices, m_eventDispatcher),
-	m_pluginManager(m_devices,{"HardlightPlugin", "OpenVRPlugin"})
+	m_pluginManager(m_io, m_devices,{"HardlightPlugin", "OpenVRPlugin"})
 
 
 {
@@ -61,7 +62,8 @@ Driver::Driver() :
 	boost::shared_ptr<sink_t> sink(new sink_t());
 	sink->locked_backend()->ProvideMessenger(m_messenger);
 
-	core::get()->add_sink(sink);
+	//todo: re-add the gameplay plugin sink when we figure out a better way of dropping messages, etc.
+	//core::get()->add_sink(sink);
 	
 	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Booting";
 
@@ -133,7 +135,7 @@ bool Driver::Shutdown()
 	m_trackingPush.Stop();
 	m_messenger.Disconnect();
 	
-	m_io->Shutdown();
+	m_ioService->Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	return true;
 }
