@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PluginApis.h"
 
-bool PluginApis::SupportsApi(const std::string & name)
+bool PluginApis::SupportsApi(Apis api)
 {
-	return m_apis.find(name) != m_apis.end();
+	return m_apis.find(api) != m_apis.end();
 }

@@ -48,7 +48,7 @@ bool PluginInstance::ParseManifest()
 
 void PluginInstance::InstantiateDevices()
 {
-	m_devices.AddDevice(device_factories::createDevice(m_descriptor, m_apis, m_eventHandler));
+	m_devices.AddDevice(m_descriptor, m_apis, m_eventHandler);
 }
 
 

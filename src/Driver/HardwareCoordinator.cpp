@@ -29,5 +29,7 @@ void HardwareCoordinator::setupSubscriptions(EventDispatcher& dispatcher)
 			device->deliverRequest(event);
 		});
 	});
+
+	
 }
 

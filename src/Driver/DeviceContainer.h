@@ -7,13 +7,14 @@
 // Should break this into two interfaces: adding/removing, and the data operations
 class DeviceContainer {
 public:
-	void AddDevice(std::unique_ptr<NodalDevice>);
+	void AddDevice(const HardwareDescriptor&, PluginApis&, PluginEventHandler&);
 	void RemoveDevice(const std::string&);
 	
 	
 	void All(std::function<void(NodalDevice*)>);
 
-
+	//temp function for testing
+	TrackingNode* GetFirstTrackedDevice();
 
 
 

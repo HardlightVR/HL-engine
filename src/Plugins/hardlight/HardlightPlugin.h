@@ -22,6 +22,8 @@ public:
 	~HardlightPlugin();
 
 	int Configure(nsvr_core* ctx);
+	void BeginTracking(nsvr_tracking_stream* stream, const char* region);
+	void EndTracking(const char* region);
 private:
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;
@@ -36,7 +38,7 @@ private:
 
 	ScheduledEvent m_eventPull;
 	nsvr_core* m_core;
-
+	nsvr_tracking_stream* m_trackingStream;
 	bool m_running;
 
 	ImuConsumer m_imus;

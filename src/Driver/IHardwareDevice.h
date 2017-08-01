@@ -8,6 +8,7 @@
 #include "protobuff_defs/HighLevelEvent.pb.h"
 #include "pevent.h"
 
+#include "PluginApis.h"
 class PluginApis;
 class PluginEventHandler;
 
@@ -44,9 +45,14 @@ public:
 	TrackingNode(const NodeDescriptor& info, PluginApis&);
 	void deliver(RequestId, const nsvr::cevents::request_base&) override;
 	std::string getRegion() const override;
+
+	void BeginTracking();
+	void EndTracking();
+	void DeliverTracking(nsvr_quaternion* quat);
 private:
 	PluginApis& m_apis;
 	std::string m_region;
+	nsvr_quaternion m_latestQuat;
 	
 };
 
@@ -54,21 +60,25 @@ class NodalDevice {
 public:
 	using Region = std::string;
 	using RequestId = uint64_t;
-	NodalDevice(HardwareDescriptor& desc, PluginApis& api, PluginEventHandler& ev);
-	virtual ~NodalDevice() {}
+	NodalDevice(const HardwareDescriptor& desc, PluginApis& api, PluginEventHandler& ev);
 
+	NodalDevice& operator=(const NodalDevice&) = delete;
+	NodalDevice(const NodalDevice&) = delete;
 	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
 	void addNode(std::unique_ptr<Node>);
 	
 	std::string name() const;
+	bool hasCapability(Apis name);
+
 
 private:
+	HardwareDescriptor::Concept m_concept;
 	std::string m_name;
 	std::vector<std::unique_ptr<Node>> m_nodes;
 	std::unordered_map<Region, std::vector<Node*>> m_nodesByRegion;
-	PluginApis& m_apis;
+	PluginApis* m_apis;
 
-
+	void figureOutCapabilities();
 	void setupSubscriptions(PluginEventHandler& ev);
 	void parseDevices(const std::vector<NodeDescriptor>& descriptor);
 	void fetchDynamicDevices();
@@ -85,24 +95,6 @@ private:
 };
 
 
-class SuitDevice : public NodalDevice {
-public:
-	SuitDevice(HardwareDescriptor desc, PluginApis& cap, PluginEventHandler& ev);
-private:
-	void handle_tracking(const nsvr::pevents::tracking_event&);
-};
-
-class ControllerDevice : public NodalDevice {
-public:
-	ControllerDevice(HardwareDescriptor desc, PluginApis& cap, PluginEventHandler& ev);
-};
-
-
-namespace device_factories {
-
-	std::unique_ptr<NodalDevice> createDevice(const HardwareDescriptor& description, PluginApis& cap, PluginEventHandler& ev);
-
-}
 
 
 

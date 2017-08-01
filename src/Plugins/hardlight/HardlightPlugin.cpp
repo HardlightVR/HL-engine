@@ -15,7 +15,8 @@ HardlightPlugin::HardlightPlugin() :
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
 	m_imus(m_dispatcher),
 	m_mockTracking(m_io->GetIOService(), boost::posix_time::millisec(16)),
-	m_core{nullptr}
+	m_core{nullptr},
+	m_trackingStream{nullptr}
 
 {
 	
@@ -60,15 +61,16 @@ HardlightPlugin::HardlightPlugin() :
 
 	m_imus.OnTracking([&](const std::string& id, nsvr_quaternion quat) {
 
-		if (m_core != nullptr) {
+		if (m_trackingStream != nullptr) {
 
+			nsvr_tracking_stream_push(m_trackingStream, &quat);
 
-			nsvr_device_event* event = nullptr;
+		/*	nsvr_device_event* event = nullptr;
 			nsvr_device_event_create(&event, nsvr_device_event_tracking_update);
 			nsvr_device_event_setid(event, 1);
 			nsvr_device_event_settrackingstate(event, id.c_str(), &quat);
 			nsvr_device_event_raise(m_core, event);
-			nsvr_device_event_destroy(&event);
+			nsvr_device_event_destroy(&event);*/
 		}
 	});
 
@@ -115,6 +117,16 @@ int HardlightPlugin::Configure(nsvr_core* core)
 {
 	m_core = core;
 	m_device.Configure(core);
+
+	nsvr_plugin_tracking_api tracking_api;
+	tracking_api.beginstreaming_handler = [](nsvr_tracking_stream* stream, const char* region, void* client_data) {
+		AS_TYPE(HardlightPlugin, client_data)->BeginTracking(stream, region);
+	};
+	tracking_api.endstreaming_handler = [](const char* region, void* client_data) {
+		AS_TYPE(HardlightPlugin, client_data)->EndTracking(region);
+	};
+	tracking_api.client_data = this;
+	nsvr_register_tracking_api(core, &tracking_api);
 	//
 	//nsvr_register_cevent_hook(core, nsvr_request_type::nsvr_request_brief_haptic, handle_event, )
 	//m_device.RegisterDrivers([&](nsvr_request_handler consumer, const char* region, const char* iface, void* user_data) {
@@ -123,5 +135,17 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	//});
 
 	return 1;
+}
+
+void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, const char* region)
+{
+	m_firmware.EnableTracking();
+	m_trackingStream = stream;
+}
+
+void HardlightPlugin::EndTracking(const char* region)
+{
+	m_firmware.DisableTracking();
+	m_trackingStream = nullptr;
 }
 

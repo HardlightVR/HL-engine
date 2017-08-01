@@ -9,6 +9,7 @@
 #include "nsvr_preset.h"
 #include "nsvr_playback_handle.h"
 #include <boost/variant/get.hpp>
+#include "IHardwareDevice.h"
 #define NULL_ARGUMENT_CHECKS
 
 
@@ -115,6 +116,12 @@ NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core * core, nsvr_plugin
 NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core * core, nsvr_plugin_tracking_api * api)
 {
 	REGISTER_API(tracking_api)
+}
+
+NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream * stream, nsvr_quaternion * quaternion)
+{
+	AS_TYPE(TrackingNode, stream)->DeliverTracking(quaternion);
+	return 1;
 }
 
 
