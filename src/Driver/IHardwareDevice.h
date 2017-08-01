@@ -9,6 +9,11 @@
 #include "pevent.h"
 
 #include "PluginApis.h"
+#include <boost/variant.hpp>
+#include <boost/signals2.hpp>
+#include <boost/mpl/map.hpp>
+#include <boost/mpl/pair.hpp>
+
 class PluginApis;
 class PluginEventHandler;
 
@@ -31,18 +36,18 @@ protected:
 
 class HapticNode : public Node {
 public:
-	HapticNode(const NodeDescriptor& info, PluginApis&);
+	HapticNode(const NodeDescriptor& info, PluginApis*);
 
 	void deliver(RequestId, const nsvr::cevents::request_base&) override;
 	std::string getRegion() const override;
 private:
-	PluginApis& m_apis;
+	PluginApis* m_apis;
 	std::string m_region;
 };
 
 class TrackingNode : public Node {
 public:
-	TrackingNode(const NodeDescriptor& info, PluginApis&);
+	TrackingNode(const NodeDescriptor& info, PluginApis*);
 	void deliver(RequestId, const nsvr::cevents::request_base&) override;
 	std::string getRegion() const override;
 
@@ -50,11 +55,13 @@ public:
 	void EndTracking();
 	void DeliverTracking(nsvr_quaternion* quat);
 private:
-	PluginApis& m_apis;
+	PluginApis* m_apis;
 	std::string m_region;
 	nsvr_quaternion m_latestQuat;
 	
 };
+
+using TrackingHook = boost::signals2::signal<void(const char*, nsvr_quaternion*)>;
 
 class NodalDevice {
 public:
@@ -68,10 +75,13 @@ public:
 	void addNode(std::unique_ptr<Node>);
 	
 	std::string name() const;
-	bool hasCapability(Apis name);
+	bool hasCapability(Apis name) const;
 
+	void beginTracking();
 
+	void registerTrackingHook(TrackingHook::slot_type hook);
 private:
+	
 	HardwareDescriptor::Concept m_concept;
 	std::string m_name;
 	std::vector<std::unique_ptr<Node>> m_nodes;
@@ -91,10 +101,9 @@ private:
 	
 	Node* findDevice(uint64_t id);
 
+	TrackingHook m_trackingSignal;
 
 };
-
-
 
 
 

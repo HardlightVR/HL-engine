@@ -5,9 +5,12 @@
 #include "EventDispatcher.h"
 #include "DeviceContainer.h"
 
-
-HardwareCoordinator::HardwareCoordinator(DeviceContainer& devices, EventDispatcher& dispatcher)
+#include "PluginAPI.h"
+#include "DriverMessenger.h"
+#include "SharedTypes.h"
+HardwareCoordinator::HardwareCoordinator(DriverMessenger& messenger, DeviceContainer& devices, EventDispatcher& dispatcher)
 	: m_devices(devices)
+	, m_messenger(messenger)
 {
 	setupSubscriptions(dispatcher);
 }
@@ -30,6 +33,22 @@ void HardwareCoordinator::setupSubscriptions(EventDispatcher& dispatcher)
 		});
 	});
 
+	m_devices.OnDeviceAdded([&](NodalDevice* device) {
+		if (device->hasCapability(Apis::Tracking)) {
+			
+			device->registerTrackingHook([&](const char* region, nsvr_quaternion* quat) {
+				this->writeTracking(region, quat);
+			});
+
+			device->beginTracking();
+		}
+	});
+
 	
+}
+
+void HardwareCoordinator::writeTracking(const char * region, nsvr_quaternion * quat)
+{
+	m_messenger.WriteTracking(region, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
 }
 

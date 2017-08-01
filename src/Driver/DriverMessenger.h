@@ -19,7 +19,7 @@ public:
 	typedef std::function<void(void const* data, std::size_t length)> DataCallback;
 	DriverMessenger(boost::asio::io_service& io);
 	~DriverMessenger();
-	void WriteTracking(TrackingUpdate t);
+	void WriteTracking(const std::string& region, NullSpace::SharedMemory::Quaternion quat);
 	void WriteSuits(SuitsConnectionInfo s);
 	
 	void WriteLog(std::string s);

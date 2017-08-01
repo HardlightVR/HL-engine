@@ -46,7 +46,7 @@ Driver::Driver() :
 	m_cachedTracking({}),
 	m_eventDispatcher(),
 
-	m_coordinator(m_devices, m_eventDispatcher),
+	m_coordinator(m_messenger, m_devices, m_eventDispatcher),
 	m_pluginManager(m_io, m_devices,{"HardlightPlugin", "OpenVRPlugin"})
 
 

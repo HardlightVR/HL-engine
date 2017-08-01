@@ -2,10 +2,12 @@
 
 class EventDispatcher;
 class DeviceContainer;
+class DriverMessenger;
+struct nsvr_quaternion;
 class HardwareCoordinator
 {
 public:
-	HardwareCoordinator(DeviceContainer& devices, EventDispatcher& dispatcher);
+	HardwareCoordinator(DriverMessenger& messenger, DeviceContainer& devices, EventDispatcher& dispatcher);
 
 
 	~HardwareCoordinator() = default;
@@ -13,8 +15,10 @@ public:
 
 private:
 	void setupSubscriptions(EventDispatcher& dispatcher);
-
+	DriverMessenger& m_messenger;
 	DeviceContainer& m_devices;
+
+	void writeTracking(const char* region, nsvr_quaternion* quat);
 };
 
 

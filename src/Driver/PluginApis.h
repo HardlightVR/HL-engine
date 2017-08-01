@@ -188,7 +188,7 @@ public:
 	template<typename T>
 	T* GetApi();
 
-	bool SupportsApi(Apis name);
+	bool SupportsApi(Apis name) const;
 private:
 	std::unordered_map<Apis, std::unique_ptr<plugin_api>> m_apis;
 };

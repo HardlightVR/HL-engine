@@ -16,6 +16,9 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 	, m_apis(&capi)
 {
 
+	
+
+
 	setupSubscriptions(ev);
 	
 	if (!m_apis->SupportsApi(Apis::Device)) {
@@ -55,11 +58,11 @@ void NodalDevice::parseDevices(const std::vector<NodeDescriptor>& descriptor)
 	for (const auto& node : descriptor) {
 		if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
 			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << node.region;
-			this->addNode(std::unique_ptr<Node>(new HapticNode{ node, PluginApis{} }));
+			this->addNode(std::unique_ptr<Node>(new HapticNode{ node,m_apis }));
 		}
 		else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
 			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << node.region;
-			this->addNode(std::unique_ptr<Node>(new TrackingNode{ node,  PluginApis{} }));
+			this->addNode(std::unique_ptr<Node>(new TrackingNode{ node,  m_apis }));
 		}
 	}
 }
@@ -188,7 +191,7 @@ void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::Playba
 
 
 
-HapticNode::HapticNode(const NodeDescriptor& info, PluginApis &c) 
+HapticNode::HapticNode(const NodeDescriptor& info, PluginApis*c) 
 	: Node { info.id, info.displayName, info.capabilities }
 	, m_apis(c)
 	, m_region{info.region}
@@ -201,11 +204,11 @@ void HapticNode::deliver(RequestId, const nsvr::cevents::request_base & base)
 {
 	if (base.type() == nsvr_request_type_lasting_haptic) {
 		const auto lasting = static_cast<const nsvr::cevents::LastingHaptic&>(base);
-		if (auto api = m_apis.GetApi<buffered_api>()) {
+		if (auto api = m_apis->GetApi<buffered_api>()) {
 		
 			//api->submit_buffer()
 		}
-		else if (auto api = m_apis.GetApi<preset_api>()) {
+		else if (auto api = m_apis->GetApi<preset_api>()) {
 			nsvr_preset_request req{};
 			req.family = static_cast<nsvr_preset_family>(lasting.effect);
 			req.strength = lasting.strength;
@@ -241,14 +244,27 @@ std::string NodalDevice::name() const
 	return m_name;
 }
 
-bool NodalDevice::hasCapability(Apis name)
+bool NodalDevice::hasCapability(Apis name) const
 {
-	//return m_apis.SupportsApi(name);
-	return false;
+	return m_apis->SupportsApi(name);
+}
+
+void NodalDevice::beginTracking()
+{
+	for (auto& node : m_nodes) {
+		if (TrackingNode* t = dynamic_cast<TrackingNode*>(node.get())) {
+			t->BeginTracking();
+		}
+	}
+}
+
+void NodalDevice::registerTrackingHook(TrackingHook::slot_type hook)
+{
+	m_trackingSignal.connect(hook);
 }
 
 
-TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis & capi)
+TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
 	: Node(info.id, info.displayName, info.capabilities)
 	, m_region(info.region)
 	, m_apis(capi)
@@ -270,14 +286,14 @@ std::string TrackingNode::getRegion() const
 
 void TrackingNode::BeginTracking()
 {
-	tracking_api* api = m_apis.GetApi<tracking_api>();
+	tracking_api* api = m_apis->GetApi<tracking_api>();
 	api->submit_beginstreaming(reinterpret_cast<nsvr_tracking_stream*>(this), m_region.c_str());
 
 }
 
 void TrackingNode::EndTracking()
 {
-	tracking_api* api = m_apis.GetApi<tracking_api>();
+	tracking_api* api = m_apis->GetApi<tracking_api>();
 	api->submit_endstreaming(m_region.c_str());
 }
 

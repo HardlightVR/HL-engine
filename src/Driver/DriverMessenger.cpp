@@ -66,11 +66,9 @@ DriverMessenger::~DriverMessenger()
 }
 
 //Precondition: The keys were initialized already using Insert on m_tracking
-void DriverMessenger::WriteTracking(TrackingUpdate t)
+void DriverMessenger::WriteTracking(const std::string& region, NullSpace::SharedMemory::Quaternion quat)
 {
-	m_tracking->Update("chest", t.chest);
-	m_tracking->Update("left_upper_arm", t.left_upper_arm);
-	m_tracking->Update("right_upper_arm", t.right_upper_arm);
+	m_tracking->Update(region.c_str(), quat);
 }
 
 void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
