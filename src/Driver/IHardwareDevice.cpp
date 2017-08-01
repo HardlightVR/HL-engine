@@ -12,8 +12,9 @@
 NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventHandler& ev)
 	: m_concept(descriptor.concept)
 	, m_name(descriptor.displayName)
-	, m_nodes()
 	, m_apis(&capi)
+	, m_trackingDevices()
+	, m_hapticDevices()
 {
 
 	
@@ -58,25 +59,18 @@ void NodalDevice::parseDevices(const std::vector<NodeDescriptor>& descriptor)
 	for (const auto& node : descriptor) {
 		if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
 			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << node.region;
-			this->addNode(std::unique_ptr<Node>(new HapticNode{ node,m_apis }));
+			m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
 		}
 		else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
 			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << node.region;
-			this->addNode(std::unique_ptr<Node>(new TrackingNode{ node,  m_apis }));
+			m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
+
 		}
 	}
 }
 
 
-void NodalDevice::addNode(std::unique_ptr<Node> node)
-{
-	//m_nodes assumes ownership of the node
-	m_nodes.push_back(std::move(node));
 
-	//we store a pointer to it in our nodesByRegion map
-	auto region = m_nodes.back()->getRegion();
-	m_nodesByRegion[region].push_back(m_nodes.back().get());
-}
 
 void NodalDevice::fetchDynamicDevices()
 {
@@ -156,15 +150,7 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 
 
 
-Node * NodalDevice::findDevice(uint64_t id)
-{
-	for (auto& node : m_nodes) {
-		if (node->id() == id) {
-			return node.get();
-		}
-	}
-	return nullptr;
-}
+
 
 void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event)
 {
@@ -251,10 +237,8 @@ bool NodalDevice::hasCapability(Apis name) const
 
 void NodalDevice::beginTracking()
 {
-	for (auto& node : m_nodes) {
-		if (TrackingNode* t = dynamic_cast<TrackingNode*>(node.get())) {
-			t->BeginTracking();
-		}
+	for (auto& node : m_trackingDevices) {
+		node->BeginTracking();
 	}
 }
 

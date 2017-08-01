@@ -63,6 +63,7 @@ private:
 
 using TrackingHook = boost::signals2::signal<void(const char*, nsvr_quaternion*)>;
 
+
 class NodalDevice {
 public:
 	using Region = std::string;
@@ -72,7 +73,6 @@ public:
 	NodalDevice& operator=(const NodalDevice&) = delete;
 	NodalDevice(const NodalDevice&) = delete;
 	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
-	void addNode(std::unique_ptr<Node>);
 	
 	std::string name() const;
 	bool hasCapability(Apis name) const;
@@ -84,7 +84,9 @@ private:
 	
 	HardwareDescriptor::Concept m_concept;
 	std::string m_name;
-	std::vector<std::unique_ptr<Node>> m_nodes;
+
+	std::vector<std::unique_ptr<HapticNode>> m_hapticDevices;
+	std::vector<std::unique_ptr<TrackingNode>> m_trackingDevices;
 	std::unordered_map<Region, std::vector<Node*>> m_nodesByRegion;
 	PluginApis* m_apis;
 

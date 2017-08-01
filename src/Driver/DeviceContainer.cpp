@@ -5,6 +5,7 @@
 
 void DeviceContainer::AddDevice(const HardwareDescriptor& desc, PluginApis& apis, PluginEventHandler& ev)
 {
+	
 	m_devices.push_back(std::make_unique<NodalDevice>(desc, apis, ev));
 	notify(m_deviceAddedSubs, m_devices.back().get());
 }

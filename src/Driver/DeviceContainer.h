@@ -14,14 +14,14 @@ public:
 	
 	void All(DeviceFn);
 
-	//temp function for testing
-	NodalDevice* GetFirstTrackedDevice();
+
 
 	void OnDeviceAdded(DeviceFn);
 	void OnDeviceRemoved(DeviceFn);
 
 private:
-	
+
+
 	std::vector<std::unique_ptr<NodalDevice>> m_devices;
 
 	std::vector<DeviceFn> m_deviceAddedSubs;
