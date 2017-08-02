@@ -16,7 +16,7 @@
 
 class PluginApis;
 class PluginEventHandler;
-
+class HardwareCoordinator;
 class Node {
 public:
 	using RequestId = uint64_t;
@@ -45,6 +45,7 @@ private:
 	std::string m_region;
 };
 
+
 class TrackingNode : public Node {
 public:
 	TrackingNode(const NodeDescriptor& info, PluginApis*);
@@ -54,14 +55,15 @@ public:
 	void BeginTracking();
 	void EndTracking();
 	void DeliverTracking(nsvr_quaternion* quat);
+
+	boost::signals2::signal<void(const char*, nsvr_quaternion*)> TrackingSignal;
+
 private:
 	PluginApis* m_apis;
 	std::string m_region;
 	nsvr_quaternion m_latestQuat;
-	
 };
 
-using TrackingHook = boost::signals2::signal<void(const char*, nsvr_quaternion*)>;
 
 
 class NodalDevice {
@@ -77,9 +79,10 @@ public:
 	std::string name() const;
 	bool hasCapability(Apis name) const;
 
-	void beginTracking();
+	void setupHooks(HardwareCoordinator& coordinator);
+	void teardownHooks();
 
-	void registerTrackingHook(TrackingHook::slot_type hook);
+	
 private:
 	
 	HardwareDescriptor::Concept m_concept;
@@ -101,9 +104,7 @@ private:
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event);
 	
-	Node* findDevice(uint64_t id);
 
-	TrackingHook m_trackingSignal;
 
 };
 

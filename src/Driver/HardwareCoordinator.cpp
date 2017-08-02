@@ -4,7 +4,7 @@
 #include "cevent_internal.h"
 #include "EventDispatcher.h"
 #include "DeviceContainer.h"
-
+#include "IHardwareDevice.h"
 #include "PluginAPI.h"
 #include "DriverMessenger.h"
 #include "SharedTypes.h"
@@ -14,6 +14,14 @@ HardwareCoordinator::HardwareCoordinator(DriverMessenger& messenger, DeviceConta
 {
 	setupSubscriptions(dispatcher);
 }
+
+
+
+void HardwareCoordinator::RegisterTrackingSource(boost::signals2::signal<void(const char*, nsvr_quaternion*)> & hook)
+{
+	hook.connect([&](const char* r, nsvr_quaternion* q) { writeTracking(r, q); });
+}
+
 
 
 void HardwareCoordinator::setupSubscriptions(EventDispatcher& dispatcher)
@@ -34,14 +42,11 @@ void HardwareCoordinator::setupSubscriptions(EventDispatcher& dispatcher)
 	});
 
 	m_devices.OnDeviceAdded([&](NodalDevice* device) {
-		if (device->hasCapability(Apis::Tracking)) {
-			
-			device->registerTrackingHook([&](const char* region, nsvr_quaternion* quat) {
-				this->writeTracking(region, quat);
-			});
+		device->setupHooks(*this);
+	});
 
-			device->beginTracking();
-		}
+	m_devices.OnDeviceRemoved([&](NodalDevice* device) {
+		device->teardownHooks();
 	});
 
 	

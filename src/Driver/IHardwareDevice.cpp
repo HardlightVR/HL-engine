@@ -6,8 +6,7 @@
 
 #include <boost/log/trivial.hpp>
 
-
-
+#include "HardwareCoordinator.h"
 
 NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventHandler& ev)
 	: m_concept(descriptor.concept)
@@ -235,17 +234,22 @@ bool NodalDevice::hasCapability(Apis name) const
 	return m_apis->SupportsApi(name);
 }
 
-void NodalDevice::beginTracking()
+void NodalDevice::setupHooks(HardwareCoordinator & coordinator)
 {
-	for (auto& node : m_trackingDevices) {
-		node->BeginTracking();
+	if (m_apis->SupportsApi<tracking_api>()) {
+		for (auto& node : m_trackingDevices) {
+			coordinator.RegisterTrackingSource(node->TrackingSignal);
+		}
 	}
 }
 
-void NodalDevice::registerTrackingHook(TrackingHook::slot_type hook)
-{
-	m_trackingSignal.connect(hook);
+void NodalDevice::teardownHooks() {
+	for (auto& node : m_trackingDevices) {
+		node->TrackingSignal.disconnect_all_slots();
+	}
 }
+
+
 
 
 TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)

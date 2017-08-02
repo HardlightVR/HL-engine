@@ -189,6 +189,9 @@ public:
 	T* GetApi();
 
 	bool SupportsApi(Apis name) const;
+
+	template<typename T>
+	bool SupportsApi() const;
 private:
 	std::unordered_map<Apis, std::unique_ptr<plugin_api>> m_apis;
 };
@@ -219,4 +222,10 @@ inline T* PluginApis::GetApi()
 		BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API '" << (int)T::getApiType() << "' was not found!";
 	}
 	return nullptr;
+}
+
+template<typename T>
+inline bool PluginApis::SupportsApi() const
+{
+	return m_apis.find(T::getApiType()) != m_apis.end();
 }
