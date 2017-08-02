@@ -247,6 +247,7 @@ void NodalDevice::teardownHooks() {
 	for (auto& node : m_trackingDevices) {
 		node->TrackingSignal.disconnect_all_slots();
 	}
+	
 }
 
 
@@ -258,7 +259,7 @@ TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
 	, m_apis(capi)
 {
 
-	
+	BeginTracking();
 
 }
 
@@ -288,5 +289,5 @@ void TrackingNode::EndTracking()
 void TrackingNode::DeliverTracking(nsvr_quaternion * quat)
 {
 	m_latestQuat = *quat;
-	BOOST_LOG_TRIVIAL(info) << "Got tracking on region " << m_region << " on node " << m_name;
+	TrackingSignal(m_region.c_str(), &m_latestQuat);
 }

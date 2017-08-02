@@ -55,11 +55,11 @@ public:
 		if (m_vector != nullptr) {
 			(*m_vector)[index] = item;
 			
-			std::cout << "Begin shared mem quats\n";
-			for (const auto& a: *m_vector) {
-				std::cout << a.x << ", " << a.y << ", " << a.z << ", " << a.w << '\n';
-			}
-			std::cout << "End shared mem quats\n";
+			//std::cout << "Begin shared mem quats\n";
+			//for (const auto& a: *m_vector) {
+			//	std::cout << a.x << ", " << a.y << ", " << a.z << ", " << a.w << '\n';
+			//}
+			//std::cout << "End shared mem quats\n";
 
 		}
 	}
