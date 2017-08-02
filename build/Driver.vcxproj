@@ -334,8 +334,8 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\Renderable.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedMap.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h" />
-    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedTracking.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedVector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedObject.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedQueue.h" />

@@ -19,11 +19,11 @@ public:
 	using TAlloc = boost::interprocess::allocator<T, my_managed_shared_memory::segment_manager>;
 	using TVector = boost::interprocess::vector<T, TAlloc>;
 
-	OwnedWritableSharedVector(const std::string& memName, const std::string& vecName, const std::size_t size) :
+	OwnedWritableSharedVector(const std::string& memName, const std::string& vecName, const std::size_t byteSize) :
 
 		m_memName(memName),
 		m_vecName(vecName),
-		m_segment(boost::interprocess::create_only, memName.c_str(), size, 0, []() {
+		m_segment(boost::interprocess::create_only, memName.c_str(), byteSize, 0, []() {
 			boost::interprocess::permissions perm;
 			perm.set_unrestricted();
 			return perm;
@@ -47,6 +47,7 @@ public:
 		}
 	}
 
+
 	std::size_t size() const {
 		return m_vector->size();
 	}
@@ -65,8 +66,14 @@ public:
 	}
 
 	boost::optional<std::size_t> Find(const T& item) const{
-		int pos = std::find(m_vector->cbegin(), m_vector->cend(), item) - m_vector->cbegin();
-		return pos;
+		auto it = std::find(m_vector->cbegin(), m_vector->cend(), item);
+		if (it != m_vector->cend()) {
+			return it - m_vector->cbegin();
+		}
+		else {
+			return boost::none;
+		}
+		
 	}
 
 	~OwnedWritableSharedVector() {

@@ -46,7 +46,39 @@ namespace NullSpace {
 		static const SuitsConnectionInfo NullSuitsConnectionInfo = {};
 		static const TrackingUpdate NullTrackingUpdate = {};
 
+	
+		struct Color {
+			float r;
+			float g;
+			float b;
+			float a;
+		};
 
+		struct Intensity {
+			float intensity;
+		};
+
+		enum class RegionPairType {
+			Unknown = 0,
+			Color = 1,
+			Intensity = 2
+		};
+		struct RegionPair {
+			using RegionType = uint64_t;
+			RegionType Region;
+			uint32_t Type;
+			uint64_t Id;
+			union {
+				Color color;
+				Intensity intensity;
+			};
+
+			
+		};
+
+		inline bool operator==(const RegionPair& lhs, const RegionPair& rhs) {
+			return lhs.Id == rhs.Id;
+		}
 
 	}
 }

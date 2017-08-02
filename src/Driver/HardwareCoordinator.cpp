@@ -8,6 +8,7 @@
 #include "PluginAPI.h"
 #include "DriverMessenger.h"
 #include "SharedTypes.h"
+#include <boost/variant.hpp>
 HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, DeviceContainer& devices )
 	: m_devices(devices)
 	, m_messenger(messenger)
@@ -25,6 +26,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	});
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });
+	m_writeBodyRepresentation.Start();
 }
 
 
@@ -39,10 +41,46 @@ void HardwareCoordinator::hook_writeTracking(const char * region, nsvr_quaternio
 	m_messenger.WriteTracking(region, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
 }
 
+class node_visitor : public boost::static_visitor<NullSpace::SharedMemory::RegionPair>
+{
+public:
+	
+	NullSpace::SharedMemory::RegionPair operator()(const NodeView::Color& color) const{
+		using namespace NullSpace::SharedMemory;
+		RegionPair pair = { 0 };
+		pair.color = { color.r, color.g, color.b, color.a };
+		pair.Type = static_cast<uint32_t>(RegionPairType::Color);
+		return pair;
+	}
+	NullSpace::SharedMemory::RegionPair operator()(const NodeView::Intensity& intensity) const {
+		using namespace NullSpace::SharedMemory;
+		RegionPair pair = {0};
+		pair.intensity = { intensity.intensity};
+		pair.Type = static_cast<uint32_t>(RegionPairType::Intensity);
+		return pair;
+	}
+	NullSpace::SharedMemory::RegionPair operator()(const NodeView::Rotation& rotation) const {
+		using namespace NullSpace::SharedMemory;
+		RegionPair pair= {0};
+		//pair. = { color.r, color.g, color.b, color.a };
+		//pair.Type = static_cast<uint32_t>(RegionPairType::Color);
+		//todo: implement
+		return pair;
+	}
+
+};
 void HardwareCoordinator::writeBodyRepresentation()
 {
 	auto nodeView = m_bodyRepresentation.GetNodeView();
-	std::cout << "Writing representation\n";
+	
+	for (const auto& node : nodeView) {
+		for (const auto& single : node.nodes) {
+			NullSpace::SharedMemory::RegionPair pair = boost::apply_visitor(node_visitor{}, single.second);			
+			pair.Region = node.region;
+			pair.Id = 1234;
+			m_messenger.WriteBodyView(std::move(pair));
+		}
+	}
 }
 
 

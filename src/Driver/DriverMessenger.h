@@ -3,7 +3,7 @@
 #include "SharedCommunication\WritableSharedObject.h"
 #include "SharedCommunication\OwnedReadableSharedQueue.h"
 #include "SharedCommunication\OwnedWritableSharedQueue.h"
-#include "SharedCommunication\OwnedWritableSharedTracking.h"
+#include "SharedCommunication\OwnedWritableSharedMap.h"
 #include "SharedCommunication\SharedTypes.h"
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "protobuff_defs/DriverCommand.pb.h"
@@ -21,7 +21,7 @@ public:
 	~DriverMessenger();
 	void WriteTracking(const std::string& region, NullSpace::SharedMemory::Quaternion quat);
 	void WriteSuits(SuitsConnectionInfo s);
-	
+	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
 	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
@@ -48,7 +48,9 @@ private:
 	//Read commands from here, such as ENABLE_TRACKING, DISABLE_TRACKING
 	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
-	std::unique_ptr<OwnedWritableSharedTracking> m_tracking;
+	std::unique_ptr<OwnedWritableSharedMap<const char*, NullSpace::SharedMemory::Quaternion>> m_tracking;
+
+	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>> m_bodyView;
 	std::atomic<bool> _running;
 
 	boost::asio::deadline_timer m_sentinelTimer;

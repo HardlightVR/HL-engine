@@ -50,6 +50,9 @@ enum class Apis {
 	Tracking
 };
 
+extern const std::unordered_map<Apis, const char*> PrintableApiNames;
+
+
 struct buffered_api : public plugin_api {
 	buffered_api(nsvr_plugin_buffer_api* api)
 		: submit_buffer { api->buffered_handler, api->client_data } {}
@@ -188,10 +191,10 @@ public:
 	template<typename T>
 	T* GetApi();
 
-	bool SupportsApi(Apis name) const;
+	bool Supports(Apis name) const;
 
 	template<typename T>
-	bool SupportsApi() const;
+	bool Supports() const;
 private:
 	std::unordered_map<Apis, std::unique_ptr<plugin_api>> m_apis;
 };
@@ -218,14 +221,25 @@ inline T* PluginApis::GetApi()
 			return derived_ptr;
 		}
 	}
-	else {
-		BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API '" << (int)T::getApiType() << "' was not found!";
-	}
+	// I uncommented this because I've started to use (if (whatever_api* api = GetApi<whatever_api>()) a lot. 
+	// As in, I am aware and expect that the result may not exist.
+	// Although, this means the function has two purposes (1) Check if api exists (2) retrieve api. 
+	// Could use if (SupportsApi<sampling_api>()) { GetApi<whatever_api>()->do_thing() }
+	/*else {
+		auto printableName = PrintableApiNames.find(T::getApiType());
+		if (printableName != PrintableApiNames.end()) {
+			BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API '" << (printableName->second) << "' was not found!";
+		}
+		else {
+			BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API [enum type = " << (int)T::getApiType() << "] was not found!";
+
+		}
+	}*/
 	return nullptr;
 }
 
 template<typename T>
-inline bool PluginApis::SupportsApi() const
+inline bool PluginApis::Supports() const
 {
 	return m_apis.find(T::getApiType()) != m_apis.end();
 }

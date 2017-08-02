@@ -18,10 +18,11 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	OwnedWritableSharedQueue::remove("ns-logging-data");
 	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<std::time_t>::remove("ns-sentinel");
-	
+	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
 
 
-	m_tracking = std::make_unique<OwnedWritableSharedTracking>();
+	m_tracking = std::make_unique<OwnedWritableSharedMap<const char*, NullSpace::SharedMemory::Quaternion>>(/* initial element capacity*/16, "ns-tracking-2");
+	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-vec", 2048);
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_trackingData = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>>("ns-tracking-data");
 	m_suitConnectionInfo = std::make_unique<WritableSharedObject<SuitsConnectionInfo>>("ns-suit-data");
@@ -31,14 +32,8 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	
 	m_sentinel = std::make_unique<WritableSharedObject<std::time_t>>("ns-sentinel");
 
-	TrackingUpdate nullTracking = {};
 	SuitsConnectionInfo nullSuits = {};
 
-	NullSpace::SharedMemory::Quaternion nullQuat = {};
-	
-	m_tracking->Insert("chest", nullQuat);
-	m_tracking->Insert("left_upper_arm", nullQuat);
-	m_tracking->Insert("right_upper_arm", nullQuat);
 
 	m_suitConnectionInfo->Write(nullSuits);
 	
@@ -68,12 +63,28 @@ DriverMessenger::~DriverMessenger()
 //Precondition: The keys were initialized already using Insert on m_tracking
 void DriverMessenger::WriteTracking(const std::string& region, NullSpace::SharedMemory::Quaternion quat)
 {
-	m_tracking->Update(region.c_str(), quat);
+	if (m_tracking->Contains(region.c_str())) {
+		m_tracking->Update(region.c_str(), quat);
+	}
+	else {
+		m_tracking->Insert(region.c_str(), quat);
+	}
 }
 
 void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
 {
 	m_suitConnectionInfo->Write(s);
+}
+
+void DriverMessenger::WriteBodyView(NullSpace::SharedMemory::RegionPair data)
+{
+	if (auto index = m_bodyView->Find(data)) {
+		m_bodyView->Update(*index, std::move(data));
+	}
+	else {
+		m_bodyView->Push(std::move(data));
+	}
+	
 }
 
 void DriverMessenger::WriteLog(std::string s)

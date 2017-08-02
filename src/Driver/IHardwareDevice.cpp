@@ -21,7 +21,7 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 
 	setupSubscriptions(ev);
 	
-	if (!m_apis->SupportsApi(Apis::Device)) {
+	if (!m_apis->Supports(Apis::Device)) {
 		parseDevices(descriptor.nodes);
 	}
 	else {
@@ -231,7 +231,10 @@ NodeView::NodeType HapticNode::Type() const
 
 
 
-Node::Node(uint64_t id, const std::string& name, uint32_t capability) :m_id(id), m_name{ name }, m_capability(capability) {}
+Node::Node(uint64_t id, const std::string& name, uint32_t capability) 
+	: m_id(id)
+	, m_name{ name }
+	, m_capability(capability) {}
 
 
 uint64_t Node::id() const
@@ -253,18 +256,18 @@ std::string NodalDevice::name() const
 
 bool NodalDevice::hasCapability(Apis name) const
 {
-	return m_apis->SupportsApi(name);
+	return m_apis->Supports(name);
 }
 
 void NodalDevice::setupHooks(HardwareCoordinator & coordinator)
 {
-	if (m_apis->SupportsApi<tracking_api>()) {
+	if (m_apis->Supports<tracking_api>()) {
 		for (auto& node : m_trackingDevices) {
 			coordinator.Hook_TrackingSlot(node->TrackingSignal);
 		}
 	}
 
-	if (m_apis->SupportsApi<sampling_api>()) {
+	if (m_apis->Supports<sampling_api>()) {
 		for (auto& node : m_hapticDevices) {
 		//	coordinator.Hook_SamplingSlot(node->SamplingSignal);
 		}
