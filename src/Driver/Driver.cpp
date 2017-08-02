@@ -46,14 +46,14 @@ Driver::Driver() :
 	m_cachedTracking({}),
 	m_eventDispatcher(),
 
-	m_coordinator(m_messenger, m_devices, m_eventDispatcher),
+	m_coordinator(m_io, m_messenger, m_devices),
 	m_pluginManager(m_io, m_devices,{"HardlightPlugin", "OpenVRPlugin"})
 
 
 {
 	m_pluginManager.LoadAll();
 
-	
+	m_coordinator.SetupSubscriptions(m_eventDispatcher);
 
 	using namespace boost::log;
 
@@ -65,7 +65,7 @@ Driver::Driver() :
 	//todo: re-add the gameplay plugin sink when we figure out a better way of dropping messages, etc.
 	//core::get()->add_sink(sink);
 	
-	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Booting";
+	BOOST_LOG_TRIVIAL(info) << "[DriverMain] All plugins instantiated.";
 
 	/*m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
 		SuitVersionInfo version(packet);
@@ -127,6 +127,7 @@ bool Driver::StartThread()
 bool Driver::Shutdown()
 {
 	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Shutting down";
+	m_coordinator.Cleanup();
 
 	m_curveEngineUpdate.Stop();
 	m_statusPush.Stop();

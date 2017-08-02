@@ -14,9 +14,12 @@
 #include <boost/mpl/map.hpp>
 #include <boost/mpl/pair.hpp>
 
+#include "Renderable.h"
+
 class PluginApis;
 class PluginEventHandler;
 class HardwareCoordinator;
+
 class Node {
 public:
 	using RequestId = uint64_t;
@@ -34,12 +37,16 @@ protected:
 	uint32_t m_capability;
 };
 
-class HapticNode : public Node {
+class HapticNode : public Node, public Renderable  {
 public:
 	HapticNode(const NodeDescriptor& info, PluginApis*);
 
 	void deliver(RequestId, const nsvr::cevents::request_base&) override;
 	std::string getRegion() const override;
+
+	// Renderable support
+	NodeView::Data Render() const override;
+	NodeView::NodeType Type() const override;
 private:
 	PluginApis* m_apis;
 	std::string m_region;
@@ -65,7 +72,7 @@ private:
 };
 
 
-
+class HumanBodyNodes;
 class NodalDevice {
 public:
 	using Region = std::string;
@@ -82,6 +89,8 @@ public:
 	void setupHooks(HardwareCoordinator& coordinator);
 	void teardownHooks();
 
+	void setupBodyRepresentation(HumanBodyNodes&);
+	void teardownBodyRepresentation(HumanBodyNodes&);
 	
 private:
 	

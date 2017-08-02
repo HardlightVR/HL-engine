@@ -127,12 +127,7 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	};
 	tracking_api.client_data = this;
 	nsvr_register_tracking_api(core, &tracking_api);
-	//
-	//nsvr_register_cevent_hook(core, nsvr_request_type::nsvr_request_brief_haptic, handle_event, )
-	//m_device.RegisterDrivers([&](nsvr_request_handler consumer, const char* region, const char* iface, void* user_data) {
-	//	nsvr_register_cevent_hook(core, nsvr_request_type::nsvr_request_basic_haptic
-	//	m_coreApi.call<nsvr_core_register_node_cb>(consumer, region, iface, user_data);
-	//});
+	
 
 	return 1;
 }

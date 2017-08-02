@@ -7,7 +7,7 @@
 #include <boost/log/trivial.hpp>
 
 #include "HardwareCoordinator.h"
-
+#include "HumanBodyNodes.h"
 NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventHandler& ev)
 	: m_concept(descriptor.concept)
 	, m_name(descriptor.displayName)
@@ -207,6 +207,28 @@ std::string HapticNode::getRegion() const
 	return m_region;
 }
 
+NodeView::Data HapticNode::Render() const
+{
+	if (sampling_api* api = m_apis->GetApi<sampling_api>()) {
+		nsvr_sampling_nodestate state;
+	
+		api->submit_query(m_region.c_str(), &state);
+		if (nsvr_sampling_nodestate::nsvr_sampling_nodestate_active == state) {
+			return NodeView::Intensity{ 1, 0 };
+		}
+		else {
+			return NodeView::Intensity{ 0, 0 };
+		}
+
+	}
+	return NodeView::Intensity{ 0, 0 };
+}
+
+NodeView::NodeType HapticNode::Type() const
+{
+	return NodeView::NodeType::Haptic;
+}
+
 
 
 Node::Node(uint64_t id, const std::string& name, uint32_t capability) :m_id(id), m_name{ name }, m_capability(capability) {}
@@ -238,7 +260,13 @@ void NodalDevice::setupHooks(HardwareCoordinator & coordinator)
 {
 	if (m_apis->SupportsApi<tracking_api>()) {
 		for (auto& node : m_trackingDevices) {
-			coordinator.RegisterTrackingSource(node->TrackingSignal);
+			coordinator.Hook_TrackingSlot(node->TrackingSignal);
+		}
+	}
+
+	if (m_apis->SupportsApi<sampling_api>()) {
+		for (auto& node : m_hapticDevices) {
+		//	coordinator.Hook_SamplingSlot(node->SamplingSignal);
 		}
 	}
 }
@@ -248,6 +276,20 @@ void NodalDevice::teardownHooks() {
 		node->TrackingSignal.disconnect_all_slots();
 	}
 	
+}
+
+void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
+{
+	for (auto& node : m_hapticDevices) {
+		body.AddNode(HumanBodyNodes::NamedRegion::Arm_Lower_Left, node.get());
+	}
+}
+
+void NodalDevice::teardownBodyRepresentation(HumanBodyNodes & body)
+{
+	for (auto& node : m_hapticDevices) {
+		body.RemoveNode(node.get());
+	}
 }
 
 

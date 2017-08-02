@@ -36,6 +36,7 @@
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
+    <ClInclude Include="..\src\Driver\HumanBodyNodes.h" />
     <ClInclude Include="..\src\Driver\IHardwareDevice.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
@@ -54,11 +55,13 @@
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
     <ClInclude Include="..\src\Driver\NSDriverApi.h" />
+    <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
     <ClInclude Include="..\src\Driver\PluginEventHandler.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
+    <ClInclude Include="..\src\Driver\Renderable.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
@@ -152,6 +155,7 @@
     <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
+    <ClCompile Include="..\src\Driver\HumanBodyNodes.cpp" />
     <ClCompile Include="..\src\Driver\IHardwareDevice.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">

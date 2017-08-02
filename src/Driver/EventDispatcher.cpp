@@ -9,32 +9,25 @@
 
 
 
+#include <boost/log/trivial.hpp>
 
 
-void EventDispatcher::InstallFilter(EventSelector selector, EventReceiver receiver)
+
+void EventDispatcher::Subscribe(NullSpaceIPC::HighLevelEvent::EventsCase which_event, EventSignal::slot_type rec)
 {
-	
-		InstalledFilter filter;
-
-		filter.Receiver = receiver;
-		filter.Selector = selector;
-		m_filters.push_back(std::move(filter));
-	
-
+	m_subscribers[which_event].connect(rec);
 }
 
-void EventDispatcher::Subscribe(NullSpaceIPC::HighLevelEvent::EventsCase which_event, EventReceiver rec)
-{
 
-
-		m_subscribers[which_event].push_back(rec);
-	
-}
 
 void EventDispatcher::ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event)
 {
-	for (auto& subscriber : m_subscribers[event.events_case()]) {
-		subscriber(event);
+	auto item = m_subscribers.find(event.events_case());
+	if (item != m_subscribers.end()) {
+		(item->second)(event);
+	}
+	else {
+		BOOST_LOG_TRIVIAL(warning) << "[EventDispatcher] Unrecognized event type: " << event.events_case();
 	}
 }
 

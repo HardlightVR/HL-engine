@@ -22,7 +22,7 @@ void DeviceContainer::RemoveDevice(const std::string & name)
 	m_devices.erase(rem, m_devices.end());
 }
 
-void DeviceContainer::All(std::function<void(NodalDevice*)> forEach)
+void DeviceContainer::Each(std::function<void(NodalDevice*)> forEach)
 {
 	for (auto& ptr : m_devices) {
 		forEach(ptr.get());

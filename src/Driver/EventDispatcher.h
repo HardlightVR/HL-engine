@@ -1,16 +1,17 @@
 #pragma once
 #include "protobuff_defs/HighLevelEvent.pb.h"
 #include <functional>
+#include <boost/signals2.hpp>
 class EventDispatcher
 {
 public:
 
 	using EventSelector = std::function<bool(const NullSpaceIPC::HighLevelEvent&)>;
 	using EventReceiver = std::function<void(const NullSpaceIPC::HighLevelEvent&)>;
+	using EventSignal = boost::signals2::signal<void(const NullSpaceIPC::HighLevelEvent&)>;
 
-	void InstallFilter(EventSelector selector, EventReceiver receiver);
 
-	void Subscribe(NullSpaceIPC::HighLevelEvent::EventsCase which_event, EventReceiver rec);
+	void Subscribe(NullSpaceIPC::HighLevelEvent::EventsCase which_event,  EventSignal::slot_type rec);
 
 	void ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event);
 
@@ -26,7 +27,7 @@ private:
 
 	std::vector<InstalledFilter> m_filters;
 
-	std::unordered_map<NullSpaceIPC::HighLevelEvent::EventsCase, std::vector<EventReceiver>> m_subscribers;
+	std::unordered_map<NullSpaceIPC::HighLevelEvent::EventsCase, EventSignal> m_subscribers;
 
 
 

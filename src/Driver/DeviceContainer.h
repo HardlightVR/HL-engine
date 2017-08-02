@@ -12,7 +12,7 @@ public:
 	void RemoveDevice(const std::string&);
 	
 	
-	void All(DeviceFn);
+	void Each(DeviceFn);
 
 
 
