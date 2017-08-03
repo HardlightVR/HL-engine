@@ -115,14 +115,18 @@ HardlightPlugin::~HardlightPlugin()
 
 int HardlightPlugin::Configure(nsvr_core* core)
 {
+
+
+
+
 	m_core = core;
 	m_device.Configure(core);
 
 	nsvr_plugin_tracking_api tracking_api;
-	tracking_api.beginstreaming_handler = [](nsvr_tracking_stream* stream, const char* region, void* client_data) {
+	tracking_api.beginstreaming_handler = [](nsvr_tracking_stream* stream, nsvr_region region, void* client_data) {
 		AS_TYPE(HardlightPlugin, client_data)->BeginTracking(stream, region);
 	};
-	tracking_api.endstreaming_handler = [](const char* region, void* client_data) {
+	tracking_api.endstreaming_handler = [](nsvr_region region, void* client_data) {
 		AS_TYPE(HardlightPlugin, client_data)->EndTracking(region);
 	};
 	tracking_api.client_data = this;
@@ -132,13 +136,13 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	return 1;
 }
 
-void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, const char* region)
+void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_region region)
 {
 	m_firmware.EnableTracking();
 	m_trackingStream = stream;
 }
 
-void HardlightPlugin::EndTracking(const char* region)
+void HardlightPlugin::EndTracking(nsvr_region region)
 {
 	m_firmware.DisableTracking();
 	m_trackingStream = nullptr;

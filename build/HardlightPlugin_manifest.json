@@ -8,7 +8,7 @@
          "type" : "haptic",
          "name":"Chest Left DRV",
          "id" : 1,
-         "region":"left_upper_chest",
+         "region":"chest_left",
          "capabilities":[  
            "preset", "buffered", "dynamic"
          ]

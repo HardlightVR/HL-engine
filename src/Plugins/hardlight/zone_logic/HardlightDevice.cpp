@@ -10,12 +10,12 @@
 HardlightDevice::HardlightDevice() 
 {
 	auto& translator = Locator::Translator();
-	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
-		std::string locstring = translator.ToRegionFromLocation(Location(loc));
 
-		std::cout << locstring << '\n';
+	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
+		nsvr_region region = translator.ToRegionFromLocation(Location(loc));
+
 		m_drivers.insert(std::make_pair(
-			locstring, 
+			region, 
 			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
 		);
 
@@ -54,7 +54,7 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_plugin_sampling_api sampling_api;
 	sampling_api.client_data = this;
-	sampling_api.query_handler = [](const char* node, nsvr_sampling_nodestate* outState, void* client_data) {
+	sampling_api.query_handler = [](nsvr_region node, nsvr_sampling_nodestate* outState, void* client_data) {
 		AS_TYPE(HardlightDevice, client_data)->Query(node, outState);
 	};
 
@@ -100,7 +100,7 @@ void HardlightDevice::Unpause(ParentId  handle)
 	}
 }
 
-int HardlightDevice::Query(const char * node, nsvr_sampling_nodestate * outState)
+int HardlightDevice::Query(nsvr_region node, nsvr_sampling_nodestate * outState)
 {
 	if (m_drivers.find(node) != m_drivers.end()) {
 		if (m_drivers.at(node)->IsPlaying()) {
@@ -125,8 +125,8 @@ void HardlightDevice::executeLasting(nsvr_request * event)
 	nsvr_request_lastinghaptic_getstrength(event, &data.strength);
 	
 
-	char region[32];
-	nsvr_request_lastinghaptic_getregion(event, region);
+	nsvr_region region;
+	nsvr_request_lastinghaptic_getregion(event, &region);
 
 	ParentId handle;
 	nsvr_request_getid(event, &handle);

@@ -12,7 +12,6 @@
 
 
 
-
 //void extractDrvData(const packet& packet) {
 //	//as status register:
 //	uint8_t whichDrv = packet.raw[4];
@@ -51,6 +50,8 @@ Driver::Driver() :
 
 
 {
+	
+
 	m_pluginManager.LoadAll();
 
 	m_coordinator.SetupSubscriptions(m_eventDispatcher);

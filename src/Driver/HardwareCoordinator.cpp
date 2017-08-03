@@ -31,12 +31,12 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 
 
-void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(const char*, nsvr_quaternion*)> & hook)
+void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(nsvr_region, nsvr_quaternion*)> & hook)
 {
-	hook.connect([this](const char* r, nsvr_quaternion* q) { hook_writeTracking(r, q); });
+	hook.connect([this](nsvr_region r, nsvr_quaternion* q) { hook_writeTracking(r, q); });
 }
 
-void HardwareCoordinator::hook_writeTracking(const char * region, nsvr_quaternion * quat)
+void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion * quat)
 {
 	m_messenger.WriteTracking(region, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
 }

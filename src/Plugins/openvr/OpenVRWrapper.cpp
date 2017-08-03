@@ -146,7 +146,7 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 			strcpy_s(info->name, 128, name.c_str());
 			info->capabilities = nsvr_device_capability_preset;
 			std::string region("left_upper_chest");
-			strcpy_s(info->region, 128, region.c_str());
+			info->region = nsvr_region_hand_left;
 			info->type = nsvr_device_type_haptic;
 		}
 
@@ -154,16 +154,14 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 			std::string name("Vive Controller Right Hand");
 			strcpy_s(info->name, 128, name.c_str());
 			info->capabilities = nsvr_device_capability_preset;
-			std::string region("right_upper_chest");
-			strcpy_s(info->region, 128, region.c_str());
+			info->region = nsvr_region_hand_right;
 			info->type = nsvr_device_type_haptic;
 		}
 		else if (id == 5) {
 			std::string name("Vive Controller Awesome Hand");
 			strcpy_s(info->name, 128, name.c_str());
 			info->capabilities = nsvr_device_capability_preset;
-			std::string region("right_upper_yolo");
-			strcpy_s(info->region, 128, region.c_str());
+			info->region = nsvr_region_hand_left;
 			info->type = nsvr_device_type_haptic;
 		}
 	}
@@ -173,8 +171,7 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 			std::string name("Vive Controller Left Hand");
 			strcpy_s(info->name, 128, name.c_str());
 			info->capabilities = nsvr_device_capability_preset;
-			std::string region("left_upper_chest");
-			strcpy_s(info->region, 128, region.c_str());
+			info->region = nsvr_region_hand_left;
 			info->type = nsvr_device_type_haptic;
 		}
 
@@ -182,8 +179,7 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 			std::string name("Vive Controller Right Hand");
 			strcpy_s(info->name, 128, name.c_str());
 			info->capabilities = nsvr_device_capability_preset;
-			std::string region("right_upper_chest");
-			strcpy_s(info->region, 128, region.c_str());
+			info->region = nsvr_region_hand_right;
 			info->type = nsvr_device_type_haptic;
 		}
 	}

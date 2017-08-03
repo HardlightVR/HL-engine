@@ -163,14 +163,15 @@ std::string EnumTranslator::ToString(uint32_t effectFamily) const
 {
 	return _effectFamilyMap.right.at(effectFamily);
 }
-Location EnumTranslator::ToLocationFromRegion(const std::string & region) const
+Location EnumTranslator::ToLocationFromRegion(nsvr_region region) const
 {
 	return _regionMap.right.at(region);
 }
 
-std::string EnumTranslator::ToRegionFromLocation(Location loc) const {
+nsvr_region EnumTranslator::ToRegionFromLocation(Location loc) const {
 	return _regionMap.left.at(loc);
 }
+
 void EnumTranslator::init_familymap()
 {
 	boost::assign::insert(_effectFamilyMap)
@@ -200,22 +201,22 @@ void EnumTranslator::init_familymap()
 void EnumTranslator::init_regions()
 {
 	boost::assign::insert(_regionMap)
-		(Location::Upper_Back_Left, "left_back")
-		(Location::Upper_Back_Right, "right_back")
-		(Location::Shoulder_Left, "left_shoulder")
-		(Location::Shoulder_Right, "right_shoulder")
-		(Location::Upper_Arm_Left, "left_upper_arm")
-		(Location::Upper_Arm_Right, "right_upper_arm")
-		(Location::Forearm_Left, "left_forearm")
-		(Location::Forearm_Right, "right_forearm")
-		(Location::Chest_Left, "left_upper_chest")
-		(Location::Chest_Right, "right_upper_chest")
-		(Location::Upper_Ab_Left, "left_upper_ab")
-		(Location::Upper_Ab_Right, "right_upper_ab")
-		(Location::Mid_Ab_Left, "left_mid_ab")
-		(Location::Mid_Ab_Right, "right_mid_ab")
-		(Location::Lower_Ab_Left, "left_lower_ab")
-		(Location::Lower_Ab_Right, "right_lower_ab");
+		(Location::Upper_Back_Left, nsvr_region_back_left)
+		(Location::Upper_Back_Right, nsvr_region_back_right)
+		(Location::Shoulder_Left, nsvr_region_shoulder_left)
+		(Location::Shoulder_Right, nsvr_region_shoulder_right)
+		(Location::Upper_Arm_Left, nsvr_region_upperarm_left)
+		(Location::Upper_Arm_Right, nsvr_region_upperarm_right)
+		(Location::Forearm_Left, nsvr_region_forearm_left)
+		(Location::Forearm_Right, nsvr_region_forearm_right)
+		(Location::Chest_Left, nsvr_region_chest_left)
+		(Location::Chest_Right, nsvr_region_chest_right)
+		(Location::Upper_Ab_Left, nsvr_region_abs_upper_left)
+		(Location::Upper_Ab_Right, nsvr_region_abs_upper_right)
+		(Location::Mid_Ab_Left, nsvr_region_abs_middle_left)
+		(Location::Mid_Ab_Right, nsvr_region_abs_middle_right)
+		(Location::Lower_Ab_Left, nsvr_region_abs_lower_left)
+		(Location::Lower_Ab_Right, nsvr_region_abs_lower_right);
 }
 
 void EnumTranslator::init_locations() {

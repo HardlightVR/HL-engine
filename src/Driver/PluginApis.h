@@ -115,10 +115,9 @@ struct playback_api : public plugin_api {
 struct sampling_api : public plugin_api{
 	sampling_api(nsvr_plugin_sampling_api* api) 
 		: submit_query{ api->query_handler, api->client_data } {}
-	
 	callback<
 		nsvr_plugin_sampling_api::nsvr_sampling_querystate, 
-		const char*, 
+		nsvr_region,
 		nsvr_sampling_nodestate*
 	> submit_query;
 
@@ -167,12 +166,12 @@ struct tracking_api : public plugin_api {
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_beginstreaming,
 		nsvr_tracking_stream*,
-		const char*
+		nsvr_region
 	> submit_beginstreaming;
 
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_endstreaming,
-		const char*
+		nsvr_region
 	> submit_endstreaming;
 
 	static Apis getApiType() { return Apis::Tracking; }

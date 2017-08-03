@@ -10,6 +10,7 @@
 #include "nsvr_playback_handle.h"
 #include <boost/variant/get.hpp>
 #include "IHardwareDevice.h"
+
 #define NULL_ARGUMENT_CHECKS
 
 
@@ -28,9 +29,14 @@
 AS_TYPE(CoreFacade, core)->RegisterPluginApi<##name##>(api); \
 return NSVR_SUCCESS;
 
+
+
+
 enum returnTypes {
 	NSVR_SUCCESS = 1
 };
+
+
 NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request * cevent, nsvr_request_type * outType)
 {
 	*outType = AS_CTYPE(nsvr::cevents::request_base, cevent)->type();
@@ -55,15 +61,29 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* ceven
 }
 
 
-NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion)
+NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent,nsvr_region* outRegion)
 {
 	auto lasting = AS_TYPE(nsvr::cevents::LastingHaptic, cevent);
-	if (strcpy_s(outRegion, 32, lasting->region) == 0) {
-		return NSVR_SUCCESS;
-	} else {
+//todo: reimplement region 
+	//if (strcpy_s(outRegion, 32, lasting->region) == 0) {
+	//	return NSVR_SUCCESS;
+//	} else {
 		return -1;
-	}
+	//}
 }
+
+//NSVR_CORE_RETURN(int) nsvr_region_tostring(nsvr_region region, char * outRegion, uint32_t length)
+//{
+//	const auto& str = Locator::Translator().ToRegionString(region);
+//	int retcode = strcpy_s(outRegion, length, str.data());
+//	if (retcode == 0) {
+//		return NSVR_SUCCESS;
+//	}
+//	else {
+//		//should actually return NSVR_Error_something
+//		return retcode;
+//	}
+//}
 
 NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event ** event, nsvr_device_event_type type)
 {
@@ -174,7 +194,7 @@ NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, ui
 	return 1;
 }
 
-NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, nsvr_quaternion * quat)
+NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, nsvr_region region, nsvr_quaternion * quat)
 {
 	RETURN_IF_NULL(event);
 	nsvr::pevents::device_event* realEvent = AS_TYPE(nsvr::pevents::device_event, event);

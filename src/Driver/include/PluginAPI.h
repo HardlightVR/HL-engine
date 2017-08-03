@@ -70,6 +70,43 @@ extern "C" {
 	NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api* api);
 
 	
+	typedef enum nsvr_region {
+		nsvr_region_unknown = 0,
+
+		nsvr_region_chest = 1000,
+			nsvr_region_chest_left,
+			nsvr_region_chest_right,
+
+		nsvr_region_abs = 2000,
+			nsvr_region_abs_left,
+				nsvr_region_abs_upper_left,
+				nsvr_region_abs_middle_left,
+				nsvr_region_abs_lower_left,
+			nsvr_region_abs_right,
+				nsvr_region_abs_upper_right,
+				nsvr_region_abs_middle_right,
+				nsvr_region_abs_lower_right,
+
+		nsvr_region_arm_left = 3000,
+			nsvr_region_forearm_left,
+			nsvr_region_upperarm_left,
+
+		nsvr_region_arm_right = 4000,
+			nsvr_region_forearm_right,
+			nsvr_region_upperarm_right,
+
+		nsvr_region_shoulder_left = 5000,
+		nsvr_region_shoulder_right = 6000,
+
+		nsvr_region_back = 7000,
+			nsvr_region_back_left,
+			nsvr_region_back_right,
+
+		nsvr_region_hand_left = 8000,
+		nsvr_region_hand_right = 9000,
+		nsvr_region_leg_left = 10000,
+		nsvr_region_leg_right = 11000
+	} nsvr_region;
 
 	///////////////////////////
 	// Raising device events //
@@ -102,7 +139,7 @@ extern "C" {
 		float z;
 	} nsvr_quaternion;
 
-	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, const char* region, nsvr_quaternion * quat);
+	NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, nsvr_region region, nsvr_quaternion * quat);
 	
 
 	typedef struct nsvr_device_ids {
@@ -128,7 +165,7 @@ extern "C" {
 		uint32_t type;
 		uint32_t capabilities;
 		char name[128];
-		char region[128];
+		nsvr_region region;
 	} nsvr_device_basic_info;
 
 	typedef struct nsvr_device_request nsvr_device_request;
@@ -218,7 +255,7 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getstrength(nsvr_request* cevent, float* outStrength);
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* cevent, float* outDuration);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, char* outRegion);
+	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, nsvr_region* outRegion);
 
 
 
@@ -229,7 +266,7 @@ extern "C" {
 		nsvr_sampling_nodestate_inactive = 2
 	} nsvr_sampling_nodestate;
 	typedef struct nsvr_plugin_sampling_api {
-		typedef void(*nsvr_sampling_querystate)(const char* nodeName, nsvr_sampling_nodestate* outState, void* client_data);
+		typedef void(*nsvr_sampling_querystate)(nsvr_region region, nsvr_sampling_nodestate* outState, void* client_data);
 		nsvr_sampling_querystate query_handler;
 		void* client_data;
 	} nsvr_plugin_sampling_api;
@@ -271,8 +308,8 @@ extern "C" {
 	typedef struct nsvr_tracking_stream nsvr_tracking_stream;
 
 	typedef struct nsvr_plugin_tracking_api {
-		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, const char* region, void* client_data);
-		typedef void(*nsvr_tracking_endstreaming)(const char* region, void* client_data);
+		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_region region, void* client_data);
+		typedef void(*nsvr_tracking_endstreaming)(nsvr_region region, void* client_data);
 
 		nsvr_tracking_beginstreaming beginstreaming_handler;
 		nsvr_tracking_endstreaming endstreaming_handler;

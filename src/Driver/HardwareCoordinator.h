@@ -18,14 +18,14 @@ public:
 	~HardwareCoordinator() = default;
 	void SetupSubscriptions(EventDispatcher& dispatcher);
 	void Cleanup();
-	void Hook_TrackingSlot(boost::signals2::signal<void(const char*, nsvr_quaternion*)>& hook);
+	void Hook_TrackingSlot(boost::signals2::signal<void(nsvr_region, nsvr_quaternion*)>& hook);
 private:
 	DriverMessenger& m_messenger;
 	DeviceContainer& m_devices;
 
 	HumanBodyNodes m_bodyRepresentation;
 
-	void hook_writeTracking(const char* region, nsvr_quaternion* quat);
+	void hook_writeTracking(nsvr_region region, nsvr_quaternion* quat);
 
 	ScheduledEvent m_writeBodyRepresentation;
 

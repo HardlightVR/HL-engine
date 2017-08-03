@@ -21,9 +21,9 @@ Effect Atom::GetEffect(float volume) const
 {
 	//clamp between 0.0 and 1.0
 	volume = std::min(1.0f, std::max(volume, 0.0f));
-	int index = (int) round((_numLevels-1) * volume);
-	assert(index >= 0);
-	assert(index <= _numLevels - 1);
+	assert(_numLevels > 0);
+	std::size_t index = (int) round((_numLevels-1) * volume);
+	
 	return _levels.at(index);
 
 }

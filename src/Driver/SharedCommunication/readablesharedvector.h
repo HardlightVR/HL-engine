@@ -24,7 +24,8 @@ public:
 
 		m_memName(memName),
 		m_vecName(vecName),
-		m_segment()
+		m_segment(),
+		m_vector{nullptr}
 		
 	{
 		m_segment = my_managed_shared_memory(boost::interprocess::open_read_only, m_memName.c_str());
@@ -32,23 +33,28 @@ public:
 		//	throw boost::interprocess::interprocess_exception("Failed to open the shared memory for tracking");
 		//}
 		m_vector = m_segment.find<TVector>(m_vecName.c_str()).first;
-		
+		if (m_vector == 0) {
+			throw boost::interprocess::interprocess_exception("Failed to construct ReadableSharedVector memory");
+		}
 		assert(0 == strcmp(my_managed_shared_memory::get_instance_name(m_vector), m_vecName.c_str()));
 		assert(1 == my_managed_shared_memory::get_instance_length(m_vector));
-		if (m_vector == 0) {
-			BOOST_LOG_TRIVIAL(error) << "[SharedMem] Unable to construct tracking memory!";
-		}
+		
 	}
 
 	std::size_t size() const {
+		assert(m_vector != nullptr);
 		return m_vector->size();
 	}
 
 	T Get(std::size_t index) const {
+		assert(m_vector != nullptr);
+
 		return m_vector->at(static_cast<TVector::size_type>(index));
 	}
 
 	boost::optional<std::size_t> Find(const T& item) const {
+		assert(m_vector != nullptr);
+
 		std::size_t pos = std::find(m_vector->cbegin(), m_vector->cend(), item) - m_vector->cbegin();
 		if (pos < m_vector->size()) {
 			return pos;

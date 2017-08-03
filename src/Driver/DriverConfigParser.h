@@ -6,7 +6,6 @@
 #include <boost/variant.hpp>
 #include <unordered_set>
 
-
 class NodeDescriptor {
 public:
 	enum class NodeType {
@@ -25,7 +24,7 @@ public:
 	NodeDescriptor();
 	uint64_t id;
 	std::string displayName;
-	std::string region;
+	uint32_t region;
 	uint32_t capabilities;
 	NodeType nodeType;
 };

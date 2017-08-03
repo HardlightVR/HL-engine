@@ -5,7 +5,7 @@
    "static_nodes" : [
       {
          "name" : "Vive controller left pad",
-         "region" : "left_upper_chest",
+         "region" : "hand_left",
          "id" : 1,
          "type" : "haptic",
          "capabilities" : [

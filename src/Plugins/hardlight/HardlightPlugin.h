@@ -22,8 +22,8 @@ public:
 	~HardlightPlugin();
 
 	int Configure(nsvr_core* ctx);
-	void BeginTracking(nsvr_tracking_stream* stream, const char* region);
-	void EndTracking(const char* region);
+	void BeginTracking(nsvr_tracking_stream* stream, nsvr_region region);
+	void EndTracking(nsvr_region region);
 private:
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;

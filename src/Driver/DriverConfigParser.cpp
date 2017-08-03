@@ -2,7 +2,7 @@
 #include "DriverConfigParser.h"
 #include <boost/filesystem.hpp>
 #include <fstream>
-
+#include "Locator.h"
 
 std::unordered_map<std::string, NodeDescriptor::Capability> DriverConfigParser::capability_map = {
 	{"preset", NodeDescriptor::Capability::Preset},
@@ -53,7 +53,7 @@ HardwareDescriptor DriverConfigParser::ParseConfig(const std::string & path)
 	HardwareDescriptor descriptor;
 
 	descriptor.fileVersion = root.get("manifest-version", 1).asUInt();
-	std::string conceptStr = root.get("concept", "unknown").asString();
+	const std::string& conceptStr = root.get("concept", "unknown").asString();
 	descriptor.concept = HardwareDescriptor::concept_map[conceptStr];
 
 	descriptor.displayName = root.get("name", "unknown").asString();
@@ -78,7 +78,12 @@ void DriverConfigParser::parseNodes(HardwareDescriptor& descriptor, const Json::
 	assert(node.isObject());
 
 	nodeDescriptor.displayName = node.get("name", "unknown").asString();
-	nodeDescriptor.region = node.get("region", "unknown").asString();
+	const std::string& strRegion = node.get("region", "unknown").asString();
+	nsvr_region parsedRegion = Locator::Translator().ToRegion(strRegion, nsvr_region::nsvr_region_unknown);
+	if (nsvr_region_unknown == parsedRegion) {
+		BOOST_LOG_TRIVIAL(warning) << "[ConfigParser] Device " << descriptor.displayName << " has node with malformed region: " << strRegion;
+	}
+	nodeDescriptor.region = parsedRegion;
 	nodeDescriptor.nodeType = node_type_map[node.get("type", "unknown").asString()];
 	nodeDescriptor.id = node.get("id", 0).asUInt64();
 	const auto& capabilities = node["capabilities"];

@@ -19,7 +19,7 @@ public:
 	typedef std::function<void(void const* data, std::size_t length)> DataCallback;
 	DriverMessenger(boost::asio::io_service& io);
 	~DriverMessenger();
-	void WriteTracking(const std::string& region, NullSpace::SharedMemory::Quaternion quat);
+	void WriteTracking(uint32_t, NullSpace::SharedMemory::Quaternion quat);
 	void WriteSuits(SuitsConnectionInfo s);
 	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
 	void WriteLog(std::string s);
@@ -48,7 +48,7 @@ private:
 	//Read commands from here, such as ENABLE_TRACKING, DISABLE_TRACKING
 	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
-	std::unique_ptr<OwnedWritableSharedMap<const char*, NullSpace::SharedMemory::Quaternion>> m_tracking;
+	std::unique_ptr<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>> m_tracking;
 
 	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>> m_bodyView;
 	std::atomic<bool> _running;

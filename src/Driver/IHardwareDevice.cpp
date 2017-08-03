@@ -5,7 +5,7 @@
 #include "nsvr_preset.h"
 
 #include <boost/log/trivial.hpp>
-
+#include "Locator.h"
 #include "HardwareCoordinator.h"
 #include "HumanBodyNodes.h"
 NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventHandler& ev)
@@ -25,7 +25,7 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 		parseDevices(descriptor.nodes);
 	}
 	else {
-		fetchDynamicDevices();
+		dynamicallyFetchDevices();
 	}
 
 
@@ -54,14 +54,16 @@ void NodalDevice::setupSubscriptions(PluginEventHandler & ev)
 
 void NodalDevice::parseDevices(const std::vector<NodeDescriptor>& descriptor)
 {
+	const auto& t = Locator::Translator();
+	
 	BOOST_LOG_TRIVIAL(info) << "[NodalDevice] " << m_name << " describes " << descriptor.size() << " devices:";
 	for (const auto& node : descriptor) {
 		if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
-			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << node.region;
+			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 			m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
 		}
 		else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
-			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << node.region;
+			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 			m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
 
 		}
@@ -71,7 +73,7 @@ void NodalDevice::parseDevices(const std::vector<NodeDescriptor>& descriptor)
 
 
 
-void NodalDevice::fetchDynamicDevices()
+void NodalDevice::dynamicallyFetchDevices()
 {
 	device_api* enumerator = m_apis->GetApi<device_api>();
 
@@ -91,7 +93,6 @@ void NodalDevice::fetchDynamicDevices()
 		desc.id = device_ids.ids[i];
 		desc.nodeType = static_cast<NodeDescriptor::NodeType>(info.type);
 		desc.region = info.region;
-
 		nodes.push_back(desc);
 	}
 
@@ -131,18 +132,19 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
 	for (const auto& region : simple.regions()) {
-		auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), region.c_str());
+		//todo: uncomment when we get regions all figured out
+		//auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), region.c_str());
 
 		if (auto api = m_apis->GetApi<request_api>()) {
-			ev.handle = requestId;
-			api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
+		//	ev.handle = requestId;
+		//	api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
 		}
 
 		else if (auto api = m_apis->GetApi<preset_api>()) {
-			auto& interested = m_nodesByRegion[region];
-			for (auto& node : interested) {
-				node->deliver(requestId, ev);
-			}
+		///	auto& interested = m_nodesByRegion[region];
+		///	for (auto& node : interested) {
+			//	node->deliver(requestId, ev);
+			//}
 		}
 	}
 }
@@ -177,9 +179,9 @@ void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::Playba
 
 
 HapticNode::HapticNode(const NodeDescriptor& info, PluginApis*c) 
-	: Node { info.id, info.displayName, info.capabilities }
+	: Node { info.id, info.displayName, static_cast<nsvr_region>(info.region),info.capabilities }
 	, m_apis(c)
-	, m_region{info.region}
+
 
 {
 
@@ -202,17 +204,13 @@ void HapticNode::deliver(RequestId, const nsvr::cevents::request_base & base)
 	}
 }
 
-std::string HapticNode::getRegion() const
-{
-	return m_region;
-}
 
 NodeView::Data HapticNode::Render() const
 {
 	if (sampling_api* api = m_apis->GetApi<sampling_api>()) {
 		nsvr_sampling_nodestate state;
 	
-		api->submit_query(m_region.c_str(), &state);
+		api->submit_query(m_region, &state);
 		if (nsvr_sampling_nodestate::nsvr_sampling_nodestate_active == state) {
 			return NodeView::Intensity{ 1, 0 };
 		}
@@ -231,10 +229,11 @@ NodeView::NodeType HapticNode::Type() const
 
 
 
-Node::Node(uint64_t id, const std::string& name, uint32_t capability) 
+Node::Node(uint64_t id, const std::string& name, nsvr_region region, uint32_t capability) 
 	: m_id(id)
 	, m_name{ name }
-	, m_capability(capability) {}
+	, m_capability(capability)
+	, m_region(region){}
 
 
 uint64_t Node::id() const
@@ -247,7 +246,9 @@ std::string Node::name() const
 	return m_name;
 }
 
-
+nsvr_region Node::region() const {
+	return m_region;
+}
 
 std::string NodalDevice::name() const
 {
@@ -299,8 +300,7 @@ void NodalDevice::teardownBodyRepresentation(HumanBodyNodes & body)
 
 
 TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
-	: Node(info.id, info.displayName, info.capabilities)
-	, m_region(info.region)
+	: Node(info.id, info.displayName, static_cast<nsvr_region>(info.region), info.capabilities)
 	, m_apis(capi)
 {
 
@@ -313,26 +313,23 @@ void TrackingNode::deliver(RequestId, const nsvr::cevents::request_base &)
 
 }
 
-std::string TrackingNode::getRegion() const
-{
-	return m_region;
-}
+
 
 void TrackingNode::BeginTracking()
 {
 	tracking_api* api = m_apis->GetApi<tracking_api>();
-	api->submit_beginstreaming(reinterpret_cast<nsvr_tracking_stream*>(this), m_region.c_str());
+	api->submit_beginstreaming(reinterpret_cast<nsvr_tracking_stream*>(this), m_region);
 
 }
 
 void TrackingNode::EndTracking()
 {
 	tracking_api* api = m_apis->GetApi<tracking_api>();
-	api->submit_endstreaming(m_region.c_str());
+	api->submit_endstreaming(m_region);
 }
 
 void TrackingNode::DeliverTracking(nsvr_quaternion * quat)
 {
 	m_latestQuat = *quat;
-	TrackingSignal(m_region.c_str(), &m_latestQuat);
+	TrackingSignal(m_region, &m_latestQuat);
 }

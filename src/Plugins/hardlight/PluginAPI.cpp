@@ -11,6 +11,7 @@
 NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api * api)
 {
 	api->init = [](nsvr_plugin** plugin) {
+	
 		Locator::initialize();
 		Locator::provide(new EnumTranslator());
 		*plugin = AS_TYPE(nsvr_plugin, new HardlightPlugin());

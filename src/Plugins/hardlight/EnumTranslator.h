@@ -3,6 +3,7 @@
 #include "AreaFlags.h"
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
+#include "PluginAPI.h"
 using namespace boost::bimaps;
 
 typedef bimap<Effect, std::string> EffectMap;
@@ -12,13 +13,12 @@ typedef bimap<JsonLocation, std::string> JsonLocationMap;
 typedef bimap<Imu, std::string> ImuMap;
 typedef bimap<AreaFlag, std::string> AreaMap;
 typedef bimap<std::string, uint8_t> EffectFamilyMap;
-typedef bimap<Location, std::string> RegionMap;
+typedef bimap<Location, nsvr_region> RegionMap;
 
 class EnumTranslator
 {
 public:
 	EnumTranslator();
-	~EnumTranslator();
 
 	std::string ToString(Location loc) const;
 	Location ToLocation(std::string location) const;
@@ -49,8 +49,8 @@ public:
 	uint32_t ToEffectFamily(std::string effectFamily) const;
 	std::string ToString(uint32_t effectFamily) const;
 
-	Location ToLocationFromRegion(const std::string& region) const;
-	std::string ToRegionFromLocation(Location loc) const;
+	Location ToLocationFromRegion(nsvr_region region) const;
+	nsvr_region ToRegionFromLocation(Location loc) const;
 private:
 	
 	void init_locations();

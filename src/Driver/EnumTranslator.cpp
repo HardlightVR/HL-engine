@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 
 #include "EnumTranslator.h"
-
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/list_inserter.hpp>
 template<typename T> struct map_init_helper
@@ -70,7 +69,9 @@ EnumTranslator::EnumTranslator() {
 	init_locations();
 	init_effects();
 	init_familymap();
-	
+	init_regions();
+	//this is error prone and I always forget to init a new one
+	//todo: make better
 }
 
 void EnumTranslator::init_effects() {
@@ -162,6 +163,17 @@ std::string EnumTranslator::ToString(uint32_t effectFamily) const
 {
 	return _effectFamilyMap.right.at(effectFamily);
 }
+nsvr_region EnumTranslator::ToRegion(const std::string & region, nsvr_region default) const
+{
+	if (_regionMap.right.count(region)) {
+		return _regionMap.right.at(region);
+	}
+	return default;
+}
+std::string EnumTranslator::ToRegionString(nsvr_region region) const
+{
+	return _regionMap.left.at(region);
+}
 void EnumTranslator::init_familymap()
 {
 	boost::assign::insert(_effectFamilyMap)
@@ -185,7 +197,37 @@ void EnumTranslator::init_familymap()
 }
 
 
-
+void EnumTranslator::init_regions() {
+	boost::assign::insert(_regionMap)
+		(nsvr_region::nsvr_region_unknown, "unknown,")
+		(nsvr_region::nsvr_region_chest, "chest")
+		(nsvr_region::nsvr_region_chest_left, "chest_left")
+		(nsvr_region::nsvr_region_chest_right, "chest_right")
+		(nsvr_region::nsvr_region_abs, "abs")
+		(nsvr_region::nsvr_region_abs_left, "abs_left")
+		(nsvr_region::nsvr_region_abs_upper_left, "abs_upper_left")
+		(nsvr_region::nsvr_region_abs_middle_left, "abs_middle_left")
+		(nsvr_region::nsvr_region_abs_lower_left, "abs_lower_left")
+		(nsvr_region::nsvr_region_abs_right, "abs_right")
+		(nsvr_region::nsvr_region_abs_upper_right, "abs_upper_right")
+		(nsvr_region::nsvr_region_abs_middle_right, "abs_middle_right")
+		(nsvr_region::nsvr_region_abs_lower_right, "abs_lower_right")
+		(nsvr_region::nsvr_region_arm_left, "arm_left")
+		(nsvr_region::nsvr_region_forearm_left, "forearm_left")
+		(nsvr_region::nsvr_region_upperarm_left, "upperarm_left")
+		(nsvr_region::nsvr_region_arm_right, "arm_right")
+		(nsvr_region::nsvr_region_forearm_right, "forearm_right")
+		(nsvr_region::nsvr_region_upperarm_right, "upperarm_right")
+		(nsvr_region::nsvr_region_shoulder_left, "shoulder_left")
+		(nsvr_region::nsvr_region_shoulder_right, "shoulder_right")
+		(nsvr_region::nsvr_region_back, "back")
+		(nsvr_region::nsvr_region_back_left, "back_left")
+		(nsvr_region::nsvr_region_back_right, "back_right")
+		(nsvr_region::nsvr_region_hand_left, "hand_left")
+		(nsvr_region::nsvr_region_hand_right, "hand_right")
+		(nsvr_region::nsvr_region_leg_left, "leg_left")
+		(nsvr_region::nsvr_region_leg_right, "leg_right");
+}
 
 
 void EnumTranslator::init_locations() {

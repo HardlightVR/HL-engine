@@ -23,11 +23,11 @@ class HardwareCoordinator;
 class Node {
 public:
 	using RequestId = uint64_t;
-	Node(uint64_t id, const std::string& name, uint32_t capability);
+	Node(uint64_t id, const std::string& name, nsvr_region region, uint32_t capability);
 
 	virtual ~Node() {}
 	virtual void deliver(RequestId id, const nsvr::cevents::request_base&) = 0;
-	virtual std::string getRegion() const = 0;
+	nsvr_region region() const;
 	
 	uint64_t id() const;
 	std::string name() const;
@@ -35,6 +35,7 @@ protected:
 	std::string m_name;
 	uint64_t m_id;
 	uint32_t m_capability;
+	nsvr_region m_region;
 };
 
 class HapticNode : public Node, public Renderable  {
@@ -42,14 +43,12 @@ public:
 	HapticNode(const NodeDescriptor& info, PluginApis*);
 
 	void deliver(RequestId, const nsvr::cevents::request_base&) override;
-	std::string getRegion() const override;
 
 	// Renderable support
 	NodeView::Data Render() const override;
 	NodeView::NodeType Type() const override;
 private:
 	PluginApis* m_apis;
-	std::string m_region;
 };
 
 
@@ -57,17 +56,15 @@ class TrackingNode : public Node {
 public:
 	TrackingNode(const NodeDescriptor& info, PluginApis*);
 	void deliver(RequestId, const nsvr::cevents::request_base&) override;
-	std::string getRegion() const override;
 
 	void BeginTracking();
 	void EndTracking();
 	void DeliverTracking(nsvr_quaternion* quat);
 
-	boost::signals2::signal<void(const char*, nsvr_quaternion*)> TrackingSignal;
+	boost::signals2::signal<void(nsvr_region, nsvr_quaternion*)> TrackingSignal;
 
 private:
 	PluginApis* m_apis;
-	std::string m_region;
 	nsvr_quaternion m_latestQuat;
 };
 
@@ -105,7 +102,7 @@ private:
 	void figureOutCapabilities();
 	void setupSubscriptions(PluginEventHandler& ev);
 	void parseDevices(const std::vector<NodeDescriptor>& descriptor);
-	void fetchDynamicDevices();
+	void dynamicallyFetchDevices();
 
 	void handle_connect(const nsvr::pevents::connected_event&);
 	void handle_disconnect(const nsvr::pevents::disconnected_event&);

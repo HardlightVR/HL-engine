@@ -21,7 +21,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
 
 
-	m_tracking = std::make_unique<OwnedWritableSharedMap<const char*, NullSpace::SharedMemory::Quaternion>>(/* initial element capacity*/16, "ns-tracking-2");
+	m_tracking = std::make_unique<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>>(/* initial element capacity*/16, "ns-tracking-2");
 	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-vec", 2048);
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_trackingData = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>>("ns-tracking-data");
@@ -61,13 +61,13 @@ DriverMessenger::~DriverMessenger()
 }
 
 //Precondition: The keys were initialized already using Insert on m_tracking
-void DriverMessenger::WriteTracking(const std::string& region, NullSpace::SharedMemory::Quaternion quat)
+void DriverMessenger::WriteTracking(uint32_t region, NullSpace::SharedMemory::Quaternion quat)
 {
-	if (m_tracking->Contains(region.c_str())) {
-		m_tracking->Update(region.c_str(), quat);
+	if (m_tracking->Contains(region)) {
+		m_tracking->Update(region, quat);
 	}
 	else {
-		m_tracking->Insert(region.c_str(), quat);
+		m_tracking->Insert(region, quat);
 	}
 }
 
