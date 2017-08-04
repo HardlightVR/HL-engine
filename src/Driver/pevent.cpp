@@ -7,8 +7,7 @@ namespace nsvr {
 	
 		typedef type_operation<
 			nsvr_device_event_device_connected, 
-			nsvr_device_event_device_disconnected, 
-			nsvr_device_event_tracking_update
+			nsvr_device_event_device_disconnected
 		> valid_events;
 
 

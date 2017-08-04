@@ -89,6 +89,7 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent,
 NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, uint64_t id)
 {
 	AS_TYPE(CoreFacade, core)->RaisePluginEvent(type, id);
+	return 1;
 }
 
 NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event ** event, nsvr_device_event_type type)
@@ -191,57 +192,6 @@ NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_devi
 	AS_TYPE(CoreFacade, core)->RegisterPluginApi<device_api>(api);
 	return 1;
 }
-
-NSVR_CORE_RETURN(int) nsvr_device_event_setdeviceid(nsvr_device_event* event, uint32_t device_id)
-{
-	RETURN_IF_NULL(event);
-
-	AS_TYPE(nsvr::pevents::device_event, event)->device_id = device_id;
-	return 1;
-}
-
-NSVR_CORE_RETURN(int) nsvr_device_event_settrackingstate(nsvr_device_event * event, nsvr_region region, nsvr_quaternion * quat)
-{
-	RETURN_IF_NULL(event);
-	nsvr::pevents::device_event* realEvent = AS_TYPE(nsvr::pevents::device_event, event);
-	
-	try {
-		nsvr::pevents::tracking_event& t = boost::get<nsvr::pevents::tracking_event>(realEvent->event);
-		t.quat = *quat;
-		t.region = region;
-		return NSVR_SUCCESS;
-	}
-	catch (const boost::bad_get&) {
-		return -1;
-	}
-
-}
-
-
-NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event* event) {
-	RETURN_IF_NULL(core);
-	RETURN_IF_NULL(event);
-	
-	AS_TYPE(CoreFacade, core)->RaisePluginEvent(*AS_TYPE(nsvr::pevents::device_event, event));
-	return 1;
-}
-
-NSVR_CORE_RETURN(int) nsvr_device_event_destroy(nsvr_device_event** event) {
-	RETURN_IF_NULL(event);
-
-	
-	delete AS_TYPE(nsvr::pevents::device_event, *event);
-	*event = nullptr;
-	return 1;
-
-}
-
-NSVR_CORE_RETURN(int) nsvr_device_event_setid(nsvr_device_event * event, uint64_t id)
-{
-	AS_TYPE(nsvr::pevents::device_event, event)->device_id = id;
-	return 1;
-}
-
 
 
 

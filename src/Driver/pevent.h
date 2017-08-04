@@ -41,8 +41,6 @@ namespace nsvr {
 		template<> 
 		struct getType<nsvr_device_event_device_connected> { typedef connected_event type; };
 
-		template<>
-		struct getType<nsvr_device_event_tracking_update> { typedef tracking_event type; };
 
 
 		// Add new mapping here ---v

@@ -97,15 +97,18 @@ private:
 	std::vector<std::unique_ptr<HapticNode>> m_hapticDevices;
 	std::vector<std::unique_ptr<TrackingNode>> m_trackingDevices;
 	std::unordered_map<Region, std::vector<Node*>> m_nodesByRegion;
+	std::vector<uint64_t> m_knownIds;
 	PluginApis* m_apis;
-
+	void fetchDeviceInfo(uint64_t device_id);
 	void figureOutCapabilities();
 	void setupSubscriptions(PluginEventHandler& ev);
+
+	void createNewDevice(const NodeDescriptor& descriptor);
 	void parseDevices(const std::vector<NodeDescriptor>& descriptor);
 	void dynamicallyFetchDevices();
 
-	void handle_connect(const nsvr::pevents::connected_event&);
-	void handle_disconnect(const nsvr::pevents::disconnected_event&);
+	void handle_connect(uint64_t device_id);
+	void handle_disconnect(uint64_t device_id);
 
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event);

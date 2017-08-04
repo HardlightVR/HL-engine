@@ -17,7 +17,7 @@ public:
 	CoreFacade(PluginApis& apiRegistry, PluginEventHandler& eventHandler);
 
 
-	void RaisePluginEvent(nsvr_device_event_type type, uint64_t id)
+	void RaisePluginEvent(nsvr_device_event_type type, uint64_t id);
 
 	
 	template<typename InternalApi, typename ExternalApi>

@@ -26,18 +26,17 @@ HardlightPlugin::HardlightPlugin() :
 	m_monitor->OnDisconnect([&]() {
 		//nsvr::Event event{nsvr_device_event_device_disconnected};
 		//event.raise(m_core);
-
-		nsvr_device_event* event;
-		nsvr_device_event_create(&event, nsvr_device_event_device_disconnected);
-		nsvr_device_event_raise(m_core, event);
-		nsvr_device_event_destroy(&event);
+		
+		//todo: there is a difference between devices and nodes. I have let this confusion slide.
+		//Now it must be reckoned with. 
+		//todo: think about over vacation
+		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 1);
+	
 	});
 
 	m_monitor->OnReconnect([&]() {
-		nsvr_device_event* event;
-		nsvr_device_event_create(&event, nsvr_device_event_device_connected);
-		nsvr_device_event_raise(m_core, event);
-		nsvr_device_event_destroy(&event);
+		nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, 1);
+
 	});
 
 	m_adapter->Connect();

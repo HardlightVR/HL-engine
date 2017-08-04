@@ -21,7 +21,7 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 
 	setupSubscriptions(ev);
 	
-	if (!m_apis->Supports(Apis::Device)) {
+	if (!m_apis->Supports<device_api>()) {
 		parseDevices(descriptor.nodes);
 	}
 	else {
@@ -39,39 +39,55 @@ void NodalDevice::figureOutCapabilities()
 
 void NodalDevice::setupSubscriptions(PluginEventHandler & ev)
 {
-	ev.Subscribe(nsvr_device_event_device_connected, [this](const nsvr::pevents::device_event& ev) {
-		if (auto event = ev.get<nsvr::pevents::connected_event>()) {
-			handle_connect(*event);
-		}
+	ev.Subscribe(nsvr_device_event_device_connected, [this](uint64_t device_id) {
+		handle_connect(device_id);
 	});
 
-	ev.Subscribe(nsvr_device_event_device_disconnected, [&](const nsvr::pevents::device_event& ev) {
-		if (auto event = ev.get<nsvr::pevents::disconnected_event>()) {
-			handle_disconnect(*event);
-		}
+	ev.Subscribe(nsvr_device_event_device_disconnected, [this](uint64_t device_id) {
+		handle_disconnect(device_id);
 	});
+}
+
+void NodalDevice::createNewDevice(const NodeDescriptor& node)
+{
+	const auto& t = Locator::Translator();
+
+	if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
+		BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+		m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
+	}
+	else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
+		BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+		m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
+
+	}
 }
 
 void NodalDevice::parseDevices(const std::vector<NodeDescriptor>& descriptor)
 {
-	const auto& t = Locator::Translator();
 	
 	BOOST_LOG_TRIVIAL(info) << "[NodalDevice] " << m_name << " describes " << descriptor.size() << " devices:";
 	for (const auto& node : descriptor) {
-		if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
-			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
-			m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
-		}
-		else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
-			BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
-			m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
-
-		}
+		createNewDevice(node);
 	}
 }
 
 
+void NodalDevice::fetchDeviceInfo(uint64_t device_id) {
+	device_api* enumerator = m_apis->GetApi<device_api>();
+	nsvr_device_basic_info info = { 0 };
+	enumerator->submit_getinfo(device_id, &info);
 
+	NodeDescriptor desc;
+	desc.capabilities = info.capabilities;
+	desc.displayName = info.name;
+	desc.id = device_id;
+	desc.nodeType = static_cast<NodeDescriptor::NodeType>(info.type);
+	desc.region = info.region;
+
+	createNewDevice(desc);
+
+}
 
 void NodalDevice::dynamicallyFetchDevices()
 {
@@ -84,31 +100,35 @@ void NodalDevice::dynamicallyFetchDevices()
 	nodes.reserve(device_ids.device_count);
 
 	for (std::size_t i = 0; i < device_ids.device_count; i++) {
-		nsvr_device_basic_info info = { 0 };
-		enumerator->submit_getinfo(device_ids.ids[i], &info);
+		fetchDeviceInfo(device_ids.ids[i]);
+	}
+}
 
-		NodeDescriptor desc;
-		desc.capabilities = info.capabilities;
-		desc.displayName = info.name;
-		desc.id = device_ids.ids[i];
-		desc.nodeType = static_cast<NodeDescriptor::NodeType>(info.type);
-		desc.region = info.region;
-		nodes.push_back(desc);
+
+
+void NodalDevice::handle_connect(uint64_t device_id)
+{
+	if (std::find(m_knownIds.begin(), m_knownIds.end(), device_id) == m_knownIds.end()) {
+		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] A new device was connected";
+		m_knownIds.push_back(device_id);
+		fetchDeviceInfo(device_id);
+	}
+	else {
+		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] An already known device was reconnected";
+
+	}
+}
+
+void NodalDevice::handle_disconnect(uint64_t device_id)
+{
+	auto it = std::find(m_knownIds.begin(), m_knownIds.end(), device_id);
+	if (it != m_knownIds.end()) {
+		m_knownIds.erase(it);
+		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] A known device was disconnected";
+	}else {
+		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] An unknown device was disconnected";
 	}
 
-	parseDevices(nodes);
-}
-
-
-
-void NodalDevice::handle_connect(const nsvr::pevents::connected_event &e)
-{
-	BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] A device was connected!";
-}
-
-void NodalDevice::handle_disconnect(const nsvr::pevents::disconnected_event &)
-{
-	BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] A device was disconnected!";
 }
 
 
