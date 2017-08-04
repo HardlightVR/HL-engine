@@ -13,7 +13,7 @@ CoreFacade::CoreFacade(PluginApis& capabilities, PluginEventHandler& eventHandle
 
 
 
-void CoreFacade::RaisePluginEvent(const nsvr::pevents::device_event& event)
+void CoreFacade::RaisePluginEvent(nsvr_device_event_type type, uint64_t id)
 {
-	m_eventHandler.Raise(event);
+	m_eventHandler.Raise(type, id);
 }

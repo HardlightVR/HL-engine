@@ -85,6 +85,12 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent,
 //	}
 //}
 
+
+NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, uint64_t id)
+{
+	AS_TYPE(CoreFacade, core)->RaisePluginEvent(type, id);
+}
+
 NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event ** event, nsvr_device_event_type type)
 {
 	using namespace nsvr::pevents;

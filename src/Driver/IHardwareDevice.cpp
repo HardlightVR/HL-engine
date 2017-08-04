@@ -179,7 +179,7 @@ void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::Playba
 
 
 HapticNode::HapticNode(const NodeDescriptor& info, PluginApis*c) 
-	: Node { info.id, info.displayName, static_cast<nsvr_region>(info.region),info.capabilities }
+	: Node { info}
 	, m_apis(c)
 
 
@@ -229,11 +229,11 @@ NodeView::NodeType HapticNode::Type() const
 
 
 
-Node::Node(uint64_t id, const std::string& name, nsvr_region region, uint32_t capability) 
-	: m_id(id)
-	, m_name{ name }
-	, m_capability(capability)
-	, m_region(region){}
+Node::Node(const NodeDescriptor& description)
+	: m_id{ description.id }
+	, m_name{ description.displayName }
+	, m_capability{ description.capabilities }
+	, m_region{ static_cast<nsvr_region>(description.region) } {}
 
 
 uint64_t Node::id() const
@@ -300,7 +300,7 @@ void NodalDevice::teardownBodyRepresentation(HumanBodyNodes & body)
 
 
 TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
-	: Node(info.id, info.displayName, static_cast<nsvr_region>(info.region), info.capabilities)
+	: Node(info)
 	, m_apis(capi)
 {
 

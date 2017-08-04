@@ -8,8 +8,8 @@
 class PluginEventHandler {
 public:
 	PluginEventHandler(boost::asio::io_service& io);
-	using EventHandler = std::function<void(const nsvr::pevents::device_event&)>;
-	void Raise(nsvr::pevents::device_event event);
+	using EventHandler = std::function<void(nsvr_device_event_type, uint64_t)>;
+	void Raise(nsvr_device_event_type type, uint64_t id);
 
 	void Subscribe(nsvr_device_event_type type, EventHandler);
 private:

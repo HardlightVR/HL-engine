@@ -22,13 +22,13 @@ class HardwareCoordinator;
 
 class Node {
 public:
-	using RequestId = uint64_t;
-	Node(uint64_t id, const std::string& name, nsvr_region region, uint32_t capability);
-
+	Node(const NodeDescriptor&);
 	virtual ~Node() {}
+
+	using RequestId = uint64_t;
 	virtual void deliver(RequestId id, const nsvr::cevents::request_base&) = 0;
-	nsvr_region region() const;
 	
+	nsvr_region region() const;
 	uint64_t id() const;
 	std::string name() const;
 protected:
