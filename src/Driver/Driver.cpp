@@ -46,7 +46,7 @@ Driver::Driver() :
 	m_eventDispatcher(),
 
 	m_coordinator(m_io, m_messenger, m_devices),
-	m_pluginManager(m_io, m_devices,{"HardlightPlugin", "OpenVRPlugin"})
+	m_pluginManager(m_io, m_devices,{"HardlightPlugin"})
 
 
 {

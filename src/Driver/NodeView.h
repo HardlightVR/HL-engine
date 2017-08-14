@@ -10,26 +10,16 @@ struct NodeView {
 		Led = 2,
 		Tracking = 3
 	};
-	struct Color {
-		float r;
-		float g;
-		float b;
-		float a;
-	};
-
-	struct Intensity {
+	struct Data {
+		float data_0;
+		float data_1;
+		float data_2;
 		float intensity;
-		uint32_t category;
 	};
-
-	struct Rotation {
-		float w;
-		float x;
-		float y;
-		float z;
-	};
-	using Data = boost::variant<Color, Intensity, Rotation>;
+	
 	using SingleNode = std::pair<NodeType, Data>;
 	uint64_t region;
+	uint64_t id;
+
 	std::vector<SingleNode> nodes;
 };

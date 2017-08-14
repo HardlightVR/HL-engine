@@ -118,7 +118,7 @@ struct sampling_api : public plugin_api{
 	callback<
 		nsvr_plugin_sampling_api::nsvr_sampling_querystate, 
 		nsvr_region,
-		nsvr_sampling_nodestate*
+		nsvr_sampling_sample*
 	> submit_query;
 
 	static Apis getApiType() { return Apis::Sampling; }

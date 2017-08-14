@@ -9,7 +9,7 @@ namespace nsvr {
 
 
 
-		LastingHaptic::LastingHaptic(uint32_t effect, float strength, float duration, const char * region) :
+		LastingHaptic::LastingHaptic(uint32_t effect, float strength, float duration, nsvr_region region) :
 			request_base{}
 			, effect(effect)
 			, strength(strength)

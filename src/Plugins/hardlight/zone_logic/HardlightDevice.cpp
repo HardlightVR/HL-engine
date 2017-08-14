@@ -54,7 +54,7 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_plugin_sampling_api sampling_api;
 	sampling_api.client_data = this;
-	sampling_api.query_handler = [](nsvr_region node, nsvr_sampling_nodestate* outState, void* client_data) {
+	sampling_api.query_handler = [](nsvr_region node, nsvr_sampling_sample* outState, void* client_data) {
 		AS_TYPE(HardlightDevice, client_data)->Query(node, outState);
 	};
 
@@ -100,14 +100,15 @@ void HardlightDevice::Unpause(ParentId  handle)
 	}
 }
 
-int HardlightDevice::Query(nsvr_region node, nsvr_sampling_nodestate * outState)
+int HardlightDevice::Query(nsvr_region node, nsvr_sampling_sample * outState)
 {
 	if (m_drivers.find(node) != m_drivers.end()) {
 		if (m_drivers.at(node)->IsPlaying()) {
-			*outState = nsvr_sampling_nodestate_active;
-		}
+
+			outState->intensity = 1;
+		} 
 		else {
-			*outState = nsvr_sampling_nodestate_inactive;
+			outState->intensity = 0;
 		}
 		return 1;
 	}

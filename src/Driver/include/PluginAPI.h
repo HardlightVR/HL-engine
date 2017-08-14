@@ -252,15 +252,17 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, nsvr_region* outRegion);
 
 
+	
+	
 
-
-	typedef enum nsvr_sampling_nodestate {
-		nsvr_sampling_nodestate_unknown = 0,
-		nsvr_sampling_nodestate_active = 1,
-		nsvr_sampling_nodestate_inactive = 2
-	} nsvr_sampling_nodestate;
+	typedef struct nsvr_sampling_sample {
+		float data_0;
+		float data_1;
+		float data_2;
+		float intensity;
+	} nsvr_sampling_sample;
 	typedef struct nsvr_plugin_sampling_api {
-		typedef void(*nsvr_sampling_querystate)(nsvr_region region, nsvr_sampling_nodestate* outState, void* client_data);
+		typedef void(*nsvr_sampling_querystate)(nsvr_region region, nsvr_sampling_sample* outSample, void* client_data);
 		nsvr_sampling_querystate query_handler;
 		void* client_data;
 	} nsvr_plugin_sampling_api;

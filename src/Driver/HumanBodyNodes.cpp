@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "HumanBodyNodes.h"
 #include <experimental\vector>
-void HumanBodyNodes::AddNode(NamedRegion where, Renderable * node)
+void HumanBodyNodes::AddNode(nsvr_region where, Renderable * node)
 {
 	m_info[where].BeginMonitoring(node);
 }
@@ -19,7 +19,6 @@ std::vector<NodeView> HumanBodyNodes::GetNodeView()
 	for (auto& info : m_info) {
 		NodeView nv;
 		nv.region = static_cast<uint64_t>(info.first);
-		
 		info.second.Render(nv.nodes);
 		view.push_back(std::move(nv));
 	}
@@ -40,6 +39,7 @@ void HumanBodyNodes::NodeInfo::EndMonitoring(Renderable * node)
 void HumanBodyNodes::NodeInfo::Render(std::vector<NodeView::SingleNode>& view)
 {
 	for (auto& node : m_nodes) {
+		
 		view.emplace_back(node->Type(), node->Render());
 	}
 }

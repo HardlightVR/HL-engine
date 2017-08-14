@@ -23,12 +23,12 @@ namespace cevents {
 
 
 struct LastingHaptic :public request_base {
-	LastingHaptic(uint32_t effect, float strength, float duration, const char* region);
+	LastingHaptic(uint32_t effect, float strength, float duration, nsvr_region region);
 
 	uint32_t effect;
 	float strength;
 	float duration;
-	const char* region;
+	nsvr_region region;
 
 
 	static const nsvr_request_type request_type;

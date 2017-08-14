@@ -130,21 +130,17 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // repeated string regions = 1;
+  // repeated uint32 regions = 1;
   int regions_size() const;
   void clear_regions();
   static const int kRegionsFieldNumber = 1;
-  const ::std::string& regions(int index) const;
-  ::std::string* mutable_regions(int index);
-  void set_regions(int index, const ::std::string& value);
-  void set_regions(int index, const char* value);
-  void set_regions(int index, const char* value, size_t size);
-  ::std::string* add_regions();
-  void add_regions(const ::std::string& value);
-  void add_regions(const char* value);
-  void add_regions(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& regions() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_regions();
+  ::google::protobuf::uint32 regions(int index) const;
+  void set_regions(int index, ::google::protobuf::uint32 value);
+  void add_regions(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      regions() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_regions();
 
   // optional uint32 effect = 2;
   void clear_effect();
@@ -169,7 +165,8 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> regions_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > regions_;
+  mutable int _regions_cached_byte_size_;
   ::google::protobuf::uint32 effect_;
   float strength_;
   float duration_;
@@ -334,21 +331,17 @@ class CurveHaptic : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   // accessors -------------------------------------------------------
 
-  // repeated string regions = 1;
+  // repeated uint32 regions = 1;
   int regions_size() const;
   void clear_regions();
   static const int kRegionsFieldNumber = 1;
-  const ::std::string& regions(int index) const;
-  ::std::string* mutable_regions(int index);
-  void set_regions(int index, const ::std::string& value);
-  void set_regions(int index, const char* value);
-  void set_regions(int index, const char* value, size_t size);
-  ::std::string* add_regions();
-  void add_regions(const ::std::string& value);
-  void add_regions(const char* value);
-  void add_regions(const char* value, size_t size);
-  const ::google::protobuf::RepeatedPtrField< ::std::string>& regions() const;
-  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_regions();
+  ::google::protobuf::uint32 regions(int index) const;
+  void set_regions(int index, ::google::protobuf::uint32 value);
+  void add_regions(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      regions() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_regions();
 
   // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
   int samples_size() const;
@@ -367,7 +360,8 @@ class CurveHaptic : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> regions_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > regions_;
+  mutable int _regions_cached_byte_size_;
   ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::CurveHaptic_Sample > samples_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
@@ -825,56 +819,31 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // SimpleHaptic
 
-// repeated string regions = 1;
+// repeated uint32 regions = 1;
 inline int SimpleHaptic::regions_size() const {
   return regions_.size();
 }
 inline void SimpleHaptic::clear_regions() {
   regions_.Clear();
 }
-inline const ::std::string& SimpleHaptic::regions(int index) const {
+inline ::google::protobuf::uint32 SimpleHaptic::regions(int index) const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.regions)
   return regions_.Get(index);
 }
-inline ::std::string* SimpleHaptic::mutable_regions(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.SimpleHaptic.regions)
-  return regions_.Mutable(index);
-}
-inline void SimpleHaptic::set_regions(int index, const ::std::string& value) {
+inline void SimpleHaptic::set_regions(int index, ::google::protobuf::uint32 value) {
+  regions_.Set(index, value);
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.regions)
-  regions_.Mutable(index)->assign(value);
 }
-inline void SimpleHaptic::set_regions(int index, const char* value) {
-  regions_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.SimpleHaptic.regions)
-}
-inline void SimpleHaptic::set_regions(int index, const char* value, size_t size) {
-  regions_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.SimpleHaptic.regions)
-}
-inline ::std::string* SimpleHaptic::add_regions() {
-  // @@protoc_insertion_point(field_add_mutable:NullSpaceIPC.SimpleHaptic.regions)
-  return regions_.Add();
-}
-inline void SimpleHaptic::add_regions(const ::std::string& value) {
-  regions_.Add()->assign(value);
+inline void SimpleHaptic::add_regions(::google::protobuf::uint32 value) {
+  regions_.Add(value);
   // @@protoc_insertion_point(field_add:NullSpaceIPC.SimpleHaptic.regions)
 }
-inline void SimpleHaptic::add_regions(const char* value) {
-  regions_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:NullSpaceIPC.SimpleHaptic.regions)
-}
-inline void SimpleHaptic::add_regions(const char* value, size_t size) {
-  regions_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:NullSpaceIPC.SimpleHaptic.regions)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
 SimpleHaptic::regions() const {
   // @@protoc_insertion_point(field_list:NullSpaceIPC.SimpleHaptic.regions)
   return regions_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 SimpleHaptic::mutable_regions() {
   // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.SimpleHaptic.regions)
   return &regions_;
@@ -958,56 +927,31 @@ inline void CurveHaptic_Sample::set_magnitude(float value) {
 
 // CurveHaptic
 
-// repeated string regions = 1;
+// repeated uint32 regions = 1;
 inline int CurveHaptic::regions_size() const {
   return regions_.size();
 }
 inline void CurveHaptic::clear_regions() {
   regions_.Clear();
 }
-inline const ::std::string& CurveHaptic::regions(int index) const {
+inline ::google::protobuf::uint32 CurveHaptic::regions(int index) const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.regions)
   return regions_.Get(index);
 }
-inline ::std::string* CurveHaptic::mutable_regions(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.CurveHaptic.regions)
-  return regions_.Mutable(index);
-}
-inline void CurveHaptic::set_regions(int index, const ::std::string& value) {
+inline void CurveHaptic::set_regions(int index, ::google::protobuf::uint32 value) {
+  regions_.Set(index, value);
   // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.regions)
-  regions_.Mutable(index)->assign(value);
 }
-inline void CurveHaptic::set_regions(int index, const char* value) {
-  regions_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.CurveHaptic.regions)
-}
-inline void CurveHaptic::set_regions(int index, const char* value, size_t size) {
-  regions_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.CurveHaptic.regions)
-}
-inline ::std::string* CurveHaptic::add_regions() {
-  // @@protoc_insertion_point(field_add_mutable:NullSpaceIPC.CurveHaptic.regions)
-  return regions_.Add();
-}
-inline void CurveHaptic::add_regions(const ::std::string& value) {
-  regions_.Add()->assign(value);
+inline void CurveHaptic::add_regions(::google::protobuf::uint32 value) {
+  regions_.Add(value);
   // @@protoc_insertion_point(field_add:NullSpaceIPC.CurveHaptic.regions)
 }
-inline void CurveHaptic::add_regions(const char* value) {
-  regions_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:NullSpaceIPC.CurveHaptic.regions)
-}
-inline void CurveHaptic::add_regions(const char* value, size_t size) {
-  regions_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:NullSpaceIPC.CurveHaptic.regions)
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
 CurveHaptic::regions() const {
   // @@protoc_insertion_point(field_list:NullSpaceIPC.CurveHaptic.regions)
   return regions_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 CurveHaptic::mutable_regions() {
   // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.CurveHaptic.regions)
   return &regions_;

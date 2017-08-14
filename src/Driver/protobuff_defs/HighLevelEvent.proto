@@ -5,7 +5,7 @@ package NullSpaceIPC;
 
 
 message SimpleHaptic {
-	repeated string regions = 1;
+	repeated uint32 regions = 1;
 	uint32 effect = 2;
 	float strength = 3;
 	float duration = 4;
@@ -13,7 +13,7 @@ message SimpleHaptic {
 
 
 message CurveHaptic {
-	repeated string regions = 1;
+	repeated uint32 regions = 1;
 	message Sample {
 		float time = 1;
 		float magnitude = 2;

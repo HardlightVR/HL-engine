@@ -41,43 +41,17 @@ void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion
 	m_messenger.WriteTracking(region, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
 }
 
-class node_visitor : public boost::static_visitor<NullSpace::SharedMemory::RegionPair>
-{
-public:
-	
-	NullSpace::SharedMemory::RegionPair operator()(const NodeView::Color& color) const{
-		using namespace NullSpace::SharedMemory;
-		RegionPair pair = { 0 };
-		pair.color = { color.r, color.g, color.b, color.a };
-		pair.Type = static_cast<uint32_t>(RegionPairType::Color);
-		return pair;
-	}
-	NullSpace::SharedMemory::RegionPair operator()(const NodeView::Intensity& intensity) const {
-		using namespace NullSpace::SharedMemory;
-		RegionPair pair = {0};
-		pair.intensity = { intensity.intensity};
-		pair.Type = static_cast<uint32_t>(RegionPairType::Intensity);
-		return pair;
-	}
-	NullSpace::SharedMemory::RegionPair operator()(const NodeView::Rotation& rotation) const {
-		using namespace NullSpace::SharedMemory;
-		RegionPair pair= {0};
-		//pair. = { color.r, color.g, color.b, color.a };
-		//pair.Type = static_cast<uint32_t>(RegionPairType::Color);
-		//todo: implement
-		return pair;
-	}
-
-};
 void HardwareCoordinator::writeBodyRepresentation()
 {
 	auto nodeView = m_bodyRepresentation.GetNodeView();
 	
 	for (const auto& node : nodeView) {
 		for (const auto& single : node.nodes) {
-			NullSpace::SharedMemory::RegionPair pair = boost::apply_visitor(node_visitor{}, single.second);			
+			NullSpace::SharedMemory::RegionPair pair;
+			pair.Type = static_cast<uint32_t>(single.first);
 			pair.Region = node.region;
-			pair.Id = 1234;
+			pair.Id = node.id;
+			pair.Value = NullSpace::SharedMemory::Data{ single.second.data_0, single.second.data_1, single.second.data_2, single.second.intensity };
 			m_messenger.WriteBodyView(std::move(pair));
 		}
 	}

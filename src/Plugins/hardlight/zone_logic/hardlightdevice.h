@@ -19,7 +19,7 @@ public:
 	void Pause(ParentId  handle);
 	void Cancel(ParentId  handle);
 	void Unpause(ParentId  handle);
-	int Query(nsvr_region node, nsvr_sampling_nodestate* outState);
+	int Query(nsvr_region node, nsvr_sampling_sample* outState);
 
 
 	

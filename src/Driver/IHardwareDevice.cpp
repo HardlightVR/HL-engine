@@ -151,13 +151,13 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 
 void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
-	for (const auto& region : simple.regions()) {
+	for (uint32_t region : simple.regions()) {
 		//todo: uncomment when we get regions all figured out
-		//auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), region.c_str());
+		auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), static_cast<nsvr_region>(region));
 
 		if (auto api = m_apis->GetApi<request_api>()) {
-		//	ev.handle = requestId;
-		//	api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
+			ev.handle = requestId;
+			api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
 		}
 
 		else if (auto api = m_apis->GetApi<preset_api>()) {
@@ -228,18 +228,12 @@ void HapticNode::deliver(RequestId, const nsvr::cevents::request_base & base)
 NodeView::Data HapticNode::Render() const
 {
 	if (sampling_api* api = m_apis->GetApi<sampling_api>()) {
-		nsvr_sampling_nodestate state;
-	
-		api->submit_query(m_region, &state);
-		if (nsvr_sampling_nodestate::nsvr_sampling_nodestate_active == state) {
-			return NodeView::Intensity{ 1, 0 };
-		}
-		else {
-			return NodeView::Intensity{ 0, 0 };
-		}
-
+		nsvr_sampling_sample state = { 0 };
+		api->submit_query(m_region, &state);	
+		return NodeView::Data { state.data_0, state.data_1, state.data_2, state.intensity };
 	}
-	return NodeView::Intensity{ 0, 0 };
+
+	return NodeView::Data { 0, 0, 0, 0 };
 }
 
 NodeView::NodeType HapticNode::Type() const
@@ -305,7 +299,7 @@ void NodalDevice::teardownHooks() {
 void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
 {
 	for (auto& node : m_hapticDevices) {
-		body.AddNode(HumanBodyNodes::NamedRegion::Arm_Lower_Left, node.get());
+		body.AddNode(node->region(), node.get());
 	}
 }
 
