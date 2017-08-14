@@ -139,10 +139,6 @@ NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core * core, nsvr_plugin
 	REGISTER_API(rawcommand_api)
 }
 
-NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core * core, nsvr_plugin_tracking_api * api)
-{
-	REGISTER_API(tracking_api)
-}
 
 NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream * stream, nsvr_quaternion * quaternion)
 {
@@ -151,6 +147,10 @@ NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream * stream, n
 }
 
 
+NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core * core, nsvr_plugin_tracking_api * api)
+{
+	REGISTER_API(tracking_api)
+}
 
 NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_playback_api * api)
 {
