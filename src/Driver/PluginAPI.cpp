@@ -136,8 +136,7 @@ NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* reque
 
 NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core * core, nsvr_plugin_rawcommand_api * api)
 {
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<rawcommand_api>(api);
-	return NSVR_SUCCESS;
+	REGISTER_API(rawcommand_api)
 }
 
 NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core * core, nsvr_plugin_tracking_api * api)
@@ -155,42 +154,32 @@ NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream * stream, n
 
 NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_playback_api * api)
 {
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<playback_api>(api);
-	return NSVR_SUCCESS;
+	REGISTER_API(playback_api)
 }
-
-
 
 NSVR_CORE_RETURN(int) nsvr_register_buffer_api(nsvr_core * core, nsvr_plugin_buffer_api * api)
 {
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<buffered_api>(api);
-	return NSVR_SUCCESS;
+	REGISTER_API(buffered_api)
 }
 
 NSVR_CORE_RETURN(int) nsvr_register_preset_api(nsvr_core * core, nsvr_plugin_preset_api * api)
 {
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<preset_api>(api);
-	return NSVR_SUCCESS;
+	REGISTER_API(preset_api)
 }
 
 NSVR_CORE_RETURN(int)  nsvr_register_request_api(nsvr_core* core, nsvr_plugin_request_api* api)
 {
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<request_api>(api);
-	return NSVR_SUCCESS;
+	REGISTER_API(request_api)
 }
-
 
 NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core * core, nsvr_plugin_sampling_api * api)
 {
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<sampling_api>(api);
-	return 1;
+	REGISTER_API(sampling_api)
 }
-
 
 NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_device_api* api)
 {
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<device_api>(api);
-	return 1;
+	REGISTER_API(device_api)
 }
 
 
