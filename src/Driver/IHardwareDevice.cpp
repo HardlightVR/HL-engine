@@ -155,40 +155,39 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 			api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
 		}
 
-		
-		else if (auto api = m_apis->GetApi<buffered_api>()) {
-			//This will essentially mirror the behavior of the underlying api
-			//so with oculus, the effect would not be interruptible.
-			//In our wrapper, we'd probably want to also implement the request api
-			//so that we can have interruptible effects.
-
-
-			double sampleDuration = 0;
-			api->submit_getsampleduration(&sampleDuration);
-
-		
-
-			uint32_t numNecessarySamples = std::max<uint32_t>(1, static_cast<uint32_t>(simple.duration() / sampleDuration));
-
-		
-				std::vector<double> samples(numNecessarySamples, simple.strength());
-
-				for (const auto& device : m_hapticDevices) {
-					//if (device->region() == static_cast<nsvr_region>(region)) {
-						api->submit_buffer(device->Id(), samples.data(), samples.size());
-						//}
-				}
-		
-			
-		}
 		else if (auto api = m_apis->GetApi<preset_api>()) {
 
 
 			///	auto& interested = m_nodesByRegion[region];
 			///	for (auto& node : interested) {
-			//	node->deliver(requestId, ev);
-			//}
+			//
+
+			for (const auto& device : m_hapticDevices) {
+				nsvr_preset_request req{};
+				req.family = static_cast<nsvr_preset_family>(simple.effect());
+				req.strength = simple.strength();
+				api->submit_preset(device->Id(), &req);
+			}
 		}
+		else if (auto api = m_apis->GetApi<buffered_api>()) {
+
+			double sampleDuration = 0;
+			api->submit_getsampleduration(&sampleDuration);
+
+			uint32_t numNecessarySamples = std::max<uint32_t>(1, static_cast<uint32_t>(simple.duration() / sampleDuration));
+
+			std::vector<double> samples(numNecessarySamples, simple.strength());
+
+			for (const auto& device : m_hapticDevices) {
+				//commented for testing purposes while we wait for high level to have better region support
+				//if (device->region() == static_cast<nsvr_region>(region)) {
+					api->submit_buffer(device->Id(), samples.data(), samples.size());
+				//}
+			}
+		
+			
+		}
+		
  	}
 }
 
@@ -242,7 +241,7 @@ void HapticNode::deliver(RequestId, const nsvr::cevents::request_base & base)
 			nsvr_preset_request req{};
 			req.family = static_cast<nsvr_preset_family>(lasting.effect);
 			req.strength = lasting.strength;
-			api->submit_preset(reinterpret_cast<nsvr_preset_request*>(&req));
+			//api->submit_preset(0, reinterpret_cast<nsvr_preset_request*>(&req));
 		}
 	}
 }

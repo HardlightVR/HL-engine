@@ -40,11 +40,10 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 {
 	nsvr_plugin_preset_api preset;
 	preset.client_data = this;
-	preset.preset_handler = [](nsvr_preset_request* req, void* ud) {
+	preset.preset_handler = [](uint64_t device_id, nsvr_preset_request* req, void* ud) {
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
-		float strength;
-		nsvr_preset_request_getstrength(req, &strength);
-		wrapper->triggerHapticPulse(0, strength);
+
+		wrapper->triggerPreset(device_id, req);
 	};
 
 	nsvr_register_preset_api(core, &preset);
@@ -136,20 +135,19 @@ void OpenVRWrapper::feedBufferedHaptics()
 {
 	std::lock_guard<std::mutex> guard(sampleLock);
 
-	if ((std::chrono::high_resolution_clock::now() - lastSampleSent) > std::chrono::milliseconds(5)) {
-		for (auto& sampleQueue : samples) {
+	for (auto& sampleQueue : samples) {
+		
+		if (sampleQueue.second.empty()) {
+			return;
+		}
 
-			if (sampleQueue.second.empty()) {
-				return;
-			}
-
+		auto lastSampleSent = sampleTimestamps[sampleQueue.first];
+		
+		if ((std::chrono::high_resolution_clock::now() - lastSampleSent) > std::chrono::milliseconds(5)) {
 			triggerHapticPulse(sampleQueue.first, sampleQueue.second.front());
 			sampleQueue.second.pop();
+			sampleTimestamps[sampleQueue.first] = std::chrono::high_resolution_clock::now();
 		}
-		
-	
-
-		lastSampleSent = std::chrono::high_resolution_clock::now();
 	}
 }
 
@@ -203,7 +201,7 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 		if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand)) {
 			std::string name("Vive Controller Left Hand");
 			strcpy_s(info->name, 128, name.c_str());
-			info->capabilities = nsvr_device_capability_preset;
+			info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
 			info->region = nsvr_region_hand_left;
 			info->type = nsvr_device_type_haptic;
 		}
@@ -211,9 +209,34 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 		else if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand)) {
 			std::string name("Vive Controller Right Hand");
 			strcpy_s(info->name, 128, name.c_str());
-			info->capabilities = nsvr_device_capability_preset;
+			info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
 			info->region = nsvr_region_hand_right;
 			info->type = nsvr_device_type_haptic;
 		}
 	}
+}
+std::vector<double> generateWaveform(float strength, nsvr_preset_family family) {
+	if (nsvr_preset_family_click == family) {
+		return std::vector<double> { strength };
+	}
+	else if (nsvr_preset_family_double_click == family) {
+		return std::vector<double> {strength, 0, 0, 0, 0, 0, strength};
+	}
+	else if (nsvr_preset_family_hum == family) {
+		return std::vector<double>(20, strength);
+	}
+	else {
+		return std::vector<double>(1,strength);
+	}
+}
+void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_preset_request* req)
+{
+	nsvr_preset_family family;
+	nsvr_preset_request_getfamily(req, &family);
+
+	float strength;
+	nsvr_preset_request_getstrength(req, &strength);
+
+	auto wave = generateWaveform(strength, family);
+	bufferedHaptics(device, wave.data(), wave.size());
 }

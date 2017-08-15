@@ -202,7 +202,7 @@ extern "C" {
 	typedef struct nsvr_preset_request nsvr_preset_request;
 
 	typedef struct nsvr_plugin_preset_api {
-		typedef void(*nsvr_preset_handler)(nsvr_preset_request*, void*);
+		typedef void(*nsvr_preset_handler)(uint64_t device_id, nsvr_preset_request*, void*);
 		nsvr_preset_handler preset_handler;
 		void* client_data;
 	} nsvr_plugin_preset_api;
@@ -214,7 +214,10 @@ extern "C" {
 	typedef enum nsvr_preset_family {
 		nsvr_preset_family_unknown = 0,
 		nsvr_preset_family_bump = 1,
-		nsvr_preset_family_click = 2
+		nsvr_preset_family_click = 3,
+		nsvr_preset_family_double_click = 4,
+		nsvr_preset_family_hum = 6,
+		nsvr_preset_family_pulse = 8
 	} nsvr_preset_family;
 
 	// To retrieve information about a preset request, use these functions

@@ -19,6 +19,7 @@ public:
 	void bufferedHaptics(uint64_t device_id, double* samples, uint32_t count);
 	void enumerateDevices(nsvr_device_ids* ids);
 	void getDeviceInfo(uint64_t id, nsvr_device_basic_info* info);
+	void triggerPreset(uint64_t device,nsvr_preset_request* req);
 private:
 	std::atomic<bool> shouldShutDown;
 	vr::IVRSystem* system;
@@ -28,7 +29,9 @@ private:
 	void process(const vr::VREvent_t& event);
 	void feedBufferedHaptics();
 	std::unordered_map<uint64_t, std::queue<double>> samples;
-	std::chrono::time_point<std::chrono::high_resolution_clock> lastSampleSent;
+	using LastSampleTimeSent = std::chrono::time_point<std::chrono::high_resolution_clock>;
+
+	std::unordered_map<uint64_t, LastSampleTimeSent> sampleTimestamps;
 	std::mutex sampleLock;
 
 	

@@ -88,6 +88,7 @@ struct preset_api : public plugin_api {
 	
 	callback<
 		nsvr_plugin_preset_api::nsvr_preset_handler, 
+		uint64_t,
 		nsvr_preset_request*
 	> submit_preset;
 
