@@ -17,10 +17,7 @@ std::vector<NodeView> HumanBodyNodes::GetNodeView()
 {
 	std::vector<NodeView> view;
 	for (auto& info : m_info) {
-		NodeView nv;
-		//nv.id = i
-		//todo: implement id
-		
+		NodeView nv;		
 		nv.region = static_cast<uint64_t>(info.first);
 		info.second.Render(nv.nodes);
 		view.push_back(std::move(nv));

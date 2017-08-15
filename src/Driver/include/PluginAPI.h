@@ -183,11 +183,14 @@ extern "C" {
 	// If you have a buffered-style API with calls similar to SubmitHapticData(void* amplitudes, int length),
 	// implement the buffer_api interface
 
-	typedef struct nsvr_buffered_request nsvr_buffered_request;
 
 	typedef struct nsvr_plugin_buffer_api {
-		typedef void(*nsvr_buffered_handler)(nsvr_buffered_request*, void*);
-		nsvr_buffered_handler buffered_handler;
+		typedef void(*nsvr_buffered_submit)(double* amplitudes, uint32_t count, void*);
+		typedef void(*nsvr_buffered_getsampleduration)(double* outSampleDuration, void*);
+		typedef void(*nsvr_buffered_getmaxsamples)(uint32_t* outMaxSamples, void*);
+		nsvr_buffered_submit submit_handler;
+		nsvr_buffered_getmaxsamples getmaxsamples_handler;
+		nsvr_buffered_getsampleduration getsampleduration_handler;
 		void* client_data;
 	} nsvr_plugin_buffer_api;
 

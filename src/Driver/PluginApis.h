@@ -54,13 +54,30 @@ extern const std::unordered_map<Apis, const char*> PrintableApiNames;
 
 
 struct buffered_api : public plugin_api {
-	buffered_api(nsvr_plugin_buffer_api* api)
-		: submit_buffer { api->buffered_handler, api->client_data } {}
+	buffered_api(nsvr_plugin_buffer_api* api) 
+		: submit_buffer { api->submit_handler, api->client_data }
+		, submit_getmaxsamples{api->getmaxsamples_handler, api->client_data}
+		, submit_getsampleduration{api->getsampleduration_handler, api->client_data}
+	{}
 	
 	callback<
-		nsvr_plugin_buffer_api::nsvr_buffered_handler, 
-		nsvr_buffered_request*
+		nsvr_plugin_buffer_api::nsvr_buffered_submit,
+		double*,
+		uint32_t
 	> submit_buffer;
+
+
+	callback<
+		nsvr_plugin_buffer_api::nsvr_buffered_getmaxsamples,
+		uint32_t*
+	> submit_getmaxsamples;
+
+	callback<
+		nsvr_plugin_buffer_api::nsvr_buffered_getsampleduration,
+		double*
+	> submit_getsampleduration;
+
+
 	static Apis getApiType() { return Apis::Buffered; }
 };
 

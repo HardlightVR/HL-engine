@@ -64,18 +64,36 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 
 	nsvr_register_device_api(core, &devices);
 
+	nsvr_plugin_buffer_api buffered_api;
+	buffered_api.client_data = this;
+
+	buffered_api.getmaxsamples_handler = [](uint32_t* outMaxSamples, void* ud) {
+		*outMaxSamples = 200;
+	};
+	buffered_api.getsampleduration_handler = [](double* outDuration, void* ud) {
+		*outDuration = 5;
+	};
+	buffered_api.submit_handler = [](double* samples, uint32_t count, void* ud) {
+		AS_TYPE(OpenVRWrapper, ud)->bufferedHaptics(samples, count);
+	};
+
+	nsvr_register_buffer_api(core, &buffered_api);
+
 	this->core = core;
 }
 
 void OpenVRWrapper::update()
 {
-	if (!shouldShutDown.load()) {
+	while (!shouldShutDown.load()) {
 		if (system) {
 			vr::VREvent_t event;
 			while (system->PollNextEvent(&event, sizeof(event))) {
 				process(event);
 			}
+
 		}
+		feedBufferedHaptics();
+
 	}
 }
 
@@ -91,32 +109,43 @@ void OpenVRWrapper::triggerHapticPulse(float strength)
 	}
 }
 
+void OpenVRWrapper::bufferedHaptics(double * amps, uint32_t count)
+{
+	std::lock_guard<std::mutex> guard(sampleLock);
+	for (uint32_t i = 0; i < count; i++) {
+		this->samples.push(amps[i] );
+	}
+}
+
 
 void OpenVRWrapper::process(const vr::VREvent_t&  event)
 {
 	switch (event.eventType) {
 	case vr::VREvent_TrackedDeviceActivated:
-	{
-		nsvr_device_event* devent;
-		nsvr_device_event_create(&devent, nsvr_device_event_device_connected);
-		nsvr_device_event_setid(devent, event.trackedDeviceIndex);
-		nsvr_device_event_raise(core, devent);
-		nsvr_device_event_destroy(&devent);
+		nsvr_device_event_raise(core, nsvr_device_event_device_connected, event.trackedDeviceIndex);
 		break;
-	}
 	case vr::VREvent_TrackedDeviceDeactivated:
-	{
-	
-		nsvr_device_event* devent;
-		nsvr_device_event_create(&devent, nsvr_device_event_device_disconnected);
-		nsvr_device_event_setid(devent, event.trackedDeviceIndex);
-		nsvr_device_event_raise(core, devent);
-		nsvr_device_event_destroy(&devent);
+		nsvr_device_event_raise(core, nsvr_device_event_device_disconnected, event.trackedDeviceIndex);
 		break;
-	}
-
 	default:
 		break;
+	}
+}
+
+void OpenVRWrapper::feedBufferedHaptics()
+{
+	std::lock_guard<std::mutex> guard(sampleLock);
+
+	if (samples.empty()) {
+		return;
+	}
+
+	if ((std::chrono::high_resolution_clock::now() - lastSampleSent) > std::chrono::milliseconds(5)) {
+		std::cout << "Triggering a haptic pulse with strength " << samples.front()  << '\n';
+		triggerHapticPulse(samples.front());
+		samples.pop();
+
+		lastSampleSent = std::chrono::high_resolution_clock::now();
 	}
 }
 

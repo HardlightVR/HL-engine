@@ -152,7 +152,6 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
 	for (uint32_t region : simple.regions()) {
-		//todo: uncomment when we get regions all figured out
 		auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), static_cast<nsvr_region>(region));
 
 		if (auto api = m_apis->GetApi<request_api>()) {
@@ -160,13 +159,45 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 			api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
 		}
 
+		
+		else if (auto api = m_apis->GetApi<buffered_api>()) {
+			//This will essentially mirror the behavior of the underlying api
+			//so with oculus, the effect would not be interuptable.
+			//In our wrapper, we'd probably want to also implement the request api
+			//so that we can have interuptable effects.
+
+
+			double sampleDuration = 0;
+			api->submit_getsampleduration(&sampleDuration);
+
+			uint32_t maxSamples;
+			api->submit_getmaxsamples(&maxSamples);
+
+
+
+			int numNecessarySamples = std::max<int>(1, simple.duration() / sampleDuration);
+
+			if (numNecessarySamples < maxSamples) {
+				std::vector<double> samples(numNecessarySamples, simple.strength());
+				api->submit_buffer(samples.data(), samples.size());
+			}
+			else {
+				//do nothing. Need more complex algorithm :)
+				//possible behavior: we require the wrapper to handle "any" buffer size
+			}
+			
+
+			
+		}
 		else if (auto api = m_apis->GetApi<preset_api>()) {
-		///	auto& interested = m_nodesByRegion[region];
-		///	for (auto& node : interested) {
+
+
+			///	auto& interested = m_nodesByRegion[region];
+			///	for (auto& node : interested) {
 			//	node->deliver(requestId, ev);
 			//}
 		}
-	}
+ 	}
 }
 
 
