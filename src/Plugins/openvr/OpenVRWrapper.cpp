@@ -44,7 +44,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
 		float strength;
 		nsvr_preset_request_getstrength(req, &strength);
-		wrapper->triggerHapticPulse(strength);
+		wrapper->triggerHapticPulse(0, strength);
 	};
 
 	nsvr_register_preset_api(core, &preset);
@@ -73,8 +73,8 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 	buffered_api.getsampleduration_handler = [](double* outDuration, void* ud) {
 		*outDuration = 5;
 	};
-	buffered_api.submit_handler = [](double* samples, uint32_t count, void* ud) {
-		AS_TYPE(OpenVRWrapper, ud)->bufferedHaptics(samples, count);
+	buffered_api.submit_handler = [](uint64_t device_id, double* samples, uint32_t count, void* ud) {
+		AS_TYPE(OpenVRWrapper, ud)->bufferedHaptics(device_id, samples, count);
 	};
 
 	nsvr_register_buffer_api(core, &buffered_api);
@@ -97,23 +97,23 @@ void OpenVRWrapper::update()
 	}
 }
 
-void OpenVRWrapper::triggerHapticPulse(float strength)
+void OpenVRWrapper::triggerHapticPulse(vr::TrackedDeviceIndex_t device, float strength)
 {
 	assert(strength >= 0 && strength <= 1.0);
 	//4000microseconds = strongest..
-	short durationMicroSec = short(4000 * strength);
+	short durationMicroSec = short(2000 * strength);
 	vr::EVRButtonId buttonId = vr::EVRButtonId::k_EButton_SteamVR_Touchpad;
 	auto axisId = (uint32_t)buttonId - (uint32_t)vr::EVRButtonId::k_EButton_Axis0;
 	if (system) {
-		system->TriggerHapticPulse(0, axisId, durationMicroSec);
+		system->TriggerHapticPulse(device, axisId, durationMicroSec);
 	}
 }
 
-void OpenVRWrapper::bufferedHaptics(double * amps, uint32_t count)
+void OpenVRWrapper::bufferedHaptics(uint64_t device_id, double * amps, uint32_t count)
 {
 	std::lock_guard<std::mutex> guard(sampleLock);
 	for (uint32_t i = 0; i < count; i++) {
-		this->samples.push(amps[i] );
+		this->samples[device_id].push(amps[i] );
 	}
 }
 
@@ -136,14 +136,18 @@ void OpenVRWrapper::feedBufferedHaptics()
 {
 	std::lock_guard<std::mutex> guard(sampleLock);
 
-	if (samples.empty()) {
-		return;
-	}
-
 	if ((std::chrono::high_resolution_clock::now() - lastSampleSent) > std::chrono::milliseconds(5)) {
-		std::cout << "Triggering a haptic pulse with strength " << samples.front()  << '\n';
-		triggerHapticPulse(samples.front());
-		samples.pop();
+		for (auto& sampleQueue : samples) {
+
+			if (sampleQueue.second.empty()) {
+				return;
+			}
+
+			triggerHapticPulse(sampleQueue.first, sampleQueue.second.front());
+			sampleQueue.second.pop();
+		}
+		
+	
 
 		lastSampleSent = std::chrono::high_resolution_clock::now();
 	}

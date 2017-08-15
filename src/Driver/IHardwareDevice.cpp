@@ -8,17 +8,13 @@
 #include "Locator.h"
 #include "HardwareCoordinator.h"
 #include "HumanBodyNodes.h"
-NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventHandler& ev)
+NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev)
 	: m_concept(descriptor.concept)
 	, m_name(descriptor.displayName)
 	, m_apis(&capi)
 	, m_trackingDevices()
 	, m_hapticDevices()
 {
-
-	
-
-
 	setupSubscriptions(ev);
 	
 	if (!m_apis->Supports<device_api>()) {
@@ -37,7 +33,7 @@ void NodalDevice::figureOutCapabilities()
 {
 }
 
-void NodalDevice::setupSubscriptions(PluginEventHandler & ev)
+void NodalDevice::setupSubscriptions(PluginEventSource & ev)
 {
 	ev.Subscribe(nsvr_device_event_device_connected, [this](uint64_t device_id) {
 		handle_connect(device_id);
@@ -162,31 +158,27 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 		
 		else if (auto api = m_apis->GetApi<buffered_api>()) {
 			//This will essentially mirror the behavior of the underlying api
-			//so with oculus, the effect would not be interuptable.
+			//so with oculus, the effect would not be interruptible.
 			//In our wrapper, we'd probably want to also implement the request api
-			//so that we can have interuptable effects.
+			//so that we can have interruptible effects.
 
 
 			double sampleDuration = 0;
 			api->submit_getsampleduration(&sampleDuration);
 
-			uint32_t maxSamples;
-			api->submit_getmaxsamples(&maxSamples);
+		
 
+			uint32_t numNecessarySamples = std::max<uint32_t>(1, static_cast<uint32_t>(simple.duration() / sampleDuration));
 
-
-			int numNecessarySamples = std::max<int>(1, simple.duration() / sampleDuration);
-
-			if (numNecessarySamples < maxSamples) {
+		
 				std::vector<double> samples(numNecessarySamples, simple.strength());
-				api->submit_buffer(samples.data(), samples.size());
-			}
-			else {
-				//do nothing. Need more complex algorithm :)
-				//possible behavior: we require the wrapper to handle "any" buffer size
-			}
-			
 
+				for (const auto& device : m_hapticDevices) {
+					//if (device->region() == static_cast<nsvr_region>(region)) {
+						api->submit_buffer(device->Id(), samples.data(), samples.size());
+						//}
+				}
+		
 			
 		}
 		else if (auto api = m_apis->GetApi<preset_api>()) {
@@ -315,12 +307,6 @@ void NodalDevice::setupHooks(HardwareCoordinator & coordinator)
 	if (m_apis->Supports<tracking_api>()) {
 		for (auto& node : m_trackingDevices) {
 			coordinator.Hook_TrackingSlot(node->TrackingSignal);
-		}
-	}
-
-	if (m_apis->Supports<sampling_api>()) {
-		for (auto& node : m_hapticDevices) {
-		//	coordinator.Hook_SamplingSlot(node->SamplingSignal);
 		}
 	}
 }

@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "CoreFacade.h"
 #include "PluginApis.h"
-#include "PluginEventHandler.h"
+#include "PluginEventSource.h"
 
 
-CoreFacade::CoreFacade(PluginApis& capabilities, PluginEventHandler& eventHandler)
+CoreFacade::CoreFacade(PluginApis& capabilities, PluginEventSource& eventHandler)
 	: m_eventHandler(eventHandler)
 	, m_pluginCapabilities(capabilities)
 {

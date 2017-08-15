@@ -8,7 +8,7 @@
 class DeviceContainer {
 public:
 	using DeviceFn = std::function<void(NodalDevice*)>;
-	void AddDevice(const HardwareDescriptor&, PluginApis&, PluginEventHandler&);
+	void AddDevice(const HardwareDescriptor&, PluginApis&, PluginEventSource&);
 	void RemoveDevice(const std::string&);
 	
 	

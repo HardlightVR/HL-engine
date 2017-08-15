@@ -7,7 +7,7 @@
 
 #include "CoreFacade.h"
 #include "PluginApis.h"
-#include "PluginEventHandler.h"
+#include "PluginEventSource.h"
 
 #include "DriverConfigParser.h"
 
@@ -60,7 +60,7 @@ private:
 
 	HardwareDescriptor m_descriptor;
 	PluginApis m_apis;
-	PluginEventHandler m_eventHandler;
+	PluginEventSource m_eventHandler;
 	CoreFacade m_facade;
 
 

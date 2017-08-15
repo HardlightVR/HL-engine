@@ -8,14 +8,15 @@
 #include <chrono>
 #include <queue>
 #include <mutex>
+#include <unordered_map>
 class OpenVRWrapper {
 public:
 	OpenVRWrapper();
 	~OpenVRWrapper();
 	void Configure(nsvr_core* core);
 	void update();
-	void triggerHapticPulse(float strength);
-	void bufferedHaptics(double* samples, uint32_t count);
+	void triggerHapticPulse(vr::TrackedDeviceIndex_t device, float strength);
+	void bufferedHaptics(uint64_t device_id, double* samples, uint32_t count);
 	void enumerateDevices(nsvr_device_ids* ids);
 	void getDeviceInfo(uint64_t id, nsvr_device_basic_info* info);
 private:
@@ -26,7 +27,7 @@ private:
 	nsvr_core* core;
 	void process(const vr::VREvent_t& event);
 	void feedBufferedHaptics();
-	std::queue<double> samples;
+	std::unordered_map<uint64_t, std::queue<double>> samples;
 	std::chrono::time_point<std::chrono::high_resolution_clock> lastSampleSent;
 	std::mutex sampleLock;
 

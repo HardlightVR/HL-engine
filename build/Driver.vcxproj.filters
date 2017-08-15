@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -58,7 +58,6 @@
     <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
-    <ClInclude Include="..\src\Driver\PluginEventHandler.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
@@ -144,6 +143,7 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
+    <ClInclude Include="..\src\Driver\PluginEventSource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -172,7 +172,6 @@
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
     <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginApis.cpp" />
-    <ClCompile Include="..\src\Driver\PluginEventHandler.cpp" />
     <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
     <ClCompile Include="..\src\Driver\PluginManager.cpp" />
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
@@ -197,5 +196,6 @@
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
+    <ClCompile Include="..\src\Driver\PluginEventSource.cpp" />
   </ItemGroup>
 </Project>

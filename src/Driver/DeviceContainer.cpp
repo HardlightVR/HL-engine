@@ -3,7 +3,7 @@
 #include <experimental/vector>
 
 
-void DeviceContainer::AddDevice(const HardwareDescriptor& desc, PluginApis& apis, PluginEventHandler& ev)
+void DeviceContainer::AddDevice(const HardwareDescriptor& desc, PluginApis& apis, PluginEventSource& ev)
 {
 	
 	m_devices.push_back(std::make_unique<NodalDevice>(desc, apis, ev));

@@ -185,7 +185,7 @@ extern "C" {
 
 
 	typedef struct nsvr_plugin_buffer_api {
-		typedef void(*nsvr_buffered_submit)(double* amplitudes, uint32_t count, void*);
+		typedef void(*nsvr_buffered_submit)(uint64_t device_id, double* amplitudes, uint32_t count, void*);
 		typedef void(*nsvr_buffered_getsampleduration)(double* outSampleDuration, void*);
 		typedef void(*nsvr_buffered_getmaxsamples)(uint32_t* outMaxSamples, void*);
 		nsvr_buffered_submit submit_handler;

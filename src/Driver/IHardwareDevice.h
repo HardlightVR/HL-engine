@@ -17,7 +17,7 @@
 #include "Renderable.h"
 
 class PluginApis;
-class PluginEventHandler;
+class PluginEventSource;
 class HardwareCoordinator;
 
 class Node {
@@ -75,7 +75,7 @@ class NodalDevice {
 public:
 	using Region = std::string;
 	using RequestId = uint64_t;
-	NodalDevice(const HardwareDescriptor& desc, PluginApis& api, PluginEventHandler& ev);
+	NodalDevice(const HardwareDescriptor& desc, PluginApis& api, PluginEventSource& ev);
 
 	NodalDevice& operator=(const NodalDevice&) = delete;
 	NodalDevice(const NodalDevice&) = delete;
@@ -102,7 +102,7 @@ private:
 	PluginApis* m_apis;
 	void fetchDeviceInfo(uint64_t device_id);
 	void figureOutCapabilities();
-	void setupSubscriptions(PluginEventHandler& ev);
+	void setupSubscriptions(PluginEventSource& ev);
 
 	void createNewDevice(const NodeDescriptor& descriptor);
 	void parseDevices(const std::vector<NodeDescriptor>& descriptor);

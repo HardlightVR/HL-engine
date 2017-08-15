@@ -62,6 +62,7 @@ struct buffered_api : public plugin_api {
 	
 	callback<
 		nsvr_plugin_buffer_api::nsvr_buffered_submit,
+		uint64_t,
 		double*,
 		uint32_t
 	> submit_buffer;

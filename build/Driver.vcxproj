@@ -328,7 +328,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
-    <ClInclude Include="..\src\Driver\PluginEventHandler.h" />
+    <ClInclude Include="..\src\Driver\PluginEventSource.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
@@ -397,7 +397,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
     <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginApis.cpp" />
-    <ClCompile Include="..\src\Driver\PluginEventHandler.cpp" />
+    <ClCompile Include="..\src\Driver\PluginEventSource.cpp" />
     <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
     <ClCompile Include="..\src\Driver\PluginManager.cpp" />
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
