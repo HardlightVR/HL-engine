@@ -66,7 +66,7 @@ public:
 	}
 
 	boost::optional<std::size_t> Find(const T& item) const{
-		auto it = std::find(m_vector->cbegin(), m_vector->cend(), item);
+		const auto it = std::find(m_vector->cbegin(), m_vector->cend(), item);
 		if (it != m_vector->cend()) {
 			return it - m_vector->cbegin();
 		}

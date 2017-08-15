@@ -18,6 +18,9 @@ std::vector<NodeView> HumanBodyNodes::GetNodeView()
 	std::vector<NodeView> view;
 	for (auto& info : m_info) {
 		NodeView nv;
+		//nv.id = i
+		//todo: implement id
+		
 		nv.region = static_cast<uint64_t>(info.first);
 		info.second.Render(nv.nodes);
 		view.push_back(std::move(nv));
@@ -39,7 +42,10 @@ void HumanBodyNodes::NodeInfo::EndMonitoring(Renderable * node)
 void HumanBodyNodes::NodeInfo::Render(std::vector<NodeView::SingleNode>& view)
 {
 	for (auto& node : m_nodes) {
-		
-		view.emplace_back(node->Type(), node->Render());
+		NodeView::SingleNode newNode;
+		newNode.DisplayData = node->Render();
+		newNode.Id = node->Id();
+		newNode.Type = node->Type();
+		view.push_back(std::move(newNode));
 	}
 }

@@ -47,6 +47,7 @@ public:
 	// Renderable support
 	NodeView::Data Render() const override;
 	NodeView::NodeType Type() const override;
+	uint64_t Id() const override;
 private:
 	PluginApis* m_apis;
 };

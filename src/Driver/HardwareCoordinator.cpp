@@ -48,10 +48,15 @@ void HardwareCoordinator::writeBodyRepresentation()
 	for (const auto& node : nodeView) {
 		for (const auto& single : node.nodes) {
 			NullSpace::SharedMemory::RegionPair pair;
-			pair.Type = static_cast<uint32_t>(single.first);
+			pair.Type = static_cast<uint32_t>(single.Type);
 			pair.Region = node.region;
-			pair.Id = node.id;
-			pair.Value = NullSpace::SharedMemory::Data{ single.second.data_0, single.second.data_1, single.second.data_2, single.second.intensity };
+			pair.Id = single.Id;
+	
+			pair.Value = NullSpace::SharedMemory::Data{ 
+				single.DisplayData.data_0, 
+				single.DisplayData.data_1, 
+				single.DisplayData.data_2,
+				single.DisplayData.intensity };
 			m_messenger.WriteBodyView(std::move(pair));
 		}
 	}

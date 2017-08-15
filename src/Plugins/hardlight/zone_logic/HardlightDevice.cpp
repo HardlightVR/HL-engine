@@ -61,6 +61,15 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	nsvr_register_sampling_api(ctx, &sampling_api);
 
 	
+	nsvr_plugin_device_api device_api;
+	device_api.client_data = this;
+	device_api.enumerateids_handler = [](nsvr_device_ids* ids, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->EnumerateDeviceIds(ids);
+	};
+	device_api.getinfo_handler = [](uint64_t id, nsvr_device_basic_info* info, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->GetDeviceInfo(id, info);
+	};
+	nsvr_register_device_api(ctx, &device_api);
 	
 }
 
@@ -117,6 +126,40 @@ int HardlightDevice::Query(nsvr_region node, nsvr_sampling_sample * outState)
 
 }
 
+void HardlightDevice::EnumerateDeviceIds(nsvr_device_ids * ids)
+{
+	std::vector<uint64_t> found_ids;
+	for (const auto& device : m_drivers) {
+		found_ids.push_back(device.second->GetId());
+	}
+	
+	for (std::size_t i = 0; i < found_ids.size(); i++) {
+		ids->ids[i] = found_ids[i];
+	}
+
+	ids->device_count = found_ids.size();
+}
+
+
+void HardlightDevice::GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
+{
+	const auto& t = Locator::Translator();
+	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [id = id](const auto& driver) {
+		return driver.second->GetId() == id;
+	});
+
+	if (it != m_drivers.end()) {
+		info->capabilities = nsvr_device_capability_dynamic;
+		info->type = nsvr_device_type_haptic;
+		info->id = id;
+		info->region = it->first;
+
+		const auto& driver = it->second;
+		std::string outStr = "Hardlight ZoneDriver " + t.ToString(driver->GetLocation());
+		std::copy(outStr.begin(), outStr.end(), info->name);
+		
+	}
+}
 
 void HardlightDevice::executeLasting(nsvr_request * event)
 {

@@ -17,9 +17,13 @@ struct NodeView {
 		float intensity;
 	};
 	
-	using SingleNode = std::pair<NodeType, Data>;
+	struct SingleNode {
+		NodeType Type;
+		uint64_t Id;
+		Data DisplayData;
+
+	};
 	uint64_t region;
-	uint64_t id;
 
 	std::vector<SingleNode> nodes;
 };

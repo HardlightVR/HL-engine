@@ -63,13 +63,10 @@ NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* ceven
 
 NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent,nsvr_region* outRegion)
 {
-	auto lasting = AS_TYPE(nsvr::cevents::LastingHaptic, cevent);
-//todo: reimplement region 
-	//if (strcpy_s(outRegion, 32, lasting->region) == 0) {
-	//	return NSVR_SUCCESS;
-//	} else {
-		return -1;
-	//}
+	*outRegion = AS_TYPE(nsvr::cevents::LastingHaptic, cevent)->region;
+
+	return NSVR_SUCCESS;
+	
 }
 
 //NSVR_CORE_RETURN(int) nsvr_region_tostring(nsvr_region region, char * outRegion, uint32_t length)

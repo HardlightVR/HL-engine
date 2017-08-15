@@ -243,6 +243,11 @@ NodeView::NodeType HapticNode::Type() const
 
 
 
+uint64_t HapticNode::Id() const
+{
+	return m_id;
+}
+
 Node::Node(const NodeDescriptor& description)
 	: m_id{ description.id }
 	, m_name{ description.displayName }

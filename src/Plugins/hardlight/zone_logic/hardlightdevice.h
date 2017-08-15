@@ -21,7 +21,8 @@ public:
 	void Unpause(ParentId  handle);
 	int Query(nsvr_region node, nsvr_sampling_sample* outState);
 
-
+	void EnumerateDeviceIds(nsvr_device_ids* ids);
+	void GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info);
 	
 private:
 

@@ -83,7 +83,7 @@ namespace NullSpace {
 			return lhs.Id == rhs.Id;
 		}
 
-		enum nsvr_region {
+		enum nsvr_shared_region {
 			nsvr_region_unknown = 0,
 
 			nsvr_region_chest = 1000,

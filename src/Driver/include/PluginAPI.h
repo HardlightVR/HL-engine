@@ -253,7 +253,7 @@ extern "C" {
 
 
 	
-	
+	//Question: do we want to sample a device or sample a region?
 
 	typedef struct nsvr_sampling_sample {
 		float data_0;
