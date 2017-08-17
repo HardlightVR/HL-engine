@@ -4,6 +4,8 @@
 #include <cassert>
 #include <chrono>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 OpenVRWrapper::OpenVRWrapper() : shouldShutDown{false}
 {
 	vr::EVRInitError eError = vr::VRInitError_None;
@@ -58,7 +60,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 
 	devices.getinfo_handler = [](uint64_t id, nsvr_device_basic_info* info, void *ud) {
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
-		wrapper->getDeviceInfo(id, info);
+		return wrapper->getDeviceInfo(id, info);
 	};
 
 	nsvr_register_device_api(core, &devices);
@@ -100,7 +102,7 @@ void OpenVRWrapper::triggerHapticPulse(vr::TrackedDeviceIndex_t device, float st
 {
 	assert(strength >= 0 && strength <= 1.0);
 	//4000microseconds = strongest..
-	short durationMicroSec = short(2000 * strength);
+	short durationMicroSec = short(3999 * strength);
 	vr::EVRButtonId buttonId = vr::EVRButtonId::k_EButton_SteamVR_Touchpad;
 	auto axisId = (uint32_t)buttonId - (uint32_t)vr::EVRButtonId::k_EButton_Axis0;
 	if (system) {
@@ -143,7 +145,8 @@ void OpenVRWrapper::feedBufferedHaptics()
 
 		auto lastSampleSent = sampleTimestamps[sampleQueue.first];
 		
-		if ((std::chrono::high_resolution_clock::now() - lastSampleSent) > std::chrono::milliseconds(5)) {
+		if ((std::chrono::high_resolution_clock::now() - lastSampleSent) > std::chrono::milliseconds(7)) {
+			//std::cout << "Triggering on " << sampleQueue.first << " str: " << sampleQueue.second.front() << '\n';
 			triggerHapticPulse(sampleQueue.first, sampleQueue.second.front());
 			sampleQueue.second.pop();
 			sampleTimestamps[sampleQueue.first] = std::chrono::high_resolution_clock::now();
@@ -154,80 +157,151 @@ void OpenVRWrapper::feedBufferedHaptics()
 void OpenVRWrapper::enumerateDevices(nsvr_device_ids* ids)
 {
 	if (system) {
-		auto lhIndex = system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand);
-		auto rhIndex = system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand);
-		ids->device_count = 2;
-
-		ids->ids[0] = lhIndex;
-		ids->ids[1] = rhIndex;
+		int index = 0;
+		for (auto i = 0; i < vr::k_unMaxTrackedDeviceCount; i++) {
+			auto deviceClass = system->GetTrackedDeviceClass(i);
+			if (deviceClass == vr::TrackedDeviceClass_Controller) {
+				ids->device_count++;
+				ids->ids[index] = i;
+				index++;
+			}
+		}
 	}
-	else {
-		ids->device_count = 2;
-		ids->ids[0] = 1;
-		ids->ids[1] = 2;
-	}
+	
 }
 
 void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 {
-	if (!system) {
+	if (system) {
+		auto deviceClass = system->GetTrackedDeviceClass(id);
+		if (deviceClass == vr::TrackedDeviceClass_Controller) {
+			if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand)) {
+				std::string name("Controller (Left Hand)");
+				std::copy(name.begin(), name.end(), info->name);
+				
+				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
+				info->region = nsvr_region_hand_left;
+				info->type = nsvr_device_type_haptic;
+			}
+			else if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand)) {
+				std::string name("Controller (Right Hand)");
+				std::copy(name.begin(), name.end(), info->name);
+				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
+				info->region = nsvr_region_hand_right;
+				info->type = nsvr_device_type_haptic;
+			}
+			else {
+				char manufacturerName[64];
+				system->GetStringTrackedDeviceProperty(id, vr::ETrackedDeviceProperty::Prop_ManufacturerName_String, manufacturerName, 64);
+				char model[64];
+				system->GetStringTrackedDeviceProperty(id, vr::ETrackedDeviceProperty::Prop_ModelNumber_String, model, 64);
 
-		if (id ==1) {
-			std::string name("Vive Controller Left Hand");
-			strcpy_s(info->name, 128, name.c_str());
-			info->capabilities = nsvr_device_capability_preset;
-			std::string region("left_upper_chest");
-			info->region = nsvr_region_hand_left;
-			info->type = nsvr_device_type_haptic;
-		}
-
-		else if (id == 2) {
-			std::string name("Vive Controller Right Hand");
-			strcpy_s(info->name, 128, name.c_str());
-			info->capabilities = nsvr_device_capability_preset;
-			info->region = nsvr_region_hand_right;
-			info->type = nsvr_device_type_haptic;
-		}
-		else if (id == 5) {
-			std::string name("Vive Controller Awesome Hand");
-			strcpy_s(info->name, 128, name.c_str());
-			info->capabilities = nsvr_device_capability_preset;
-			info->region = nsvr_region_hand_left;
-			info->type = nsvr_device_type_haptic;
+				
+				std::string name = std::string(manufacturerName) + " " + std::string(model);
+				std::copy(name.begin(), name.end(), info->name);
+				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
+				info->region = nsvr_region_unknown;
+				info->type = nsvr_device_type_haptic;
+			}
 		}
 	}
-	else {
+}
 
-		if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand)) {
-			std::string name("Vive Controller Left Hand");
-			strcpy_s(info->name, 128, name.c_str());
-			info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-			info->region = nsvr_region_hand_left;
-			info->type = nsvr_device_type_haptic;
-		}
+void sinsample(std::vector<double>& samples, float maxStrength, std::size_t numSamples) {
+	float clampedStrength = std::max(0.0f, std::min(1.0f, maxStrength));
 
-		else if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand)) {
-			std::string name("Vive Controller Right Hand");
-			strcpy_s(info->name, 128, name.c_str());
-			info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-			info->region = nsvr_region_hand_right;
-			info->type = nsvr_device_type_haptic;
+	float total = (M_PI/numSamples);
+	for (std::size_t i = 0; i < numSamples; i++) {
+		
+		float s = std::sin((float)i*total)*clampedStrength;
+		if (s > 0) {
+			samples.push_back(s);
 		}
+		else {
+			samples.push_back(0);
+		}
+	}
+
+}
+
+void constant(std::vector<double>& samples, float strength, std::size_t numsamples) {
+	float clampedStrength = std::max(0.0f, std::min(1.0f, strength));
+	for (std::size_t i = 0; i < numsamples; i++) {
+		samples.push_back(clampedStrength);
 	}
 }
 std::vector<double> generateWaveform(float strength, nsvr_preset_family family) {
 	if (nsvr_preset_family_click == family) {
-		return std::vector<double> { strength };
+		std::vector<double> samples;
+		sinsample(samples, strength, 10);
+		return samples;
+	}else
+	if (nsvr_preset_family_pulse == family) {
+		std::vector<double> samples;
+		sinsample(samples, strength, 50);
+		constant(samples, 0, 5);
+
+		return samples;
 	}
-	else if (nsvr_preset_family_double_click == family) {
-		return std::vector<double> {strength, 0, 0, 0, 0, 0, strength};
+	else
+	if (nsvr_preset_family_tick == family) {
+		std::vector<double> samples;
+		constant(samples, strength, 5);
+		return samples;
 	}
-	else if (nsvr_preset_family_hum == family) {
-		return std::vector<double>(20, strength);
+	else
+	if (nsvr_preset_family_buzz == family) {
+		std::vector<double> samples;
+		constant(samples, strength, 5);
+		constant(samples,0, 3);
+		constant(samples, strength, 5);
+		constant(samples, 0, 3);
+		constant(samples, strength, 5);
+		constant(samples, 0, 3);
+		constant(samples, strength, 5);
+		constant(samples, 0, 3);
+		constant(samples, strength, 5);
+		constant(samples, 0, 3);
+		constant(samples, strength, 5);
+		constant(samples, 0, 3);
+		return samples;
 	}
-	else {
-		return std::vector<double>(1,strength);
+	else
+	if (nsvr_preset_family_double_click == family) {
+		std::vector<double> samples;
+		sinsample(samples, strength, 8);
+		constant(samples, 0.0f, 26);
+		sinsample(samples, strength, 8);
+		constant(samples, 0.0f, 20);
+
+		return samples;
+
 	}
+	else
+	if (nsvr_preset_family_triple_click == family) {
+		std::vector<double> samples;
+		sinsample(samples, strength, 8);
+		constant(samples, 0.0f, 26);
+		sinsample(samples, strength, 8);
+		constant(samples, 0.0f, 20);
+		sinsample(samples, strength, 8);
+		constant(samples, 0.0f, 20);
+		return samples;
+
+	}
+	else
+	 if (nsvr_preset_family_hum == family) {
+		std::vector<double> samples;
+		constant(samples, strength, 50);
+		return samples;
+	}
+
+	 else {
+		 std::vector<double> samples;
+		 constant(samples, strength, 8);
+		 return samples;
+	 }
+	
 }
 void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_preset_request* req)
 {

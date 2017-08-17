@@ -73,6 +73,47 @@ extern "C" {
 	typedef enum nsvr_region {
 		nsvr_region_unknown = 0,
 
+		nsvr_region_torso_front = 100000,
+			nsvr_region_torso_front_left = 110000,
+				nsvr_region_chest_front_left = 111000,
+				nsvr_region_abdomen_front_left = 112000,
+					nsvr_region_ab_upper_left = 112100,
+					nsvr_region_ab_middle_left = 112200,
+					nsvr_region_ab_lower_left = 112300,
+			nsvr_region_torso_front_right = 120000,
+				nsvr_region_chest_front_right = 121000,
+				nsvr_region_abdomen_front_right = 122000,
+		nsvr_region_torso_back = 200000,
+			nsvr_region_torso_back_left = 210000,
+				nsvr_region_back_upper_left = 211000,
+				nsvr_region_back_lower_left = 212000,
+			nsvr_region_torso_back_right = 220000,
+				nsvr_region_back_upper_right = 221000,
+				nsvr_region_back_lower_right = 222000,
+		nsvr_region_arm_left = 300000,
+			nsvr_region_shoulder_left = 310000,
+			nsvr_region_upper_arm_left = 320000,
+			nsvr_region_lower_arm_left = 330000,
+			nsvr_region_hand_left = 340000,
+		nsvr_region_arm_right = 400000,
+			nsvr_region_shoulder_right = 410000,
+			nsvr_region_upper_arm_right = 420000,
+			nsvr_region_lower_arm_right = 430000,
+			nsvr_region_hand_right = 440000,
+		nsvr_region_leg_left = 500000,
+			nsvr_region_upper_leg_front_left = 510000,
+			nsvr_region_upper_legt_back_left = 520000,
+			nsvr_region_lower_leg_front_left = 530000,
+			nsvr_region_lower_leg_back_left = 540000,
+		nsvr_region_leg_right = 600000,
+		nsvr_region_upper_leg_front_right = 610000,
+		nsvr_region_upper_legt_back_right = 620000,
+		nsvr_region_lower_leg_front_right = 630000,
+		nsvr_region_lower_leg_back_right = 640000,
+		nsvr_region_groin = 700000,
+		nsvr_region_gluteal = 800000,
+
+
 		nsvr_region_chest = 1000,
 			nsvr_region_chest_left,
 			nsvr_region_chest_right,
@@ -158,7 +199,7 @@ extern "C" {
 		uint64_t id;
 		uint32_t type;
 		uint32_t capabilities;
-		char name[128];
+		char name[512];
 		nsvr_region region;
 	} nsvr_device_basic_info;
 
@@ -214,10 +255,14 @@ extern "C" {
 	typedef enum nsvr_preset_family {
 		nsvr_preset_family_unknown = 0,
 		nsvr_preset_family_bump = 1,
+		nsvr_preset_family_buzz = 2,
 		nsvr_preset_family_click = 3,
 		nsvr_preset_family_double_click = 4,
+		nsvr_preset_family_fuzz = 5,
 		nsvr_preset_family_hum = 6,
-		nsvr_preset_family_pulse = 8
+		nsvr_preset_family_pulse = 8,
+		nsvr_preset_family_tick = 11,
+		nsvr_preset_family_triple_click = 16
 	} nsvr_preset_family;
 
 	// To retrieve information about a preset request, use these functions
@@ -322,6 +367,28 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
 
 
+	typedef struct nsvr_plugin_bodygraph_api {
+		typedef void(*nsvr_bodygraph_setup)(nsvr_bodygraph* graph, void* cd);
+		nsvr_bodygraph_setup setup_handler;
+		void* client_data;
+	};
+	NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core* core, nsvr_plugin_bodygraph_api* api);
+
+	typedef enum nsvr_bodygraph_position_placement {
+		nsvr_bodygraph_position_placement_unknown = 0,
+		nsvr_bodygraph_position_placement_static,
+		nsvr_bodygraph_position_placement_dynamic
+	} nsvr_bodygraph_position_placement;
+
+	typedef struct nsvr_bodygraph nsvr_body_graph;
+	typedef struct nsvr_bodygraph_position {
+		float originX;
+		float originY;
+		float originZ;
+		nsvr_bodygraph_position_placement placement;
+	};
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode(nsvr_bodygraph* body, const char* nodeName, nsvr_bodygraph_position* position);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB);
 
 #ifdef __cplusplus
 }
