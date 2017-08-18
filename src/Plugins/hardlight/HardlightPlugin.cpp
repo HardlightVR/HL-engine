@@ -173,7 +173,8 @@ int HardlightPlugin::Configure(nsvr_core* core)
 		nsvr_bodygraph_connect(g, "Lower_Ab_Right", "Lower_Ab_Left");
 
 
-		nsvr_bodygraph_putdevice(g, "Chest_Left", 3);
+//		nsvr_bodygraph_assigndevice(g, "Chest_Left", 3);
+
 		nsvr_bodygraph_region_destroy(&chestLocation);
 
 	};

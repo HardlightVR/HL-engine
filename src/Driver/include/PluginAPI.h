@@ -193,7 +193,7 @@ extern "C" {
 	// implement the buffer_api interface
 
 
-	typedef struct nsvr_plugin_buffer_api {
+	typedef struct nsvr_plugin_buffered_api {
 		typedef void(*nsvr_buffered_submit)(uint64_t device_id, double* amplitudes, uint32_t count, void*);
 		typedef void(*nsvr_buffered_getsampleduration)(double* outSampleDuration, void*);
 		typedef void(*nsvr_buffered_getmaxsamples)(uint32_t* outMaxSamples, void*);
@@ -201,9 +201,9 @@ extern "C" {
 		nsvr_buffered_getmaxsamples getmaxsamples_handler;
 		nsvr_buffered_getsampleduration getsampleduration_handler;
 		void* client_data;
-	} nsvr_plugin_buffer_api;
+	} nsvr_plugin_buffered_api;
 
-	NSVR_CORE_RETURN(int) nsvr_register_buffer_api(nsvr_core* core, nsvr_plugin_buffer_api* api);
+	NSVR_CORE_RETURN(int) nsvr_register_buffered_api(nsvr_core* core, nsvr_plugin_buffered_api* api);
 
 	// If you have a "preset"-style API with calls similar to TriggerSpecialEffect() or TriggerPulse(int microseconds),
 	// implement the preset_api interface
@@ -220,7 +220,7 @@ extern "C" {
 	
 
 	// A preset family specifies a certain feeling which your haptic device produces. 
-	typedef enum nsvr_preset_family {
+	typedef enum nsvr_default_waveform {
 		nsvr_preset_family_unknown = 0,
 		nsvr_preset_family_bump = 1,
 		nsvr_preset_family_buzz = 2,
@@ -231,28 +231,31 @@ extern "C" {
 		nsvr_preset_family_pulse = 8,
 		nsvr_preset_family_tick = 11,
 		nsvr_preset_family_triple_click = 16
-	} nsvr_preset_family;
+	} nsvr_default_waveform;
 
-	// To retrieve information about a preset request, use these functions
 
-	//Need a better name!
-	// dynamic
-	// premade
-	// custom
-	//	cancellable
-	// looped..? that's how it's implemented but not actually the use case?
-	NSVR_CORE_RETURN(int) nsvr_preset_getfamily(nsvr_preset* req, nsvr_preset_family* outFamily);
+	typedef struct nsvr_waveform nsvr_waveform;
+
+
+	NSVR_CORE_RETURN(int) nsvr_waveform_getname(nsvr_waveform* req, nsvr_default_waveform* outWaveform);
 	
-	NSVR_CORE_RETURN(int) nsvr_preset_getstrength(nsvr_preset* req, float* outStrength);
+	NSVR_CORE_RETURN(int) nsvr_waveform_getstrength(nsvr_waveform* req, float* outStrength);
 
-	NSVR_CORE_RETURN(int) nsvr_preset_getduration(nsvr_preset* req, double* outDuration);
+	NSVR_CORE_RETURN(int) nsvr_waveform_getrepetitions(nsvr_waveform* req, uint32_t* outRepetitions);
 
-	NSVR_CORE_RETURN(int) nsvr_preset_gethandle(nsvr_preset* req, uint64_t* outHandle);
 	
 	
-	nsvr_terminable_api{
 
-	}
+
+	typedef struct nsvr_plugin_waveform_api {
+		typedef void(*nsvr_waveform_activate_handler)(uint64_t request_id, uint64_t device_id, nsvr_waveform* waveform, void* cd);
+		nsvr_waveform_activate_handler activate_handler;
+		void* client_data;
+	} nsvr_plugin_preset_waveform_api;
+	
+	NSVR_CORE_RETURN(int) nsvr_register_waveform_api(nsvr_core* core, nsvr_plugin_waveform_api* api);
+
+
 	/////////////////////////////
 	// Standard Implementation //
 	/////////////////////////////

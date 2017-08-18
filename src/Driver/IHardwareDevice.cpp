@@ -151,23 +151,23 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 	for (uint32_t region : simple.regions()) {
 		auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), static_cast<nsvr_region>(region));
 
-		if (auto api = m_apis->GetApi<request_api>()) {
-			ev.handle = requestId;
-			api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
-		}
+		//if (auto api = m_apis->GetApi<request_api>()) {
+		//	ev.handle = requestId;
+		//	api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
+		//}
 
-		else if (auto api = m_apis->GetApi<preset_api>()) {
-
+		if (auto api = m_apis->GetApi<waveform_api>()) {
 
 			///	auto& interested = m_nodesByRegion[region];
-			///	for (auto& node : interested) {
-			//
+			/////	for (auto& node : interested) {
+			////
 
+			nsvr_waveform wave{};
+			wave.repetitions = simple.duration() / 0.25;
+			wave.strength = simple.strength();
+			wave.waveform_id = static_cast<nsvr_default_waveform>(simple.effect());
 			for (const auto& device : m_hapticDevices) {
-				nsvr_preset_request req{};
-				req.family = static_cast<nsvr_preset_family>(simple.effect());
-				req.strength = simple.strength();
-				api->submit_preset(device->Id(), &req);
+				api->submit_activate(requestId, device->Id(), reinterpret_cast<nsvr_waveform*>(&wave));
 			}
 		}
 		else if (auto api = m_apis->GetApi<buffered_api>()) {
@@ -198,9 +198,7 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 
 void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event)
 {
-	if (playback_api* api = nullptr) {
-
-//	if (playback_api* api = m_apis.GetApi<playback_api>()) {
+		if (playback_api* api = m_apis->GetApi<playback_api>()) {
 		switch (event.command()) {
 		case NullSpaceIPC::PlaybackEvent_Command_UNPAUSE:
 			api->submit_unpause(id);
@@ -238,12 +236,12 @@ void HapticNode::deliver(RequestId, const nsvr::cevents::request_base & base)
 		
 			//api->submit_buffer()
 		}
-		else if (auto api = m_apis->GetApi<preset_api>()) {
-			nsvr_preset_request req{};
-			req.family = static_cast<nsvr_preset_family>(lasting.effect);
-			req.strength = lasting.strength;
-			//api->submit_preset(0, reinterpret_cast<nsvr_preset_request*>(&req));
-		}
+		//else if (auto api = m_apis->GetApi<preset_api>()) {
+		//	nsvr_preset req{};
+		//	req.family = static_cast<nsvr_default_waveform>(lasting.effect);
+		//	req.strength = lasting.strength;
+		//	//api->submit_preset(0, reinterpret_cast<nsvr_preset*>(&req));
+		//}
 	}
 }
 

@@ -2,10 +2,10 @@
 
 #include "PluginAPI.h"
 
-struct nsvr_preset_request {
-	nsvr_preset_family family;
+struct nsvr_waveform {
+	nsvr_default_waveform waveform_id;
 	float strength;
-	double duration;
-	uint64_t handle;
+	std::size_t repetitions;
 };
-	
+
+

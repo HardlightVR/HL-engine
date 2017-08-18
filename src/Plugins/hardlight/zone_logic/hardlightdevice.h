@@ -15,7 +15,7 @@ public:
 	CommandBuffer GenerateHardwareCommands(float dt);
 
 	void handle(nsvr_request* event);
-
+	void handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave);
 	void Pause(ParentId  handle);
 	void Cancel(ParentId  handle);
 	void Unpause(ParentId  handle);

@@ -48,21 +48,22 @@ enum class Apis {
 	Device,
 	RawCommand,
 	Tracking,
-	BodyGraph
+	BodyGraph,
+	Waveform
 };
 
 extern const std::unordered_map<Apis, const char*> PrintableApiNames;
 
 
 struct buffered_api : public plugin_api {
-	buffered_api(nsvr_plugin_buffer_api* api) 
+	buffered_api(nsvr_plugin_buffered_api* api) 
 		: submit_buffer { api->submit_handler, api->client_data }
 		, submit_getmaxsamples{api->getmaxsamples_handler, api->client_data}
 		, submit_getsampleduration{api->getsampleduration_handler, api->client_data}
 	{}
 	
 	callback<
-		nsvr_plugin_buffer_api::nsvr_buffered_submit,
+		nsvr_plugin_buffered_api::nsvr_buffered_submit,
 		uint64_t,
 		double*,
 		uint32_t
@@ -70,12 +71,12 @@ struct buffered_api : public plugin_api {
 
 
 	callback<
-		nsvr_plugin_buffer_api::nsvr_buffered_getmaxsamples,
+		nsvr_plugin_buffered_api::nsvr_buffered_getmaxsamples,
 		uint32_t*
 	> submit_getmaxsamples;
 
 	callback<
-		nsvr_plugin_buffer_api::nsvr_buffered_getsampleduration,
+		nsvr_plugin_buffered_api::nsvr_buffered_getsampleduration,
 		double*
 	> submit_getsampleduration;
 
@@ -90,7 +91,7 @@ struct preset_api : public plugin_api {
 	callback<
 		nsvr_plugin_preset_api::nsvr_preset_handler, 
 		uint64_t,
-		nsvr_preset_request*
+		nsvr_preset*
 	> submit_preset;
 
 	static Apis getApiType() { return Apis::Preset; }
@@ -163,6 +164,18 @@ struct device_api : public plugin_api {
 
 	static  Apis getApiType() { return Apis::Device; }
 
+};
+
+struct waveform_api : public plugin_api {
+	waveform_api(nsvr_plugin_waveform_api* api)
+		: submit_activate{ api->activate_handler, api->client_data } {}
+	callback<
+		nsvr_plugin_waveform_api::nsvr_waveform_activate_handler,
+		uint64_t,
+		uint64_t,
+		nsvr_waveform*
+	> submit_activate;
+	static Apis getApiType() { return Apis::Waveform; }
 };
 
 struct rawcommand_api : public plugin_api {

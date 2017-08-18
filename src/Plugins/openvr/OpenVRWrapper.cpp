@@ -40,16 +40,15 @@ OpenVRWrapper::~OpenVRWrapper()
 
 void OpenVRWrapper::Configure(nsvr_core* core)
 {
-	nsvr_plugin_preset_api preset;
-	preset.client_data = this;
-	preset.preset_handler = [](uint64_t device_id, nsvr_preset_request* req, void* ud) {
-		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
 
-		wrapper->triggerPreset(device_id, req);
-	};
 
-	nsvr_register_preset_api(core, &preset);
 	
+	nsvr_plugin_waveform_api waves;
+	waves.client_data = this;
+	waves.activate_handler = [](uint64_t request_id, uint64_t device_id, nsvr_waveform* wave, void* ud) {
+		static_cast<OpenVRWrapper*>(ud)->triggerPreset(device_id, wave);
+	};
+	nsvr_register_waveform_api(core, &waves);
 
 	nsvr_plugin_device_api devices;
 	devices.client_data = this;
@@ -65,7 +64,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 
 	nsvr_register_device_api(core, &devices);
 
-	nsvr_plugin_buffer_api buffered_api;
+	nsvr_plugin_buffered_api buffered_api;
 	buffered_api.client_data = this;
 
 	buffered_api.getmaxsamples_handler = [](uint32_t* outMaxSamples, void* ud) {
@@ -78,7 +77,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 		AS_TYPE(OpenVRWrapper, ud)->bufferedHaptics(device_id, samples, count);
 	};
 
-	nsvr_register_buffer_api(core, &buffered_api);
+	nsvr_register_buffered_api(core, &buffered_api);
 
 	this->core = core;
 }
@@ -230,7 +229,7 @@ void constant(std::vector<double>& samples, float strength, std::size_t numsampl
 		samples.push_back(clampedStrength);
 	}
 }
-std::vector<double> generateWaveform(float strength, nsvr_preset_family family) {
+std::vector<double> generateWaveform(float strength, nsvr_default_waveform family) {
 	if (nsvr_preset_family_click == family) {
 		std::vector<double> samples;
 		sinsample(samples, strength, 10);
@@ -303,14 +302,24 @@ std::vector<double> generateWaveform(float strength, nsvr_preset_family family) 
 	 }
 	
 }
-void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_preset_request* req)
+void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_waveform* req)
 {
-	nsvr_preset_family family;
-	nsvr_preset_request_getfamily(req, &family);
+	nsvr_default_waveform waveform;
+	nsvr_waveform_getname(req, &waveform);
 
 	float strength;
-	nsvr_preset_request_getstrength(req, &strength);
+	nsvr_waveform_getstrength(req, &strength);
 
-	auto wave = generateWaveform(strength, family);
+	std::size_t repetitions;
+	nsvr_waveform_getrepetitions(req, &repetitions);
+
+
+	auto wave = generateWaveform(strength, waveform);
+	auto copy = wave;
+	if (repetitions > 0) {
+		for (auto i = 0; i < repetitions; i++) {
+			wave.insert(wave.end(), copy.begin(), copy.end());
+		}
+	}
 	bufferedHaptics(device, wave.data(), wave.size());
 }

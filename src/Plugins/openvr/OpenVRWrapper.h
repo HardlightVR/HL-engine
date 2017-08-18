@@ -19,7 +19,7 @@ public:
 	void bufferedHaptics(uint64_t device_id, double* samples, uint32_t count);
 	void enumerateDevices(nsvr_device_ids* ids);
 	void getDeviceInfo(uint64_t id, nsvr_device_basic_info* info);
-	void triggerPreset(uint64_t device,nsvr_preset_request* req);
+	void triggerPreset(uint64_t device,nsvr_waveform* req);
 private:
 	std::atomic<bool> shouldShutDown;
 	vr::IVRSystem* system;

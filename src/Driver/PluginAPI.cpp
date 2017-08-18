@@ -27,8 +27,10 @@
 #endif
 
 #define REGISTER_API(name) \
+NSVR_CORE_RETURN(int) nsvr_register_##name##(nsvr_core* core, nsvr_plugin_##name##* api) {\
 AS_TYPE(CoreFacade, core)->RegisterPluginApi<##name##>(api); \
-return NSVR_SUCCESS;
+return NSVR_SUCCESS;\
+}
 
 
 
@@ -104,15 +106,21 @@ NSVR_CORE_RETURN(int) nsvr_device_event_create(nsvr_device_event ** event, nsvr_
 }
 
 
-NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request * req, nsvr_preset_family * outFamily)
+NSVR_CORE_RETURN(int) nsvr_waveform_getname(nsvr_waveform * req, nsvr_default_waveform * outFamily)
 {
-	*outFamily = req->family;
+	*outFamily = req->waveform_id;
 	return NSVR_SUCCESS;
 }
 
-NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request * req, float * outStrength)
+NSVR_CORE_RETURN(int) nsvr_waveform_getstrength(nsvr_waveform * req, float * outStrength)
 {
 	*outStrength = req->strength;
+	return NSVR_SUCCESS;
+}
+
+NSVR_CORE_RETURN(int) nsvr_waveform_getrepetitions(nsvr_waveform * req, uint32_t* outReps)
+{
+	*outReps = req->repetitions;
 	return NSVR_SUCCESS;
 }
 
@@ -140,10 +148,6 @@ NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* reque
 
 }
 
-NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core * core, nsvr_plugin_rawcommand_api * api)
-{
-	REGISTER_API(rawcommand_api)
-}
 
 
 NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream * stream, nsvr_quaternion * quaternion)
@@ -195,47 +199,26 @@ NSVR_CORE_RETURN(int) nsvr_parallel_init(nsvr_parallel * para, nsvr_bodypart bod
 // API registration
 
 
+REGISTER_API(rawcommand_api)
 
-NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core * core, nsvr_plugin_bodygraph_api * api)
-{
-	REGISTER_API(bodygraph_api);
-}
+REGISTER_API(bodygraph_api)
 
+REGISTER_API(tracking_api)
 
-NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core * core, nsvr_plugin_tracking_api * api)
-{
-	REGISTER_API(tracking_api)
-}
+REGISTER_API(playback_api)
 
-NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core * core, nsvr_plugin_playback_api * api)
-{
-	REGISTER_API(playback_api)
-}
+REGISTER_API(buffered_api)
 
-NSVR_CORE_RETURN(int) nsvr_register_buffer_api(nsvr_core * core, nsvr_plugin_buffer_api * api)
-{
-	REGISTER_API(buffered_api)
-}
+REGISTER_API(preset_api)
 
-NSVR_CORE_RETURN(int) nsvr_register_preset_api(nsvr_core * core, nsvr_plugin_preset_api * api)
-{
-	REGISTER_API(preset_api)
-}
+REGISTER_API(request_api)
 
-NSVR_CORE_RETURN(int)  nsvr_register_request_api(nsvr_core* core, nsvr_plugin_request_api* api)
-{
-	REGISTER_API(request_api)
-}
+REGISTER_API(sampling_api)
 
-NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core * core, nsvr_plugin_sampling_api * api)
-{
-	REGISTER_API(sampling_api)
-}
+REGISTER_API(device_api)
 
-NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_device_api* api)
-{
-	REGISTER_API(device_api)
-}
+REGISTER_API(waveform_api)
+
 
 
 

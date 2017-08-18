@@ -12,13 +12,14 @@ HardlightDevice::HardlightDevice()
 	auto& translator = Locator::Translator();
 
 	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
-	//	nsvr_region region = translator.ToRegionFromLocation(Location(loc));
+		nsvr_region region = nsvr_region_arm_left;
 
-		//m_drivers.insert(std::make_pair(
-	//		region, 
-	//		std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
-	//	);
+		m_drivers.insert(std::make_pair(
+			region, 
+			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
+		);
 		//todo: FIX THIS
+		// REGIONS AREN'T REAL!
 	}
 }
 
@@ -35,6 +36,14 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	};
 	nsvr_register_request_api(ctx, &request_api);
 
+
+	nsvr_plugin_waveform_api waveform_api;
+	waveform_api.client_data = this;
+	waveform_api.activate_handler = [](uint64_t request_id, uint64_t device_id, nsvr_waveform* waveform, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->handle(request_id, device_id, waveform);
+	};
+
+	nsvr_register_waveform_api(ctx, &waveform_api);
 
 	nsvr_plugin_playback_api playback_api;
 	playback_api.client_data = this;
@@ -72,6 +81,7 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	nsvr_register_device_api(ctx, &device_api);
 	
 }
+
 
 void HardlightDevice::handle( nsvr_request * event)
 {
@@ -180,7 +190,25 @@ void HardlightDevice::executeLasting(nsvr_request * event)
 
 }
 
+void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave) {
+	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id](const auto& driver) { return driver.second->GetId() == device_id; });
+	if (it != m_drivers.end()) {
+		BasicHapticEventData data = {};
+		nsvr_default_waveform stuff;
+		nsvr_waveform_getname(wave, &stuff);
+		data.effect = stuff;
+		nsvr_waveform_getstrength(wave, &data.strength);
 
+		float duration = 0;
+		uint32_t repetitions = 0;
+		nsvr_waveform_getrepetitions(wave, &repetitions);
+		if (repetitions > 0) {
+			duration = 0.25f * repetitions;
+		}
+		data.duration = duration;
+		(*it).second->consumeLasting(std::move(data), request_id);
+	}
+}
 CommandBuffer HardlightDevice::GenerateHardwareCommands(float dt)
 {
 	CommandBuffer result;

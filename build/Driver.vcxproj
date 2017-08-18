@@ -333,6 +333,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\PluginEventSource.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
+    <ClInclude Include="..\src\Driver\PresetWaveform.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />

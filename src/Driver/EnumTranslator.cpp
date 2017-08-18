@@ -198,7 +198,8 @@ void EnumTranslator::init_familymap()
 
 
 void EnumTranslator::init_regions() {
-	//boost::assign::insert(_regionMap)
+	boost::assign::insert(_regionMap)
+		(nsvr_region::nsvr_region_arm_left, "arm_left");
 	//	(nsvr_region::nsvr_region_unknown, "unknown,")
 	//	(nsvr_region::nsvr_region_chest, "chest")
 	//	(nsvr_region::nsvr_region_chest_left, "chest_left")
