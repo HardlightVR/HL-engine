@@ -47,7 +47,8 @@ enum class Apis {
 	Sampling,
 	Device,
 	RawCommand,
-	Tracking
+	Tracking,
+	BodyGraph
 };
 
 extern const std::unordered_map<Apis, const char*> PrintableApiNames;
@@ -177,6 +178,17 @@ struct rawcommand_api : public plugin_api {
 	static Apis getApiType() { return Apis::RawCommand; }
 };
 
+struct bodygraph_api : public plugin_api {
+
+	bodygraph_api(nsvr_plugin_bodygraph_api* api)
+		: submit_setup{ api->setup_handler, api->client_data } {}
+	callback<
+		nsvr_plugin_bodygraph_api::nsvr_bodygraph_setup,
+		nsvr_bodygraph*
+	> submit_setup;
+
+	static Apis getApiType() { return Apis::BodyGraph; }
+};
 struct tracking_api : public plugin_api {
 	tracking_api(nsvr_plugin_tracking_api* api)
 		: submit_beginstreaming{ api->beginstreaming_handler, api->client_data }

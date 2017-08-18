@@ -132,6 +132,53 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	nsvr_register_tracking_api(core, &tracking_api);
 	
 
+	nsvr_plugin_bodygraph_api body_api;
+	body_api.setup_handler = [](nsvr_bodygraph* g, void* cd) {
+		
+		//Grab the top parallel, which runs right across the chest
+		nsvr_parallel para;
+		nsvr_parallel_init(&para, nsvr_bodypart_torso, nsvr_parallel_highest);
+		
+		nsvr_bodygraph_region* chestLocation;
+		nsvr_bodygraph_region_create(&chestLocation);
+		//Chest left is on the front of the body, offset by a bit
+		nsvr_bodygraph_region_setorigin(chestLocation, &para, nsvr_bodypart_rotation_front - 10);
+
+		//Also set the width of the zone (and height later)
+		nsvr_bodygraph_region_setwidthcm(chestLocation, 10);
+
+		nsvr_bodygraph_createnode_absolute(g, "Chest_Left", chestLocation);
+		nsvr_bodygraph_createnode_relative(g, "Upper_Ab_Left", nsvr_region_relation_below, "Chest_Left");
+		nsvr_bodygraph_createnode_relative(g, "Mid_Ab_Left", nsvr_region_relation_below, "Upper_Ab_Left");
+		nsvr_bodygraph_createnode_relative(g, "Lower_Ab_Left", nsvr_region_relation_below, "Mid_Ab_Left");
+
+		nsvr_bodygraph_connect(g, "Chest_Left", "Upper_Ab_Left");
+		nsvr_bodygraph_connect(g, "Upper_Ab_Left", "Mid_Ab_Left");
+		nsvr_bodygraph_connect(g, "Mid_Ab_Left", "Lower_Ab_Left");
+
+		//Chest right is on the front of the body, offset by a bit
+		nsvr_bodygraph_region_setorigin(chestLocation, &para, nsvr_bodypart_rotation_front + 10);
+		nsvr_bodygraph_createnode_absolute(g, "Chest_Right", chestLocation);
+		nsvr_bodygraph_createnode_relative(g, "Upper_Ab_Right", nsvr_region_relation_below, "Chest_Right");
+		nsvr_bodygraph_createnode_relative(g, "Mid_Ab_Right", nsvr_region_relation_below, "Upper_Ab_Right");
+		nsvr_bodygraph_createnode_relative(g, "Lower_Ab_Right", nsvr_region_relation_below, "Mid_Ab_Right");
+
+		nsvr_bodygraph_connect(g, "Chest_Right", "Upper_Ab_Right");
+		nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Mid_Ab_Right");
+		nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Lower_Ab_Right");
+
+		nsvr_bodygraph_connect(g, "Chest_Left", "Chest_Right");
+		nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Upper_Ab_Left");
+		nsvr_bodygraph_connect(g, "Mid_Ab_Left", "Mid_Ab_Right");
+		nsvr_bodygraph_connect(g, "Lower_Ab_Right", "Lower_Ab_Left");
+
+
+		nsvr_bodygraph_putdevice(g, "Chest_Left", 3);
+		nsvr_bodygraph_region_destroy(&chestLocation);
+
+	};
+	body_api.client_data = this;
+	nsvr_register_bodygraph_api(core, &body_api);
 	return 1;
 }
 

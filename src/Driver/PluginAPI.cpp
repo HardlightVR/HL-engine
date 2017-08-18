@@ -10,7 +10,8 @@
 #include "nsvr_playback_handle.h"
 #include <boost/variant/get.hpp>
 #include "IHardwareDevice.h"
-
+#include "BodyGraph.h"
+#include "BodyRegion.h"
 #define NULL_ARGUMENT_CHECKS
 
 
@@ -121,7 +122,15 @@ NSVR_CORE_RETURN(int) nsvr_playback_handle_getid(nsvr_playback_handle * handle, 
 	*outId = handle->id;
 	return NSVR_SUCCESS;
 }
+NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode(nsvr_bodygraph* body, const char* nodeName, nsvr_bodygraph_region* position)
+{
+	return AS_TYPE(BodyGraph, body)->CreateNode(nodeName, position);
+}
 
+NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB)
+{
+	return AS_TYPE(BodyGraph, body)->ConnectNodes(nodeA, nodeB);
+}
 
 
 NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* request_id)
@@ -143,7 +152,55 @@ NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream * stream, n
 	return 1;
 }
 
+NSVR_CORE_RETURN(int) nsvr_bodygraph_region_create(nsvr_bodygraph_region ** region)
+{
+	*region = new nsvr_bodygraph_region{};
+	return 0;
+}
+NSVR_CORE_RETURN(int) nsvr_bodygraph_region_destroy(nsvr_bodygraph_region** region)
+{
+	delete *region;
+	region = nullptr;
+	return 0;
+}
+
+
+NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setorigin(nsvr_bodygraph_region * region, nsvr_parallel * parallel, double rotation)
+{
+	region->parallel = *parallel;
+	region->rotation = rotation;
+	return 0;
+}
+NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setwidthcm(nsvr_bodygraph_region * region, double centimeters)
+{
+	region->width_cm = centimeters;
+	return 0;
+}
+NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_absolute(nsvr_bodygraph * graph, const char * name, nsvr_bodygraph_region * region)
+{
+	return AS_TYPE(BodyGraph, graph)->CreateNode(name, region);
+}
+NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_relative(nsvr_bodygraph* graph, const char * nodeA, nsvr_region_relation relation, const char * nodeB, double offset)
+{
+	return AS_TYPE(BodyGraph, graph)->CreateNodeRelative(nodeA, relation, nodeB, offset);
+}
+NSVR_CORE_RETURN(int) nsvr_parallel_init(nsvr_parallel * para, nsvr_bodypart bodypart, double parallel)
+{
+	para->bodypart = bodypart;
+	para->parallel = parallel;
+	return 0;
+}
+
+
 // API registration
+
+
+
+NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core * core, nsvr_plugin_bodygraph_api * api)
+{
+	REGISTER_API(bodygraph_api);
+}
+
 
 NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core * core, nsvr_plugin_tracking_api * api)
 {

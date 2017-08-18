@@ -8,6 +8,7 @@
 #include "Locator.h"
 #include "HardwareCoordinator.h"
 #include "HumanBodyNodes.h"
+#include "BodyGraph.h"
 NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev)
 	: m_concept(descriptor.concept)
 	, m_name(descriptor.displayName)
@@ -319,6 +320,12 @@ void NodalDevice::teardownHooks() {
 
 void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
 {
+	bodygraph_api* b = m_apis->GetApi<bodygraph_api>();
+	if (b != nullptr) {
+		BodyGraph graph;
+		b->submit_setup(reinterpret_cast<nsvr_bodygraph*>(&graph));
+
+	}
 	for (auto& node : m_hapticDevices) {
 		body.AddNode(node->region(), node.get());
 	}
@@ -355,6 +362,8 @@ void TrackingNode::BeginTracking()
 	tracking_api* api = m_apis->GetApi<tracking_api>();
 	api->submit_beginstreaming(reinterpret_cast<nsvr_tracking_stream*>(this), m_region);
 
+
+	
 }
 
 void TrackingNode::EndTracking()

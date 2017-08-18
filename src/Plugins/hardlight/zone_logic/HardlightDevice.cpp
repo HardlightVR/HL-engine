@@ -12,13 +12,13 @@ HardlightDevice::HardlightDevice()
 	auto& translator = Locator::Translator();
 
 	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
-		nsvr_region region = translator.ToRegionFromLocation(Location(loc));
+	//	nsvr_region region = translator.ToRegionFromLocation(Location(loc));
 
-		m_drivers.insert(std::make_pair(
-			region, 
-			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
-		);
-
+		//m_drivers.insert(std::make_pair(
+	//		region, 
+	//		std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
+	//	);
+		//todo: FIX THIS
 	}
 }
 

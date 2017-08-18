@@ -114,39 +114,7 @@ extern "C" {
 		nsvr_region_gluteal = 800000,
 
 
-		nsvr_region_chest = 1000,
-			nsvr_region_chest_left,
-			nsvr_region_chest_right,
-
-		nsvr_region_abs = 2000,
-			nsvr_region_abs_left,
-				nsvr_region_abs_upper_left,
-				nsvr_region_abs_middle_left,
-				nsvr_region_abs_lower_left,
-			nsvr_region_abs_right,
-				nsvr_region_abs_upper_right,
-				nsvr_region_abs_middle_right,
-				nsvr_region_abs_lower_right,
-
-		nsvr_region_arm_left = 3000,
-			nsvr_region_forearm_left,
-			nsvr_region_upperarm_left,
-
-		nsvr_region_arm_right = 4000,
-			nsvr_region_forearm_right,
-			nsvr_region_upperarm_right,
-
-		nsvr_region_shoulder_left = 5000,
-		nsvr_region_shoulder_right = 6000,
-
-		nsvr_region_back = 7000,
-			nsvr_region_back_left,
-			nsvr_region_back_right,
-
-		nsvr_region_hand_left = 8000,
-		nsvr_region_hand_right = 9000,
-		nsvr_region_leg_left = 10000,
-		nsvr_region_leg_right = 11000
+	
 	} nsvr_region;
 
 	///////////////////////////
@@ -240,10 +208,10 @@ extern "C" {
 	// If you have a "preset"-style API with calls similar to TriggerSpecialEffect() or TriggerPulse(int microseconds),
 	// implement the preset_api interface
 
-	typedef struct nsvr_preset_request nsvr_preset_request;
+	typedef struct nsvr_preset nsvr_preset;
 
 	typedef struct nsvr_plugin_preset_api {
-		typedef void(*nsvr_preset_handler)(uint64_t device_id, nsvr_preset_request*, void*);
+		typedef void(*nsvr_preset_handler)(uint64_t device_id, nsvr_preset*, void*);
 		nsvr_preset_handler preset_handler;
 		void* client_data;
 	} nsvr_plugin_preset_api;
@@ -267,13 +235,24 @@ extern "C" {
 
 	// To retrieve information about a preset request, use these functions
 
-	NSVR_CORE_RETURN(int) nsvr_preset_request_getfamily(nsvr_preset_request* req, nsvr_preset_family* outFamily);
+	//Need a better name!
+	// dynamic
+	// premade
+	// custom
+	//	cancellable
+	// looped..? that's how it's implemented but not actually the use case?
+	NSVR_CORE_RETURN(int) nsvr_preset_getfamily(nsvr_preset* req, nsvr_preset_family* outFamily);
 	
-	NSVR_CORE_RETURN(int) nsvr_preset_request_getstrength(nsvr_preset_request* req, float* outStrength);
+	NSVR_CORE_RETURN(int) nsvr_preset_getstrength(nsvr_preset* req, float* outStrength);
 
-	
-	
+	NSVR_CORE_RETURN(int) nsvr_preset_getduration(nsvr_preset* req, double* outDuration);
 
+	NSVR_CORE_RETURN(int) nsvr_preset_gethandle(nsvr_preset* req, uint64_t* outHandle);
+	
+	
+	nsvr_terminable_api{
+
+	}
 	/////////////////////////////
 	// Standard Implementation //
 	/////////////////////////////
@@ -284,7 +263,12 @@ extern "C" {
 		nsvr_request_type_lasting_haptic = 1,
 	};
 
+	/* WILL DEPRECATE REQUEST API*/
+
+	// in favor of.. generic_request?
+
 	typedef struct nsvr_request nsvr_request;
+
 
 	typedef struct nsvr_plugin_request_api {
 		typedef void(*nsvr_request_handler)(nsvr_request*, void*);
@@ -367,28 +351,68 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
 
 
+
+
+
+	typedef enum nsvr_bodypart {
+		nsvr_bodypart_unknown = 0,
+		nsvr_bodypart_torso
+	} nsvr_bodypart;
+
+	typedef struct nsvr_parallel {
+		nsvr_bodypart bodypart;
+		double parallel;
+	} nsvr_parallel;
+
+	typedef enum nsvr_bodypart_rotation {
+		nsvr_bodypart_rotation_back = -180,
+		nsvr_bodypart_rotation_front = 0,
+		nsvr_bodypart_rotation_left = -90,
+		nsvr_bodypart_rotation_right = 90
+		 
+	} nsvr_bodypart_rotation;
+
+	typedef enum nsvr_region_relation {
+		nsvr_region_relation_unknown = 0,
+		nsvr_region_relation_above,
+		nsvr_region_relation_below,
+		nsvr_region_relation_left,
+		nsvr_region_relation_right
+	} nsvr_region_relation;
+
+
+	static const double nsvr_parallel_lowest = 0.0;
+	static const double nsvr_parallel_innermost = 0.0;
+	static const double nsvr_parallel_highest = 1.0;
+	static const double nsvr_parallel_outermost = 1.0;
+	static const double nsvr_parallel_middle = 0.5;
+
+	
+
+	typedef struct nsvr_bodygraph_region nsvr_bodygraph_region;
+	typedef struct nsvr_bodygraph nsvr_bodygraph;
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_create(nsvr_bodygraph_region** region);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_destroy(nsvr_bodygraph_region** region);
+
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setorigin(nsvr_bodygraph_region* region, nsvr_parallel* parallel, double rotation);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setwidthcm(nsvr_bodygraph_region* region, double centimeters);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_absolute(nsvr_bodygraph* graph, const char* name, nsvr_bodygraph_region* region);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_relative(nsvr_bodygraph* graph, const char* nodeA, nsvr_region_relation relation, const char* nodeB, double offset = 0.0);
+	NSVR_CORE_RETURN(int) nsvr_parallel_init(nsvr_parallel* para, nsvr_bodypart bodypart, double parallel);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB);
+
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_add(nsvr_bodygraph* body, const char* node, uint64_t device_id);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_remove(nsvr_bodygraph* body, const char* node, uint64_t device_id);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_removeall(nsvr_bodygraph* body, uint64_t device_id);
 	typedef struct nsvr_plugin_bodygraph_api {
 		typedef void(*nsvr_bodygraph_setup)(nsvr_bodygraph* graph, void* cd);
 		nsvr_bodygraph_setup setup_handler;
 		void* client_data;
-	};
+	} nsvr_plugin_bodygraph_api;
 	NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core* core, nsvr_plugin_bodygraph_api* api);
 
-	typedef enum nsvr_bodygraph_position_placement {
-		nsvr_bodygraph_position_placement_unknown = 0,
-		nsvr_bodygraph_position_placement_static,
-		nsvr_bodygraph_position_placement_dynamic
-	} nsvr_bodygraph_position_placement;
 
-	typedef struct nsvr_bodygraph nsvr_body_graph;
-	typedef struct nsvr_bodygraph_position {
-		float originX;
-		float originY;
-		float originZ;
-		nsvr_bodygraph_position_placement placement;
-	};
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode(nsvr_bodygraph* body, const char* nodeName, nsvr_bodygraph_position* position);
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB);
+
 
 #ifdef __cplusplus
 }

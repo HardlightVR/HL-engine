@@ -200,7 +200,7 @@ void EnumTranslator::init_familymap()
 
 void EnumTranslator::init_regions()
 {
-	boost::assign::insert(_regionMap)
+	/*boost::assign::insert(_regionMap)
 		(Location::Upper_Back_Left, nsvr_region_back_left)
 		(Location::Upper_Back_Right, nsvr_region_back_right)
 		(Location::Shoulder_Left, nsvr_region_shoulder_left)
@@ -216,7 +216,8 @@ void EnumTranslator::init_regions()
 		(Location::Mid_Ab_Left, nsvr_region_abs_middle_left)
 		(Location::Mid_Ab_Right, nsvr_region_abs_middle_right)
 		(Location::Lower_Ab_Left, nsvr_region_abs_lower_left)
-		(Location::Lower_Ab_Right, nsvr_region_abs_lower_right);
+		(Location::Lower_Ab_Right, nsvr_region_abs_lower_right);*/
+	//throw std::runtime_error("FIX REGIONS");
 }
 
 void EnumTranslator::init_locations() {
