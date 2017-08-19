@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "HardwareCoordinator.h"
 #include <iostream>
-#include "cevent_internal.h"
 #include "EventDispatcher.h"
 #include "DeviceContainer.h"
 #include "IHardwareDevice.h"

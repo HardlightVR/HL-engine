@@ -4,7 +4,6 @@
 #include "PluginManager.h"
 #include "Locator.h"
 
-#include "cevent_internal.h"
 #include "nsvr_playback_handle.h"
 
 

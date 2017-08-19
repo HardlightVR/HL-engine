@@ -352,7 +352,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SharedCommunication\readablesharedvector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
-    <ClInclude Include="..\src\Driver\cevent_internal.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
@@ -412,7 +411,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\src\Driver\cevent_internal.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">

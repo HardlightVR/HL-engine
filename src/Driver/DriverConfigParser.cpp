@@ -79,11 +79,12 @@ void DriverConfigParser::parseNodes(HardwareDescriptor& descriptor, const Json::
 
 	nodeDescriptor.displayName = node.get("name", "unknown").asString();
 	const std::string& strRegion = node.get("region", "unknown").asString();
-	nsvr_region parsedRegion = Locator::Translator().ToRegion(strRegion, nsvr_region::nsvr_region_unknown);
-	if (nsvr_region_unknown == parsedRegion) {
-		BOOST_LOG_TRIVIAL(warning) << "[ConfigParser] Device " << descriptor.displayName << " has node with malformed region: " << strRegion;
-	}
-	nodeDescriptor.region = parsedRegion;
+//	nsvr_region parsedRegion = Locator::Translator().ToRegion(strRegion, nsvr_region::nsvr_region_unknown);
+	//if (nsvr_region_unknown == parsedRegion) {
+//		BOOST_LOG_TRIVIAL(warning) << "[ConfigParser] Device " << descriptor.displayName << " has node with malformed region: " << strRegion;
+	//}
+	//nodeDescriptor.region = parsedRegion;
+	//todo: fix
 	nodeDescriptor.nodeType = node_type_map[node.get("type", "unknown").asString()];
 	nodeDescriptor.id = node.get("id", 0).asUInt64();
 	const auto& capabilities = node["capabilities"];

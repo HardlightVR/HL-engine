@@ -50,11 +50,12 @@ void NodalDevice::createNewDevice(const NodeDescriptor& node)
 	const auto& t = Locator::Translator();
 
 	if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
-		BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+		//todo: fix
+		//BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
 	}
 	else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
-		BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+		//BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
 
 	}
@@ -149,7 +150,6 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
 	for (uint32_t region : simple.regions()) {
-		auto ev = nsvr::cevents::LastingHaptic(simple.effect(), simple.strength(), simple.duration(), static_cast<nsvr_region>(region));
 
 		//if (auto api = m_apis->GetApi<request_api>()) {
 		//	ev.handle = requestId;
@@ -163,7 +163,7 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 			////
 
 			nsvr_waveform wave{};
-			wave.repetitions = simple.duration() / 0.25;
+			wave.repetitions = (std::size_t) simple.duration() / 0.25;
 			wave.strength = simple.strength();
 			wave.waveform_id = static_cast<nsvr_default_waveform>(simple.effect());
 			for (const auto& device : m_hapticDevices) {
@@ -228,22 +228,6 @@ HapticNode::HapticNode(const NodeDescriptor& info, PluginApis*c)
 
 }
 
-void HapticNode::deliver(RequestId, const nsvr::cevents::request_base & base)
-{
-	if (base.type() == nsvr_request_type_lasting_haptic) {
-		const auto lasting = static_cast<const nsvr::cevents::LastingHaptic&>(base);
-		if (auto api = m_apis->GetApi<buffered_api>()) {
-		
-			//api->submit_buffer()
-		}
-		//else if (auto api = m_apis->GetApi<preset_api>()) {
-		//	nsvr_preset req{};
-		//	req.family = static_cast<nsvr_default_waveform>(lasting.effect);
-		//	req.strength = lasting.strength;
-		//	//api->submit_preset(0, reinterpret_cast<nsvr_preset*>(&req));
-		//}
-	}
-}
 
 
 NodeView::Data HapticNode::Render() const
@@ -348,10 +332,6 @@ TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
 
 }
 
-void TrackingNode::deliver(RequestId, const nsvr::cevents::request_base &)
-{
-
-}
 
 
 

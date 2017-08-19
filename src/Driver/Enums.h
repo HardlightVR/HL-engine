@@ -225,3 +225,58 @@ enum class Register {
 	RtpVol = 0x02,
 	WaveForm = 0x04
 };
+
+enum class SubRegionId {
+	nsvr_region_unknown = 0,
+	nsvr_region_torso = 50000,
+	nsvr_region_torso_front = 100000,
+	nsvr_region_torso_front_left = 110000,
+	nsvr_region_chest_front_left = 111000,
+	nsvr_region_abdomen_front_left = 112000,
+	nsvr_region_ab_upper_left = 112100,
+	nsvr_region_ab_middle_left = 112200,
+	nsvr_region_ab_lower_left = 112300,
+	nsvr_region_torso_front_right = 120000,
+	nsvr_region_chest_front_right = 121000,
+	nsvr_region_abdomen_front_right = 122000,
+	nsvr_region_torso_back = 200000,
+	nsvr_region_torso_back_left = 210000,
+	nsvr_region_back_upper_left = 211000,
+	nsvr_region_back_lower_left = 212000,
+	nsvr_region_torso_back_right = 220000,
+	nsvr_region_back_upper_right = 221000,
+	nsvr_region_back_lower_right = 222000,
+	nsvr_region_arm_left = 300000,
+	nsvr_region_shoulder_left = 310000,
+	nsvr_region_upper_arm_left = 320000,
+	nsvr_region_lower_arm_left = 330000,
+	nsvr_region_hand_left = 340000,
+	nsvr_region_arm_right = 400000,
+	nsvr_region_shoulder_right = 410000,
+	nsvr_region_upper_arm_right = 420000,
+	nsvr_region_lower_arm_right = 430000,
+	nsvr_region_hand_right = 440000,
+	nsvr_region_leg_left = 500000,
+		nsvr_region_upper_leg_left = 500001,
+
+		nsvr_region_upper_leg_front_left = 510000,
+		nsvr_region_upper_leg_back_left = 520000,
+		nsvr_region_lower_leg_left = 520001,
+
+		nsvr_region_lower_leg_front_left = 530000,
+		nsvr_region_lower_leg_back_left = 540000,
+	nsvr_region_leg_right = 600000,
+		nsvr_region_upper_leg_right = 600001,
+		nsvr_region_upper_leg_front_right = 610000,
+		nsvr_region_upper_legt_back_right = 620000,
+		nsvr_region_lower_leg_right = 620001,
+
+		nsvr_region_lower_leg_front_right = 630000,
+		nsvr_region_lower_leg_back_right = 640000,
+	nsvr_region_groin = 700000,
+	nsvr_region_gluteal = 800000,
+	nsvr_region_head = 900000
+
+
+
+};

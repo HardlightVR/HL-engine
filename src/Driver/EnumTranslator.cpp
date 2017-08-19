@@ -163,14 +163,14 @@ std::string EnumTranslator::ToString(uint32_t effectFamily) const
 {
 	return _effectFamilyMap.right.at(effectFamily);
 }
-nsvr_region EnumTranslator::ToRegion(const std::string & region, nsvr_region default) const
+SubRegionId EnumTranslator::ToRegion(const std::string & region, SubRegionId default) const
 {
 	if (_regionMap.right.count(region)) {
 		return _regionMap.right.at(region);
 	}
 	return default;
 }
-std::string EnumTranslator::ToRegionString(nsvr_region region) const
+std::string EnumTranslator::ToRegionString(SubRegionId region) const
 {
 	return _regionMap.left.at(region);
 }
@@ -199,7 +199,7 @@ void EnumTranslator::init_familymap()
 
 void EnumTranslator::init_regions() {
 	boost::assign::insert(_regionMap)
-		(nsvr_region::nsvr_region_arm_left, "arm_left");
+		(SubRegionId::nsvr_region_arm_left, "arm_left");
 	//	(nsvr_region::nsvr_region_unknown, "unknown,")
 	//	(nsvr_region::nsvr_region_chest, "chest")
 	//	(nsvr_region::nsvr_region_chest_left, "chest_left")

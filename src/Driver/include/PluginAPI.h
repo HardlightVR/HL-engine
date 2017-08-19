@@ -33,6 +33,7 @@ extern "C" {
 	// Opaque type representing the core API provided to you
 	typedef struct nsvr_core nsvr_core;
 
+	typedef enum nsvr_region { test = 0 } nsvr_region; //todo: deperecate
 
 
 	// As a plugin author, you may implement three levels of functionality.
@@ -70,53 +71,7 @@ extern "C" {
 	NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api* api);
 
 	
-	typedef enum nsvr_region {
-		nsvr_region_unknown = 0,
-
-		nsvr_region_torso_front = 100000,
-			nsvr_region_torso_front_left = 110000,
-				nsvr_region_chest_front_left = 111000,
-				nsvr_region_abdomen_front_left = 112000,
-					nsvr_region_ab_upper_left = 112100,
-					nsvr_region_ab_middle_left = 112200,
-					nsvr_region_ab_lower_left = 112300,
-			nsvr_region_torso_front_right = 120000,
-				nsvr_region_chest_front_right = 121000,
-				nsvr_region_abdomen_front_right = 122000,
-		nsvr_region_torso_back = 200000,
-			nsvr_region_torso_back_left = 210000,
-				nsvr_region_back_upper_left = 211000,
-				nsvr_region_back_lower_left = 212000,
-			nsvr_region_torso_back_right = 220000,
-				nsvr_region_back_upper_right = 221000,
-				nsvr_region_back_lower_right = 222000,
-		nsvr_region_arm_left = 300000,
-			nsvr_region_shoulder_left = 310000,
-			nsvr_region_upper_arm_left = 320000,
-			nsvr_region_lower_arm_left = 330000,
-			nsvr_region_hand_left = 340000,
-		nsvr_region_arm_right = 400000,
-			nsvr_region_shoulder_right = 410000,
-			nsvr_region_upper_arm_right = 420000,
-			nsvr_region_lower_arm_right = 430000,
-			nsvr_region_hand_right = 440000,
-		nsvr_region_leg_left = 500000,
-			nsvr_region_upper_leg_front_left = 510000,
-			nsvr_region_upper_legt_back_left = 520000,
-			nsvr_region_lower_leg_front_left = 530000,
-			nsvr_region_lower_leg_back_left = 540000,
-		nsvr_region_leg_right = 600000,
-		nsvr_region_upper_leg_front_right = 610000,
-		nsvr_region_upper_legt_back_right = 620000,
-		nsvr_region_lower_leg_front_right = 630000,
-		nsvr_region_lower_leg_back_right = 640000,
-		nsvr_region_groin = 700000,
-		nsvr_region_gluteal = 800000,
-
-
 	
-	} nsvr_region;
-
 	///////////////////////////
 	// Raising device events //
 	///////////////////////////
@@ -260,34 +215,7 @@ extern "C" {
 	// Standard Implementation //
 	/////////////////////////////
 
-	// We request your software to perform complex haptic behavior through the following event types:
-	enum nsvr_request_type {
-		nsvr_request_type_unknown = 0,
-		nsvr_request_type_lasting_haptic = 1,
-	};
 
-	/* WILL DEPRECATE REQUEST API*/
-
-	// in favor of.. generic_request?
-
-	typedef struct nsvr_request nsvr_request;
-
-
-	typedef struct nsvr_plugin_request_api {
-		typedef void(*nsvr_request_handler)(nsvr_request*, void*);
-		nsvr_request_handler request_handler;
-		nsvr_request_type request_type;
-		void* client_data;
-	} nsvr_request_api;
-	
-	NSVR_CORE_RETURN(int) nsvr_register_request_api(nsvr_core* core, nsvr_plugin_request_api* api);
-	
-	NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request* cevent, nsvr_request_type* outType);
-
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getstrength(nsvr_request* cevent, float* outStrength);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* cevent, float* outDuration);
-	NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent, nsvr_region* outRegion);
 
 
 	
@@ -325,7 +253,6 @@ extern "C" {
 	} nsvr_plugin_playback_api;
 
 	NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core* core, nsvr_plugin_playback_api* api);
-	NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request* request, uint64_t* request_id);
 
 
 
@@ -340,6 +267,7 @@ extern "C" {
 
 
 	typedef struct nsvr_tracking_stream nsvr_tracking_stream;
+
 
 	typedef struct nsvr_plugin_tracking_api {
 		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_region region, void* client_data);
@@ -359,7 +287,24 @@ extern "C" {
 
 	typedef enum nsvr_bodypart {
 		nsvr_bodypart_unknown = 0,
-		nsvr_bodypart_torso
+		nsvr_bodypart_upperarm_left ,
+		nsvr_bodypart_forearm_left,
+		nsvr_bodypart_palm_left,
+		nsvr_bodypart_upperleg_left,
+		nsvr_bodypart_lowerleg_left,
+
+		nsvr_bodypart_upperarm_right ,
+		nsvr_bodypart_forearm_right,
+		nsvr_bodypart_palm_right ,
+		nsvr_bodypart_upperleg_right,
+		nsvr_bodypart_lowerleg_right,
+
+		nsvr_bodypart_hips,
+		nsvr_bodypart_torso,
+		nsvr_bodypart_neck,
+		nsvr_bodypart_head
+
+
 	} nsvr_bodypart;
 
 	typedef struct nsvr_parallel {

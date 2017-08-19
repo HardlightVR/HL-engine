@@ -97,17 +97,6 @@ struct preset_api : public plugin_api {
 	static Apis getApiType() { return Apis::Preset; }
 };
 
-struct request_api : public plugin_api {
-	request_api(nsvr_plugin_request_api* api)
-		: submit_request{ api->request_handler, api->client_data } {}
-	
-	callback<
-		nsvr_plugin_request_api::nsvr_request_handler, 
-		nsvr_request*
-	> submit_request;
-
-	static Apis getApiType() { return Apis::Request; }
-};
 
 struct playback_api : public plugin_api {
 	playback_api(nsvr_plugin_playback_api* api)

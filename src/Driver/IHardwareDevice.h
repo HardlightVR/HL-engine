@@ -2,7 +2,6 @@
 
 #include <memory>
 #include "DriverConfigParser.h"
-#include "cevent_internal.h"
 #include <vector>
 
 #include "protobuff_defs/HighLevelEvent.pb.h"
@@ -26,7 +25,6 @@ public:
 	virtual ~Node() {}
 
 	using RequestId = uint64_t;
-	virtual void deliver(RequestId id, const nsvr::cevents::request_base&) = 0;
 	
 	nsvr_region region() const;
 	uint64_t id() const;
@@ -42,7 +40,6 @@ class HapticNode : public Node, public Renderable  {
 public:
 	HapticNode(const NodeDescriptor& info, PluginApis*);
 
-	void deliver(RequestId, const nsvr::cevents::request_base&) override;
 
 	// Renderable support
 	NodeView::Data Render() const override;
@@ -56,7 +53,6 @@ private:
 class TrackingNode : public Node {
 public:
 	TrackingNode(const NodeDescriptor& info, PluginApis*);
-	void deliver(RequestId, const nsvr::cevents::request_base&) override;
 
 	void BeginTracking();
 	void EndTracking();

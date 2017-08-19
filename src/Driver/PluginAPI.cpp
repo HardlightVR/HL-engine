@@ -3,7 +3,6 @@
 #include "PluginInstance.h"
 #include "pevent.h"
 #include "HardwareCoordinator.h"
-#include "cevent_internal.h"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid.hpp>
 #include "nsvr_preset.h"
@@ -40,37 +39,6 @@ enum returnTypes {
 };
 
 
-NSVR_CORE_RETURN(int) nsvr_request_gettype(nsvr_request * cevent, nsvr_request_type * outType)
-{
-	*outType = AS_CTYPE(nsvr::cevents::request_base, cevent)->type();
-	return NSVR_SUCCESS;
-}
-
-
-NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_geteffect(nsvr_request* cevent, uint32_t* outEffect)
-{
-	*outEffect = AS_TYPE(nsvr::cevents::LastingHaptic, cevent)->effect;
-	return NSVR_SUCCESS;
-}
-NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getstrength(nsvr_request* cevent, float* outStrength)
-{
-	*outStrength = AS_TYPE(nsvr::cevents::LastingHaptic, cevent)->strength;
-	return NSVR_SUCCESS;
-}
-NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getduration(nsvr_request* cevent, float* outDuration)
-{
-	*outDuration = AS_TYPE(nsvr::cevents::LastingHaptic, cevent)->duration;
-	return NSVR_SUCCESS;
-}
-
-
-NSVR_CORE_RETURN(int) nsvr_request_lastinghaptic_getregion(nsvr_request* cevent,nsvr_region* outRegion)
-{
-	*outRegion = AS_TYPE(nsvr::cevents::LastingHaptic, cevent)->region;
-
-	return NSVR_SUCCESS;
-	
-}
 
 //NSVR_CORE_RETURN(int) nsvr_region_tostring(nsvr_region region, char * outRegion, uint32_t length)
 //{
@@ -141,12 +109,7 @@ NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* n
 }
 
 
-NSVR_CORE_RETURN(int) nsvr_request_getid(nsvr_request * request, uint64_t* request_id)
-{
-	*request_id  = AS_TYPE(nsvr::cevents::request_base, request)->getHandle();
-	return NSVR_SUCCESS;
 
-}
 
 
 
@@ -210,8 +173,6 @@ REGISTER_API(playback_api)
 REGISTER_API(buffered_api)
 
 REGISTER_API(preset_api)
-
-REGISTER_API(request_api)
 
 REGISTER_API(sampling_api)
 
