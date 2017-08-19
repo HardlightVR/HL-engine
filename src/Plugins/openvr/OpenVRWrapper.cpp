@@ -179,14 +179,12 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 				std::copy(name.begin(), name.end(), info->name);
 				
 				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-				info->region = nsvr_region_hand_left;
 				info->type = nsvr_device_type_haptic;
 			}
 			else if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand)) {
 				std::string name("Controller (Right Hand)");
 				std::copy(name.begin(), name.end(), info->name);
 				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-				info->region = nsvr_region_hand_right;
 				info->type = nsvr_device_type_haptic;
 			}
 			else {
@@ -199,7 +197,6 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 				std::string name = std::string(manufacturerName) + " " + std::string(model);
 				std::copy(name.begin(), name.end(), info->name);
 				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-				info->region = nsvr_region_unknown;
 				info->type = nsvr_device_type_haptic;
 			}
 		}

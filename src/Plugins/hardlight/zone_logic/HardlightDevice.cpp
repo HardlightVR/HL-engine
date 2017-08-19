@@ -12,7 +12,7 @@ HardlightDevice::HardlightDevice()
 	auto& translator = Locator::Translator();
 
 	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
-		nsvr_region region = nsvr_region_arm_left;
+		nsvr_region region = nsvr_region::test;
 
 		m_drivers.insert(std::make_pair(
 			region, 
@@ -28,13 +28,6 @@ HardlightDevice::HardlightDevice()
 
 void HardlightDevice::Configure(nsvr_core* ctx)
 {
-	nsvr_plugin_request_api request_api;
-	request_api.client_data = this;
-	request_api.request_type = nsvr_request_type_lasting_haptic;
-	request_api.request_handler = [](nsvr_request* req, void* client_data) {
-		AS_TYPE(HardlightDevice, client_data)->handle(req);
-	};
-	nsvr_register_request_api(ctx, &request_api);
 
 
 	nsvr_plugin_waveform_api waveform_api;
@@ -83,20 +76,6 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 }
 
 
-void HardlightDevice::handle( nsvr_request * event)
-{
-	nsvr_request_type type;
-	nsvr_request_gettype(event, &type);
-	switch (type) {
-	case nsvr_request_type_lasting_haptic:
-		executeLasting(event);
-		break;
-	default:
-		break;
-	}
-
-
-}
 
 void HardlightDevice::Pause(ParentId handle)
 {
@@ -171,24 +150,6 @@ void HardlightDevice::GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 	}
 }
 
-void HardlightDevice::executeLasting(nsvr_request * event)
-{
-	BasicHapticEventData data = {};
-	nsvr_request_lastinghaptic_getduration(event, &data.duration);
-	nsvr_request_lastinghaptic_geteffect(event, &data.effect);
-	nsvr_request_lastinghaptic_getstrength(event, &data.strength);
-	
-
-	nsvr_region region;
-	nsvr_request_lastinghaptic_getregion(event, &region);
-
-	ParentId handle;
-	nsvr_request_getid(event, &handle);
-	if (m_drivers.find(region) != m_drivers.end()) {
-		m_drivers.at(region)->consumeLasting(std::move(data), handle);
-	}
-
-}
 
 void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave) {
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id](const auto& driver) { return driver.second->GetId() == device_id; });

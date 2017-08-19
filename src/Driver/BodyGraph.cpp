@@ -47,7 +47,13 @@ BodyGraph::BodyGraph()
 int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 {
 	boost::add_vertex(name, m_nodes);
-	
+	SubRegionId id = SubRegionId::nsvr_region_unknown;
+	if (m_namedRegions[pose->parallel.bodypart].search(pose->parallel.parallel, pose->rotation, &id)) {
+		std::cout << "Found";
+	}
+
+
+
 	m_nodes[name] = {name, *pose};
 
 	return 0;

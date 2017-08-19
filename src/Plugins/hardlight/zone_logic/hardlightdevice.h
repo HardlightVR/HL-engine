@@ -14,7 +14,6 @@ public:
 
 	CommandBuffer GenerateHardwareCommands(float dt);
 
-	void handle(nsvr_request* event);
 	void handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave);
 	void Pause(ParentId  handle);
 	void Cancel(ParentId  handle);
@@ -29,7 +28,6 @@ private:
 	std::unordered_map<nsvr_region, std::unique_ptr<Hardlight_Mk3_ZoneDriver>> m_drivers;
 	template<typename T>
 	void execute_region_specific(void* regioned_event);
-	void executeLasting(nsvr_request * event);
 };
 
 template<typename T>
