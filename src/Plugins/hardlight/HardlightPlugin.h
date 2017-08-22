@@ -24,6 +24,8 @@ public:
 	int Configure(nsvr_core* ctx);
 	void BeginTracking(nsvr_tracking_stream* stream, nsvr_region region);
 	void EndTracking(nsvr_region region);
+
+	void SetupBodygraph(nsvr_bodygraph* graph);
 private:
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;

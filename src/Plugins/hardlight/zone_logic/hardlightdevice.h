@@ -18,14 +18,17 @@ public:
 	void Pause(ParentId  handle);
 	void Cancel(ParentId  handle);
 	void Unpause(ParentId  handle);
-	int Query(nsvr_region node, nsvr_sampling_sample* outState);
+	int Query(uint64_t device_id, nsvr_sampling_sample* outState);
 
 	void EnumerateDeviceIds(nsvr_device_ids* ids);
 	void GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info);
 	
+	void RaiseDeviceConnectionEvent(nsvr_core* core);
+	void RaiseDeviceDisconnectionEvent(nsvr_core* core);
+	void SetupDeviceAssociations(nsvr_bodygraph* g);
 private:
 
-	std::unordered_map<nsvr_region, std::unique_ptr<Hardlight_Mk3_ZoneDriver>> m_drivers;
+	std::unordered_map<Location, std::unique_ptr<Hardlight_Mk3_ZoneDriver>> m_drivers;
 	template<typename T>
 	void execute_region_specific(void* regioned_event);
 };

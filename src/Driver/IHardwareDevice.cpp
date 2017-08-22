@@ -81,7 +81,6 @@ void NodalDevice::fetchDeviceInfo(uint64_t device_id) {
 	desc.displayName = info.name;
 	desc.id = device_id;
 	desc.nodeType = static_cast<NodeDescriptor::NodeType>(info.type);
-	desc.region = info.region;
 
 	createNewDevice(desc);
 
@@ -257,7 +256,7 @@ Node::Node(const NodeDescriptor& description)
 	: m_id{ description.id }
 	, m_name{ description.displayName }
 	, m_capability{ description.capabilities }
-	, m_region{ static_cast<nsvr_region>(description.region) } {}
+	{}
 
 
 uint64_t Node::id() const

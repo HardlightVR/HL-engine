@@ -113,6 +113,7 @@ NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* n
 
 
 
+
 NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream * stream, nsvr_quaternion * quaternion)
 {
 	AS_TYPE(TrackingNode, stream)->DeliverTracking(quaternion);
@@ -127,36 +128,62 @@ NSVR_CORE_RETURN(int) nsvr_bodygraph_region_create(nsvr_bodygraph_region ** regi
 NSVR_CORE_RETURN(int) nsvr_bodygraph_region_destroy(nsvr_bodygraph_region** region)
 {
 	delete *region;
-	region = nullptr;
+	*region = nullptr;
+	//region = nullptr;
 	return 0;
 }
 
 
-NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setorigin(nsvr_bodygraph_region * region, nsvr_parallel * parallel, double rotation)
+NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setlocation(nsvr_bodygraph_region* region, nsvr_bodypart bodypart, double segment_ratio, double rotation)
 {
-	region->parallel = *parallel;
+	region->segment_ratio = segment_ratio;
+	region->bodypart = bodypart;
 	region->rotation = rotation;
 	return 0;
 }
+
+NSVR_CORE_RETURN(int) nsvr_bodygraph_associate(nsvr_bodygraph * body, const char * node, uint64_t device_id)
+{
+	AS_TYPE(BodyGraph, body)->Associate(node, device_id);
+	return 0;
+}
+
+NSVR_CORE_RETURN(int) nsvr_bodygraph_unassociate(nsvr_bodygraph * body, const char * node, uint64_t device_id)
+{
+	AS_TYPE(BodyGraph, body)->Unassociate(node, device_id);
+	return 0;
+}
+
+NSVR_CORE_RETURN(int) nsvr_bodygraph_clearassociations(nsvr_bodygraph * body, uint64_t device_id)
+{
+	AS_TYPE(BodyGraph, body)->ClearAssociations(device_id);
+	return 0;
+}
+
 NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setwidthcm(nsvr_bodygraph_region * region, double centimeters)
 {
 	region->width_cm = centimeters;
 	return 0;
 }
+NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setheightcm(nsvr_bodygraph_region * region, double centimeters)
+{
+	region->height_cm = centimeters;
+	return 0;
+}
+
+NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setboundingboxdimensions(nsvr_bodygraph_region* region, double width, double height)
+{
+	region->height_cm = height;
+	region->width_cm = width;
+	return 0;
+
+}
+
 NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_absolute(nsvr_bodygraph * graph, const char * name, nsvr_bodygraph_region * region)
 {
 	return AS_TYPE(BodyGraph, graph)->CreateNode(name, region);
 }
-NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_relative(nsvr_bodygraph* graph, const char * nodeA, nsvr_region_relation relation, const char * nodeB, double offset)
-{
-	return AS_TYPE(BodyGraph, graph)->CreateNodeRelative(nodeA, relation, nodeB, offset);
-}
-NSVR_CORE_RETURN(int) nsvr_parallel_init(nsvr_parallel * para, nsvr_bodypart bodypart, double parallel)
-{
-	para->bodypart = bodypart;
-	para->parallel = parallel;
-	return 0;
-}
+
 
 
 // API registration

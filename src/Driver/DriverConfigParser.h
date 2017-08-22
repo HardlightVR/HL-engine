@@ -24,7 +24,6 @@ public:
 	NodeDescriptor();
 	uint64_t id;
 	std::string displayName;
-	uint32_t region;
 	uint32_t capabilities;
 	NodeType nodeType;
 };

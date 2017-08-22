@@ -12,14 +12,11 @@ HardlightDevice::HardlightDevice()
 	auto& translator = Locator::Translator();
 
 	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
-		nsvr_region region = nsvr_region::test;
 
 		m_drivers.insert(std::make_pair(
-			region, 
+			(Location)loc, 
 			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
 		);
-		//todo: FIX THIS
-		// REGIONS AREN'T REAL!
 	}
 }
 
@@ -98,9 +95,10 @@ void HardlightDevice::Unpause(ParentId  handle)
 	}
 }
 
-int HardlightDevice::Query(nsvr_region node, nsvr_sampling_sample * outState)
+int HardlightDevice::Query(uint64_t device, nsvr_sampling_sample * outState)
 {
-	if (m_drivers.find(node) != m_drivers.end()) {
+	throw std::runtime_error("NOPE");
+	/*if (m_drivers.find(node) != m_drivers.end()) {
 		if (m_drivers.at(node)->IsPlaying()) {
 
 			outState->intensity = 1;
@@ -110,7 +108,7 @@ int HardlightDevice::Query(nsvr_region node, nsvr_sampling_sample * outState)
 		}
 		return 1;
 	}
-
+*/
 	return 0;
 
 }
@@ -141,7 +139,6 @@ void HardlightDevice::GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 		info->capabilities = nsvr_device_capability_dynamic;
 		info->type = nsvr_device_type_haptic;
 		info->id = id;
-		info->region = it->first;
 
 		const auto& driver = it->second;
 		std::string outStr = "Hardlight ZoneDriver " + t.ToString(driver->GetLocation());
@@ -150,6 +147,30 @@ void HardlightDevice::GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 	}
 }
 
+
+void HardlightDevice::RaiseDeviceConnectionEvent(nsvr_core* core)
+{
+	for (const auto& device : m_drivers) {
+		nsvr_device_event_raise(core, nsvr_device_event_device_connected, device.second->GetId());
+	}
+}
+
+void HardlightDevice::RaiseDeviceDisconnectionEvent(nsvr_core* core)
+{
+	for (const auto& device : m_drivers) {
+		nsvr_device_event_raise(core, nsvr_device_event_device_disconnected, device.second->GetId());
+	}
+}
+
+void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
+{
+	nsvr_bodygraph_associate(g, "Chest_Left", m_drivers[Location::Chest_Left]->GetId());
+
+
+
+	nsvr_bodygraph_associate(g, "Chest_Right", m_drivers[Location::Chest_Right]->GetId());
+
+}
 
 void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave) {
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id](const auto& driver) { return driver.second->GetId() == device_id; });

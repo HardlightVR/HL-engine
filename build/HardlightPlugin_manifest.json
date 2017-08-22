@@ -3,6 +3,12 @@
    "manifest-version":1,
    "concept":"suit",
 
+   "body_graph" : [
+
+
+   ],
+
+   
    "static_nodes":[  
       {  
          "type" : "haptic",

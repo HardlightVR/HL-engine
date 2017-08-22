@@ -23,21 +23,15 @@ HardlightPlugin::HardlightPlugin() :
 
 	m_adapter->SetMonitor(m_monitor);
 
-	m_monitor->OnDisconnect([&]() {
-		//nsvr::Event event{nsvr_device_event_device_disconnected};
-		//event.raise(m_core);
-		
-		//todo: there is a difference between devices and nodes. I have let this confusion slide.
-		//Now it must be reckoned with. 
-		//todo: think about over vacation
-		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 1);
-	
-	});
-
 	m_monitor->OnReconnect([&]() {
-		nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, 1);
-
+		m_device.RaiseDeviceConnectionEvent(m_core);
 	});
+
+	m_monitor->OnDisconnect([&]() {
+		m_device.RaiseDeviceDisconnectionEvent(m_core);
+	});
+
+	
 
 	m_adapter->Connect();
 	
@@ -110,12 +104,31 @@ HardlightPlugin::~HardlightPlugin()
 
 
 
+struct bodygraph_region {
+	nsvr_bodygraph_region* region;
 
+	bodygraph_region() {
+		nsvr_bodygraph_region_create(&region);
+	}
+
+	bodygraph_region& setLocation(nsvr_bodypart bodypart, double ratio, double rot) {
+		nsvr_bodygraph_region_setlocation(region, bodypart, ratio, rot);
+		return *this;
+	}
+	bodygraph_region& setDimensions(double width_cm, double height_cm) {
+		nsvr_bodygraph_region_setboundingboxdimensions(region, width_cm, height_cm);
+		return *this;
+	}
+	~bodygraph_region() {
+		nsvr_bodygraph_region_destroy(&region);
+		assert(region == nullptr);
+	}
+};
 
 int HardlightPlugin::Configure(nsvr_core* core)
 {
 
-
+	
 
 
 	m_core = core;
@@ -134,49 +147,8 @@ int HardlightPlugin::Configure(nsvr_core* core)
 
 	nsvr_plugin_bodygraph_api body_api;
 	body_api.setup_handler = [](nsvr_bodygraph* g, void* cd) {
-		
-		//Grab the top parallel, which runs right across the chest
-		nsvr_parallel para;
-		nsvr_parallel_init(&para, nsvr_bodypart_torso, nsvr_parallel_highest);
-		
-		nsvr_bodygraph_region* chestLocation;
-		nsvr_bodygraph_region_create(&chestLocation);
-		//Chest left is on the front of the body, offset by a bit
-		nsvr_bodygraph_region_setorigin(chestLocation, &para, nsvr_bodypart_rotation_front - 10);
-
-		//Also set the width of the zone (and height later)
-		nsvr_bodygraph_region_setwidthcm(chestLocation, 10);
-
-		nsvr_bodygraph_createnode_absolute(g, "Chest_Left", chestLocation);
-		nsvr_bodygraph_createnode_relative(g, "Upper_Ab_Left", nsvr_region_relation_below, "Chest_Left");
-		nsvr_bodygraph_createnode_relative(g, "Mid_Ab_Left", nsvr_region_relation_below, "Upper_Ab_Left");
-		nsvr_bodygraph_createnode_relative(g, "Lower_Ab_Left", nsvr_region_relation_below, "Mid_Ab_Left");
-
-		nsvr_bodygraph_connect(g, "Chest_Left", "Upper_Ab_Left");
-		nsvr_bodygraph_connect(g, "Upper_Ab_Left", "Mid_Ab_Left");
-		nsvr_bodygraph_connect(g, "Mid_Ab_Left", "Lower_Ab_Left");
-
-		//Chest right is on the front of the body, offset by a bit
-		nsvr_bodygraph_region_setorigin(chestLocation, &para, nsvr_bodypart_rotation_front + 10);
-		nsvr_bodygraph_createnode_absolute(g, "Chest_Right", chestLocation);
-		nsvr_bodygraph_createnode_relative(g, "Upper_Ab_Right", nsvr_region_relation_below, "Chest_Right");
-		nsvr_bodygraph_createnode_relative(g, "Mid_Ab_Right", nsvr_region_relation_below, "Upper_Ab_Right");
-		nsvr_bodygraph_createnode_relative(g, "Lower_Ab_Right", nsvr_region_relation_below, "Mid_Ab_Right");
-
-		nsvr_bodygraph_connect(g, "Chest_Right", "Upper_Ab_Right");
-		nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Mid_Ab_Right");
-		nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Lower_Ab_Right");
-
-		nsvr_bodygraph_connect(g, "Chest_Left", "Chest_Right");
-		nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Upper_Ab_Left");
-		nsvr_bodygraph_connect(g, "Mid_Ab_Left", "Mid_Ab_Right");
-		nsvr_bodygraph_connect(g, "Lower_Ab_Right", "Lower_Ab_Left");
-
-
-//		nsvr_bodygraph_assigndevice(g, "Chest_Left", 3);
-
-		nsvr_bodygraph_region_destroy(&chestLocation);
-
+		AS_TYPE(HardlightPlugin, cd)->SetupBodygraph(g);
+	
 	};
 	body_api.client_data = this;
 	nsvr_register_bodygraph_api(core, &body_api);
@@ -193,5 +165,123 @@ void HardlightPlugin::EndTracking(nsvr_region region)
 {
 	m_firmware.DisableTracking();
 	m_trackingStream = nullptr;
+}
+
+void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
+{
+	//Setup the initial zones
+
+	bodygraph_region chestActuator;
+	chestActuator
+		.setLocation(nsvr_bodypart_torso, nsvr_location_highest, nsvr_bodypart_rotation_front - 10)
+		.setDimensions(6, 8);
+
+	bodygraph_region upperAbActuator;
+	upperAbActuator
+		.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1, nsvr_bodypart_rotation_front - 10)
+		.setDimensions(6, 4);
+
+	bodygraph_region midAbActuator;
+	midAbActuator
+		.setLocation(nsvr_bodypart_torso, nsvr_location_middle, nsvr_bodypart_rotation_front - 10)
+		.setDimensions(6, 4);
+
+	bodygraph_region lowerAbActuator;
+	lowerAbActuator
+		.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, nsvr_bodypart_rotation_front - 10)
+		.setDimensions(6, 4);
+
+	bodygraph_region shoulderActuator;
+	shoulderActuator
+		.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_highest, nsvr_bodypart_rotation_back)
+		.setDimensions(4, 4);
+
+	bodygraph_region upperArmActuator;
+	upperArmActuator
+		.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_middle, nsvr_bodypart_rotation_back)
+		.setDimensions(6, 4);
+
+	bodygraph_region forearmActuator;
+	forearmActuator
+		.setLocation(nsvr_bodypart_forearm_left, nsvr_location_middle, nsvr_bodypart_rotation_back)
+		.setDimensions(6, 4);
+
+	bodygraph_region backActuator;
+	backActuator
+		.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, nsvr_bodypart_rotation_back)
+		.setDimensions(6, 4);
+
+
+	//Create the left half of the body
+	nsvr_bodygraph_createnode_absolute(g, "Chest_Left", chestActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Upper_Ab_Left", upperAbActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Mid_Ab_Left", midAbActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Lower_Ab_Left", lowerAbActuator.region);
+
+	nsvr_bodygraph_createnode_absolute(g, "Shoulder_Left", shoulderActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Upper_Arm_Left", upperArmActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Lower_Arm_Left", forearmActuator.region);
+
+	nsvr_bodygraph_createnode_absolute(g, "Back_Left", backActuator.region);
+
+
+	//Move the zones to the right side
+	chestActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest, nsvr_bodypart_rotation_front + 10);
+	upperAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1, nsvr_bodypart_rotation_front + 10);
+	midAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle, nsvr_bodypart_rotation_front + 10);
+	lowerAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, nsvr_bodypart_rotation_front + 10);
+	shoulderActuator.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_highest, nsvr_bodypart_rotation_back);
+	upperArmActuator.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_middle, nsvr_bodypart_rotation_back);
+	forearmActuator.setLocation(nsvr_bodypart_forearm_left, nsvr_location_middle, nsvr_bodypart_rotation_back);
+	backActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, nsvr_bodypart_rotation_back);
+
+	//Create the right half of the body
+	nsvr_bodygraph_createnode_absolute(g, "Chest_Right", chestActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Upper_Ab_Right", upperAbActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Mid_Ab_Right", midAbActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Lower_Ab_Right", lowerAbActuator.region);
+
+	nsvr_bodygraph_createnode_absolute(g, "Shoulder_Right", shoulderActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Upper_Arm_Right", upperArmActuator.region);
+	nsvr_bodygraph_createnode_absolute(g, "Lower_Arm_Right", forearmActuator.region);
+
+	nsvr_bodygraph_createnode_absolute(g, "Back_Right", backActuator.region);
+
+	//Connect all the zones, first the left
+	nsvr_bodygraph_connect(g, "Chest_Left", "Upper_Ab_Left");
+	nsvr_bodygraph_connect(g, "Upper_Ab_Left", "Mid_Ab_Left");
+	nsvr_bodygraph_connect(g, "Mid_Ab_Left", "Lower_Ab_Left");
+
+	nsvr_bodygraph_connect(g, "Chest_Left", "Shoulder_Left");
+	nsvr_bodygraph_connect(g, "Shoulder_Left", "Upper_Arm_Left");
+	nsvr_bodygraph_connect(g, "Upper_Arm_Left", "Lower_Arm_Left");
+
+	nsvr_bodygraph_connect(g, "Shoulder_Left", "Back_Left");
+
+
+	//Then the right
+	nsvr_bodygraph_connect(g, "Chest_Right", "Upper_Ab_Right");
+	nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Mid_Ab_Right");
+	nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Lower_Ab_Right");
+
+	nsvr_bodygraph_connect(g, "Chest_Right", "Shoulder_Right");
+	nsvr_bodygraph_connect(g, "Shoulder_Right", "Upper_Arm_Right");
+	nsvr_bodygraph_connect(g, "Upper_Arm_Right", "Lower_Arm_Right");
+
+	nsvr_bodygraph_connect(g, "Shoulder_Right", "Back_Right");
+
+	//Finally, cross connections
+	nsvr_bodygraph_connect(g, "Chest_Right", "Chest_Left");
+	nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Upper_Ab_Left");
+	nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Mid_Ab_Left");
+	nsvr_bodygraph_connect(g, "Lower_Ab_Right", "Lower_Ab_Left");
+
+	nsvr_bodygraph_connect(g, "Back_Left", "Back_Right");
+
+	//Lastly, we want to associate the actual devices with these logical zones
+	m_device.SetupDeviceAssociations(g);
+	
+
+
 }
 

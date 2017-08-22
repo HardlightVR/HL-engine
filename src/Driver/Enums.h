@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "better_enum.h"
 enum class Side
 {
 	/// <summary>
@@ -226,7 +226,7 @@ enum class Register {
 	WaveForm = 0x04
 };
 
-enum class SubRegionId {
+BETTER_ENUM(SubRegionId, uint64_t, 
 	nsvr_region_unknown = 0,
 	nsvr_region_torso = 50000,
 	nsvr_region_torso_front = 100000,
@@ -279,4 +279,5 @@ enum class SubRegionId {
 
 
 
-};
+)
+
