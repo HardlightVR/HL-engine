@@ -2,30 +2,6 @@
    "name":"Hardlight MKIII Haptic Suit",
    "manifest-version":1,
    "concept":"suit",
-
-   "body_graph" : [
-
-
-   ],
-
-   
-   "static_nodes":[  
-      {  
-         "type" : "haptic",
-         "name":"Chest Left DRV",
-         "id" : 1,
-         "region":"chest_left",
-         "capabilities":[  
-           "preset", "buffered", "dynamic"
-         ]
-      },
-      {
-         "type" : "tracker",
-         "name" : "Chest BNO IMU",
-         "id":5,
-         "region": "chest"
-      }
-
-   ]
+   "static_nodes" : []
 }
 

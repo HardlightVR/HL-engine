@@ -173,22 +173,22 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 
 	bodygraph_region chestActuator;
 	chestActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_highest, nsvr_bodypart_rotation_front - 10)
+		.setLocation(nsvr_bodypart_torso, nsvr_location_highest, 350)
 		.setDimensions(6, 8);
 
 	bodygraph_region upperAbActuator;
 	upperAbActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1, nsvr_bodypart_rotation_front - 10)
+		.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1, 350)
 		.setDimensions(6, 4);
 
 	bodygraph_region midAbActuator;
 	midAbActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_middle, nsvr_bodypart_rotation_front - 10)
+		.setLocation(nsvr_bodypart_torso, nsvr_location_middle, 350)
 		.setDimensions(6, 4);
 
 	bodygraph_region lowerAbActuator;
 	lowerAbActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, nsvr_bodypart_rotation_front - 10)
+		.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, 350)
 		.setDimensions(6, 4);
 
 	bodygraph_region shoulderActuator;
@@ -208,7 +208,7 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 
 	bodygraph_region backActuator;
 	backActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, nsvr_bodypart_rotation_back)
+		.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, nsvr_bodypart_rotation_back + 5)
 		.setDimensions(6, 4);
 
 
@@ -230,10 +230,10 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 	upperAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1, nsvr_bodypart_rotation_front + 10);
 	midAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle, nsvr_bodypart_rotation_front + 10);
 	lowerAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, nsvr_bodypart_rotation_front + 10);
-	shoulderActuator.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_highest, nsvr_bodypart_rotation_back);
-	upperArmActuator.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_middle, nsvr_bodypart_rotation_back);
-	forearmActuator.setLocation(nsvr_bodypart_forearm_left, nsvr_location_middle, nsvr_bodypart_rotation_back);
-	backActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, nsvr_bodypart_rotation_back);
+	shoulderActuator.setLocation(nsvr_bodypart_upperarm_right, nsvr_location_highest, nsvr_bodypart_rotation_back);
+	upperArmActuator.setLocation(nsvr_bodypart_upperarm_right, nsvr_location_middle, nsvr_bodypart_rotation_back);
+	forearmActuator.setLocation(nsvr_bodypart_forearm_right, nsvr_location_middle, nsvr_bodypart_rotation_back);
+	backActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, nsvr_bodypart_rotation_back - 5);
 
 	//Create the right half of the body
 	nsvr_bodygraph_createnode_absolute(g, "Chest_Right", chestActuator.region);

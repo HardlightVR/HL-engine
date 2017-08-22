@@ -309,9 +309,9 @@ extern "C" {
 
 
 	typedef enum nsvr_bodypart_rotation {
-		nsvr_bodypart_rotation_back = -180,
+		nsvr_bodypart_rotation_back = 180,
 		nsvr_bodypart_rotation_front = 0,
-		nsvr_bodypart_rotation_left = -90,
+		nsvr_bodypart_rotation_left = 270,
 		nsvr_bodypart_rotation_right = 90
 		 
 	} nsvr_bodypart_rotation;

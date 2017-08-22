@@ -26,7 +26,7 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 	}
 
 
-
+	BodyGraph test;
 	
 }
 
@@ -162,7 +162,7 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 			////
 
 			nsvr_waveform wave{};
-			wave.repetitions = (std::size_t) simple.duration() / 0.25;
+			wave.repetitions = static_cast<std::size_t>(simple.duration() / 0.25f);
 			wave.strength = simple.strength();
 			wave.waveform_id = static_cast<nsvr_default_waveform>(simple.effect());
 			for (const auto& device : m_hapticDevices) {
