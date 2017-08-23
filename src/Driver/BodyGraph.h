@@ -10,15 +10,16 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <bitset>
 struct NamedRegion {
 	nsvr_bodypart bodypart;
-	SubRegionId subregion;
+	SubRegionAllocation subregion;
 	double segmentMin_offset;
 	double segmentMax_offset;
 	double rotationMin_radians;
 	double rotationMax_radians;
-	NamedRegion() : subregion(SubRegionId::nsvr_region_unknown) {}
-	NamedRegion(SubRegionId id, nsvr_bodypart b, double segmentMin_offset, double segmentMax_offset, double rotationMin_degrees, double rotationMax_degrees)
+	NamedRegion() : subregion(SubRegionAllocation::reserved_block_1) {}
+	NamedRegion(SubRegionAllocation id, nsvr_bodypart b, double segmentMin_offset, double segmentMax_offset, double rotationMin_degrees, double rotationMax_degrees)
 		: subregion(id)
 		, bodypart(b)
 		, segmentMin_offset(segmentMin_offset)
@@ -58,7 +59,75 @@ struct NamedRegion {
 	
 		
 	}
-	
+	static bool contains(SubRegionAllocation parentS, SubRegionAllocation childS, uint64_t* mag_difference) {
+		
+		if (parentS == childS) {
+			return true;
+		}
+		uint64_t parent = static_cast<uint64_t>(parentS);
+		uint64_t child = static_cast<uint64_t>(childS);
+			
+		uint64_t child_copy = child;
+		uint64_t child_highbit = 0;
+
+		while (child_copy >>= 1) {
+			child_highbit++;
+		}
+
+		child_highbit -= 1;
+
+		uint64_t parent_copy = parent;
+		uint64_t parent_highbit = 0;
+
+		while (parent_copy >>= 1) {
+			parent_highbit++;
+		}
+
+		parent_highbit -= 1;
+
+
+		if (child_highbit > parent_highbit) {
+			return false;
+		}
+
+		*mag_difference = parent_highbit - child_highbit;
+
+		const uint64_t block_size = uint64_t(1) << uint64_t(parent_highbit);
+		uint64_t lower_bound = parent;
+		uint64_t upper_bound = parent + block_size;
+		return lower_bound < child && child <= upper_bound;
+		
+
+		//it is a child if:
+		//1) it is the same or lower magnitude
+		// AND 
+		// 2) parent < child <= parent + blocksize
+		
+		
+		// 3) OR they are the same
+
+
+
+		
+		
+	}
+	static bool contains(SubRegionAllocation parentS, SubRegionAllocation childS) {
+		uint64_t throw_away;
+		return contains(parentS, childS, &throw_away);
+	}
+	bool contains_subregion(SubRegionAllocation address, SubRegionAllocation* lowestAlloc) const{
+		for (const auto& child : children) {
+			if (child.contains_subregion(address, lowestAlloc)) {
+				return true;
+			}
+		}
+		uint64_t mag_dif;
+		if (contains(this->subregion, address, &mag_dif)) {
+			*lowestAlloc = this->subregion;
+			return true;
+		}
+		return false;
+	}
 	bool contains(double segment_offset, double rotation_degrees) const {
 		double normalized_degrees = 0;
 		if (rotation_degrees < 0) { 
@@ -70,10 +139,8 @@ struct NamedRegion {
 		return (segment_offset >= segmentMin_offset && segment_offset <= segmentMax_offset 
 			&& between(normalized_radians, this->rotationMin_radians, this->rotationMax_radians));
 	}
-	bool search(double r, double s, SubRegionId* region)const {
-		if (this->subregion == 121000) {
-			int z = 12;
-		}
+	bool search(double r, double s, SubRegionAllocation* region)const {
+		
 		for (const auto& child : children) {
 			if (child.search(r, s, region)) {
 				return true;
@@ -111,33 +178,8 @@ struct SubRegion {
 		real_segment_length(seg_length) {}
 
 	std::vector<SubRegion> children;
-	bool contains(double parallel, double rotation) {
-		return (parallel >= parallelMin && parallel <= parallelMax) &&
-			(rotation >= rotationMin && rotation <= rotationMax);
-	}
-
-	bool search(double parallel, double rotation, SubRegionId* result) {
-		for (auto& child : children) {
-			//	std::cout << "		Searching child " << (+child.region)._to_string() << '\n';
-			if (child.search(parallel, rotation, result)) {
-				//	std::cout << "		Yup, it contained it\n";
-				return true;
-			}
-		}
-
-		if (contains(parallel, rotation)) {
-			//std::cout << "		I contain it!\n";
-
-			//todo: return something actually useful
-			*result = SubRegionId::nsvr_region_unknown;
-			return true;
-		}
-		else {
-			//std::cout << "		Nope, no result\n";
-
-			return false;
-		}
-	}
+	
+	
 };
 struct Bodypart {
 	nsvr_bodypart bodypart;
@@ -151,6 +193,7 @@ struct Bodypart {
 };
 
 class BodyGraph {
+	struct NodeData;
 public:
 	BodyGraph();
 	int CreateNode(const char* name, nsvr_bodygraph_region* pose);
@@ -158,18 +201,20 @@ public:
 	void Associate(const char * node, uint64_t device_id);
 	void Unassociate(const char * node, uint64_t device_id);
 	void ClearAssociations(uint64_t device_id);
+	boost::optional<SubRegionAllocation> GetBestMatchingSubregion(SubRegionAllocation id);
+	std::vector<uint64_t> GetDevicesForSubregion(SubRegionAllocation id);
 private:
 	
-	boost::optional<SubRegionId> findRegion(nsvr_bodypart bodypart, double r, double s);
+	boost::optional<SubRegionAllocation> findRegion(nsvr_bodypart bodypart, double r, double s);
 	
 	struct NodeData {
 		std::string name;
 		nsvr_bodygraph_region region;
-		NamedRegion foundRegion;
+		SubRegionAllocation mostSpecificRegion;
 		std::vector<uint64_t> m_assocDevices;
-		NodeData() {}
-		NodeData(std::string name, nsvr_bodygraph_region region, NamedRegion namedRegion) :
-			name(name), region(region), foundRegion(namedRegion) {}
+		NodeData() : mostSpecificRegion(SubRegionAllocation::reserved_block_1){}
+		NodeData(std::string name, nsvr_bodygraph_region region, SubRegionAllocation namedRegion) :
+			name(name), region(region), mostSpecificRegion(namedRegion) {}
 		void addDevice(uint64_t id);
 		void removeDevice(uint64_t id);
 	};

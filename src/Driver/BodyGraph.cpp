@@ -62,6 +62,13 @@ BodyGraph::BodyGraph()
 	Bodypart hips{ nsvr_bodypart_hips, 12.11 };
 	m_bodyparts[nsvr_bodypart_hips] = hips;
 
+	assert(!NamedRegion::contains(SubRegionAllocation::reserved_block_2, SubRegionAllocation::foot_left));
+	assert(!NamedRegion::contains(SubRegionAllocation::foot_left, SubRegionAllocation(uint64_t(SubRegionAllocation::foot_left) >> 1)));
+	assert(NamedRegion::contains(SubRegionAllocation::foot_left, SubRegionAllocation(uint64_t(SubRegionAllocation::foot_left) + 50)));
+	assert(NamedRegion::contains(SubRegionAllocation::foot_left, SubRegionAllocation(uint64_t(SubRegionAllocation::foot_left) + 500000)));
+
+	
+
 
 	assert(NamedRegion::between_deg(0, 350 , 10));
 	assert(NamedRegion::between_deg(359, 350, 10));
@@ -73,55 +80,65 @@ BodyGraph::BodyGraph()
 	assert(!NamedRegion::between_deg(359, 10, 270));
 	assert(!NamedRegion::between_deg(360, 10, 270));
 
+	//todo: fix the SubRegionAllocations to be more specific
 	m_namedRegions[nsvr_bodypart_torso].children = {
-		NamedRegion(SubRegionId::nsvr_region_chest_front_left, nsvr_bodypart_torso, .75, 1.0, 350, 0),
-		NamedRegion(SubRegionId::nsvr_region_ab_upper_left, nsvr_bodypart_torso, 0.50, 0.75, 350, 0),
-		NamedRegion(SubRegionId::nsvr_region_ab_middle_left, nsvr_bodypart_torso, 0.25, 0.50, 350, 0),
-		NamedRegion(SubRegionId::nsvr_region_ab_lower_left, nsvr_bodypart_torso, 0.0, 0.25, 350, 0),
-		NamedRegion(SubRegionId::nsvr_region_torso_back_left, nsvr_bodypart_torso, 0.0, 1.0, 180, 270),
+		//chest
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, .75, 1.0, 350, 0),
+		//upper ab
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.50, 0.75, 350, 0),
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.25, 0.50, 350, 0),
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 0.25, 350, 0),
+		//back
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 1.0, 180, 270),
 
-		NamedRegion(SubRegionId::nsvr_region_chest_front_right, nsvr_bodypart_torso, .75, 1.0, 0, 10),
-		NamedRegion(SubRegionId::nsvr_region_ab_upper_right, nsvr_bodypart_torso, 0.50, 0.75, 0, 10),
-		NamedRegion(SubRegionId::nsvr_region_ab_middle_right, nsvr_bodypart_torso, 0.25, 0.50, 0, 10),
-		NamedRegion(SubRegionId::nsvr_region_ab_lower_right, nsvr_bodypart_torso, 0.0, 0.25, 0, 10),
-		NamedRegion(SubRegionId::nsvr_region_torso_back_right, nsvr_bodypart_torso, 0.0, 1.0, 90, 180)
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, .75, 1.0, 0, 10),
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.50, 0.75, 0, 10),
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.25, 0.50, 0, 10),
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 0.25, 0, 10),
+		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 1.0, 90, 180)
 	};
 
 	m_namedRegions[nsvr_bodypart_upperarm_left].children = {
-		NamedRegion(SubRegionId::nsvr_region_shoulder_left, nsvr_bodypart_upperarm_left, 0.90, 1.0, 0, 360),
-		NamedRegion(SubRegionId::nsvr_region_upper_arm_left, nsvr_bodypart_upperarm_left, 0.0, 0.90, 0, 360)
+		NamedRegion(SubRegionAllocation::arm_left, nsvr_bodypart_upperarm_left, 0.90, 1.0, 0, 360),
+		NamedRegion(SubRegionAllocation::arm_left, nsvr_bodypart_upperarm_left, 0.0, 0.90, 0, 360)
 	};
 	m_namedRegions[nsvr_bodypart_upperarm_right].children = {
-		NamedRegion(SubRegionId::nsvr_region_shoulder_right, nsvr_bodypart_upperarm_right, 0.90, 1.0, 0, 360),
-		NamedRegion(SubRegionId::nsvr_region_upper_arm_right, nsvr_bodypart_upperarm_right, 0.0, 0.90, 0, 360)
+		//shoulder
+		NamedRegion(SubRegionAllocation::arm_right, nsvr_bodypart_upperarm_right, 0.90, 1.0, 0, 360),
+		//upper arm
+		NamedRegion(SubRegionAllocation::arm_right, nsvr_bodypart_upperarm_right, 0.0, 0.90, 0, 360)
 	};
 
 
 	m_namedRegions[nsvr_bodypart_forearm_left].children = {
-		NamedRegion(SubRegionId::nsvr_region_lower_arm_left, nsvr_bodypart_forearm_left, 0.0, 1.0, 0, 360)
+		NamedRegion(SubRegionAllocation::arm_left, nsvr_bodypart_forearm_left, 0.0, 1.0, 0, 360)
 	};
 
 	m_namedRegions[nsvr_bodypart_forearm_right].children = {
-		NamedRegion(SubRegionId::nsvr_region_lower_arm_right, nsvr_bodypart_forearm_right, 0.0, 1.0, 0, 360)
+		NamedRegion(SubRegionAllocation::arm_right, nsvr_bodypart_forearm_right, 0.0, 1.0, 0, 360)
 	};
 }
+
 
 
 int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 {
 	boost::add_vertex(name, m_nodes);
-	NamedRegion id{ SubRegionId::nsvr_region_unknown, nsvr_bodypart_unknown, 0,0,0,0 };
+	SubRegionAllocation id = SubRegionAllocation::reserved_block_1;
 	
 	std::cout << "[" << name << "] Searching for bodypart=" << pose->bodypart << ", " << pose->rotation << "\n";
 
 	if (auto region = findRegion(pose->bodypart, pose->segment_ratio, pose->rotation)) {
 		//id = *region;
-		std::cout << "	Found a valid region: " << (+*region)._to_string() << "\n";
+		//std::cout << "	Found a valid region: " << (+*region)._to_string() << "\n";
+		id = *region;
+		//todo: fix for subregion alloc
 
 	}
 	else {
 		std::cout << "	Didn't find any regions matching that.\n";
 	}
+	//todo: fix for subregion alloc
 	m_nodes[name] = NodeData( name, *pose, id);
 
 
@@ -147,10 +164,10 @@ void BodyGraph::Unassociate(const char * node, uint64_t device_id)
 	m_nodes[node].removeDevice(device_id);
 }
 
-boost::optional<SubRegionId> BodyGraph::findRegion(nsvr_bodypart bodypart, double r, double s)
+boost::optional<SubRegionAllocation> BodyGraph::findRegion(nsvr_bodypart bodypart, double r, double s)
 {
 	const auto& region = m_namedRegions[bodypart];
-	SubRegionId id = SubRegionId::nsvr_region_unknown;
+	SubRegionAllocation id;
 	if (region.search(r, s, &id)) {
 		return id;
 	}
@@ -165,7 +182,56 @@ void BodyGraph::ClearAssociations(uint64_t device_id)
 	}
 }
 
+/*
 
+TO process a haptic request for a named, specific region
+find the devices associated with the "best match" to that region
+send the request to those devices
+
+TO find the "best match" of a region
+search the m_namedRegions hashtable for a NamedRegion where region.contains(subregion)
+return that subregion
+
+TO perform region.contains(subregion)
+check if any child regions contain the region
+if so, recurse
+
+if contains(subregion)
+return this subregion id;
+
+
+
+*/
+
+boost::optional<SubRegionAllocation> BodyGraph::GetBestMatchingSubregion(SubRegionAllocation id)
+{
+	for (const auto& thing : m_namedRegions) {
+		SubRegionAllocation lowestValidAlloc;
+		if (thing.second.contains_subregion(id, &lowestValidAlloc)) {
+			return lowestValidAlloc;
+		}
+	}
+
+	return boost::none;
+}
+
+std::vector<uint64_t> BodyGraph::GetDevicesForSubregion(SubRegionAllocation id)
+{
+	std::vector<std::pair<uint64_t, NodeData*>> candidates;
+	BGL_FORALL_VERTICES_T(v, m_nodes, LabeledGraph) {
+		uint64_t mag;
+		if (NamedRegion::contains(m_nodes.graph()[v].mostSpecificRegion, id, &mag)) {
+			candidates.emplace_back(mag, &m_nodes.graph()[v]);
+		}
+	}
+
+	if (candidates.empty()) {
+		std::vector<uint64_t>{};
+	}
+	auto result = std::max_element(candidates.begin(), candidates.end(), 
+		[](const std::pair<uint64_t, NodeData*>& pair_a, const std::pair<uint64_t, NodeData*>& pair_b) {return pair_a.first < pair_b.first; });
+	return result->second->m_assocDevices;
+}
 
 void BodyGraph::NodeData::addDevice(uint64_t id)
 {

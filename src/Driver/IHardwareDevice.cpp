@@ -26,7 +26,6 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 	}
 
 
-	BodyGraph test;
 	
 }
 
@@ -305,6 +304,7 @@ void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
 	if (b != nullptr) {
 		BodyGraph graph;
 		b->submit_setup(reinterpret_cast<nsvr_bodygraph*>(&graph));
+		auto ptr = graph.GetDevicesForSubregion(SubRegionAllocation::arm_left);
 
 	}
 	for (auto& node : m_hapticDevices) {
