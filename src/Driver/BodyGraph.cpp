@@ -5,6 +5,14 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <cmath>
+
+double to_radians(double degrees) {
+	return (degrees * M_PI) / 180.0;
+}
+double to_degrees(double radians)
+{
+	return (radians * 180.0) / M_PI;
+}
 const segment_range segment_range::full = { 0, 1 };
 const segment_range segment_range::lower_half = { 0, 0.5 };
 const segment_range segment_range::upper_half = { 0.5, 1.0 };
@@ -39,15 +47,16 @@ BodyGraph::BodyGraph()
 		subregion(identifier_torso_right, segment_range::full, angle_range::right_half)
 	});
 
-	auto result = entire_torso.find_best_match(0.9, 130);
-	auto result2 = entire_torso.find_best_match(0.9, 330);
+
 
 	auto upper_arm_left =
 		subregion(identifier_upper_arm_left, segment_range::full, angle_range::full, {
-
+			subregion(identifier_shoulder_left, segment_range{0.8, 1.0}, angle_range::full)
 		});
 	auto upper_arm_right =
-		subregion(identifier_upper_arm_right, segment_range::full, angle_range::full);
+		subregion(identifier_upper_arm_right, segment_range::full, angle_range::full, {
+			subregion(identifier_shoulder_right, segment_range::full, angle_range:: full)
+		});
 
 	auto lower_arm_left =
 		subregion(identifier_lower_arm_left, segment_range::full, angle_range::full);
@@ -55,78 +64,43 @@ BodyGraph::BodyGraph()
 	auto lower_arm_right =
 		subregion(identifier_lower_arm_right, segment_range::full, angle_range::full);
 	
-	Bodypart torso(nsvr_bodypart_torso, 51.9, entire_torso);
-	m_bodyparts[nsvr_bodypart_torso] = torso;
+	auto upper_leg_left =
+		subregion(identifier_upper_leg_left, segment_range::full, angle_range::full);
 
+	auto lower_leg_left =
+		subregion(identifier_lower_leg_left, segment_range::full, angle_range::full);
+	
+	auto upper_leg_right =
+		subregion(identifier_upper_leg_right, segment_range::full, angle_range::full);
 
-	Bodypart upperArmLeft{ nsvr_bodypart_upperarm_left , 29.41, upper_arm_left};
-	m_bodyparts[nsvr_bodypart_upperarm_left] = upperArmLeft;
+	auto lower_leg_right =
+		subregion(identifier_lower_leg_right, segment_range::full, angle_range::full);
+	
+	auto head =
+		subregion(identifier_head, segment_range::full, angle_range::full);
+	
+	m_bodyparts.emplace(nsvr_bodypart_head, Bodypart(nsvr_bodypart_head, 19.03, head));
 
+	m_bodyparts.emplace(nsvr_bodypart_torso, Bodypart(nsvr_bodypart_torso, 51.9, entire_torso));
 
-	Bodypart lowerArmLeft{ nsvr_bodypart_forearm_left, 27.68, lower_arm_left };
-	m_bodyparts[nsvr_bodypart_forearm_left] = lowerArmLeft;
+	m_bodyparts.emplace(nsvr_bodypart_upperarm_left, Bodypart( nsvr_bodypart_upperarm_left , 29.41, upper_arm_left ));
 
+	m_bodyparts.emplace(nsvr_bodypart_forearm_left, Bodypart ( nsvr_bodypart_forearm_left, 27.68, lower_arm_left ));
 
-	Bodypart upperArmRight{ nsvr_bodypart_upperarm_right, 29.41, upper_arm_right };
-	m_bodyparts[nsvr_bodypart_upperarm_right] = upperArmRight;
+	m_bodyparts.emplace(nsvr_bodypart_upperarm_right, Bodypart( nsvr_bodypart_upperarm_right, 29.41, upper_arm_right ));
 
-	Bodypart lowerArmRight{ nsvr_bodypart_forearm_right, 27.68, lower_arm_right };
-	m_bodyparts[nsvr_bodypart_forearm_right] = lowerArmLeft;
+	m_bodyparts.emplace(nsvr_bodypart_forearm_right, Bodypart(nsvr_bodypart_forearm_right, 27.68, lower_arm_right));
 
+	m_bodyparts.emplace(nsvr_bodypart_forearm_right, Bodypart(nsvr_bodypart_forearm_right, 27.68, lower_arm_right));
 
-//	Bodypart upperLegLeft{ nsvr_bodypart_upperleg_left, 43.25 };
-//	m_bodyparts[nsvr_bodypart_upperleg_left] = upperLegLeft;
-//
-//	Bodypart lowerLegLeft{ nsvr_bodypart_lowerleg_left, 43.25 };
-//	m_bodyparts[nsvr_bodypart_lowerleg_left] = lowerLegLeft;
-//
-//	Bodypart torso{ nsvr_bodypart_torso, 51.9 };
-//
-//	m_bodyparts[nsvr_bodypart_torso] = torso;
-//
-//	Bodypart head{ nsvr_bodypart_head, 19.03 };
-//	m_bodyparts[nsvr_bodypart_head] = head;
-//
-//	Bodypart hips{ nsvr_bodypart_hips, 12.11 };
-//	m_bodyparts[nsvr_bodypart_hips] = hips;
-//
-//
-//	m_namedRegions[nsvr_bodypart_torso].children = {
-//		//chest
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, .75, 1.0, 350, 0),
-//		//upper ab
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.50, 0.75, 350, 0),
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.25, 0.50, 350, 0),
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 0.25, 350, 0),
-//		//back
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 1.0, 180, 270),
-//
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, .75, 1.0, 0, 10),
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.50, 0.75, 0, 10),
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.25, 0.50, 0, 10),
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 0.25, 0, 10),
-//		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 1.0, 90, 180)
-//	};
-//
-//	m_namedRegions[nsvr_bodypart_upperarm_left].children = {
-//		NamedRegion(SubRegionAllocation::arm_left, nsvr_bodypart_upperarm_left, 0.90, 1.0, 0, 360),
-//		NamedRegion(SubRegionAllocation::arm_left, nsvr_bodypart_upperarm_left, 0.0, 0.90, 0, 360)
-//	};
-//	m_namedRegions[nsvr_bodypart_upperarm_right].children = {
-//		//shoulder
-//		NamedRegion(SubRegionAllocation::arm_right, nsvr_bodypart_upperarm_right, 0.90, 1.0, 0, 360),
-//		//upper arm
-//		NamedRegion(SubRegionAllocation::arm_right, nsvr_bodypart_upperarm_right, 0.0, 0.90, 0, 360)
-//	};
-//
-//
-//	m_namedRegions[nsvr_bodypart_forearm_left].children = {
-//		NamedRegion(SubRegionAllocation::arm_left, nsvr_bodypart_forearm_left, 0.0, 1.0, 0, 360)
-//	};
-//
-//	m_namedRegions[nsvr_bodypart_forearm_right].children = {
-//		NamedRegion(SubRegionAllocation::arm_right, nsvr_bodypart_forearm_right, 0.0, 1.0, 0, 360)
-//	};
+	m_bodyparts.emplace(nsvr_bodypart_lowerleg_left, Bodypart(nsvr_bodypart_lowerleg_left, 43.25, lower_leg_left));
+
+	m_bodyparts.emplace(nsvr_bodypart_upperleg_left, Bodypart(nsvr_bodypart_upperleg_left, 43.25, upper_leg_left));
+
+	m_bodyparts.emplace(nsvr_bodypart_lowerleg_right, Bodypart(nsvr_bodypart_lowerleg_right, 43.25, lower_leg_right));
+
+	m_bodyparts.emplace(nsvr_bodypart_upperleg_right, Bodypart(nsvr_bodypart_upperleg_right, 43.25, upper_leg_right));
+
 }
 
 

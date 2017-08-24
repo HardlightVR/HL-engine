@@ -13,7 +13,7 @@
 #include <bitset>
 
 
-enum placeholder {
+enum named_region {
 	identifier_unknown,
 	identifier_body,
 	identifier_torso,
@@ -34,7 +34,15 @@ enum placeholder {
 	identifier_upper_arm_left,
 	identifier_lower_arm_left,
 	identifier_upper_arm_right,
-	identifier_lower_arm_right
+	identifier_lower_arm_right,
+
+	identifier_shoulder_left,
+	identifier_shoulder_right,
+	identifier_upper_leg_left,
+	identifier_lower_leg_left,
+	identifier_upper_leg_right,
+	identifier_lower_leg_right,
+	identifier_head
 };
 
 struct segment_range {
@@ -43,14 +51,12 @@ struct segment_range {
 	static const segment_range full;
 	static const segment_range lower_half;
 	static const segment_range upper_half;
-
 };
 
 
 struct angle_range {
 	double min;
 	double max;
-
 	static const angle_range full;
 	static const angle_range left_half;
 	static const angle_range right_half;
@@ -60,111 +66,137 @@ struct angle_range {
 
 
 struct cartesian_barycenter {
-	double x_radial;
-	double y;
-	double z_height;
+	double x; //forward-back
+	double y; //left-right
+	double z; //height
 };
 
 double distance(double x, double y, double z, double x2, double y2, double z2);
+double to_radians(double degrees);
+double to_degrees(double radians);
 
 struct subregion {
-	placeholder p;
+	named_region region;
 	segment_range seg;
 	angle_range ang;
 	cartesian_barycenter coords;
 	std::vector<subregion> children;
 
-	subregion() : p(placeholder::identifier_unknown), seg{ 0, 0 }, ang{ 0,0 }, coords{ 0,0,0 }, children{} {}
-	subregion(placeholder p, segment_range s, angle_range a, std::vector<subregion> c = std::vector<subregion>{}) :
-		p(p), seg(s), ang(a), children(c) {
+	subregion() 
+		: region(named_region::identifier_unknown)
+		, seg{ 0, 0 }
+		, ang{ 0,0 }
+		, coords{ 0, 0, 0 }
+		, children{} {}
 
+	subregion(named_region region, segment_range segment_offset, angle_range angle_range, std::vector<subregion> child_regions = std::vector<subregion>{}) 
+		: region(region)
+		, seg(segment_offset)
+		, ang(angle_range)
+		, children(child_regions) {
 
+		calculateCoordinates();
 
-		double alpha_rad = to_rad(angular_distance(ang.min, ang.max) / 2.0);
+	}
+
+	void calculateCoordinates()
+	{
+		//https://en.wikipedia.org/wiki/List_of_centroids
+		//Circular segment
+		//The goal here is to calculate the barycenter of each of our pie slices
+		//In hopes that doing a distance search from hardware-vendor-specified-point to the closest barycenter
+		//will yield the closest region.
+
+		//Unknown if this is true. It seems to work. 
+
+		double alpha_rad = to_radians(angular_distance(ang.min, ang.max) / 2.0);
+
+		//centroid calculation
 		double initial_x = (2.0 * std::sin(alpha_rad)) / (3 * std::abs(alpha_rad));
 		double initial_y = 0;
 
-		double dist_from_0 = 0 - angular_average(ang.min, ang.max);
-		double dist_from_360 = 360 - angular_average(ang.min, ang.max);
+		//Since the circular segment may be rotated, we need to fix that. So we see how close it is from 0 and 360 (which are the same - forward)
+		//and then correct by that angle.
+		double dist_from_0 = 0 - average(ang.min, ang.max);
+		double dist_from_360 = 360 - average(ang.min, ang.max);
 
-		double angular_offset_from_0 = 0;
+		double angular_offset = 0;
 		if (abs(dist_from_360) > abs(dist_from_0)) {
-			angular_offset_from_0 = to_rad(dist_from_0);
+			angular_offset = to_radians(dist_from_0);
 		}
 		else {
-			angular_offset_from_0 = to_rad(dist_from_360);
+			angular_offset = to_radians(dist_from_360);
 		}
 
-		double x_rot = std::cos(angular_offset_from_0) * initial_x;
-		double y_rot = std::sin(angular_offset_from_0) * initial_x;
+		//standard equations to rotate a point about a circle
+		double x_rot = std::cos(angular_offset) * initial_x;
+		double y_rot = std::sin(angular_offset) * initial_x;
 
-		coords.z_height = 0.5 * (s.max + s.min);
-		coords.x_radial = x_rot;
+		//center of Z is just the midpoint
+		coords.z = 0.5 * (seg.max + seg.min);
+
+		coords.x = x_rot;
 		coords.y = y_rot;
 	}
 
-	static double to_rad(double degrees) {
-		return (degrees * M_PI) / 180.0;
+
+	static double average(double min, double max) {
+		return (min + max) / 2.0;
 	}
-	static double angular_average(double min, double max) {
-		double avg = (min + max) / 2.0;
-		return avg;
-	}
+
 	static double angular_distance(double min, double max) {
-		double dif = max - min;
-		
-		return dif;
+		return max - min;
 	}
 
-
-	static bool between_deg(double value_deg, double min_deg, double max_deg) {
-
-	
+	static bool is_between_deg(double value_deg, double min_deg, double max_deg) {
 		if (min_deg < max_deg) {
-		
+			//pie slice
 			return (min_deg <= value_deg && value_deg <= max_deg);
 		}
 		else {
+			//you cut a pie slice, and they took the pie 
+			//- Palmer
 			return !(min_deg <= value_deg && value_deg <= max_deg);
 		}
-
-
 	}
+
 	bool contains(double segment_ratio, double angle_degrees) const {
 		return
 			(seg.min <= segment_ratio && segment_ratio <= seg.max) &&
-			(between_deg(angle_degrees, ang.min, ang.max));
+			(is_between_deg(angle_degrees, ang.min, ang.max));
 	}
 
 	double get_distance(double segment_ratio, double angle_degrees) const {
-		double x = std::cos(to_rad(angle_degrees));
-		double y = -std::sin(to_rad(angle_degrees));
+		double x = std::cos(to_radians(angle_degrees));
+		//our Y axis is swapped in relation to a normal circle's. Our Y goes negative where it goes positive. Could correct this.
+		double y = -std::sin(to_radians(angle_degrees));
 		double z = segment_ratio;
 
-		return distance(coords.x_radial, coords.y, coords.z_height, x, y, z);
+		return distance(coords.x, coords.y, coords.z, x, y, z);
 	}
 
-	using DistanceToRegion = std::pair<double, placeholder>;
+	using DistanceToRegion = std::pair<double, named_region>;
+
 	DistanceToRegion find_best_match(double segment_ratio, double angle_degrees) const {
 
 		if (children.empty()) {
-			return std::make_pair(get_distance(segment_ratio, angle_degrees), p);
+			return std::make_pair(get_distance(segment_ratio, angle_degrees), region);
 		}
 
  		std::vector<DistanceToRegion> candidates;
 		for (const subregion& child : children)
 		{
-			//heuristic
+			//If the child knows that it contains this point, then we should search deeper
 			if (child.contains(segment_ratio, angle_degrees)) {
 				candidates.push_back(child.find_best_match(segment_ratio, angle_degrees));
 			}
 		}
 
-		//don't bother searching the children deeper if they don't contain it
+		//But, if no children definitely contained the point, then we should just compute their distances and select the best
 		if (candidates.empty()) {
 			for (const subregion& child : children)
 			{
-				candidates.emplace_back(child.get_distance(segment_ratio, angle_degrees), child.p);
+				candidates.emplace_back(child.get_distance(segment_ratio, angle_degrees), child.region);
 			}
 		}
 
@@ -172,11 +204,16 @@ struct subregion {
 		return *best_match;
 	}
 };
+
 struct Bodypart {
 	nsvr_bodypart bodypart;
 	double real_length;
 	subregion region;
-	Bodypart() : bodypart(nsvr_bodypart_unknown), real_length(0), region() {}
+	Bodypart() 
+		: bodypart(nsvr_bodypart_unknown)
+		, real_length(0)
+		, region() {}
+	
 	Bodypart(nsvr_bodypart b, double real_length, subregion r) :
 		bodypart(b),
 		real_length(real_length),
@@ -199,21 +236,29 @@ private:
 	struct NodeData {
 		std::string name;
 		nsvr_bodygraph_region region;
-		SubRegionAllocation mostSpecificRegion;
-		std::vector<uint64_t> m_assocDevices;
-		NodeData() : mostSpecificRegion(SubRegionAllocation::reserved_block_1){}
-		NodeData(std::string name, nsvr_bodygraph_region region, SubRegionAllocation namedRegion) :
-			name(name), region(region), mostSpecificRegion(namedRegion) {}
+		named_region computed_region;
+		std::vector<uint64_t> devices;
+
+		NodeData() 
+			: name()
+			, region()
+			, computed_region(named_region::identifier_unknown) {}
+
+		NodeData(std::string name, nsvr_bodygraph_region region, named_region namedRegion) 
+			: name(name)
+			, region(region)
+			, computed_region(namedRegion) {}
+		
 		void addDevice(uint64_t id);
 		void removeDevice(uint64_t id);
 	};
+
 	using LabeledGraph = boost::labeled_graph<
 		boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, NodeData>,
 		std::string
 	>;
-	using Graph = boost::undirected_graph<NodeData>;
-	std::unordered_map<nsvr_bodypart, Bodypart> m_bodyparts;
 
+	std::unordered_map<nsvr_bodypart, Bodypart> m_bodyparts;
 
 	LabeledGraph m_nodes;
 	
