@@ -226,26 +226,51 @@ enum class Register {
 	WaveForm = 0x04
 };
 
+namespace SubRegionAllocations {
+	constexpr uint64_t NUM_FOOT_ALLOCATIONS = 4;
+	constexpr uint64_t NUM_TORSO_FRONT_ALLOCATIONS = 8;
+	constexpr uint64_t NUM_TORSO_BACK_ALLOCATIONS = 8;
+	constexpr uint64_t NUM_GROIN_ALLOCATIONS = 4;
+	constexpr uint64_t NUM_ARM_ALLOCATIONS = 4;
+	constexpr uint64_t NUM_BUTT_ALLOCATIONS = 4;
+	constexpr uint64_t NUM_HEAD_ALLOCATIONS = 32;
+	constexpr uint64_t NUM_HAND_ALLOCATIONS = 32;
+	constexpr uint64_t NUM_TORSO_FRONT_PERSIDE_ALLOCATIONS = 4;
+}
 constexpr uint64_t SUBREGION_BLOCK_SIZE = (uint64_t(1) << 56);
+constexpr uint64_t SUBREGION_BLOCK_SIZE_1 = (uint64_t(1) << 55);
 constexpr uint64_t NUM_SUBREGION_BLOCKS = 256;
-static_assert(std::numeric_limits<uint64_t>::max() >= (SUBREGION_BLOCK_SIZE * (NUM_SUBREGION_BLOCKS - 1)) + (SUBREGION_BLOCK_SIZE - 1), "Too many subregions or block size too big");
+constexpr uint64_t NUM_SUBREGION_1_BLOCKS = 2;
+constexpr static uint64_t BLOCK_SIZES[8] = { uint64_t(1) << 56, uint64_t(1) << 55, uint64_t(1) << 54,uint64_t(1) << 53,uint64_t(1) << 52,uint64_t(1) << 51,uint64_t(1) << 50,uint64_t(1) << 49 };
+static_assert(std::numeric_limits<uint64_t>::max() / SUBREGION_BLOCK_SIZE == NUM_SUBREGION_BLOCKS - 1, "Wrong math");
+static_assert(SUBREGION_BLOCK_SIZE / SUBREGION_BLOCK_SIZE_1 == NUM_SUBREGION_1_BLOCKS, "Wrong math");
+static_assert(SUBREGION_BLOCK_SIZE == SUBREGION_BLOCK_SIZE_1 *2, "Wrong math");
 
 enum class SubRegionAllocation : uint64_t {
 	reserved_block_1		= 0,
 	reserved_block_2		= 1 * SUBREGION_BLOCK_SIZE,
 	foot_left				= 2 * SUBREGION_BLOCK_SIZE,
+	placeholder_delete		= 3 * SUBREGION_BLOCK_SIZE,
 	expansion_foot_left		= 6 * SUBREGION_BLOCK_SIZE,
 	foot_right				= 9 * SUBREGION_BLOCK_SIZE,
 	expansion_foot_right	= 13 * SUBREGION_BLOCK_SIZE,
-	torso					= 16 * SUBREGION_BLOCK_SIZE,
+	torso_front				= 16 * SUBREGION_BLOCK_SIZE,
+		torso_front_left	= 16 * SUBREGION_BLOCK_SIZE + 0 * SUBREGION_BLOCK_SIZE_1,
+
 	expansion_chest			= 24 * SUBREGION_BLOCK_SIZE,
-	back					= 32 * SUBREGION_BLOCK_SIZE,
+	torso_back				= 32 * SUBREGION_BLOCK_SIZE,
 	expansion_back			= 40 * SUBREGION_BLOCK_SIZE,
 	groin					= 48 * SUBREGION_BLOCK_SIZE,
 	expansion_groin			= 52 * SUBREGION_BLOCK_SIZE,
 	butt					= 56 * SUBREGION_BLOCK_SIZE,
 	expansion_butt			= 60 * SUBREGION_BLOCK_SIZE,
 	arm_left				= 64 * SUBREGION_BLOCK_SIZE,
+		shoulder_left		= 64 * SUBREGION_BLOCK_SIZE + 0 * SUBREGION_BLOCK_SIZE_1,
+		upper_arm_left		= 64 * SUBREGION_BLOCK_SIZE + 1 * SUBREGION_BLOCK_SIZE_1,
+	arm_left_2				= 65 * SUBREGION_BLOCK_SIZE,
+	arm_left_3				= 66 * SUBREGION_BLOCK_SIZE,
+	lower_arm_left			= 66 * SUBREGION_BLOCK_SIZE,
+	arm_left_4				= 67 * SUBREGION_BLOCK_SIZE,
 	expansion_arm_left		= 68 * SUBREGION_BLOCK_SIZE,
 	arm_right				= 72 * SUBREGION_BLOCK_SIZE,
 	expansion_arm_right		= 76 * SUBREGION_BLOCK_SIZE,
@@ -254,6 +279,63 @@ enum class SubRegionAllocation : uint64_t {
 	hand_right				= 144 * SUBREGION_BLOCK_SIZE,
 	unreserved				= 176 * SUBREGION_BLOCK_SIZE
 };
+
+constexpr uint64_t getHighestAddress(SubRegionAllocation block_beginning_boundary, uint8_t depth) {
+	return static_cast<uint64_t>(block_beginning_boundary) + BLOCK_SIZES[depth] - 1;
+}
+
+constexpr uint64_t foot_left_specialaddress = getHighestAddress(SubRegionAllocation::foot_left, 0);
+static_assert(foot_left_specialaddress == 2 * SUBREGION_BLOCK_SIZE + SUBREGION_BLOCK_SIZE - 1, "math");
+static_assert(foot_left_specialaddress + 1 == static_cast<uint64_t>(SubRegionAllocation::placeholder_delete), "math");
+
+enum SubRegionGroup {
+	group_none = 0,
+	group_arm_left = 1,
+	group_arm_right = 2,
+	group_torso_front = 3,
+	group_torso_back = 4
+};
+
+struct range_definition {
+	uint64_t start_address;
+	uint8_t depth;
+	uint64_t num_blocks;
+	uint64_t last_address;
+	range_definition(SubRegionAllocation start_address, uint8_t depth, uint64_t num_blocks) :
+		start_address(static_cast<uint64_t>(start_address)),
+		depth(depth),
+		last_address(static_cast<uint64_t>(start_address) + BLOCK_SIZES[depth] - 1) {}
+	bool contains(uint64_t address) const{
+		return (start_address <= address && address <= last_address);
+	}
+};
+struct range {
+	SubRegionGroup name;
+	std::vector<range_definition> ranges;
+	range() : name(group_none), ranges() {}
+	range(SubRegionGroup groupName, std::vector<range_definition> ranges)
+		: name(groupName)
+		, ranges(std::move(ranges)) {}
+
+	bool minimum_containing_range(uint64_t address, uint64_t* outAddr) const{
+		uint64_t best_broadcast_addr = 0;
+		int best_depth = -1;
+		for (const auto& range : ranges) {
+			if (range.contains(address) && range.depth > best_depth) {
+				best_broadcast_addr = range.last_address;
+				best_depth = range.depth;
+			}
+		}
+
+		*outAddr = best_broadcast_addr;
+		return best_depth != -1;
+		
+
+	}
+};
+
+
+
 BETTER_ENUM(SubRegionId, uint64_t, 
 	nsvr_region_unknown = 0,
 	nsvr_region_torso = 500000,

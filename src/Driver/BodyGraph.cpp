@@ -4,7 +4,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-
+#include <cmath>
 
 void subdivide(SubRegion& region, std::size_t num_rings, std::size_t num_strips) {
 	const double ring_width = region.real_segment_length / num_rings;
@@ -26,17 +26,219 @@ void subdivide(SubRegion& region, std::size_t num_rings, std::size_t num_strips)
 void subdivide(Bodypart& bp, std::size_t num_rings, std::size_t num_strips) {
 	subdivide(bp.region, num_rings, num_strips);
 }
+enum placeholder {
+	identifier_unknown,
+	identifier_torso_front,
+	identifier_chest_left,
+	identifier_chest_right,
+	identifier_upper_ab_left,
+	identifier_middle_ab_left,
+	identifier_lower_ab_left,
+	identifier_torso_back,
+ identifier_torso_left ,
+ identifier_torso_right
+};
+
+struct segment_range {
+	double min;
+	double max;
+	static const segment_range full;
+	static const segment_range lower_half;
+	static const segment_range upper_half;
+
+};
+const segment_range segment_range::full = { 0, 1 };
+const segment_range segment_range::lower_half = { 0, 0.5 };
+const segment_range segment_range::upper_half = { 0.5, 1.0 };
+
+struct angle_range {
+	double min;
+	double max;
+
+	static const angle_range full;
+	static const angle_range left_half;
+	static const angle_range right_half;
+	static const angle_range front_half;
+	static const angle_range back_half;
+};
+
+const angle_range angle_range::full = { 0, 360 };
+const angle_range angle_range::left_half = { 180, 360 };
+const angle_range angle_range::right_half = { 0, 180 };
+const angle_range angle_range::front_half = { 270, 90 };
+const angle_range angle_range::back_half = { 90, 270 };
+struct cartesian_barycenter {
+	double x_radial;
+	double y;
+	double z_height;
+};
+struct subregion {
+	placeholder p;
+	segment_range seg;
+	angle_range ang;
+	cartesian_barycenter coords;
+	std::vector<subregion> children;
+	subregion(placeholder p, segment_range s, angle_range a, std::vector<subregion> c = std::vector<subregion>{}) :
+		p(p), seg(s), ang(a), children(c) {
+	
 
 
+		double alpha_rad = to_rad(angular_distance(ang.min, ang.max) / 2.0);
+		double initial_x = (2.0 * std::sin(alpha_rad)) / (3 * std::abs(alpha_rad));
+		double initial_y = 0;
+
+		double dist_from_0 = 0 - angular_average(ang.min, ang.max);
+		double dist_from_360 = 360 - angular_average(ang.min, ang.max);
+
+		double angular_offset_from_0 = 0;
+		if (abs(dist_from_360) > abs(dist_from_0)) {
+			angular_offset_from_0 = to_rad(dist_from_0);
+		}
+		else {
+			angular_offset_from_0 = to_rad(dist_from_360);
+		}
+
+		double x_rot = std::cos(angular_offset_from_0) * initial_x;
+		double y_rot = std::sin(angular_offset_from_0) * initial_x;
+
+		coords.z_height = 0.5 * (s.max + s.min);
+		coords.x_radial = x_rot;
+		coords.y = y_rot;
+	}
+	
+	static double to_rad(double degrees) {
+		return (degrees * M_PI) / 180.0;
+	}
+	static double angular_average(double min, double max) {		
+		double avg = (min + max) / 2.0;
+		return avg;
+	}
+	static double angular_distance(double min, double max) {
+		double dif = max - min;
+		while (dif < -180) dif += 360;
+		while (dif > 180) dif -= 360;
+		return dif;
+	}
+
+	
+	static bool between_deg(double value_deg, double min_deg, double max_deg) {
+	
+		
+		if (min_deg < max_deg) {
+			return (min_deg <= value_deg && value_deg <= max_deg);
+		}
+		else {
+			return !(min_deg <= value_deg && value_deg <= max_deg);
+		}
+		
+		
+	}
+	bool contains(double segment_ratio, double angle_degrees) const {
+		return 
+			(seg.min <= segment_ratio && segment_ratio <= seg.max) &&
+			(between_deg(angle_degrees, ang.min, ang.max));
+	}
+	static double distance(double x, double y, double z, double x2, double y2, double z2) {
+		return sqrt(pow((x - x2), 2) + pow((y - y2), 2) + pow((z - z2), 2));
+	}
+	double get_distance(double x, double y, double z) const {
+		return distance(x, y, z, coords.x_radial, coords.y, coords.z_height);
+	}
+	void find_best_match(double segment_ratio, double angle_degrees, placeholder* outP, double* outDist) const {
+	
+		//if have children, see if one or multiple ones contain it.
+		//if >1 contain it then resolve with a distance check
+		
+
+		double x = std::cos(to_rad(angle_degrees));
+		double y = std::sin(to_rad(angle_degrees));
+		double z = segment_ratio;
+
+		for (const subregion& child : children) {
+			placeholder best_child = placeholder::identifier_unknown;
+			double best_dist = std::numeric_limits<double>::max();
+			if (child.contains(segment_ratio, angle_degrees)) {
+				child.find_best_match(segment_ratio, angle_degrees, outP, outDist);
+				if (*outDist < best_dist) {
+					best_dist = *outDist;
+					best_child = *outP;
+				}
+			}
+			*outP = best_child;
+			*outDist = best_dist;
+		}
+
+		double myDist = get_distance(x, y, z);
+		if (myDist < *outDist) {
+			*outP = p;
+			*outDist = myDist;
+		}
+		
+		
+
+	
+
+
+
+		
+	}
+};
+
+struct describe {
+	nsvr_bodypart bodypart;
+	std::vector<subregion> children;
+
+	placeholder find_best_match(double segment_ratio, double angle_degrees) {
+		placeholder search_results = placeholder::identifier_unknown;
+		double dist = std::numeric_limits<double>::max();
+		for (const subregion& child : children) {
+			child.find_best_match(segment_ratio, angle_degrees, &search_results, &dist);
+		}
+		return search_results;
+	}
+
+};
 BodyGraph::BodyGraph()
 {
+
+
+	auto entire_torso = 
+	describe{ nsvr_bodypart_torso, {
+		subregion(identifier_torso_front, segment_range::full, angle_range::front_half, 
+			{
+				subregion(identifier_chest_left,  segment_range{0.8, 1.0}, angle_range{350, 0}),
+				subregion(identifier_upper_ab_left,  segment_range{ 0.6, 0.8 }, angle_range{ 350, 0 }),
+				subregion(identifier_middle_ab_left, segment_range{0.4, 0.6}, angle_range{350, 0}),
+				subregion(identifier_lower_ab_left,  segment_range{0.0, 0.4}, angle_range{350, 0})
+			}
+		),
+		subregion(identifier_torso_back,
+			segment_range::full,
+			angle_range::back_half
+		),
+		subregion(identifier_torso_left, 
+			segment_range::full,
+			angle_range::left_half
+		),
+		subregion(identifier_torso_right,
+			segment_range::full,
+			angle_range::right_half
+		)
+	}};
+
+	
+	auto named_results = entire_torso.find_best_match(0.5, 0);
+	auto named_results3 = entire_torso.find_best_match(0.5, 180);
+
+	auto named_results2 = entire_torso.find_best_match(0.8, 354);
+
 	Bodypart upperArmLeft{ nsvr_bodypart_upperarm_left , 29.41 };
-	subdivide(upperArmLeft, 10, 10);
+	//subdivide(upperArmLeft, 10, 10);
 	m_bodyparts[nsvr_bodypart_upperarm_left] = upperArmLeft;
 
 
 	Bodypart lowerArmLeft{ nsvr_bodypart_forearm_left, 27.68 };
-	subdivide(lowerArmLeft, 10, 10);
+	//subdivide(lowerArmLeft, 10, 10);
 	m_bodyparts[nsvr_bodypart_forearm_left] = lowerArmLeft;
 
 
@@ -53,7 +255,7 @@ BodyGraph::BodyGraph()
 		SubRegion { SubRegionId::nsvr_region_ab_middle_left , .45, .55, -75, 0, 12.3},
 		SubRegion { SubRegionId::nsvr_region_ab_lower_left, 0, .45, -75, 0, 12.3}
 	};*/
-	subdivide(torso, 20, 10);
+	//subdivide(torso, 20, 10);
 	m_bodyparts[nsvr_bodypart_torso] = torso;
 
 	Bodypart head{ nsvr_bodypart_head, 19.03 };
@@ -62,40 +264,24 @@ BodyGraph::BodyGraph()
 	Bodypart hips{ nsvr_bodypart_hips, 12.11 };
 	m_bodyparts[nsvr_bodypart_hips] = hips;
 
-	assert(!NamedRegion::contains(SubRegionAllocation::reserved_block_2, SubRegionAllocation::foot_left));
-	assert(!NamedRegion::contains(SubRegionAllocation::foot_left, SubRegionAllocation(uint64_t(SubRegionAllocation::foot_left) >> 1)));
-	assert(NamedRegion::contains(SubRegionAllocation::foot_left, SubRegionAllocation(uint64_t(SubRegionAllocation::foot_left) + 50)));
-	assert(NamedRegion::contains(SubRegionAllocation::foot_left, SubRegionAllocation(uint64_t(SubRegionAllocation::foot_left) + 500000)));
 
-	
-
-
-	assert(NamedRegion::between_deg(0, 350 , 10));
-	assert(NamedRegion::between_deg(359, 350, 10));
-	assert(NamedRegion::between_deg(180, 170, 190));
-	assert(NamedRegion::between_deg(180, 10, 270));
-	assert(!NamedRegion::between_deg(0, 10, 270));
-	assert(!NamedRegion::between_deg(5, 10, 270));
-	assert(!NamedRegion::between_deg(280, 10, 270));
-	assert(!NamedRegion::between_deg(359, 10, 270));
-	assert(!NamedRegion::between_deg(360, 10, 270));
 
 	//todo: fix the SubRegionAllocations to be more specific
 	m_namedRegions[nsvr_bodypart_torso].children = {
 		//chest
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, .75, 1.0, 350, 0),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, .75, 1.0, 350, 0),
 		//upper ab
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.50, 0.75, 350, 0),
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.25, 0.50, 350, 0),
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 0.25, 350, 0),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.50, 0.75, 350, 0),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.25, 0.50, 350, 0),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 0.25, 350, 0),
 		//back
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 1.0, 180, 270),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 1.0, 180, 270),
 
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, .75, 1.0, 0, 10),
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.50, 0.75, 0, 10),
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.25, 0.50, 0, 10),
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 0.25, 0, 10),
-		NamedRegion(SubRegionAllocation::torso, nsvr_bodypart_torso, 0.0, 1.0, 90, 180)
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, .75, 1.0, 0, 10),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.50, 0.75, 0, 10),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.25, 0.50, 0, 10),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 0.25, 0, 10),
+		NamedRegion(SubRegionAllocation::torso_front, nsvr_bodypart_torso, 0.0, 1.0, 90, 180)
 	};
 
 	m_namedRegions[nsvr_bodypart_upperarm_left].children = {

@@ -59,6 +59,46 @@ struct NamedRegion {
 	
 		
 	}
+
+	static inline bool iterate_helper(uint64_t parent, SubRegionAllocation childS, uint64_t iterations, uint64_t* mag_difference) {
+		for (uint64_t i = 0; i < iterations; i++) {
+			SubRegionAllocation sister_block = static_cast<SubRegionAllocation>(parent + (i * SUBREGION_BLOCK_SIZE));
+			if (contains(sister_block, childS, mag_difference)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	static SubRegionAllocation parent_block(SubRegionAllocation childS, uint8_t depth) {
+		uint64_t child = static_cast<uint64_t>(childS);
+		uint64_t broadcast_addr = 0;
+		
+			
+
+			//first get the closest broadcast address corresponding to the depth and the child
+			//then see if it is named
+			// if not, then get the next highest broadcast address corresponding to the depth and child
+
+			/*
+				//TO retrieve the most specific, named subregion corresponding to an arbitrary subregion:
+				//	Calculate the closest BROADCAST subregion to the  arbitrary region at depth MAX_DEPTH
+				//  Check if this subregion is named
+				//		if yes: 
+							return it;
+						else:
+							try again with MAX_DEPTH - 1
+			
+			
+			*/
+	}
+	static bool logical_contains(SubRegionAllocation parentS, SubRegionAllocation childS, uint64_t* mag_difference) {
+	
+			return false;
+		
+	
+	}
 	static bool contains(SubRegionAllocation parentS, SubRegionAllocation childS, uint64_t* mag_difference) {
 		
 		if (parentS == childS) {
@@ -113,7 +153,7 @@ struct NamedRegion {
 	}
 	static bool contains(SubRegionAllocation parentS, SubRegionAllocation childS) {
 		uint64_t throw_away;
-		return contains(parentS, childS, &throw_away);
+		return logical_contains(parentS, childS, &throw_away);
 	}
 	bool contains_subregion(SubRegionAllocation address, SubRegionAllocation* lowestAlloc) const{
 		for (const auto& child : children) {
@@ -122,7 +162,7 @@ struct NamedRegion {
 			}
 		}
 		uint64_t mag_dif;
-		if (contains(this->subregion, address, &mag_dif)) {
+		if (logical_contains(this->subregion, address, &mag_dif)) {
 			*lowestAlloc = this->subregion;
 			return true;
 		}
