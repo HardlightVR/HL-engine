@@ -11,225 +11,177 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <bitset>
-struct NamedRegion {
-	nsvr_bodypart bodypart;
-	SubRegionAllocation subregion;
-	double segmentMin_offset;
-	double segmentMax_offset;
-	double rotationMin_radians;
-	double rotationMax_radians;
-	NamedRegion() : subregion(SubRegionAllocation::reserved_block_1) {}
-	NamedRegion(SubRegionAllocation id, nsvr_bodypart b, double segmentMin_offset, double segmentMax_offset, double rotationMin_degrees, double rotationMax_degrees)
-		: subregion(id)
-		, bodypart(b)
-		, segmentMin_offset(segmentMin_offset)
-		, segmentMax_offset(segmentMax_offset)
-	{
-		assert(rotationMin_degrees >= 0);
-		assert(rotationMax_degrees <= 360);
-		assert(segmentMin_offset >= 0);
-		assert(segmentMax_offset <= 1.0);
-
-		rotationMin_radians = (rotationMin_degrees * M_PI) / 180.0;
-		rotationMax_radians = (rotationMax_degrees * M_PI) / 180.0;
-
-	}
-	static bool between_deg(double val_deg, double min_deg, double max_deg)
-	{
-		return between((val_deg* M_PI) / 180.0, (min_deg* M_PI) / 180.0,
-			(max_deg* M_PI) / 180.0);
-	}
-	static bool between(double val_radians, double min_radians, double max_radians) {
-
-		if (max_radians > min_radians) {
-			if (min_radians >= 0 && max_radians <= M_PI * 2) {
-				return (val_radians >= min_radians && val_radians <= max_radians);
-
-			}
-			else {
-				std::cout << "Inside between: value = " << val_radians << ", min = " << min_radians << ", max = " << max_radians << "\n";
-				return true;
-			}
-		}
-		else {
-			return ((val_radians >= 0 && val_radians <= max_radians) || (val_radians >= min_radians && val_radians <= M_PI * 2));
-			//crossing over 0 boundary
-		}
-
-	
-		
-	}
-
-	static inline bool iterate_helper(uint64_t parent, SubRegionAllocation childS, uint64_t iterations, uint64_t* mag_difference) {
-		for (uint64_t i = 0; i < iterations; i++) {
-			SubRegionAllocation sister_block = static_cast<SubRegionAllocation>(parent + (i * SUBREGION_BLOCK_SIZE));
-			if (contains(sister_block, childS, mag_difference)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	static SubRegionAllocation parent_block(SubRegionAllocation childS, uint8_t depth) {
-		uint64_t child = static_cast<uint64_t>(childS);
-		uint64_t broadcast_addr = 0;
-		
-			
-
-			//first get the closest broadcast address corresponding to the depth and the child
-			//then see if it is named
-			// if not, then get the next highest broadcast address corresponding to the depth and child
-
-			/*
-				//TO retrieve the most specific, named subregion corresponding to an arbitrary subregion:
-				//	Calculate the closest BROADCAST subregion to the  arbitrary region at depth MAX_DEPTH
-				//  Check if this subregion is named
-				//		if yes: 
-							return it;
-						else:
-							try again with MAX_DEPTH - 1
-			
-			
-			*/
-	}
-	static bool logical_contains(SubRegionAllocation parentS, SubRegionAllocation childS, uint64_t* mag_difference) {
-	
-			return false;
-		
-	
-	}
-	static bool contains(SubRegionAllocation parentS, SubRegionAllocation childS, uint64_t* mag_difference) {
-		
-		if (parentS == childS) {
-			return true;
-		}
-		uint64_t parent = static_cast<uint64_t>(parentS);
-		uint64_t child = static_cast<uint64_t>(childS);
-			
-		uint64_t child_copy = child;
-		uint64_t child_highbit = 0;
-
-		while (child_copy >>= 1) {
-			child_highbit++;
-		}
-
-		child_highbit -= 1;
-
-		uint64_t parent_copy = parent;
-		uint64_t parent_highbit = 0;
-
-		while (parent_copy >>= 1) {
-			parent_highbit++;
-		}
-
-		parent_highbit -= 1;
 
 
-		if (child_highbit > parent_highbit) {
-			return false;
-		}
-
-		*mag_difference = parent_highbit - child_highbit;
-
-		const uint64_t block_size = uint64_t(1) << uint64_t(parent_highbit);
-		uint64_t lower_bound = parent;
-		uint64_t upper_bound = parent + block_size;
-		return lower_bound < child && child <= upper_bound;
-		
-
-		//it is a child if:
-		//1) it is the same or lower magnitude
-		// AND 
-		// 2) parent < child <= parent + blocksize
-		
-		
-		// 3) OR they are the same
-
-
-
-		
-		
-	}
-	static bool contains(SubRegionAllocation parentS, SubRegionAllocation childS) {
-		uint64_t throw_away;
-		return logical_contains(parentS, childS, &throw_away);
-	}
-	bool contains_subregion(SubRegionAllocation address, SubRegionAllocation* lowestAlloc) const{
-		for (const auto& child : children) {
-			if (child.contains_subregion(address, lowestAlloc)) {
-				return true;
-			}
-		}
-		uint64_t mag_dif;
-		if (logical_contains(this->subregion, address, &mag_dif)) {
-			*lowestAlloc = this->subregion;
-			return true;
-		}
-		return false;
-	}
-	bool contains(double segment_offset, double rotation_degrees) const {
-		double normalized_degrees = 0;
-		if (rotation_degrees < 0) { 
-			normalized_degrees = 360 + rotation_degrees; 
-		} else { 
-			normalized_degrees = rotation_degrees;
-		}
-		double normalized_radians = (normalized_degrees * M_PI) / 180.0;
-		return (segment_offset >= segmentMin_offset && segment_offset <= segmentMax_offset 
-			&& between(normalized_radians, this->rotationMin_radians, this->rotationMax_radians));
-	}
-	bool search(double r, double s, SubRegionAllocation* region)const {
-		
-		for (const auto& child : children) {
-			if (child.search(r, s, region)) {
-				return true;
-			}
-		}
-
-		if (contains(r, s)) {
-			*region = this->subregion;
-			return true;
-		}
-
-		return false;
-	}
-	std::vector<NamedRegion> children;
+enum placeholder {
+	identifier_unknown,
+	identifier_body,
+	identifier_torso,
+	identifier_torso_front,
+	identifier_chest_left,
+	identifier_chest_right,
+	identifier_upper_ab_left,
+	identifier_middle_ab_left,
+	identifier_lower_ab_left,
+	identifier_upper_ab_right,
+	identifier_middle_ab_right,
+	identifier_lower_ab_right,
+	identifier_torso_back,
+	identifier_torso_left,
+	identifier_torso_right,
+	identifier_upper_back_left,
+	identifier_upper_back_right,
+	identifier_upper_arm_left,
+	identifier_lower_arm_left,
+	identifier_upper_arm_right,
+	identifier_lower_arm_right
 };
 
-struct SubRegion {
-	std::size_t r_coord;
-	std::size_t s_coord;
-	double parallelMin;
-	double parallelMax;
-	double rotationMin;
-	double rotationMax;
+struct segment_range {
+	double min;
+	double max;
+	static const segment_range full;
+	static const segment_range lower_half;
+	static const segment_range upper_half;
 
-	//temporary until better solution
-	double real_segment_length;
-	SubRegion() {}
-	SubRegion(std::size_t r, std::size_t s, double paraMin, double paraMax, double rotMin, double rotMax, double seg_length) :
-		r_coord(r),
-		s_coord(s),
-		parallelMin(paraMin),
-		parallelMax(paraMax),
-		rotationMin(rotMin),
-		rotationMax(rotMax),
-		real_segment_length(seg_length) {}
+};
 
-	std::vector<SubRegion> children;
+
+struct angle_range {
+	double min;
+	double max;
+
+	static const angle_range full;
+	static const angle_range left_half;
+	static const angle_range right_half;
+	static const angle_range front_half;
+	static const angle_range back_half;
+};
+
+
+struct cartesian_barycenter {
+	double x_radial;
+	double y;
+	double z_height;
+};
+
+double distance(double x, double y, double z, double x2, double y2, double z2);
+
+struct subregion {
+	placeholder p;
+	segment_range seg;
+	angle_range ang;
+	cartesian_barycenter coords;
+	std::vector<subregion> children;
+
+	subregion() : p(placeholder::identifier_unknown), seg{ 0, 0 }, ang{ 0,0 }, coords{ 0,0,0 }, children{} {}
+	subregion(placeholder p, segment_range s, angle_range a, std::vector<subregion> c = std::vector<subregion>{}) :
+		p(p), seg(s), ang(a), children(c) {
+
+
+
+		double alpha_rad = to_rad(angular_distance(ang.min, ang.max) / 2.0);
+		double initial_x = (2.0 * std::sin(alpha_rad)) / (3 * std::abs(alpha_rad));
+		double initial_y = 0;
+
+		double dist_from_0 = 0 - angular_average(ang.min, ang.max);
+		double dist_from_360 = 360 - angular_average(ang.min, ang.max);
+
+		double angular_offset_from_0 = 0;
+		if (abs(dist_from_360) > abs(dist_from_0)) {
+			angular_offset_from_0 = to_rad(dist_from_0);
+		}
+		else {
+			angular_offset_from_0 = to_rad(dist_from_360);
+		}
+
+		double x_rot = std::cos(angular_offset_from_0) * initial_x;
+		double y_rot = std::sin(angular_offset_from_0) * initial_x;
+
+		coords.z_height = 0.5 * (s.max + s.min);
+		coords.x_radial = x_rot;
+		coords.y = y_rot;
+	}
+
+	static double to_rad(double degrees) {
+		return (degrees * M_PI) / 180.0;
+	}
+	static double angular_average(double min, double max) {
+		double avg = (min + max) / 2.0;
+		return avg;
+	}
+	static double angular_distance(double min, double max) {
+		double dif = max - min;
+		
+		return dif;
+	}
+
+
+	static bool between_deg(double value_deg, double min_deg, double max_deg) {
+
 	
-	
+		if (min_deg < max_deg) {
+		
+			return (min_deg <= value_deg && value_deg <= max_deg);
+		}
+		else {
+			return !(min_deg <= value_deg && value_deg <= max_deg);
+		}
+
+
+	}
+	bool contains(double segment_ratio, double angle_degrees) const {
+		return
+			(seg.min <= segment_ratio && segment_ratio <= seg.max) &&
+			(between_deg(angle_degrees, ang.min, ang.max));
+	}
+
+	double get_distance(double segment_ratio, double angle_degrees) const {
+		double x = std::cos(to_rad(angle_degrees));
+		double y = -std::sin(to_rad(angle_degrees));
+		double z = segment_ratio;
+
+		return distance(coords.x_radial, coords.y, coords.z_height, x, y, z);
+	}
+
+	using DistanceToRegion = std::pair<double, placeholder>;
+	DistanceToRegion find_best_match(double segment_ratio, double angle_degrees) const {
+
+		if (children.empty()) {
+			return std::make_pair(get_distance(segment_ratio, angle_degrees), p);
+		}
+
+ 		std::vector<DistanceToRegion> candidates;
+		for (const subregion& child : children)
+		{
+			//heuristic
+			if (child.contains(segment_ratio, angle_degrees)) {
+				candidates.push_back(child.find_best_match(segment_ratio, angle_degrees));
+			}
+		}
+
+		//don't bother searching the children deeper if they don't contain it
+		if (candidates.empty()) {
+			for (const subregion& child : children)
+			{
+				candidates.emplace_back(child.get_distance(segment_ratio, angle_degrees), child.p);
+			}
+		}
+
+		auto best_match = std::min_element(candidates.begin(), candidates.end(), [](const auto& d1, const auto& d2) { return d1.first < d2.first; });
+		return *best_match;
+	}
 };
 struct Bodypart {
 	nsvr_bodypart bodypart;
 	double real_length;
-	SubRegion region;
-	Bodypart() {}
-	Bodypart(nsvr_bodypart b, double real_length) :
+	subregion region;
+	Bodypart() : bodypart(nsvr_bodypart_unknown), real_length(0), region() {}
+	Bodypart(nsvr_bodypart b, double real_length, subregion r) :
 		bodypart(b),
 		real_length(real_length),
-		region(0,0,0,1,0,360,0){}
+		region(r) {}
+		
 };
 
 class BodyGraph {
@@ -241,11 +193,8 @@ public:
 	void Associate(const char * node, uint64_t device_id);
 	void Unassociate(const char * node, uint64_t device_id);
 	void ClearAssociations(uint64_t device_id);
-	boost::optional<SubRegionAllocation> GetBestMatchingSubregion(SubRegionAllocation id);
-	std::vector<uint64_t> GetDevicesForSubregion(SubRegionAllocation id);
 private:
 	
-	boost::optional<SubRegionAllocation> findRegion(nsvr_bodypart bodypart, double r, double s);
 	
 	struct NodeData {
 		std::string name;
@@ -265,7 +214,6 @@ private:
 	using Graph = boost::undirected_graph<NodeData>;
 	std::unordered_map<nsvr_bodypart, Bodypart> m_bodyparts;
 
-	std::unordered_map<nsvr_bodypart, NamedRegion> m_namedRegions;
 
 	LabeledGraph m_nodes;
 	
