@@ -174,10 +174,28 @@ void HardlightDevice::RaiseDeviceDisconnectionEvent(nsvr_core* core)
 void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 {
 	nsvr_bodygraph_associate(g, "Chest_Left", m_drivers[Location::Chest_Left]->GetId());
+	nsvr_bodygraph_associate(g, "Upper_Ab_Left", m_drivers[Location::Upper_Ab_Left]->GetId());
+	nsvr_bodygraph_associate(g, "Mid_Ab_Left", m_drivers[Location::Mid_Ab_Left]->GetId());
+	nsvr_bodygraph_associate(g, "Lower_Ab_Left", m_drivers[Location::Lower_Ab_Left]->GetId());
+
+	nsvr_bodygraph_associate(g, "Shoulder_Left", m_drivers[Location::Shoulder_Left]->GetId());
+	nsvr_bodygraph_associate(g, "Upper_Arm_Left", m_drivers[Location::Upper_Arm_Left]->GetId());
+	nsvr_bodygraph_associate(g, "Lower_Arm_Left", m_drivers[Location::Forearm_Left]->GetId());
+
+	nsvr_bodygraph_associate(g, "Back_Left", m_drivers[Location::Upper_Back_Left]->GetId());
 
 
 
 	nsvr_bodygraph_associate(g, "Chest_Right", m_drivers[Location::Chest_Right]->GetId());
+	nsvr_bodygraph_associate(g, "Upper_Ab_Right", m_drivers[Location::Upper_Ab_Right]->GetId());
+	nsvr_bodygraph_associate(g, "Mid_Ab_Right", m_drivers[Location::Mid_Ab_Right]->GetId());
+	nsvr_bodygraph_associate(g, "Lower_Ab_Right", m_drivers[Location::Lower_Ab_Right]->GetId());
+
+	nsvr_bodygraph_associate(g, "Shoulder_Right", m_drivers[Location::Shoulder_Right]->GetId());
+	nsvr_bodygraph_associate(g, "Upper_Arm_Right", m_drivers[Location::Upper_Arm_Right]->GetId());
+	nsvr_bodygraph_associate(g, "Lower_Arm_Right", m_drivers[Location::Forearm_Right]->GetId());
+
+	nsvr_bodygraph_associate(g, "Back_Right", m_drivers[Location::Upper_Back_Right]->GetId());
 
 }
 

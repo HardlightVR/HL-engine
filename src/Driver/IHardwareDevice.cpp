@@ -302,13 +302,9 @@ void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
 {
 	bodygraph_api* b = m_apis->GetApi<bodygraph_api>();
 	if (b != nullptr) {
-		BodyGraph graph;
-		b->submit_setup(reinterpret_cast<nsvr_bodygraph*>(&graph));
-		//auto ptr = graph.GetDevicesForSubregion(SubRegionAllocation::arm_left);
+		
+		b->submit_setup(reinterpret_cast<nsvr_bodygraph*>(&m_graph));
 
-	}
-	for (auto& node : m_hapticDevices) {
-		body.AddNode(node->region(), node.get());
 	}
 }
 

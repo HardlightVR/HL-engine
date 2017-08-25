@@ -12,7 +12,7 @@
 #include <boost/signals2.hpp>
 #include <boost/mpl/map.hpp>
 #include <boost/mpl/pair.hpp>
-
+#include "BodyGraph.h"
 #include "Renderable.h"
 
 class PluginApis;
@@ -110,6 +110,7 @@ private:
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event);
 	
+	BodyGraph m_graph;
 
 
 };

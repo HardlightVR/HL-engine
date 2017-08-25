@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BodyGraph.h"
 #include <boost/graph/iteration_macros.hpp>
-
+#include <memory>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <cmath>
@@ -26,59 +26,69 @@ const angle_range angle_range::back_half = { 90, 270 };
 BodyGraph::BodyGraph()
 {
 
-
-	auto entire_torso = 
-	subregion(identifier_torso, segment_range::full, angle_range::full, {
-		subregion(identifier_torso_front, segment_range::full, angle_range::front_half, {
-			subregion(identifier_chest_left,  segment_range{0.8, 1.0}, angle_range{340, 360}),
-			subregion(identifier_upper_ab_left,  segment_range{ 0.6, 0.8 }, angle_range{ 340, 360 }),
-			subregion(identifier_middle_ab_left, segment_range{0.4, 0.6}, angle_range{340, 360}),
-			subregion(identifier_lower_ab_left,  segment_range{0.0, 0.4}, angle_range{340, 360}),
-			subregion(identifier_chest_right, segment_range{ 0.8, 1.0 }, angle_range{ 0, 20 }),
-			subregion(identifier_upper_ab_right, segment_range{ 0.6, 0.8 }, angle_range{ 0, 20 }),
-			subregion(identifier_middle_ab_right, segment_range{ 0.4, 0.6 }, angle_range{ 0, 20 }),
-			subregion(identifier_lower_ab_right, segment_range{ 0.0, 0.4 }, angle_range{ 0, 20 })
-		}),
-		subregion(identifier_torso_back, segment_range::full, angle_range::back_half, {
-			subregion(identifier_upper_back_left,  segment_range{ 0.5, 1.0 }, angle_range{ 180, 270 }),
-			subregion(identifier_upper_back_right,  segment_range{ 0.5, 1.0 }, angle_range{ 90, 180 })
-		}),
-		subregion(identifier_torso_left, segment_range::full, angle_range::left_half),
-		subregion(identifier_torso_right, segment_range::full, angle_range::right_half)
-	});
-
+	auto entire_torso = std::shared_ptr<subregion>(new 
+		subregion(named_region::identifier_torso, segment_range::full, angle_range::full, {
+			subregion(named_region::identifier_torso_front, segment_range::full, angle_range::front_half,{
+				subregion(named_region::identifier_chest_left,  segment_range{ 0.8, 1.0 }, angle_range{ 340, 360 }),
+				subregion(named_region::identifier_upper_ab_left,  segment_range{ 0.6, 0.8 }, angle_range{ 340, 360 }),
+				subregion(named_region::identifier_middle_ab_left, segment_range{ 0.4, 0.6 }, angle_range{ 340, 360 }),
+				subregion(named_region::identifier_lower_ab_left,  segment_range{ 0.0, 0.4 }, angle_range{ 340, 360 }),
+				subregion(named_region::identifier_chest_right, segment_range{ 0.8, 1.0 }, angle_range{ 0, 20 }),
+				subregion(named_region::identifier_upper_ab_right, segment_range{ 0.6, 0.8 }, angle_range{ 0, 20 }),
+				subregion(named_region::identifier_middle_ab_right, segment_range{ 0.4, 0.6 }, angle_range{ 0, 20 }),
+				subregion(named_region::identifier_lower_ab_right, segment_range{ 0.0, 0.4 }, angle_range{ 0, 20 })
+			}),
+			subregion(named_region::identifier_torso_back, segment_range::full, angle_range::back_half,{
+				subregion(named_region::identifier_upper_back_left,  segment_range{ 0.5, 1.0 }, angle_range{ 180, 270 }),
+				subregion(named_region::identifier_upper_back_right,  segment_range{ 0.5, 1.0 }, angle_range{ 90, 180 })
+			}),
+			subregion(named_region::identifier_torso_left, segment_range::full, angle_range::left_half),
+			subregion(named_region::identifier_torso_right, segment_range::full, angle_range::right_half)
+	}));
 
 
-	auto upper_arm_left =
-		subregion(identifier_upper_arm_left, segment_range::full, angle_range::full, {
-			subregion(identifier_shoulder_left, segment_range{0.8, 1.0}, angle_range::full)
-		});
-	auto upper_arm_right =
-		subregion(identifier_upper_arm_right, segment_range::full, angle_range::full, {
-			subregion(identifier_shoulder_right, segment_range::full, angle_range:: full)
-		});
+	auto upper_arm_left = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_upper_arm_left, segment_range::full, angle_range::full, {
+			subregion(named_region::identifier_shoulder_left, segment_range{ 0.85, 1.0 }, angle_range::full)
+		}));
 
-	auto lower_arm_left =
-		subregion(identifier_lower_arm_left, segment_range::full, angle_range::full);
 
-	auto lower_arm_right =
-		subregion(identifier_lower_arm_right, segment_range::full, angle_range::full);
+	auto upper_arm_right = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_upper_arm_right, segment_range::full, angle_range::full, {
+			subregion(named_region::identifier_shoulder_right, segment_range{ 0.85, 1.0 }, angle_range::full)
+		}));
+
+
+
+	auto lower_arm_left = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_lower_arm_left, segment_range::full, angle_range::full));
+
+
+	auto lower_arm_right = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_lower_arm_right, segment_range::full, angle_range::full));
 	
-	auto upper_leg_left =
-		subregion(identifier_upper_leg_left, segment_range::full, angle_range::full);
 
-	auto lower_leg_left =
-		subregion(identifier_lower_leg_left, segment_range::full, angle_range::full);
-	
-	auto upper_leg_right =
-		subregion(identifier_upper_leg_right, segment_range::full, angle_range::full);
+	auto upper_leg_left = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_upper_leg_left, segment_range::full, angle_range::full));
 
-	auto lower_leg_right =
-		subregion(identifier_lower_leg_right, segment_range::full, angle_range::full);
+	auto lower_leg_left = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_lower_leg_left, segment_range::full, angle_range::full));
+
+	auto upper_leg_right = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_upper_leg_right, segment_range::full, angle_range::full));
+
+	auto lower_leg_right = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_lower_leg_right, segment_range::full, angle_range::full));
+
+	auto head = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_head, segment_range::full, angle_range::full));
 	
-	auto head =
-		subregion(identifier_head, segment_range::full, angle_range::full);
-	
+	auto left_palm = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_palm_left, segment_range::full, angle_range::full));
+
+	auto right_palm = std::shared_ptr<subregion>(new
+		subregion(named_region::identifier_palm_right, segment_range::full, angle_range::full));
+
 	m_bodyparts.emplace(nsvr_bodypart_head, Bodypart(nsvr_bodypart_head, 19.03, head));
 
 	m_bodyparts.emplace(nsvr_bodypart_torso, Bodypart(nsvr_bodypart_torso, 51.9, entire_torso));
@@ -101,6 +111,14 @@ BodyGraph::BodyGraph()
 
 	m_bodyparts.emplace(nsvr_bodypart_upperleg_right, Bodypart(nsvr_bodypart_upperleg_right, 43.25, upper_leg_right));
 
+
+	m_bodyparts.emplace(nsvr_bodypart_palm_left, Bodypart(nsvr_bodypart_palm_left, 10.0, left_palm));
+	m_bodyparts.emplace(nsvr_bodypart_palm_right, Bodypart(nsvr_bodypart_palm_right, 10.0, right_palm));
+
+	for (auto& bp : m_bodyparts) {
+		bp.second.region->init_backlinks();
+	}
+
 }
 
 
@@ -108,26 +126,14 @@ BodyGraph::BodyGraph()
 int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 {
 	boost::add_vertex(name, m_nodes);
-	SubRegionAllocation id = SubRegionAllocation::reserved_block_1;
 	
-	std::cout << "[" << name << "] Searching for bodypart=" << pose->bodypart << ", " << pose->rotation << "\n";
+	named_region region = m_bodyparts[pose->bodypart].region->find_best_match(pose->segment_ratio, pose->rotation).second;
+	
+	std::cout << "[" << name << "] Registered on region "<< (+region)._to_string() << "\n";
+	
+	m_nodes[name] = NodeData( name, *pose, region);
 
-	//if (auto region = findRegion(pose->bodypart, pose->segment_ratio, pose->rotation)) {
-		//id = *region;
-		//std::cout << "	Found a valid region: " << (+*region)._to_string() << "\n";
-		//id = *region;
-		//todo: fix for subregion alloc
-
-	//}
-	//else {
-		std::cout << "	Didn't find any regions matching that.\n";
-	//}
-	//todo: fix for subregion alloc
-	m_nodes[name] = NodeData( name, *pose, id);
-
-
-
-
+	m_bodyparts[pose->bodypart].region->find(region)->devices.push_back(name);
 	return 0;
 }
 
@@ -157,41 +163,46 @@ void BodyGraph::ClearAssociations(uint64_t device_id)
 	}
 }
 
-/*
-
-TO process a haptic request for a named, specific region
-find the devices associated with the "best match" to that region
-send the request to those devices
-
-TO find the "best match" of a region
-search the m_namedRegions hashtable for a NamedRegion where region.contains(subregion)
-return that subregion
-
-TO perform region.contains(subregion)
-check if any child regions contain the region
-if so, recurse
-
-if contains(subregion)
-return this subregion id;
 
 
+std::vector<uint64_t> BodyGraph::getDevicesForNamedRegion(named_region region)
+{
+	std::vector<uint64_t> devices;
+	for (auto& bp : m_bodyparts) {
+		subregion* ptr = bp.second.region->find(region);
+		if (ptr != nullptr) {
+			while (ptr->devices.empty()) {
+				if (ptr->parent != nullptr) {
+					ptr = ptr->parent;
+				}
+				else {
+					break;
+				}
+			}
+			
+			for (const std::string& name : ptr->devices) {
+				auto found = m_nodes[name].devices;
+				devices.insert(devices.end(), found.begin(), found.end());
+			}
+		}
+	}
 
-*/
-
-
+	return devices;
+	
+}
 
 void BodyGraph::NodeData::addDevice(uint64_t id)
 {
-	auto it = std::find(m_assocDevices.begin(), m_assocDevices.end(), id);
-	if (it == m_assocDevices.end()) {
-		m_assocDevices.push_back(id);
+	auto it = std::find(devices.begin(), devices.end(), id);
+	if (it == devices.end()) {
+		devices.push_back(id);
 	}
 }
 
 void BodyGraph::NodeData::removeDevice(uint64_t id)
 {
-	auto it = std::remove(m_assocDevices.begin(), m_assocDevices.end(), id);
-	m_assocDevices.erase(it, m_assocDevices.end());
+	auto it = std::remove(devices.begin(), devices.end(), id);
+	devices.erase(it, devices.end());
 }
 
 

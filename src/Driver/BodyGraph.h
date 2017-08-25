@@ -7,13 +7,13 @@
 #include <boost/optional.hpp>
 #include "BodyRegion.h"
 #include "Enums.h"
-
+#include "better_enum.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <bitset>
 
 
-enum named_region {
+BETTER_ENUM(named_region, uint64_t,  
 	identifier_unknown,
 	identifier_body,
 	identifier_torso,
@@ -42,8 +42,10 @@ enum named_region {
 	identifier_lower_leg_left,
 	identifier_upper_leg_right,
 	identifier_lower_leg_right,
-	identifier_head
-};
+	identifier_head,
+	identifier_palm_left,
+	identifier_palm_right
+);
 
 struct segment_range {
 	double min;
@@ -75,30 +77,55 @@ double distance(double x, double y, double z, double x2, double y2, double z2);
 double to_radians(double degrees);
 double to_degrees(double radians);
 
+
+
 struct subregion {
 	named_region region;
 	segment_range seg;
 	angle_range ang;
 	cartesian_barycenter coords;
 	std::vector<subregion> children;
-
-	subregion() 
+	subregion* parent;
+	std::vector<std::string> devices;
+	subregion()
 		: region(named_region::identifier_unknown)
 		, seg{ 0, 0 }
 		, ang{ 0,0 }
 		, coords{ 0, 0, 0 }
-		, children{} {}
+		, children()
+		, devices()
+		, parent(nullptr) {}
 
-	subregion(named_region region, segment_range segment_offset, angle_range angle_range, std::vector<subregion> child_regions = std::vector<subregion>{}) 
+	subregion(named_region region, segment_range segment_offset, angle_range angle_range)
 		: region(region)
 		, seg(segment_offset)
 		, ang(angle_range)
-		, children(child_regions) {
-
+		, children()
+		, devices()
+		, parent(nullptr) {
 		calculateCoordinates();
 
 	}
 
+	subregion(named_region region, segment_range segment_offset, angle_range angle_range, std::vector<subregion> child_regions) 
+		: region(region)
+		, seg(segment_offset)
+		, ang(angle_range)
+		, children(std::move(child_regions))
+		, devices()
+		, parent(nullptr) {
+
+		calculateCoordinates();
+
+
+	}
+
+	void init_backlinks() {
+		for (subregion& child : children) {
+			child.parent = this;
+			child.init_backlinks();
+		}
+	}
 	void calculateCoordinates()
 	{
 		//https://en.wikipedia.org/wiki/List_of_centroids
@@ -177,44 +204,90 @@ struct subregion {
 
 	using DistanceToRegion = std::pair<double, named_region>;
 
+	subregion* find(named_region some_region) {
+		if (this->region == some_region) {
+			return this;
+		}
+		else {
+			for (subregion& child : children) {
+				subregion* ptr = child.find(some_region);
+				if (ptr != nullptr) {
+					return ptr;
+				}
+			}
+
+			return nullptr;
+		}
+	}
+
 	DistanceToRegion find_best_match(double segment_ratio, double angle_degrees) const {
 
+		//We're searching for the closest named region. There's two possibilities:
+		//Either this current one is the closest (case 1), or the closest is yet to be found, within the children (case 2).
+		
+		//When we declare the subregion data structure, we must make sure that each parent wholly encloses the 
+		//children regions. We want to be able to say if !parent.contains(x,y), then for each child !child.contains(x,y). 
+		
+		//Note that the inverse is not necessarily true: a parent may contain a point that none of the children contain,
+		//because we don't necessarily name all the regions inside a parent.
+		
+
+		// Case 1
+		//So: if there's no children, then there's only one possibility at this level of recursion:
+		//We're the closest.
+
+		auto my_distance_info = std::make_pair(get_distance(segment_ratio, angle_degrees), region);
+
 		if (children.empty()) {
-			return std::make_pair(get_distance(segment_ratio, angle_degrees), region);
+			return my_distance_info;
 		}
 
- 		std::vector<DistanceToRegion> candidates;
-		for (const subregion& child : children)
-		{
-			//If the child knows that it contains this point, then we should search deeper
+
+		// Case 2
+		//Well, if there are children - we have the two possibilities on the table: this one's the closest,
+		//or one of the children is, or one of the children's children.. etc.
+
+		//aka best match = min(this, best_matches(all_children))
+	
+		//Also, what if we had a heuristic that could throw away whole subtrees if 
+		//we knew they couldn't possibly contain the point? We do: .contains(x,y).
+
+		std::vector<DistanceToRegion> candidates;
+		for (const subregion& child : children) {
 			if (child.contains(segment_ratio, angle_degrees)) {
-				candidates.push_back(child.find_best_match(segment_ratio, angle_degrees));
+				auto best_child_match = child.find_best_match(segment_ratio, angle_degrees);
+				candidates.push_back(best_child_match);
 			}
-		}
-
-		//But, if no children definitely contained the point, then we should just compute their distances and select the best
-		if (candidates.empty()) {
-			for (const subregion& child : children)
-			{
+			else {
+				//We should still include this child in case it is, in fact, the closest
 				candidates.emplace_back(child.get_distance(segment_ratio, angle_degrees), child.region);
 			}
 		}
 
-		auto best_match = std::min_element(candidates.begin(), candidates.end(), [](const auto& d1, const auto& d2) { return d1.first < d2.first; });
-		return *best_match;
+
+		auto least_distance = [](const DistanceToRegion& lhs, const DistanceToRegion& rhs) {
+			return lhs.first < rhs.first;
+		};
+
+		auto best_of_children = std::min_element(candidates.begin(), candidates.end(), least_distance);
+		return std::min(my_distance_info, *best_of_children, least_distance);	
 	}
+
+
+	
 };
+
 
 struct Bodypart {
 	nsvr_bodypart bodypart;
 	double real_length;
-	subregion region;
+	std::shared_ptr<subregion> region;
 	Bodypart() 
 		: bodypart(nsvr_bodypart_unknown)
 		, real_length(0)
 		, region() {}
 	
-	Bodypart(nsvr_bodypart b, double real_length, subregion r) :
+	Bodypart(nsvr_bodypart b, double real_length, std::shared_ptr<subregion> r) :
 		bodypart(b),
 		real_length(real_length),
 		region(r) {}
@@ -230,6 +303,10 @@ public:
 	void Associate(const char * node, uint64_t device_id);
 	void Unassociate(const char * node, uint64_t device_id);
 	void ClearAssociations(uint64_t device_id);
+
+
+	std::vector<uint64_t> getDevicesForNamedRegion(named_region region);
+	//std::vector<uint64_t> getDevicesForCoordinate(double segment_ratio, double angle_degrees);
 private:
 	
 	
