@@ -147,25 +147,40 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 
 void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
-	for (uint32_t region : simple.regions()) {
 
-		//if (auto api = m_apis->GetApi<request_api>()) {
-		//	ev.handle = requestId;
-		//	api->submit_request(reinterpret_cast<nsvr_request*>(&ev));
-		//}
+	static std::unordered_map<uint32_t, named_region::_enumerated> translationFromOldPlugin = {
+		{3001, named_region::identifier_lower_arm_left },
+		{3002, named_region::identifier_upper_arm_left},
+		{5000, named_region::identifier_shoulder_left},
+		{7001, named_region::identifier_upper_back_left},
+		{1001, named_region::identifier_chest_left},
+		{2002, named_region::identifier_upper_ab_left},
+		{2003, named_region::identifier_middle_ab_left},
+		{2004, named_region::identifier_lower_ab_left},
+		{4001, named_region::identifier_lower_arm_right},
+		{4002, named_region::identifier_upper_arm_right},
+		{6000, named_region::identifier_shoulder_right},
+		{7002, named_region::identifier_upper_back_right},
+		{1002, named_region::identifier_chest_right},
+		{2006, named_region::identifier_upper_ab_right},
+		{2007, named_region::identifier_middle_ab_right},
+		{2008, named_region::identifier_lower_ab_right}
+	};
+	for (uint32_t region : simple.regions()) {
+		
+		auto real_region = translationFromOldPlugin[region];
+
+		
+		auto devices = m_graph.getDevicesForNamedRegion(real_region);
+
 
 		if (auto api = m_apis->GetApi<waveform_api>()) {
-
-			///	auto& interested = m_nodesByRegion[region];
-			/////	for (auto& node : interested) {
-			////
-
 			nsvr_waveform wave{};
 			wave.repetitions = static_cast<std::size_t>(simple.duration() / 0.25f);
 			wave.strength = simple.strength();
 			wave.waveform_id = static_cast<nsvr_default_waveform>(simple.effect());
-			for (const auto& device : m_hapticDevices) {
-				api->submit_activate(requestId, device->Id(), reinterpret_cast<nsvr_waveform*>(&wave));
+			for (const auto& device :devices) {
+				api->submit_activate(requestId, device, reinterpret_cast<nsvr_waveform*>(&wave));
 			}
 		}
 		else if (auto api = m_apis->GetApi<buffered_api>()) {
@@ -177,11 +192,8 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 
 			std::vector<double> samples(numNecessarySamples, simple.strength());
 
-			for (const auto& device : m_hapticDevices) {
-				//commented for testing purposes while we wait for high level to have better region support
-				//if (device->region() == static_cast<nsvr_region>(region)) {
-					api->submit_buffer(device->Id(), samples.data(), samples.size());
-				//}
+			for (const auto& device : devices) {
+				api->submit_buffer(device, samples.data(), samples.size());
 			}
 		
 			
