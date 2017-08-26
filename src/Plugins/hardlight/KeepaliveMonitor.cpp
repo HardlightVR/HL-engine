@@ -34,7 +34,6 @@ void KeepaliveMonitor::schedulePingTimer()
 
 void KeepaliveMonitor::doKeepAlivePing()
 {
-	BOOST_LOG_TRIVIAL(info) << "[Keepalive] Doing ping";
 	m_firmware.Ping();
 
 	scheduleResponseTimer();
@@ -50,7 +49,6 @@ void KeepaliveMonitor::scheduleResponseTimer()
 void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_received)
 {
 	if (ping_received) {
-		BOOST_LOG_TRIVIAL(info) << "[Keepalive] got response";
 
 		if (!m_isConnected) {
 			raiseReconnect();
@@ -59,7 +57,6 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_r
 
 		m_lastestPingTime = m_responseTimeout.total_milliseconds() 
 			- m_responseTimer.expires_from_now().total_milliseconds();
-		std::cout << "The ping time from send to receive was " << m_lastestPingTime << " ms\n";
 		schedulePingTimer();
 	}
 	else {

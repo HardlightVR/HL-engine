@@ -15,6 +15,7 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 	, m_apis(&capi)
 	, m_trackingDevices()
 	, m_hapticDevices()
+	, m_isBodyGraphSetup(false)
 {
 	setupSubscriptions(ev);
 	
@@ -29,9 +30,6 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 	
 }
 
-void NodalDevice::figureOutCapabilities()
-{
-}
 
 void NodalDevice::setupSubscriptions(PluginEventSource & ev)
 {
@@ -148,30 +146,13 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
 
-	static std::unordered_map<uint32_t, named_region::_enumerated> translationFromOldPlugin = {
-		{3001, named_region::identifier_lower_arm_left },
-		{3002, named_region::identifier_upper_arm_left},
-		{5000, named_region::identifier_shoulder_left},
-		{7001, named_region::identifier_upper_back_left},
-		{1001, named_region::identifier_chest_left},
-		{2002, named_region::identifier_upper_ab_left},
-		{2003, named_region::identifier_middle_ab_left},
-		{2004, named_region::identifier_lower_ab_left},
-		{4001, named_region::identifier_lower_arm_right},
-		{4002, named_region::identifier_upper_arm_right},
-		{6000, named_region::identifier_shoulder_right},
-		{7002, named_region::identifier_upper_back_right},
-		{1002, named_region::identifier_chest_right},
-		{2006, named_region::identifier_upper_ab_right},
-		{2007, named_region::identifier_middle_ab_right},
-		{2008, named_region::identifier_lower_ab_right}
-	};
-	for (uint32_t region : simple.regions()) {
+	
+	for (uint64_t region : simple.regions()) {
 		
-		auto real_region = translationFromOldPlugin[region];
+	
 
 		
-		auto devices = m_graph.getDevicesForNamedRegion(real_region);
+		auto devices = m_graph.getDevicesForNamedRegion(static_cast<subregion::shared_region>(region));
 
 
 		if (auto api = m_apis->GetApi<waveform_api>()) {
@@ -224,6 +205,22 @@ void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::Playba
 			break;
 		}
 	}
+}
+
+//returns nullptr on failure
+Node * NodalDevice::findDevice(uint64_t id)
+{
+	auto it = std::find_if(m_hapticDevices.begin(), m_hapticDevices.end(), [id](const std::unique_ptr<HapticNode>& node) {return node->id() == id; });
+	if (it != m_hapticDevices.end()) {
+		return it->get();
+	}
+
+	auto it2 = std::find_if(m_trackingDevices.begin(), m_trackingDevices.end(), [id](const std::unique_ptr<TrackingNode>& node) { return node->id() == id; });
+	if (it2 != m_trackingDevices.end()) {
+		return it2->get();
+	}
+
+	return nullptr;
 }
 
 
@@ -316,7 +313,7 @@ void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
 	if (b != nullptr) {
 		
 		b->submit_setup(reinterpret_cast<nsvr_bodygraph*>(&m_graph));
-
+		m_isBodyGraphSetup.store(true);
 	}
 }
 
@@ -329,6 +326,55 @@ void NodalDevice::teardownBodyRepresentation(HumanBodyNodes & body)
 
 
 
+
+std::vector<NodeView> NodalDevice::renderDevices()
+{
+	if (!m_isBodyGraphSetup.load()) {
+		return std::vector<NodeView>{};
+	}
+
+
+	auto devices = m_graph.getAllDevices();
+	std::vector<NodeView> fullView;
+	for (const auto& kvp : devices) {
+		NodeView view;
+		view.region = static_cast<uint64_t>(kvp.first);
+		
+		for (const auto& id : kvp.second) {
+			NodeView::SingleNode singleNode;
+			
+			Node* possibleNode = findDevice(id);
+			if (possibleNode) {
+				Renderable* possibleRenderable = dynamic_cast<Renderable*>(possibleNode);
+				if (possibleRenderable) {
+					singleNode.DisplayData = possibleRenderable->Render();
+					singleNode.Id = id;
+					singleNode.Type = possibleRenderable->Type();
+					view.nodes.push_back(singleNode);
+				}
+			}
+
+		}
+
+		fullView.push_back(view);
+
+	}
+	
+	return fullView;
+}
+
+void NodalDevice::run_update_loop_once(uint64_t dt)
+{
+	if (auto api = m_apis->GetApi<updateloop_api>()) {
+		try {
+			api->submit_update(dt);
+		}
+		catch (const std::runtime_error& err) {
+			BOOST_LOG_TRIVIAL(error) << "Runtime ERROR in plugin " << m_name << ": " << err.what();
+			//SHOULD TERMINATE THE PLUGIN AND REINSTANTIATE
+		}
+	}
+}
 
 TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
 	: Node(info)

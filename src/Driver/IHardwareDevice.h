@@ -86,6 +86,9 @@ public:
 	void setupBodyRepresentation(HumanBodyNodes&);
 	void teardownBodyRepresentation(HumanBodyNodes&);
 	
+	std::vector<NodeView> renderDevices();
+
+	void run_update_loop_once(uint64_t dt);
 private:
 	
 	HardwareDescriptor::Concept m_concept;
@@ -93,11 +96,10 @@ private:
 
 	std::vector<std::unique_ptr<HapticNode>> m_hapticDevices;
 	std::vector<std::unique_ptr<TrackingNode>> m_trackingDevices;
-	std::unordered_map<Region, std::vector<Node*>> m_nodesByRegion;
 	std::vector<uint64_t> m_knownIds;
 	PluginApis* m_apis;
 	void fetchDeviceInfo(uint64_t device_id);
-	void figureOutCapabilities();
+
 	void setupSubscriptions(PluginEventSource& ev);
 
 	void createNewDevice(const NodeDescriptor& descriptor);
@@ -110,7 +112,12 @@ private:
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event);
 	
+	Node* findDevice(uint64_t id);
 	BodyGraph m_graph;
+
+	std::atomic<bool> m_isBodyGraphSetup;
+
+	 
 
 
 };

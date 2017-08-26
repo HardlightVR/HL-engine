@@ -71,7 +71,6 @@ extern "C" {
 	NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api* api);
 
 	
-	
 	///////////////////////////
 	// Raising device events //
 	///////////////////////////
@@ -136,6 +135,15 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_device_api* api);
 	
+
+
+	typedef struct nsvr_plugin_updateloop_api {
+		typedef void(*nsvr_updateloop)(uint64_t delta_time_ms, void* cd);
+		nsvr_updateloop update_handler;
+		void* client_data;
+	} nsvr_plugin_updateloop_api;
+
+	NSVR_CORE_RETURN(int) nsvr_register_updateloop_api(nsvr_core* core, nsvr_plugin_updateloop_api* api);
 	
 	//////////////////////////
 	// Basic Implementation //
@@ -226,8 +234,9 @@ extern "C" {
 		float data_2;
 		float intensity;
 	} nsvr_sampling_sample;
+
 	typedef struct nsvr_plugin_sampling_api {
-		typedef void(*nsvr_sampling_querystate)(nsvr_region region, nsvr_sampling_sample* outSample, void* client_data);
+		typedef void(*nsvr_sampling_querystate)(uint64_t device, nsvr_sampling_sample* outSample, void* client_data);
 		nsvr_sampling_querystate query_handler;
 		void* client_data;
 	} nsvr_plugin_sampling_api;
@@ -306,53 +315,33 @@ extern "C" {
 
 	} nsvr_bodypart;
 
-
-
-	typedef enum nsvr_bodypart_rotation {
-		nsvr_bodypart_rotation_back = 180,
-		nsvr_bodypart_rotation_front = 0,
-		nsvr_bodypart_rotation_left = 270,
-		nsvr_bodypart_rotation_right = 90
-		 
-	} nsvr_bodypart_rotation;
-
-	typedef enum nsvr_region_relation {
-		nsvr_region_relation_unknown = 0,
-		nsvr_region_relation_above,
-		nsvr_region_relation_below,
-		nsvr_region_relation_left,
-		nsvr_region_relation_right
-	} nsvr_region_relation;
-
-
 	static const double nsvr_location_lowest = 0.0;
 	static const double nsvr_location_innermost = 0.0;
 	static const double nsvr_location_highest = 1.0;
 	static const double nsvr_location_outermost = 1.0;
 	static const double nsvr_location_middle = 0.5;
 
-	
-
 	typedef struct nsvr_bodygraph_region nsvr_bodygraph_region;
 	typedef struct nsvr_bodygraph nsvr_bodygraph;
+	
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_create(nsvr_bodygraph_region** region);
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_destroy(nsvr_bodygraph_region** region);
-
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setwidthcm(nsvr_bodygraph_region* region, double centimeters);
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setheightcm(nsvr_bodygraph_region* region, double centimeters);
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setboundingboxdimensions(nsvr_bodygraph_region* region, double width_cm, double height_cm);
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_absolute(nsvr_bodygraph* graph, const char* name, nsvr_bodygraph_region* region);
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB);
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setlocation(nsvr_bodygraph_region* region, nsvr_bodypart bodypart, double segment_ratio, double rotation);
+
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode(nsvr_bodygraph* graph, const char* name, nsvr_bodygraph_region* region);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB);
 
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_associate(nsvr_bodygraph* body, const char* node, uint64_t device_id);
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_unassociate(nsvr_bodygraph* body, const char* node, uint64_t device_id);
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_clearassociations(nsvr_bodygraph* body, uint64_t device_id);
+
 	typedef struct nsvr_plugin_bodygraph_api {
 		typedef void(*nsvr_bodygraph_setup)(nsvr_bodygraph* graph, void* cd);
 		nsvr_bodygraph_setup setup_handler;
 		void* client_data;
 	} nsvr_plugin_bodygraph_api;
+
 	NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core* core, nsvr_plugin_bodygraph_api* api);
 
 

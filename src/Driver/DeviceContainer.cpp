@@ -5,8 +5,10 @@
 
 void DeviceContainer::AddDevice(const HardwareDescriptor& desc, PluginApis& apis, PluginEventSource& ev)
 {
-	
+	m_deviceLock.lock();
 	m_devices.push_back(std::make_unique<NodalDevice>(desc, apis, ev));
+	m_deviceLock.unlock();
+
 	notify(m_deviceAddedSubs, m_devices.back().get());
 }
 
@@ -18,12 +20,15 @@ void DeviceContainer::RemoveDevice(const std::string & name)
 		}
 	}
 
+	m_deviceLock.lock();
 	auto rem = std::remove_if(m_devices.begin(), m_devices.end(), [&](const auto& device) { return device->name() == name; });
 	m_devices.erase(rem, m_devices.end());
+	m_deviceLock.unlock();
 }
 
 void DeviceContainer::Each(std::function<void(NodalDevice*)> forEach)
 {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
 	for (auto& ptr : m_devices) {
 		forEach(ptr.get());
 	}

@@ -201,4 +201,7 @@
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="build.licenseheader" />
+  </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@
 #include <vector>
 
 struct NodeView {
-	enum class NodeType : uint64_t {
+	enum class NodeType : uint32_t {
 		Unknown = 0,
 		Haptic = 1,
 		Led = 2,
@@ -23,7 +23,7 @@ struct NodeView {
 		Data DisplayData;
 
 	};
-	uint64_t region;
+	uint32_t region;
 
 	std::vector<SingleNode> nodes;
 };

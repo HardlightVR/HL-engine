@@ -49,7 +49,8 @@ enum class Apis {
 	RawCommand,
 	Tracking,
 	BodyGraph,
-	Waveform
+	Waveform,
+	Updateloop
 };
 
 extern const std::unordered_map<Apis, const char*> PrintableApiNames;
@@ -127,7 +128,7 @@ struct sampling_api : public plugin_api{
 		: submit_query{ api->query_handler, api->client_data } {}
 	callback<
 		nsvr_plugin_sampling_api::nsvr_sampling_querystate, 
-		nsvr_region,
+		uint64_t,
 		nsvr_sampling_sample*
 	> submit_query;
 
@@ -208,6 +209,18 @@ struct tracking_api : public plugin_api {
 	> submit_endstreaming;
 
 	static Apis getApiType() { return Apis::Tracking; }
+};
+
+struct updateloop_api : public plugin_api {
+	updateloop_api(nsvr_plugin_updateloop_api* api)
+		: submit_update{ api->update_handler, api->client_data } {}
+
+	callback<
+		nsvr_plugin_updateloop_api::nsvr_updateloop,
+		uint64_t
+	> submit_update;
+
+	static Apis getApiType() { return Apis::Updateloop; }
 };
 
 // Represents the capabilities of a particular plugin, e.g. a plugin supports

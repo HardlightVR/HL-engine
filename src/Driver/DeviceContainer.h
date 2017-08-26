@@ -3,7 +3,7 @@
 #include "IHardwareDevice.h"
 #include <unordered_map>
 
-
+#include <mutex>
 // Should break this into two interfaces: adding/removing, and the data operations
 class DeviceContainer {
 public:
@@ -27,6 +27,7 @@ private:
 	std::vector<DeviceFn> m_deviceAddedSubs;
 	std::vector<DeviceFn> m_deviceRemovedSubs;
 
+	std::mutex m_deviceLock;
 	void notify(const std::vector<DeviceFn>& devices, NodalDevice* device);
 	
 };

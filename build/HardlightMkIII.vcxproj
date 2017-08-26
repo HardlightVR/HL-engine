@@ -364,6 +364,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\RtpModel.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp" />
+    <ClCompile Include="test_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Driver.vcxproj">

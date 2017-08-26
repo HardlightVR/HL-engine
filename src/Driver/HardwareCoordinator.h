@@ -19,6 +19,7 @@ public:
 	void SetupSubscriptions(EventDispatcher& dispatcher);
 	void Cleanup();
 	void Hook_TrackingSlot(boost::signals2::signal<void(nsvr_region, nsvr_quaternion*)>& hook);
+	void runPluginUpdateLoops(uint64_t dt);
 private:
 	DriverMessenger& m_messenger;
 	DeviceContainer& m_devices;
@@ -28,7 +29,9 @@ private:
 	void hook_writeTracking(nsvr_region region, nsvr_quaternion* quat);
 
 	ScheduledEvent m_writeBodyRepresentation;
+	boost::posix_time::milliseconds m_pluginEventLoopInterval;
 
+	ScheduledEvent m_pluginEventLoop;
 	void writeBodyRepresentation();
 };
 

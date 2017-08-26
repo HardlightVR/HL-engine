@@ -12,7 +12,9 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	: m_devices(devices)
 	, m_messenger(messenger)
 	, m_bodyRepresentation{}
-	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(16))
+	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
+	, m_pluginEventLoopInterval(boost::posix_time::millisec(16))
+	, m_pluginEventLoop(io, m_pluginEventLoopInterval)
 {
 	m_devices.OnDeviceAdded([this, &body = m_bodyRepresentation](NodalDevice* device) {
 		device->setupHooks(*this);
@@ -26,6 +28,12 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });
 	m_writeBodyRepresentation.Start();
+
+	m_pluginEventLoop.SetEvent([this]() {
+		//double dt = static_cast<double>();
+		this->runPluginUpdateLoops(m_pluginEventLoopInterval.total_milliseconds());
+	});
+	m_pluginEventLoop.Start();
 }
 
 
@@ -35,6 +43,13 @@ void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(nsvr_re
 	hook.connect([this](nsvr_region r, nsvr_quaternion* q) { hook_writeTracking(r, q); });
 }
 
+void HardwareCoordinator::runPluginUpdateLoops(uint64_t dt)
+{
+	m_devices.Each([delta_time = dt](NodalDevice* device) {
+		device->run_update_loop_once(delta_time);
+	});
+}
+
 void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion * quat)
 {
 	m_messenger.WriteTracking(region, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
@@ -42,23 +57,28 @@ void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
-	auto nodeView = m_bodyRepresentation.GetNodeView();
-	
-	for (const auto& node : nodeView) {
-		for (const auto& single : node.nodes) {
-			NullSpace::SharedMemory::RegionPair pair;
-			pair.Type = static_cast<uint32_t>(single.Type);
-			pair.Region = node.region;
-			pair.Id = single.Id;
-	
-			pair.Value = NullSpace::SharedMemory::Data{ 
-				single.DisplayData.data_0, 
-				single.DisplayData.data_1, 
-				single.DisplayData.data_2,
-				single.DisplayData.intensity };
-			m_messenger.WriteBodyView(std::move(pair));
+	m_devices.Each([&messenger = m_messenger](NodalDevice* device) {
+
+		auto nodeView = device->renderDevices();
+
+		for (const auto& node : nodeView) {
+			for (const auto& single : node.nodes) {
+				NullSpace::SharedMemory::RegionPair pair;
+				pair.Type = static_cast<uint32_t>(single.Type);
+				pair.Region = node.region;
+				pair.Id = single.Id;
+
+				pair.Value = NullSpace::SharedMemory::Data{
+					single.DisplayData.data_0,
+					single.DisplayData.data_1,
+					single.DisplayData.data_2,
+					single.DisplayData.intensity };
+				messenger.WriteBodyView(std::move(pair));
+			}
 		}
-	}
+	});
+	
+	
 }
 
 

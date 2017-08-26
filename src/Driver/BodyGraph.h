@@ -1,3 +1,4 @@
+// Copyright (c) 2011 rubicon IT GmbH
 #pragma once
 #include "PluginAPI.h"
 
@@ -8,44 +9,12 @@
 #include "BodyRegion.h"
 #include "Enums.h"
 #include "better_enum.h"
+
+#include "SharedTypes.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <bitset>
 
-
-BETTER_ENUM(named_region, uint64_t,  
-	identifier_unknown,
-	identifier_body,
-	identifier_torso,
-	identifier_torso_front,
-	identifier_chest_left,
-	identifier_chest_right,
-	identifier_upper_ab_left,
-	identifier_middle_ab_left,
-	identifier_lower_ab_left,
-	identifier_upper_ab_right,
-	identifier_middle_ab_right,
-	identifier_lower_ab_right,
-	identifier_torso_back,
-	identifier_torso_left,
-	identifier_torso_right,
-	identifier_upper_back_left,
-	identifier_upper_back_right,
-	identifier_upper_arm_left,
-	identifier_lower_arm_left,
-	identifier_upper_arm_right,
-	identifier_lower_arm_right,
-
-	identifier_shoulder_left,
-	identifier_shoulder_right,
-	identifier_upper_leg_left,
-	identifier_lower_leg_left,
-	identifier_upper_leg_right,
-	identifier_lower_leg_right,
-	identifier_head,
-	identifier_palm_left,
-	identifier_palm_right
-);
 
 struct segment_range {
 	double min;
@@ -80,45 +49,19 @@ double to_degrees(double radians);
 
 
 struct subregion {
-	named_region region;
+	using shared_region = NullSpace::SharedMemory::nsvr_shared_region;
+	NullSpace::SharedMemory::nsvr_shared_region region;
 	segment_range seg;
 	angle_range ang;
 	cartesian_barycenter coords;
 	std::vector<subregion> children;
 	subregion* parent;
 	std::vector<std::string> devices;
-	subregion()
-		: region(named_region::identifier_unknown)
-		, seg{ 0, 0 }
-		, ang{ 0,0 }
-		, coords{ 0, 0, 0 }
-		, children()
-		, devices()
-		, parent(nullptr) {}
+	subregion();
 
-	subregion(named_region region, segment_range segment_offset, angle_range angle_range)
-		: region(region)
-		, seg(segment_offset)
-		, ang(angle_range)
-		, children()
-		, devices()
-		, parent(nullptr) {
-		calculateCoordinates();
+	subregion(shared_region region, segment_range segment_offset, angle_range angle_range);
 
-	}
-
-	subregion(named_region region, segment_range segment_offset, angle_range angle_range, std::vector<subregion> child_regions) 
-		: region(region)
-		, seg(segment_offset)
-		, ang(angle_range)
-		, children(std::move(child_regions))
-		, devices()
-		, parent(nullptr) {
-
-		calculateCoordinates();
-
-
-	}
+	subregion(shared_region region, segment_range segment_offset, angle_range angle_range, std::vector<subregion> child_regions);
 
 	void init_backlinks() {
 		for (subregion& child : children) {
@@ -202,9 +145,9 @@ struct subregion {
 		return distance(coords.x, coords.y, coords.z, x, y, z);
 	}
 
-	using DistanceToRegion = std::pair<double, named_region>;
+	using DistanceToRegion = std::pair<double, NullSpace::SharedMemory::nsvr_shared_region>;
 
-	subregion* find(named_region some_region) {
+	subregion* find(shared_region some_region) {
 		if (this->region == some_region) {
 			return this;
 		}
@@ -305,7 +248,10 @@ public:
 	void ClearAssociations(uint64_t device_id);
 
 
-	std::vector<uint64_t> getDevicesForNamedRegion(named_region region);
+	std::vector<uint64_t> getDevicesForNamedRegion(subregion::shared_region region);
+
+
+	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> getAllDevices();
 	//std::vector<uint64_t> getDevicesForCoordinate(double segment_ratio, double angle_degrees);
 private:
 	
@@ -313,15 +259,15 @@ private:
 	struct NodeData {
 		std::string name;
 		nsvr_bodygraph_region region;
-		named_region computed_region;
+		subregion::shared_region computed_region;
 		std::vector<uint64_t> devices;
 
 		NodeData() 
 			: name()
 			, region()
-			, computed_region(named_region::identifier_unknown) {}
+			, computed_region(subregion::shared_region::identifier_unknown) {}
 
-		NodeData(std::string name, nsvr_bodygraph_region region, named_region namedRegion) 
+		NodeData(std::string name, nsvr_bodygraph_region region, subregion::shared_region namedRegion) 
 			: name(name)
 			, region(region)
 			, computed_region(namedRegion) {}

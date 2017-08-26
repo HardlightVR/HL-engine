@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <stdint.h>
 namespace NullSpace {
 	namespace SharedMemory {
 
@@ -70,7 +70,7 @@ namespace NullSpace {
 			Intensity = 2
 		};
 		struct RegionPair {
-			using RegionType = uint64_t;
+			using RegionType = uint32_t;
 			RegionType Region;
 			uint32_t Type;
 			uint64_t Id;
@@ -83,7 +83,7 @@ namespace NullSpace {
 			return lhs.Id == rhs.Id;
 		}
 
-		enum nsvr_shared_region {
+		/*enum nsvr_shared_region {
 			nsvr_region_unknown = 0,
 
 			nsvr_region_chest = 1000,
@@ -119,6 +119,43 @@ namespace NullSpace {
 			nsvr_region_hand_right = 9000,
 			nsvr_region_leg_left = 10000,
 			nsvr_region_leg_right = 11000
+		};
+*/
+
+
+		constexpr uint64_t SUBREGION_BLOCK = 1000000;
+
+		enum class nsvr_shared_region : uint32_t {
+			identifier_unknown,
+			identifier_body = 1 * SUBREGION_BLOCK,
+			identifier_torso = 2 * SUBREGION_BLOCK,
+			identifier_torso_front = 3 * SUBREGION_BLOCK,
+			identifier_chest_left = 4 * SUBREGION_BLOCK,
+			identifier_chest_right = 5 * SUBREGION_BLOCK,
+			identifier_upper_ab_left = 6 * SUBREGION_BLOCK,
+			identifier_middle_ab_left = 7 * SUBREGION_BLOCK,
+			identifier_lower_ab_left = 8 * SUBREGION_BLOCK,
+			identifier_upper_ab_right = 9 * SUBREGION_BLOCK,
+			identifier_middle_ab_right = 10 * SUBREGION_BLOCK,
+			identifier_lower_ab_right = 11 * SUBREGION_BLOCK,
+			identifier_torso_back = 12 * SUBREGION_BLOCK,
+			identifier_torso_left = 13 * SUBREGION_BLOCK,
+			identifier_torso_right = 14 * SUBREGION_BLOCK,
+			identifier_upper_back_left = 15 * SUBREGION_BLOCK,
+			identifier_upper_back_right = 16 * SUBREGION_BLOCK,
+			identifier_upper_arm_left = 17 * SUBREGION_BLOCK,
+			identifier_lower_arm_left = 18 * SUBREGION_BLOCK,
+			identifier_upper_arm_right = 19 * SUBREGION_BLOCK,
+			identifier_lower_arm_right = 20 * SUBREGION_BLOCK,
+			identifier_shoulder_left = 21 * SUBREGION_BLOCK,
+			identifier_shoulder_right = 22 * SUBREGION_BLOCK,
+			identifier_upper_leg_left = 23 * SUBREGION_BLOCK,
+			identifier_lower_leg_left = 24 * SUBREGION_BLOCK,
+			identifier_upper_leg_right = 25 * SUBREGION_BLOCK,
+			identifier_lower_leg_right = 26 * SUBREGION_BLOCK,
+			identifier_head = 27 * SUBREGION_BLOCK,
+			identifier_palm_left = 28 * SUBREGION_BLOCK,
+			identifier_palm_right = 29 * SUBREGION_BLOCK
 		};
 
 	}

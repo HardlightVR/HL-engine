@@ -98,10 +98,7 @@ NSVR_CORE_RETURN(int) nsvr_playback_handle_getid(nsvr_playback_handle * handle, 
 	*outId = handle->id;
 	return NSVR_SUCCESS;
 }
-NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode(nsvr_bodygraph* body, const char* nodeName, nsvr_bodygraph_region* position)
-{
-	return AS_TYPE(BodyGraph, body)->CreateNode(nodeName, position);
-}
+
 
 NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB)
 {
@@ -179,11 +176,10 @@ NSVR_CORE_RETURN(int) nsvr_bodygraph_region_setboundingboxdimensions(nsvr_bodygr
 
 }
 
-NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode_absolute(nsvr_bodygraph * graph, const char * name, nsvr_bodygraph_region * region)
+NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode(nsvr_bodygraph * graph, const char * name, nsvr_bodygraph_region * region)
 {
 	return AS_TYPE(BodyGraph, graph)->CreateNode(name, region);
 }
-
 
 
 // API registration
@@ -207,7 +203,7 @@ REGISTER_API(device_api)
 
 REGISTER_API(waveform_api)
 
-
+REGISTER_API(updateloop_api)
 
 
 

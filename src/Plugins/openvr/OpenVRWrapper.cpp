@@ -6,7 +6,9 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
-OpenVRWrapper::OpenVRWrapper() : shouldShutDown{false}
+
+
+OpenVRWrapper::OpenVRWrapper() 
 {
 	vr::EVRInitError eError = vr::VRInitError_None;
 	system = vr::VR_Init(&eError, vr::VRApplication_Background);
@@ -19,17 +21,13 @@ OpenVRWrapper::OpenVRWrapper() : shouldShutDown{false}
 
 	}
 
-	eventLoop = std::thread([this]() { update(); });
 
 	
 }
 
 OpenVRWrapper::~OpenVRWrapper()
 {
-	shouldShutDown.store(true);
-	if (eventLoop.joinable()) {
-		eventLoop.join();
-	}
+	
 	if (system)
 	{
 		vr::VR_Shutdown();
@@ -80,21 +78,58 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 	nsvr_register_buffered_api(core, &buffered_api);
 
 	this->core = core;
+
+
+	nsvr_plugin_bodygraph_api bodygraph;
+	bodygraph.client_data = this;
+	bodygraph.setup_handler = [](nsvr_bodygraph* graph, void * cd) {
+		AS_TYPE(OpenVRWrapper, cd)->configureBodyGraph(graph);
+	};
+
+	nsvr_register_bodygraph_api(core, &bodygraph);
+
+
+
+	nsvr_plugin_updateloop_api update;
+	update.client_data = this;
+	update.update_handler = [](uint64_t dt, void* cd) {
+		AS_TYPE(OpenVRWrapper, cd)->update();
+	};
+	nsvr_register_updateloop_api(core, &update);
+}
+
+void OpenVRWrapper::configureBodyGraph(nsvr_bodygraph * graph)
+{
+	nsvr_bodygraph_region* controllerPalmRegion;
+	nsvr_bodygraph_region_create(&controllerPalmRegion);
+	nsvr_bodygraph_region_setboundingboxdimensions(controllerPalmRegion, 4, 4);
+
+	nsvr_bodygraph_region_setlocation(controllerPalmRegion, nsvr_bodypart_palm_left, 0.5, 0);
+	nsvr_bodygraph_createnode(graph, "Palm Left Zone", controllerPalmRegion);
+	
+	nsvr_bodygraph_region_setlocation(controllerPalmRegion, nsvr_bodypart_palm_right, 0.5, 0);
+	nsvr_bodygraph_createnode(graph, "Palm Right Zone", controllerPalmRegion);
+
+
+	nsvr_bodygraph_region_destroy(&controllerPalmRegion);
+
+	this->graph = graph;
 }
 
 void OpenVRWrapper::update()
 {
-	while (!shouldShutDown.load()) {
-		if (system) {
-			vr::VREvent_t event;
-			while (system->PollNextEvent(&event, sizeof(event))) {
-				process(event);
-			}
-
+	
+	if (system) {
+		vr::VREvent_t event;
+			
+		while (system->PollNextEvent(&event, sizeof(event))) {
+			process(event);
 		}
-		feedBufferedHaptics();
 
 	}
+	feedBufferedHaptics();
+
+	
 }
 
 void OpenVRWrapper::triggerHapticPulse(vr::TrackedDeviceIndex_t device, float strength)
@@ -122,10 +157,10 @@ void OpenVRWrapper::process(const vr::VREvent_t&  event)
 {
 	switch (event.eventType) {
 	case vr::VREvent_TrackedDeviceActivated:
-		nsvr_device_event_raise(core, nsvr_device_event_device_connected, event.trackedDeviceIndex);
+		handleDeviceActivated(event);
 		break;
 	case vr::VREvent_TrackedDeviceDeactivated:
-		nsvr_device_event_raise(core, nsvr_device_event_device_disconnected, event.trackedDeviceIndex);
+		handleDeviceDeactivated(event);
 		break;
 	default:
 		break;
@@ -151,6 +186,26 @@ void OpenVRWrapper::feedBufferedHaptics()
 			sampleTimestamps[sampleQueue.first] = std::chrono::high_resolution_clock::now();
 		}
 	}
+}
+
+void OpenVRWrapper::handleDeviceActivated(const vr::VREvent_t& event)
+{
+	nsvr_device_event_raise(core, nsvr_device_event_device_connected, event.trackedDeviceIndex);
+
+	if (event.trackedDeviceIndex == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand)) {
+		nsvr_bodygraph_clearassociations(graph, event.trackedDeviceIndex);
+		nsvr_bodygraph_associate(graph, "Palm Left Zone", event.trackedDeviceIndex);
+	}
+	else if (event.trackedDeviceIndex == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand)) {
+		nsvr_bodygraph_clearassociations(graph, event.trackedDeviceIndex);
+		nsvr_bodygraph_associate(graph, "Palm Right Zone", event.trackedDeviceIndex);
+	}
+}
+
+void OpenVRWrapper::handleDeviceDeactivated(const vr::VREvent_t& event)
+{
+	nsvr_device_event_raise(core, nsvr_device_event_device_disconnected, event.trackedDeviceIndex);
+
 }
 
 void OpenVRWrapper::enumerateDevices(nsvr_device_ids* ids)
