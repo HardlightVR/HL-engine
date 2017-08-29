@@ -138,19 +138,34 @@ struct sampling_api : public plugin_api{
 
 struct device_api : public plugin_api {
 	device_api(nsvr_plugin_device_api* api)
-		: submit_enumerateids{ api->enumerateids_handler, api->client_data }
-		, submit_getinfo{ api->getinfo_handler, api->client_data } {}
+		: submit_enumeratenodes{ api->enumeratenodes_handler, api->client_data }
+		, submit_enumeratedevices{ api->enumeratedevices_handler, api->client_data }
+		, submit_getdeviceinfo{ api->getdeviceinfo_handler, api->client_data }
+		, submit_getnodeinfo{ api->getnodeinfo_handler, api->client_data }
+	{}
 
 	callback<
-		nsvr_plugin_device_api::nsvr_device_enumerateids,
+		nsvr_plugin_device_api::nsvr_device_enumeratenodes,
+		uint32_t,
+		nsvr_node_ids*
+	> submit_enumeratenodes;
+
+	callback<
+		nsvr_plugin_device_api::nsvr_device_enumeratedevices,
 		nsvr_device_ids*
-	> submit_enumerateids;
+	> submit_enumeratedevices;
 
 	callback<
-		nsvr_plugin_device_api::nsvr_device_getinfo,
+		nsvr_plugin_device_api::nsvr_device_getdeviceinfo,
+		uint32_t,
+		nsvr_device_info*
+	> submit_getdeviceinfo;
+
+	callback<
+		nsvr_plugin_device_api::nsvr_device_getnodeinfo,
 		uint64_t,
-		nsvr_device_basic_info*
-	> submit_getinfo;
+		nsvr_node_info*
+	> submit_getnodeinfo;
 
 	static  Apis getApiType() { return Apis::Device; }
 

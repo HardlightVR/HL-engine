@@ -44,7 +44,7 @@ bool PluginManager::Reload(const std::string & name)
 
 
 bool PluginManager::linkPlugin(const std::string& name) {
-	auto instance = std::make_shared<PluginInstance>(m_io, name);
+	auto instance = std::make_shared<PluginInstance>(m_io, name, m_deviceContainer);
 	if (instance->Link()) {
 		m_plugins.insert(std::make_pair(name, instance));
 		return true;
@@ -70,8 +70,6 @@ bool PluginManager::configurePlugin(std::shared_ptr<PluginInstance>& plugin)
 
 		return false;
 	}
-
-	plugin->InstantiateDevices(m_deviceContainer);
 	return true;
 }
 

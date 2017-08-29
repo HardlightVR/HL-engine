@@ -50,14 +50,22 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 
 	nsvr_plugin_device_api devices;
 	devices.client_data = this;
-	devices.enumerateids_handler = [](nsvr_device_ids* ids, void* ud) {
+	devices.enumeratedevices_handler = [](nsvr_device_ids* ids, void* ud) {
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
 		wrapper->enumerateDevices(ids);
 	};
-
-	devices.getinfo_handler = [](uint64_t id, nsvr_device_basic_info* info, void *ud) {
+	devices.enumeratenodes_handler = [](uint32_t device_id, nsvr_node_ids* ids, void* ud) {
+		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
+		wrapper->enumerateNodesForDevice(device_id, ids);
+	};
+	devices.getdeviceinfo_handler = [](uint32_t id, nsvr_device_info* info, void *ud) {
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
 		return wrapper->getDeviceInfo(id, info);
+	};
+
+	devices.getnodeinfo_handler = [](uint64_t node_id, nsvr_node_info* info, void *ud) {
+		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
+		return wrapper->getNodeInfo(node_id, info);
 	};
 
 	nsvr_register_device_api(core, &devices);
@@ -208,23 +216,31 @@ void OpenVRWrapper::handleDeviceDeactivated(const vr::VREvent_t& event)
 
 }
 
-void OpenVRWrapper::enumerateDevices(nsvr_device_ids* ids)
+void OpenVRWrapper::enumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids)
 {
 	if (system) {
-		int index = 0;
-		for (auto i = 0; i < vr::k_unMaxTrackedDeviceCount; i++) {
-			auto deviceClass = system->GetTrackedDeviceClass(i);
-			if (deviceClass == vr::TrackedDeviceClass_Controller) {
-				ids->device_count++;
-				ids->ids[index] = i;
-				index++;
-			}
+		
+		int currentId = 0;
+		auto deviceClass = system->GetTrackedDeviceClass(device_id);
+		if (deviceClass == vr::TrackedDeviceClass_Controller) {
+			ids->ids[0] = 1;
+			ids->node_count = 1;
+
 		}
+		
 	}
 	
 }
+void OpenVRWrapper::getNodeInfo(uint64_t id, nsvr_node_info* info) {
+	if (id == 0) {
+		info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
+		info->type = nsvr_device_type_haptic;
+		std::string name("Haptic Thumbpad");
+		std::copy(name.begin(), name.end(), info->name);
 
-void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
+	} 
+}
+void OpenVRWrapper::getDeviceInfo(uint32_t id, nsvr_device_info* info)
 {
 	if (system) {
 		auto deviceClass = system->GetTrackedDeviceClass(id);
@@ -233,14 +249,12 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 				std::string name("Controller (Left Hand)");
 				std::copy(name.begin(), name.end(), info->name);
 				
-				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-				info->type = nsvr_device_type_haptic;
+				
 			}
 			else if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand)) {
 				std::string name("Controller (Right Hand)");
 				std::copy(name.begin(), name.end(), info->name);
-				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-				info->type = nsvr_device_type_haptic;
+			
 			}
 			else {
 				char manufacturerName[64];
@@ -251,8 +265,7 @@ void OpenVRWrapper::getDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 				
 				std::string name = std::string(manufacturerName) + " " + std::string(model);
 				std::copy(name.begin(), name.end(), info->name);
-				info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-				info->type = nsvr_device_type_haptic;
+				
 			}
 		}
 	}
@@ -374,4 +387,19 @@ void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_waveform* req)
 		}
 	}
 	bufferedHaptics(device, wave.data(), wave.size());
+}
+
+void OpenVRWrapper::enumerateDevices(nsvr_device_ids* ids)
+{
+	if (system) {
+		int index = 0;
+		for (auto i = 0; i < vr::k_unMaxTrackedDeviceCount; i++) {
+			auto deviceClass = system->GetTrackedDeviceClass(i);
+			if (deviceClass == vr::TrackedDeviceClass_Controller) {
+				ids->device_count++;
+				ids->ids[index] = i;
+				index++;
+			}
+		}
+	}
 }

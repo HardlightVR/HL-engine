@@ -67,14 +67,14 @@ private:
 
 
 class HumanBodyNodes;
-class DeviceSystem {
+class Device {
 public:
 	using Region = std::string;
 	using RequestId = uint64_t;
-	DeviceSystem(const HardwareDescriptor& desc, PluginApis& api, PluginEventSource& ev, uint32_t id);
+	Device(const DeviceDescriptor& desc, PluginApis& api, PluginEventSource& ev);
 
-	DeviceSystem& operator=(const DeviceSystem&) = delete;
-	DeviceSystem(const DeviceSystem&) = delete;
+	Device& operator=(const Device&) = delete;
+	Device(const Device&) = delete;
 	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
 	
 	std::string name() const;
@@ -88,25 +88,25 @@ public:
 	
 	std::vector<NodeView> renderDevices();
 
+	//todo: hmm. If each device is in the same system..we need to run it once per system
 	bool run_update_loop_once(uint64_t dt);
 
 	uint32_t id() const;
 private:
 	
-	HardwareDescriptor::Concept m_concept;
 	std::string m_name;
 
 	std::vector<std::unique_ptr<HapticNode>> m_hapticDevices;
 	std::vector<std::unique_ptr<TrackingNode>> m_trackingDevices;
 	std::vector<uint64_t> m_knownIds;
 	PluginApis* m_apis;
-	void fetchDeviceInfo(uint64_t device_id);
+	void fetchNodeInfo(uint64_t device_id);
 
 	void setupSubscriptions(PluginEventSource& ev);
 
 	void createNewNode(const NodeDescriptor& descriptor);
-	void parseDevices(const std::vector<NodeDescriptor>& descriptor);
-	void dynamicallyFetchDevices();
+	void parseNodes(const std::vector<NodeDescriptor>& descriptor);
+	void dynamicallyFetchNodes();
 
 	void handle_connect(uint64_t device_id);
 	void handle_disconnect(uint64_t device_id);

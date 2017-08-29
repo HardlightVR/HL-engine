@@ -99,37 +99,52 @@ extern "C" {
 
 	
 
-	typedef struct nsvr_device_ids {
+	typedef struct nsvr_node_ids {
 		uint64_t ids[128];
+		unsigned int node_count;
+	} nsvr_node_ids;
+
+	typedef struct nsvr_device_ids {
+		uint32_t ids[128];
 		unsigned int device_count;
 	} nsvr_device_ids;
-
-	typedef enum nsvr_device_capability {
+	typedef enum nsvr_node_capability {
 		nsvr_device_capability_none = 0,
 		nsvr_device_capability_preset = 1 << 0,
 		nsvr_device_capability_buffered = 1 << 1,
 		nsvr_device_capability_dynamic = 1 << 2
-	} nsvr_device_capability;
+	} nsvr_node_capability;
 
-	typedef enum nsvr_device_type {
+	typedef enum nsvr_node_type {
 		nsvr_device_type_unknown = 0,
 		nsvr_device_type_haptic,
 		nsvr_device_type_led
-	} nsvr_device_type;
+	} nsvr_node_type;
 
-	typedef struct nsvr_device_basic_info {
+	typedef struct nsvr_node_info {
 		uint64_t id;
 		uint32_t type;
 		uint32_t capabilities;
 		char name[512];
-	} nsvr_device_basic_info;
+	} nsvr_node_info;
 
+	typedef struct nsvr_device_info {
+		uint32_t id;
+		char name[512];
+	} nsvr_device_info;
 	typedef struct nsvr_device_request nsvr_device_request;
+
+	//question: should node IDs be unique per system?
 	typedef struct nsvr_plugin_device_api {
-		typedef void(*nsvr_device_enumerateids)(nsvr_device_ids*, void*);
-		typedef void(*nsvr_device_getinfo)(uint64_t id, nsvr_device_basic_info* info, void*);
-		nsvr_device_enumerateids enumerateids_handler;
-		nsvr_device_getinfo getinfo_handler;
+		typedef void(*nsvr_device_enumeratedevices)(nsvr_device_ids*, void*);
+		typedef void(*nsvr_device_enumeratenodes)(uint32_t device_id, nsvr_node_ids*, void*);
+		typedef void(*nsvr_device_getnodeinfo)(uint64_t node_id, nsvr_node_info* info, void*);
+		typedef void(*nsvr_device_getdeviceinfo)(uint32_t device_id, nsvr_device_info* info, void*);
+
+		nsvr_device_enumeratenodes enumeratenodes_handler;
+		nsvr_device_enumeratedevices enumeratedevices_handler;
+		nsvr_device_getdeviceinfo getdeviceinfo_handler;
+		nsvr_device_getnodeinfo getnodeinfo_handler;
 		void* client_data;
 	} nsvr_plugin_device_api;
 

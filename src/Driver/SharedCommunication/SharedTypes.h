@@ -21,21 +21,22 @@ namespace NullSpace {
 			Quaternion right_upper_arm;
 		};
 
-		enum NodeStatus { Unknown, Connected, Disconnected };
+		enum DeviceStatus { Unknown, Connected, Disconnected };
 		
 		typedef uint32_t SystemId;
 
-		constexpr int MAX_NODES_PER_SYSTEM = 32;
+		constexpr int MAX_DEVICES_PER_SYSTEM = 16;
 
-		struct NodeInfo {
-			char NodeName[128];
-			NodeStatus Status;
+	
+		struct DeviceInfo {
+			char DeviceName[128];
+			DeviceStatus Status;
 		};
 		struct SystemInfo {
 			SystemId Id; //0
 			char SystemName[128]; //Hardlight Mk III Suit
-			bool NodesFound[MAX_NODES_PER_SYSTEM] = { false };
-			NodeInfo Nodes[MAX_NODES_PER_SYSTEM];
+			bool NodesFound[MAX_DEVICES_PER_SYSTEM] = { false };
+			DeviceInfo Devices[MAX_DEVICES_PER_SYSTEM];
 		};
 		
 

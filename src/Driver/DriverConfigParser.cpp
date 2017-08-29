@@ -58,47 +58,29 @@ HardwareDescriptor DriverConfigParser::ParseConfig(const std::string & path)
 
 	descriptor.displayName = root.get("name", "unknown").asString();
 
-	Json::Value nodes = root["static_nodes"];
-	if (!nodes.isArray()) {
-		throw std::runtime_error("You must have an array of nodes!");
+	Json::Value devices = root["devices"];
+	if (!devices.isArray()) {
+		throw std::runtime_error("You must have an array of devices!");
 	}
 
-	auto size = nodes.size();
+	auto size = devices.size();
 	for (Json::ArrayIndex i = 0; i < size; i++) {
-		parseNodes(descriptor, nodes[i]);
+		parseDevice(descriptor, devices[i]);
 	}
 
 	return descriptor;
 }
 
-void DriverConfigParser::parseNodes(HardwareDescriptor& descriptor, const Json::Value& node)
+void DriverConfigParser::parseDevice(HardwareDescriptor& descriptor, const Json::Value& node)
 {
-	NodeDescriptor nodeDescriptor;
+	DeviceDescriptor nodeDescriptor;
 
 	assert(node.isObject());
 
 	nodeDescriptor.displayName = node.get("name", "unknown").asString();
-	const std::string& strRegion = node.get("region", "unknown").asString();
-//	nsvr_region parsedRegion = Locator::Translator().ToRegion(strRegion, nsvr_region::nsvr_region_unknown);
-	//if (nsvr_region_unknown == parsedRegion) {
-//		BOOST_LOG_TRIVIAL(warning) << "[ConfigParser] Device " << descriptor.displayName << " has node with malformed region: " << strRegion;
-	//}
-	//nodeDescriptor.region = parsedRegion;
-	//todo: fix
-	nodeDescriptor.nodeType = node_type_map[node.get("type", "unknown").asString()];
-	nodeDescriptor.id = node.get("id", 0).asUInt64();
-	const auto& capabilities = node["capabilities"];
 
-	if (!capabilities.isNull()) {
-		assert(capabilities.isArray());
-
-		for (const Json::Value& cap : capabilities) {
-			NodeDescriptor::Capability parsed = capability_map[cap.asString()];
-			nodeDescriptor.capabilities |= (uint32_t)parsed;
-
-		}
-	}
-	descriptor.nodes.push_back(std::move(nodeDescriptor));
+	nodeDescriptor.id = node.get("id", 0).asUInt();
+	descriptor.devices.push_back(std::move(nodeDescriptor));
 
 
 }
@@ -109,6 +91,6 @@ HardwareDescriptor::HardwareDescriptor()
 {
 }
 
-NodeDescriptor::NodeDescriptor()
+DeviceDescriptor::DeviceDescriptor()
 {
 }

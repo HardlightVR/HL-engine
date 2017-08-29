@@ -9,22 +9,21 @@
 #include "HardwareCoordinator.h"
 #include "HumanBodyNodes.h"
 #include "BodyGraph.h"
-DeviceSystem::DeviceSystem(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev, uint32_t id)
-	: m_concept(descriptor.concept)
-	, m_name(descriptor.displayName)
+Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev)
+	: m_name(descriptor.displayName)
 	, m_apis(&capi)
 	, m_trackingDevices()
 	, m_hapticDevices()
 	, m_isBodyGraphSetup(false)
-	, m_systemId(id)
+	, m_systemId(descriptor.id)
 {
 	setupSubscriptions(ev);
 	
 	if (!m_apis->Supports<device_api>()) {
-		parseDevices(descriptor.nodes);
+		//uh oh? Make it required
 	}
 	else {
-		dynamicallyFetchDevices();
+		dynamicallyFetchNodes();
 	}
 
 
@@ -32,7 +31,7 @@ DeviceSystem::DeviceSystem(const HardwareDescriptor& descriptor, PluginApis& cap
 }
 
 
-void DeviceSystem::setupSubscriptions(PluginEventSource & ev)
+void Device::setupSubscriptions(PluginEventSource & ev)
 {
 	ev.Subscribe(nsvr_device_event_device_connected, [this](uint64_t device_id) {
 		handle_connect(device_id);
@@ -43,91 +42,91 @@ void DeviceSystem::setupSubscriptions(PluginEventSource & ev)
 	});
 }
 
-void DeviceSystem::createNewNode(const NodeDescriptor& node)
+void Device::createNewNode(const NodeDescriptor& node)
 {
 	const auto& t = Locator::Translator();
 
-	if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
+	if (NodeDescriptor::NodeType::Haptic == node.type) {
 		//todo: fix
-		//BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+		//BOOST_LOG_TRIVIAL(info) << "[Device] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
 	}
-	else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
-		//BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+	else if (NodeDescriptor::NodeType::Tracker == node.type) {
+		//BOOST_LOG_TRIVIAL(info) << "[Device] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
 
 	}
 }
 
-void DeviceSystem::parseDevices(const std::vector<NodeDescriptor>& descriptor)
+void Device::parseNodes(const std::vector<NodeDescriptor>& descriptor)
 {
 	
-	BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] " << m_name << " describes " << descriptor.size() << " devices:";
+	BOOST_LOG_TRIVIAL(info) << "[Device] " << m_name << " describes " << descriptor.size() << " devices:";
 	for (const auto& node : descriptor) {
 		createNewNode(node);
 	}
 }
 
 
-void DeviceSystem::fetchDeviceInfo(uint64_t device_id) {
+void Device::fetchNodeInfo(uint64_t device_id) {
 	device_api* enumerator = m_apis->GetApi<device_api>();
-	nsvr_device_basic_info info = { 0 };
-	enumerator->submit_getinfo(device_id, &info);
+	nsvr_node_info info = { 0 };
+	enumerator->submit_getnodeinfo(device_id, &info);
 
 	NodeDescriptor desc;
 	desc.capabilities = info.capabilities;
 	desc.displayName = info.name;
 	desc.id = device_id;
-	desc.nodeType = static_cast<NodeDescriptor::NodeType>(info.type);
+	desc.type = static_cast<NodeDescriptor::NodeType>(info.type);
 
 	createNewNode(desc);
 
 }
 
-void DeviceSystem::dynamicallyFetchDevices()
+void Device::dynamicallyFetchNodes()
 {
 	device_api* enumerator = m_apis->GetApi<device_api>();
 
-	nsvr_device_ids device_ids = { 0 };
-	enumerator->submit_enumerateids(&device_ids);
+	nsvr_node_ids device_ids = { 0 };
+	enumerator->submit_enumeratenodes(id(), &device_ids);
 
-	std::vector<NodeDescriptor> nodes;
-	nodes.reserve(device_ids.device_count);
+	std::vector<NodeDescriptor> devices;
+	devices.reserve(device_ids.node_count);
 
-	for (std::size_t i = 0; i < device_ids.device_count; i++) {
-		fetchDeviceInfo(device_ids.ids[i]);
+	for (std::size_t i = 0; i < device_ids.node_count; i++) {
+		fetchNodeInfo(device_ids.ids[i]);
 	}
 }
 
 
 
-void DeviceSystem::handle_connect(uint64_t device_id)
+void Device::handle_connect(uint64_t device_id)
 {
 	if (std::find(m_knownIds.begin(), m_knownIds.end(), device_id) == m_knownIds.end()) {
-		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] A new device was connected";
+		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] A new device was connected";
 		m_knownIds.push_back(device_id);
-		fetchDeviceInfo(device_id);
+		fetchNodeInfo(device_id);
 	}
 	else {
-		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] An already known device was reconnected";
+		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] An already known device was reconnected";
 
 	}
 }
 
-void DeviceSystem::handle_disconnect(uint64_t device_id)
+void Device::handle_disconnect(uint64_t device_id)
 {
 	auto it = std::find(m_knownIds.begin(), m_knownIds.end(), device_id);
 	if (it != m_knownIds.end()) {
 		m_knownIds.erase(it);
-		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] A known device was disconnected";
+		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] A known device was disconnected";
 	}else {
-		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] An unknown device was disconnected";
+		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] An unknown device was disconnected";
 	}
 
 }
 
 
-void DeviceSystem::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
+void Device::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 {
 	switch (event.events_case()) {
 	case NullSpaceIPC::HighLevelEvent::kSimpleHaptic:
@@ -137,14 +136,14 @@ void DeviceSystem::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 		handlePlaybackEvent(event.parent_id(), event.playback_event());
 		break;
 	default:
-		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] Unrecognized request: " << event.events_case();
+		BOOST_LOG_TRIVIAL(info) << "[Device] Unrecognized request: " << event.events_case();
 		break;
 	}
 }
 
 
 
-void DeviceSystem::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
+void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
 
 	
@@ -188,7 +187,7 @@ void DeviceSystem::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::S
 
 
 
-void DeviceSystem::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event)
+void Device::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event)
 {
 		if (playback_api* api = m_apis->GetApi<playback_api>()) {
 		switch (event.command()) {
@@ -202,14 +201,14 @@ void DeviceSystem::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::Playb
 			api->submit_cancel(id);
 			break;
 		default:
-			BOOST_LOG_TRIVIAL(warning) << "[DeviceSystem] Unknown playback event: " << event.command();
+			BOOST_LOG_TRIVIAL(warning) << "[Device] Unknown playback event: " << event.command();
 			break;
 		}
 	}
 }
 
 //returns nullptr on failure
-Node * DeviceSystem::findDevice(uint64_t id)
+Node * Device::findDevice(uint64_t id)
 {
 	auto it = std::find_if(m_hapticDevices.begin(), m_hapticDevices.end(), [id](const std::unique_ptr<HapticNode>& node) {return node->id() == id; });
 	if (it != m_hapticDevices.end()) {
@@ -282,17 +281,17 @@ nsvr_region Node::region() const {
 	return m_region;
 }
 
-std::string DeviceSystem::name() const
+std::string Device::name() const
 {
 	return m_name;
 }
 
-bool DeviceSystem::hasCapability(Apis name) const
+bool Device::hasCapability(Apis name) const
 {
 	return m_apis->Supports(name);
 }
 
-void DeviceSystem::setupHooks(HardwareCoordinator & coordinator)
+void Device::setupHooks(HardwareCoordinator & coordinator)
 {
 	if (m_apis->Supports<tracking_api>()) {
 		for (auto& node : m_trackingDevices) {
@@ -301,14 +300,14 @@ void DeviceSystem::setupHooks(HardwareCoordinator & coordinator)
 	}
 }
 
-void DeviceSystem::teardownHooks() {
+void Device::teardownHooks() {
 	for (auto& node : m_trackingDevices) {
 		node->TrackingSignal.disconnect_all_slots();
 	}
 	
 }
 
-void DeviceSystem::setupBodyRepresentation(HumanBodyNodes & body)
+void Device::setupBodyRepresentation(HumanBodyNodes & body)
 {
 	bodygraph_api* b = m_apis->GetApi<bodygraph_api>();
 	if (b != nullptr) {
@@ -318,7 +317,7 @@ void DeviceSystem::setupBodyRepresentation(HumanBodyNodes & body)
 	}
 }
 
-void DeviceSystem::teardownBodyRepresentation(HumanBodyNodes & body)
+void Device::teardownBodyRepresentation(HumanBodyNodes & body)
 {
 	for (auto& node : m_hapticDevices) {
 		body.RemoveNode(node.get());
@@ -328,7 +327,7 @@ void DeviceSystem::teardownBodyRepresentation(HumanBodyNodes & body)
 
 
 
-std::vector<NodeView> DeviceSystem::renderDevices()
+std::vector<NodeView> Device::renderDevices()
 {
 	if (!m_isBodyGraphSetup.load()) {
 		return std::vector<NodeView>{};
@@ -364,7 +363,7 @@ std::vector<NodeView> DeviceSystem::renderDevices()
 	return fullView;
 }
 
-bool DeviceSystem::run_update_loop_once(uint64_t dt)
+bool Device::run_update_loop_once(uint64_t dt)
 {
 	if (auto api = m_apis->GetApi<updateloop_api>()) {
 		try {
@@ -379,7 +378,7 @@ bool DeviceSystem::run_update_loop_once(uint64_t dt)
 	return true;
 }
 
-uint32_t DeviceSystem::id() const
+uint32_t Device::id() const
 {
 	return m_systemId;
 }

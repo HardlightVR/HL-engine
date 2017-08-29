@@ -6,6 +6,14 @@
 #include <boost/variant.hpp>
 #include <unordered_set>
 
+class DeviceDescriptor {
+public:
+	DeviceDescriptor();
+	uint32_t id;
+	std::string displayName;
+
+};
+
 class NodeDescriptor {
 public:
 	enum class NodeType {
@@ -16,16 +24,15 @@ public:
 	};
 	enum class Capability {
 		Unknown = 0,
-		Preset = 1 <<0,
+		Preset = 1 << 0,
 		Buffered = 1 << 1,
 		Dynamic = 1 << 2
 	};
 
-	NodeDescriptor();
 	uint64_t id;
 	std::string displayName;
+	NodeType type;
 	uint32_t capabilities;
-	NodeType nodeType;
 };
 
 class HardwareDescriptor {
@@ -40,7 +47,7 @@ public:
 
 	std::string displayName;
 	Concept concept;
-	std::vector<NodeDescriptor> nodes;
+	std::vector<DeviceDescriptor> devices;
 	unsigned int fileVersion;
 	static std::unordered_map<std::string, HardwareDescriptor::Concept> concept_map;
 
@@ -53,9 +60,9 @@ public:
 	static HardwareDescriptor ParseConfig(const std::string& path);
 
 
-	static void parseNodes(HardwareDescriptor& descriptor, const Json::Value& nodes);
-	//static NodeDescriptor::Capability parseCapability(const std::string& param1);
-	//static NodeDescriptor::NodeType parseNodeType(const std::string& param1);
+	static void parseDevice(HardwareDescriptor& descriptor, const Json::Value& devices);
+	//static DeviceDescriptor::Capability parseCapability(const std::string& param1);
+	//static DeviceDescriptor::NodeType parseNodeType(const std::string& param1);
 
 
 	

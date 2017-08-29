@@ -5,16 +5,24 @@
 #include <iostream>
 #include "IHardwareDevice.h"
 #include "DeviceContainer.h"
-PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName) :
+PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& d) :
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
 	m_apis(),
 	m_eventHandler(io),
-	m_facade(m_apis, m_eventHandler)
+	m_facade(m_apis, m_eventHandler),
+	m_deviceContainer(d)
 	
 {
+	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [this](uint64_t device_id) {
+		m_deviceContainer.AddDevice(device_id, m_apis, m_eventHandler);
+	});
+
+	m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [this](uint64_t device_id) {
+		m_deviceContainer.RemoveDevice(device_id);
+	});
 
 }
 
@@ -45,10 +53,6 @@ bool PluginInstance::ParseManifest()
 
 }
 
-void PluginInstance::InstantiateDevices(DeviceContainer& container)
-{
-	container.AddDevice(m_descriptor, m_apis, m_eventHandler);
-}
 
 
 //Precondition: linked successfully

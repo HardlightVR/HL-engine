@@ -16,7 +16,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_pluginEventLoopInterval(boost::posix_time::millisec(16))
 	, m_pluginEventLoop(io, m_pluginEventLoopInterval)
 {
-	m_devices.OnSystemAdded([this, &body = m_bodyRepresentation](DeviceSystem* system) {
+	m_devices.OnSystemAdded([this, &body = m_bodyRepresentation](Device* system) {
 		system->setupHooks(*this);
 		system->setupBodyRepresentation(body);
 		
@@ -29,7 +29,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 	});
 
-	m_devices.OnPreSystemRemoved([this, &body = m_bodyRepresentation](DeviceSystem* system) {
+	m_devices.OnPreSystemRemoved([this, &body = m_bodyRepresentation](Device* system) {
 		system->teardownHooks();
 		system->teardownBodyRepresentation(body);
 
@@ -54,7 +54,7 @@ void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(nsvr_re
 
 void HardwareCoordinator::runPluginUpdateLoops(uint64_t dt)
 {
-	m_devices.Each([delta_time = dt](DeviceSystem* device) {
+	m_devices.Each([delta_time = dt](Device* device) {
 		device->run_update_loop_once(delta_time);
 	});
 }
@@ -66,7 +66,7 @@ void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
-	m_devices.Each([&messenger = m_messenger](DeviceSystem* device) {
+	m_devices.Each([&messenger = m_messenger](Device* device) {
 
 		auto nodeView = device->renderDevices();
 
@@ -97,13 +97,13 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	// More complex behavior later
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](DeviceSystem* device) {
+		m_devices.Each([&](Device* device) {
 			device->deliverRequest(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](DeviceSystem* device) {
+		m_devices.Each([&](Device* device) {
 			device->deliverRequest(event);
 		});
 
@@ -122,7 +122,7 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 
 void HardwareCoordinator::Cleanup()
 {
-	m_devices.Each([this](DeviceSystem* device) {
+	m_devices.Each([this](Device* device) {
 		device->teardownHooks();
 	});
 }

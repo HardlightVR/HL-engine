@@ -62,11 +62,18 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	
 	nsvr_plugin_device_api device_api;
 	device_api.client_data = this;
-	device_api.enumerateids_handler = [](nsvr_device_ids* ids, void* cd) {
-		AS_TYPE(HardlightDevice, cd)->EnumerateDeviceIds(ids);
+	device_api.enumeratenodes_handler = [](uint32_t device_id, nsvr_node_ids* ids, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->EnumerateNodesForDevice(device_id, ids);
 	};
-	device_api.getinfo_handler = [](uint64_t id, nsvr_device_basic_info* info, void* cd) {
+	device_api.enumeratedevices_handler = [](nsvr_device_ids* ids, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->EnumerateDevices(ids);
+	};
+	device_api.getdeviceinfo_handler = [](uint32_t id, nsvr_device_info* info, void* cd) {
 		AS_TYPE(HardlightDevice, cd)->GetDeviceInfo(id, info);
+	};
+
+	device_api.getnodeinfo_handler = [](uint64_t id, nsvr_node_info* info, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->GetNodeInfo(id, info);
 	};
 	nsvr_register_device_api(ctx, &device_api);
 	
@@ -122,7 +129,7 @@ int HardlightDevice::Query(uint64_t device, nsvr_sampling_sample * outState)
 
 }
 
-void HardlightDevice::EnumerateDeviceIds(nsvr_device_ids * ids)
+void HardlightDevice::EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids)
 {
 	std::vector<uint64_t> found_ids;
 	for (const auto& device : m_drivers) {
@@ -133,12 +140,16 @@ void HardlightDevice::EnumerateDeviceIds(nsvr_device_ids * ids)
 		ids->ids[i] = found_ids[i];
 	}
 
-	ids->device_count = found_ids.size();
+	ids->node_count = found_ids.size();
 }
 
-
-void HardlightDevice::GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
+void HardlightDevice::EnumerateDevices(nsvr_device_ids * ids)
 {
+	ids->device_count = 1;
+	ids->ids[0] = THIS_SUIT_ID;
+}
+
+void HardlightDevice::GetNodeInfo(uint64_t id, nsvr_node_info* info) {
 	const auto& t = Locator::Translator();
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [id = id](const auto& driver) {
 		return driver.second->GetId() == id;
@@ -152,23 +163,30 @@ void HardlightDevice::GetDeviceInfo(uint64_t id, nsvr_device_basic_info* info)
 		const auto& driver = it->second;
 		std::string outStr = "Hardlight ZoneDriver " + t.ToString(driver->GetLocation());
 		std::copy(outStr.begin(), outStr.end(), info->name);
-		
+
 	}
+}
+void HardlightDevice::GetDeviceInfo(uint32_t id, nsvr_device_info* info)
+{
+	info->id = THIS_SUIT_ID;
+	
+	std::string name("Hardlight Suit");
+	std::copy(name.begin(), name.end(), info->name);
+
 }
 
 
 void HardlightDevice::RaiseDeviceConnectionEvent(nsvr_core* core)
 {
-	for (const auto& device : m_drivers) {
-		nsvr_device_event_raise(core, nsvr_device_event_device_connected, device.second->GetId());
-	}
+		nsvr_device_event_raise(core, nsvr_device_event_device_connected, THIS_SUIT_ID);
+	
 }
 
 void HardlightDevice::RaiseDeviceDisconnectionEvent(nsvr_core* core)
 {
-	for (const auto& device : m_drivers) {
-		nsvr_device_event_raise(core, nsvr_device_event_device_disconnected, device.second->GetId());
-	}
+	
+		nsvr_device_event_raise(core, nsvr_device_event_device_disconnected, THIS_SUIT_ID);
+	
 }
 
 void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
