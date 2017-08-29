@@ -10,7 +10,10 @@ static const std::unordered_map<Apis, const char*> PrintableApiNames = {
 	{Apis::RawCommand, "RawCommand"},
 	{Apis::Request, "Request"},
 	{Apis::Sampling, "Sampling"},
-	{Apis::Tracking, "Tracking"}
+	{Apis::Tracking, "Tracking"},
+	{Apis::BodyGraph, "BodyGraph"},
+	{Apis::Waveform, "Waveform"},
+	{Apis::Updateloop, "UpdateLoop"}
 };
 
 bool PluginApis::Supports(Apis api) const

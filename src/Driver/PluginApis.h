@@ -7,22 +7,31 @@
 #include <boost/optional.hpp>
 #include <boost/log/trivial.hpp>
 
-// Represents a user-provided callback
+///
+/// The purpose of this file is to wrap C callbacks with ones that we can more easily call from
+/// C++. Basically, we wrap each function pointer with some syntactic sugar so that we can call it just like a normal 
+/// method. The way that it is done may not be the best, and should probably be upgraded, but it works.
+
+
 template<typename FnPtr, typename... Arguments>
 struct callback {
 	FnPtr handler;
 	void* user_data;
 	
 	callback(FnPtr handler, void* ud);
+
+	// Invoke the callback
 	void operator()(Arguments... arguments);
 };
 
+// Constructor takes the function pointer and a user_data void pointer.
 template<typename FnPtr, typename ...Arguments>
 inline callback<FnPtr, Arguments...>::callback(FnPtr handler, void * ud) 
 	: handler(handler)
 	, user_data(ud) {}
 
 
+// Here's where we pass in the user_data
 template<typename FnPtr, typename ...Arguments>
 inline void callback<FnPtr, Arguments...>::operator()(Arguments ...argument)
 {
@@ -30,14 +39,13 @@ inline void callback<FnPtr, Arguments...>::operator()(Arguments ...argument)
 }
 
 
-// Base class for internal plugin api representation
-// So we register new apis at runtime
+// We use a common base class so that the apis can be stored in a hashtable
 class plugin_api {
 public:
 	virtual ~plugin_api() {}
 };
 
-
+// Each time you add a new API, add a new entry to the enum
 enum class Apis {
 	Unknown = 0,
 	Buffered,
@@ -53,14 +61,16 @@ enum class Apis {
 	Updateloop
 };
 
+// This is used if we want to print out the name of the enum. Could switch to using better_enums to do this instead.
+// Probably a good todo.
 extern const std::unordered_map<Apis, const char*> PrintableApiNames;
 
 
 struct buffered_api : public plugin_api {
 	buffered_api(nsvr_plugin_buffered_api* api) 
 		: submit_buffer { api->submit_handler, api->client_data }
-		, submit_getmaxsamples{api->getmaxsamples_handler, api->client_data}
-		, submit_getsampleduration{api->getsampleduration_handler, api->client_data}
+		, submit_getmaxsamples {api->getmaxsamples_handler, api->client_data}
+		, submit_getsampleduration {api->getsampleduration_handler, api->client_data}
 	{}
 	
 	callback<
@@ -281,20 +291,6 @@ inline T* PluginApis::GetApi()
 			return derived_ptr;
 		}
 	}
-	// I uncommented this because I've started to use (if (whatever_api* api = GetApi<whatever_api>()) a lot. 
-	// As in, I am aware and expect that the result may not exist.
-	// Although, this means the function has two purposes (1) Check if api exists (2) retrieve api. 
-	// Could use if (SupportsApi<sampling_api>()) { GetApi<whatever_api>()->do_thing() }
-	/*else {
-		auto printableName = PrintableApiNames.find(T::getApiType());
-		if (printableName != PrintableApiNames.end()) {
-			BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API '" << (printableName->second) << "' was not found!";
-		}
-		else {
-			BOOST_LOG_TRIVIAL(warning) << "[PluginApis] The request plugin API [enum type = " << (int)T::getApiType() << "] was not found!";
-
-		}
-	}*/
 	return nullptr;
 }
 

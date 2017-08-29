@@ -88,12 +88,14 @@ private:
 	std::vector<std::unique_ptr<HapticNode>> m_hapticDevices;
 	std::vector<std::unique_ptr<TrackingNode>> m_trackingDevices;
 	PluginApis* m_apis;
-	void fetchNodeInfo(uint64_t device_id);
+	
+	
 
 
-	void createNewNode(const NodeDescriptor& descriptor);
-	void parseNodes(const std::vector<NodeDescriptor>& descriptor);
 	void dynamicallyFetchNodes();
+	void parseNodes(const std::vector<NodeDescriptor>& descriptor);
+	void createNewNode(const NodeDescriptor& descriptor);
+	void fetchNodeInfo(uint64_t device_id);
 
 
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
