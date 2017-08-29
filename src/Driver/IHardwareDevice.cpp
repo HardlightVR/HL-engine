@@ -15,7 +15,7 @@ Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEvent
 	, m_trackingDevices()
 	, m_hapticDevices()
 	, m_isBodyGraphSetup(false)
-	, m_systemId(descriptor.id)
+	, m_deviceId(descriptor.id)
 {
 	
 	if (!m_apis->Supports<device_api>()) {
@@ -88,31 +88,6 @@ void Device::dynamicallyFetchNodes()
 }
 
 
-
-void Device::handle_connect(uint64_t device_id)
-{
-	if (std::find(m_knownIds.begin(), m_knownIds.end(), device_id) == m_knownIds.end()) {
-		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] A new device was connected";
-		m_knownIds.push_back(device_id);
-		fetchNodeInfo(device_id);
-	}
-	else {
-		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] An already known device was reconnected";
-
-	}
-}
-
-void Device::handle_disconnect(uint64_t device_id)
-{
-	auto it = std::find(m_knownIds.begin(), m_knownIds.end(), device_id);
-	if (it != m_knownIds.end()) {
-		m_knownIds.erase(it);
-		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] A known device was disconnected";
-	}else {
-		BOOST_LOG_TRIVIAL(info) << "[Device][" << m_name << "] An unknown device was disconnected";
-	}
-
-}
 
 
 void Device::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
@@ -197,7 +172,7 @@ void Device::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEve
 }
 
 //returns nullptr on failure
-Node * Device::findDevice(uint64_t id)
+const Node * Device::findDevice(uint64_t id) const
 {
 	auto it = std::find_if(m_hapticDevices.begin(), m_hapticDevices.end(), [id](const std::unique_ptr<HapticNode>& node) {return node->id() == id; });
 	if (it != m_hapticDevices.end()) {
@@ -212,14 +187,16 @@ Node * Device::findDevice(uint64_t id)
 	return nullptr;
 }
 
+Node * Device::findDevice(uint64_t id)
+{
+	return const_cast<Node*>(static_cast<const Device&>(*this).findDevice(id));
+}
+
 
 
 
 HapticNode::HapticNode(const NodeDescriptor& info, PluginApis*c) 
-	: Node { info}
-	, m_apis(c)
-
-
+	: Node(info, c)
 {
 
 }
@@ -230,7 +207,7 @@ NodeView::Data HapticNode::Render() const
 {
 	if (sampling_api* api = m_apis->GetApi<sampling_api>()) {
 		nsvr_sampling_sample state = { 0 };
-		api->submit_query(m_region, &state);	
+		api->submit_query(id(), &state);	
 		return NodeView::Data { state.data_0, state.data_1, state.data_2, state.intensity };
 	}
 
@@ -249,11 +226,13 @@ uint64_t HapticNode::Id() const
 	return m_id;
 }
 
-Node::Node(const NodeDescriptor& description)
+Node::Node(const NodeDescriptor& description, PluginApis* apis)
 	: m_id{ description.id }
 	, m_name{ description.displayName }
-	, m_capability{ description.capabilities }
+	, m_apis(apis)
 	{}
+
+
 
 
 uint64_t Node::id() const
@@ -266,19 +245,13 @@ std::string Node::name() const
 	return m_name;
 }
 
-nsvr_region Node::region() const {
-	return m_region;
-}
 
 std::string Device::name() const
 {
 	return m_name;
 }
 
-bool Device::hasCapability(Apis name) const
-{
-	return m_apis->Supports(name);
-}
+
 
 void Device::setupHooks(HardwareCoordinator & coordinator)
 {
@@ -316,7 +289,7 @@ void Device::teardownBodyRepresentation(HumanBodyNodes & body)
 
 
 
-std::vector<NodeView> Device::renderDevices()
+std::vector<NodeView> Device::renderDevices() const
 {
 	if (!m_isBodyGraphSetup.load()) {
 		return std::vector<NodeView>{};
@@ -332,9 +305,9 @@ std::vector<NodeView> Device::renderDevices()
 		for (const auto& id : kvp.second) {
 			NodeView::SingleNode singleNode;
 			
-			Node* possibleNode = findDevice(id);
+			const Node* possibleNode = findDevice(id);
 			if (possibleNode) {
-				Renderable* possibleRenderable = dynamic_cast<Renderable*>(possibleNode);
+				const Renderable* possibleRenderable = dynamic_cast<const Renderable*>(possibleNode);
 				if (possibleRenderable) {
 					singleNode.DisplayData = possibleRenderable->Render();
 					singleNode.Id = id;
@@ -356,12 +329,11 @@ std::vector<NodeView> Device::renderDevices()
 
 uint32_t Device::id() const
 {
-	return m_systemId;
+	return m_deviceId;
 }
 
 TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
-	: Node(info)
-	, m_apis(capi)
+	: Node(info, capi)
 {
 
 	BeginTracking();
@@ -374,7 +346,7 @@ TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)
 void TrackingNode::BeginTracking()
 {
 	tracking_api* api = m_apis->GetApi<tracking_api>();
-	api->submit_beginstreaming(reinterpret_cast<nsvr_tracking_stream*>(this), m_region);
+	api->submit_beginstreaming(reinterpret_cast<nsvr_tracking_stream*>(this), id());
 
 
 	
@@ -383,11 +355,11 @@ void TrackingNode::BeginTracking()
 void TrackingNode::EndTracking()
 {
 	tracking_api* api = m_apis->GetApi<tracking_api>();
-	api->submit_endstreaming(m_region);
+	api->submit_endstreaming(id());
 }
 
 void TrackingNode::DeliverTracking(nsvr_quaternion * quat)
 {
 	m_latestQuat = *quat;
-	TrackingSignal(m_region, &m_latestQuat);
+	TrackingSignal(id(), &m_latestQuat);
 }

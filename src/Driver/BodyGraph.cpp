@@ -222,7 +222,7 @@ std::vector<uint64_t> BodyGraph::getDevicesForNamedRegion(subregion::shared_regi
 	
 }
 
-std::unordered_map<subregion::shared_region, std::vector<uint64_t>> BodyGraph::getAllDevices()
+std::unordered_map<subregion::shared_region, std::vector<uint64_t>> BodyGraph::getAllDevices() const
 {
 
 	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> devices;

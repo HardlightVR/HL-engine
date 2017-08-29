@@ -251,7 +251,7 @@ public:
 	std::vector<uint64_t> getDevicesForNamedRegion(subregion::shared_region region);
 
 
-	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> getAllDevices();
+	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> getAllDevices() const;
 	//std::vector<uint64_t> getDevicesForCoordinate(double segment_ratio, double angle_degrees);
 private:
 	

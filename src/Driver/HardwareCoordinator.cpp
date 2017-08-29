@@ -42,15 +42,16 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 
 
-void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(nsvr_region, nsvr_quaternion*)> & hook)
+void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(uint64_t, nsvr_quaternion*)> & hook)
 {
-	hook.connect([this](nsvr_region r, nsvr_quaternion* q) { hook_writeTracking(r, q); });
+	hook.connect([this](uint64_t r, nsvr_quaternion* q) { hook_writeTracking(r, q); });
 }
 
 
-void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion * quat)
+void HardwareCoordinator::hook_writeTracking(uint64_t node_id, nsvr_quaternion * quat)
 {
-	m_messenger.WriteTracking(region, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
+	//todo: we need to actually take the quaternion arriving from the device and translate it to a region, based on the BodyGraph
+	m_messenger.WriteTracking(node_id, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
 }
 
 void HardwareCoordinator::writeBodyRepresentation()

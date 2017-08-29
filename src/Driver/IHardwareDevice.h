@@ -19,66 +19,56 @@ class PluginApis;
 class PluginEventSource;
 class HardwareCoordinator;
 
+
 class Node {
 public:
-	Node(const NodeDescriptor&);
+	Node(const NodeDescriptor&, PluginApis*);
 	virtual ~Node() {}
-
-	using RequestId = uint64_t;
-	
-	nsvr_region region() const;
 	uint64_t id() const;
 	std::string name() const;
 protected:
 	std::string m_name;
 	uint64_t m_id;
-	uint32_t m_capability;
-	nsvr_region m_region;
+	PluginApis* m_apis;
 };
 
 class HapticNode : public Node, public Renderable  {
 public:
 	HapticNode(const NodeDescriptor& info, PluginApis*);
-
-
 	// Renderable support
 	NodeView::Data Render() const override;
 	NodeView::NodeType Type() const override;
 	uint64_t Id() const override;
-private:
-	PluginApis* m_apis;
+
 };
 
 
 class TrackingNode : public Node {
 public:
 	TrackingNode(const NodeDescriptor& info, PluginApis*);
-
 	void BeginTracking();
 	void EndTracking();
 	void DeliverTracking(nsvr_quaternion* quat);
-
-	boost::signals2::signal<void(nsvr_region, nsvr_quaternion*)> TrackingSignal;
-
+	boost::signals2::signal<void(uint64_t, nsvr_quaternion*)> TrackingSignal;
 private:
-	PluginApis* m_apis;
 	nsvr_quaternion m_latestQuat;
 };
 
 
 class HumanBodyNodes;
+
 class Device {
 public:
-	using Region = std::string;
 	using RequestId = uint64_t;
-	Device(const DeviceDescriptor& desc, PluginApis& api, PluginEventSource& ev);
 
+	Device(const DeviceDescriptor& desc, PluginApis& api, PluginEventSource& ev);
 	Device& operator=(const Device&) = delete;
 	Device(const Device&) = delete;
+
+	std::string name() const;
+
 	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
 	
-	std::string name() const;
-	bool hasCapability(Apis name) const;
 
 	void setupHooks(HardwareCoordinator& coordinator);
 	void teardownHooks();
@@ -86,18 +76,17 @@ public:
 	void setupBodyRepresentation(HumanBodyNodes&);
 	void teardownBodyRepresentation(HumanBodyNodes&);
 	
-	std::vector<NodeView> renderDevices();
+	std::vector<NodeView> renderDevices() const;
 
 	
 
-	uint32_t id() const;
+	nsvr_device_id id() const;
 private:
 	
 	std::string m_name;
 
 	std::vector<std::unique_ptr<HapticNode>> m_hapticDevices;
 	std::vector<std::unique_ptr<TrackingNode>> m_trackingDevices;
-	std::vector<uint64_t> m_knownIds;
 	PluginApis* m_apis;
 	void fetchNodeInfo(uint64_t device_id);
 
@@ -106,16 +95,16 @@ private:
 	void parseNodes(const std::vector<NodeDescriptor>& descriptor);
 	void dynamicallyFetchNodes();
 
-	void handle_connect(uint64_t device_id);
-	void handle_disconnect(uint64_t device_id);
 
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event);
 	
+	const Node* findDevice(uint64_t id) const;
 	Node* findDevice(uint64_t id);
+
 	BodyGraph m_graph;
 
-	uint32_t m_systemId;
+	nsvr_device_id m_deviceId;
 	std::atomic<bool> m_isBodyGraphSetup;
 
 	 

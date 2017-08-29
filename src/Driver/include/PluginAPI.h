@@ -35,6 +35,8 @@ extern "C" {
 
 	typedef enum nsvr_region { test = 0 } nsvr_region; //todo: deperecate
 
+	typedef uint64_t nsvr_node_id;
+	typedef uint32_t nsvr_device_id;
 
 	// As a plugin author, you may implement three levels of functionality.
 	 
@@ -100,12 +102,12 @@ extern "C" {
 	
 
 	typedef struct nsvr_node_ids {
-		uint64_t ids[128];
+		nsvr_node_id ids[128];
 		unsigned int node_count;
 	} nsvr_node_ids;
 
 	typedef struct nsvr_device_ids {
-		uint32_t ids[128];
+		nsvr_device_id ids[128];
 		unsigned int device_count;
 	} nsvr_device_ids;
 	typedef enum nsvr_node_capability {
@@ -122,14 +124,14 @@ extern "C" {
 	} nsvr_node_type;
 
 	typedef struct nsvr_node_info {
-		uint64_t id;
+		nsvr_node_id id;
 		uint32_t type;
 		uint32_t capabilities;
 		char name[512];
 	} nsvr_node_info;
 
 	typedef struct nsvr_device_info {
-		uint32_t id;
+		nsvr_device_id id;
 		char name[512];
 	} nsvr_device_info;
 	typedef struct nsvr_device_request nsvr_device_request;
@@ -137,9 +139,9 @@ extern "C" {
 	//question: should node IDs be unique per system?
 	typedef struct nsvr_plugin_device_api {
 		typedef void(*nsvr_device_enumeratedevices)(nsvr_device_ids*, void*);
-		typedef void(*nsvr_device_enumeratenodes)(uint32_t device_id, nsvr_node_ids*, void*);
-		typedef void(*nsvr_device_getnodeinfo)(uint64_t node_id, nsvr_node_info* info, void*);
-		typedef void(*nsvr_device_getdeviceinfo)(uint32_t device_id, nsvr_device_info* info, void*);
+		typedef void(*nsvr_device_enumeratenodes)(nsvr_device_id device_id, nsvr_node_ids*, void*);
+		typedef void(*nsvr_device_getnodeinfo)(nsvr_node_id node_id, nsvr_node_info* info, void*);
+		typedef void(*nsvr_device_getdeviceinfo)(nsvr_device_id device_id, nsvr_device_info* info, void*);
 
 		nsvr_device_enumeratenodes enumeratenodes_handler;
 		nsvr_device_enumeratedevices enumeratedevices_handler;
@@ -171,7 +173,7 @@ extern "C" {
 
 
 	typedef struct nsvr_plugin_buffered_api {
-		typedef void(*nsvr_buffered_submit)(uint64_t device_id, double* amplitudes, uint32_t count, void*);
+		typedef void(*nsvr_buffered_submit)(nsvr_node_id node_id, double* amplitudes, uint32_t count, void*);
 		typedef void(*nsvr_buffered_getsampleduration)(double* outSampleDuration, void*);
 		typedef void(*nsvr_buffered_getmaxsamples)(uint32_t* outMaxSamples, void*);
 		nsvr_buffered_submit submit_handler;
@@ -188,7 +190,7 @@ extern "C" {
 	typedef struct nsvr_preset nsvr_preset;
 
 	typedef struct nsvr_plugin_preset_api {
-		typedef void(*nsvr_preset_handler)(uint64_t device_id, nsvr_preset*, void*);
+		typedef void(*nsvr_preset_handler)(nsvr_node_id node_id, nsvr_preset*, void*);
 		nsvr_preset_handler preset_handler;
 		void* client_data;
 	} nsvr_plugin_preset_api;
@@ -225,7 +227,7 @@ extern "C" {
 
 
 	typedef struct nsvr_plugin_waveform_api {
-		typedef void(*nsvr_waveform_activate_handler)(uint64_t request_id, uint64_t device_id, nsvr_waveform* waveform, void* cd);
+		typedef void(*nsvr_waveform_activate_handler)(uint64_t request_id, nsvr_node_id node_id, nsvr_waveform* waveform, void* cd);
 		nsvr_waveform_activate_handler activate_handler;
 		void* client_data;
 	} nsvr_plugin_preset_waveform_api;
@@ -293,8 +295,8 @@ extern "C" {
 
 
 	typedef struct nsvr_plugin_tracking_api {
-		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_region region, void* client_data);
-		typedef void(*nsvr_tracking_endstreaming)(nsvr_region region, void* client_data);
+		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, uint64_t node_id, void* client_data);
+		typedef void(*nsvr_tracking_endstreaming)(uint64_t node_id, void* client_data);
 
 		nsvr_tracking_beginstreaming beginstreaming_handler;
 		nsvr_tracking_endstreaming endstreaming_handler;
@@ -347,9 +349,9 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_createnode(nsvr_bodygraph* graph, const char* name, nsvr_bodygraph_region* region);
 	NSVR_CORE_RETURN(int) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB);
 
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_associate(nsvr_bodygraph* body, const char* node, uint64_t device_id);
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_unassociate(nsvr_bodygraph* body, const char* node, uint64_t device_id);
-	NSVR_CORE_RETURN(int) nsvr_bodygraph_clearassociations(nsvr_bodygraph* body, uint64_t device_id);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_associate(nsvr_bodygraph* body, const char* node, nsvr_node_id node_id);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_unassociate(nsvr_bodygraph* body, const char* node, nsvr_node_id node_id);
+	NSVR_CORE_RETURN(int) nsvr_bodygraph_clearassociations(nsvr_bodygraph* body, nsvr_node_id node_id);
 
 	typedef struct nsvr_plugin_bodygraph_api {
 		typedef void(*nsvr_bodygraph_setup)(nsvr_bodygraph* graph, void* cd);

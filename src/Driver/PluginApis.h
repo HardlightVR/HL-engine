@@ -215,12 +215,12 @@ struct tracking_api : public plugin_api {
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_beginstreaming,
 		nsvr_tracking_stream*,
-		nsvr_region
+		uint64_t
 	> submit_beginstreaming;
 
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_endstreaming,
-		nsvr_region
+		uint64_t
 	> submit_endstreaming;
 
 	static Apis getApiType() { return Apis::Tracking; }
