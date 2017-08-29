@@ -43,10 +43,14 @@ public:
 
 	void Push(T item) {
 		if (m_vector != nullptr) {
-			m_vector->push_back(std::move(item));
+			m_vector->push_back(item);
 		}
 	}
 
+
+	void Remove(std::function<bool(const T& item)> predicate) {
+		m_vector->erase(std::remove_if(m_vector->begin(), m_vector->end(), predicate), m_vector->end());
+	}
 
 	std::size_t size() const {
 		return m_vector->size();
@@ -65,6 +69,15 @@ public:
 		}
 	}
 
+	boost::optional<std::size_t> Find(std::function<bool(const T& item)> predicate)  const{
+		const auto it = std::find_if(m_vector->cbegin(), m_vector->cend(), predicate);
+		if (it != m_vector->cend()) {
+			return it - m_vector->cbegin();
+		}
+		else {
+			return boost::none;
+		}
+	}
 	boost::optional<std::size_t> Find(const T& item) const{
 		const auto it = std::find(m_vector->cbegin(), m_vector->cend(), item);
 		if (it != m_vector->cend()) {

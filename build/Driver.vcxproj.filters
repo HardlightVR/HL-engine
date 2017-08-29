@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -36,6 +36,7 @@
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
+    <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\HumanBodyNodes.h" />
@@ -63,6 +64,7 @@
     <ClInclude Include="..\src\Driver\PluginEventSource.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
+    <ClInclude Include="..\src\Driver\PresetWaveform.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h">
       <Filter>SharedCommunication</Filter>
@@ -113,6 +115,7 @@
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
+    <ClInclude Include="..\src\Driver\better_enum.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h">
       <Filter>events_impl</Filter>
     </ClInclude>
@@ -125,9 +128,13 @@
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
       <Filter>include\events</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\nsvr_core_errors.h" />
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\pevent.h" />
+    <ClInclude Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.h">
+      <Filter>protobuff_defs</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
       <Filter>protobuff_defs</Filter>
     </ClInclude>
@@ -145,8 +152,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\PresetWaveform.h" />
-    <ClInclude Include="..\src\Driver\better_enum.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -184,6 +189,9 @@
     </ClCompile>
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
+    <ClCompile Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.cc">
+      <Filter>protobuff_defs</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <Filter>protobuff_defs</Filter>
     </ClCompile>
@@ -200,8 +208,5 @@
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="build.licenseheader" />
   </ItemGroup>
 </Project>

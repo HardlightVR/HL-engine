@@ -18,11 +18,11 @@ class PluginInstance
 public:
 
 
-	PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& coord);
+	PluginInstance(boost::asio::io_service& io, std::string fileName);
 	~PluginInstance();
 	
 	bool ParseManifest();
-	void InstantiateDevices();
+	void InstantiateDevices(DeviceContainer& container);
 	bool Link();
 	bool Load();
 
@@ -56,7 +56,6 @@ private:
 	bool m_loaded;
 
 
-	DeviceContainer& m_devices;
 
 	HardwareDescriptor m_descriptor;
 	PluginApis m_apis;

@@ -8,6 +8,7 @@
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "protobuff_defs/DriverCommand.pb.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
+#include "protobuff_defs/DeviceEvent.pb.h"
 
 #include <memory>
 
@@ -20,11 +21,13 @@ public:
 	DriverMessenger(boost::asio::io_service& io);
 	~DriverMessenger();
 	void WriteTracking(uint32_t, NullSpace::SharedMemory::Quaternion quat);
-	void WriteSuits(SuitsConnectionInfo s);
+	void WriteSystem(const SystemInfo& s);
+	void RemoveSystem(uint32_t id);
 	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
 	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
+	void WriteDeviceEvent(const NullSpaceIPC::DeviceEvent&);
 	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();
 	void Disconnect();
 private:
@@ -33,14 +36,15 @@ private:
 	//Write tracking data here
 	std::unique_ptr<WritableSharedObject<TrackingUpdate>> m_trackingData;
 
-	//Write suit connection data here (which suits connected, etc)
-	std::unique_ptr<WritableSharedObject<SuitsConnectionInfo>> m_suitConnectionInfo;
+
 
 	//Write haptics data here
 	std::unique_ptr<OwnedReadableSharedQueue> m_hapticsData;
 
+	std::unique_ptr<OwnedWritableSharedVector<SystemInfo>> m_systems;
 	//If logging, write data here
 	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
+
 
 	//Write a timestamp here every so often to signify that this driver is alive
 	std::unique_ptr<WritableSharedObject<std::time_t>> m_sentinel;

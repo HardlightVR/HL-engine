@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DriverMessenger.h"
-#include "Encoder.h"
+
 
 
 
@@ -14,28 +14,27 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 
 	OwnedReadableSharedQueue::remove("ns-haptics-data");
 	WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>::remove("ns-tracking-data");
-	WritableSharedObject<SuitsConnectionInfo>::remove("ns-suit-data");
 	OwnedWritableSharedQueue::remove("ns-logging-data");
 	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<std::time_t>::remove("ns-sentinel");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
+	OwnedWritableSharedVector<NullSpace::SharedMemory::SystemInfo>::remove("ns-device-mem");
 
+	constexpr int systemInfoSize = sizeof(NullSpace::SharedMemory::SystemInfo);
 
+	m_systems = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::SystemInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*32);
 	m_tracking = std::make_unique<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>>(/* initial element capacity*/16, "ns-tracking-2");
 	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-vec", 2048);
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_trackingData = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>>("ns-tracking-data");
-	m_suitConnectionInfo = std::make_unique<WritableSharedObject<SuitsConnectionInfo>>("ns-suit-data");
 	m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
 	m_commandStream = std::make_unique<OwnedReadableSharedQueue>("ns-command-data",/* max elements */  512, /*max element byte size*/ 512);
 	static_assert(sizeof(std::time_t) == 8, "Time is wrong size");
 	
 	m_sentinel = std::make_unique<WritableSharedObject<std::time_t>>("ns-sentinel");
 
-	SuitsConnectionInfo nullSuits = {};
 
 
-	m_suitConnectionInfo->Write(nullSuits);
 	
 	startSentinel();
 }
@@ -71,9 +70,23 @@ void DriverMessenger::WriteTracking(uint32_t region, NullSpace::SharedMemory::Qu
 	}
 }
 
-void DriverMessenger::WriteSuits(SuitsConnectionInfo s)
+
+
+void DriverMessenger::WriteSystem(const SystemInfo&  system)
 {
-	m_suitConnectionInfo->Write(s);
+	auto sameId = [&system](const SystemInfo& s) { return s.Id == system.Id; };
+	if (auto index = m_systems->Find(sameId))
+	{
+		m_systems->Update(*index, system);
+	}
+	else {
+		m_systems->Push(system);
+	}
+}
+
+void DriverMessenger::RemoveSystem(uint32_t id)
+{
+	m_systems->Remove([id](const SystemInfo& s) {return s.Id == id; });
 }
 
 void DriverMessenger::WriteBodyView(NullSpace::SharedMemory::RegionPair data)
@@ -105,6 +118,8 @@ boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> DriverMessenger::Read
 {
 	return readFromStream<NullSpaceIPC::HighLevelEvent, OwnedReadableSharedQueue>(*m_hapticsData.get(), 100);
 }
+
+
 
 boost::optional<std::vector<NullSpaceIPC::DriverCommand>> DriverMessenger::ReadCommands()
 {

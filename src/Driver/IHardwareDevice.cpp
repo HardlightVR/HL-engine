@@ -9,13 +9,14 @@
 #include "HardwareCoordinator.h"
 #include "HumanBodyNodes.h"
 #include "BodyGraph.h"
-NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev)
+DeviceSystem::DeviceSystem(const HardwareDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev, uint32_t id)
 	: m_concept(descriptor.concept)
 	, m_name(descriptor.displayName)
 	, m_apis(&capi)
 	, m_trackingDevices()
 	, m_hapticDevices()
 	, m_isBodyGraphSetup(false)
+	, m_systemId(id)
 {
 	setupSubscriptions(ev);
 	
@@ -31,7 +32,7 @@ NodalDevice::NodalDevice(const HardwareDescriptor& descriptor, PluginApis& capi,
 }
 
 
-void NodalDevice::setupSubscriptions(PluginEventSource & ev)
+void DeviceSystem::setupSubscriptions(PluginEventSource & ev)
 {
 	ev.Subscribe(nsvr_device_event_device_connected, [this](uint64_t device_id) {
 		handle_connect(device_id);
@@ -42,33 +43,33 @@ void NodalDevice::setupSubscriptions(PluginEventSource & ev)
 	});
 }
 
-void NodalDevice::createNewDevice(const NodeDescriptor& node)
+void DeviceSystem::createNewNode(const NodeDescriptor& node)
 {
 	const auto& t = Locator::Translator();
 
 	if (NodeDescriptor::NodeType::Haptic == node.nodeType) {
 		//todo: fix
-		//BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+		//BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
 	}
 	else if (NodeDescriptor::NodeType::Tracker == node.nodeType) {
-		//BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
+		//BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
 
 	}
 }
 
-void NodalDevice::parseDevices(const std::vector<NodeDescriptor>& descriptor)
+void DeviceSystem::parseDevices(const std::vector<NodeDescriptor>& descriptor)
 {
 	
-	BOOST_LOG_TRIVIAL(info) << "[NodalDevice] " << m_name << " describes " << descriptor.size() << " devices:";
+	BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] " << m_name << " describes " << descriptor.size() << " devices:";
 	for (const auto& node : descriptor) {
-		createNewDevice(node);
+		createNewNode(node);
 	}
 }
 
 
-void NodalDevice::fetchDeviceInfo(uint64_t device_id) {
+void DeviceSystem::fetchDeviceInfo(uint64_t device_id) {
 	device_api* enumerator = m_apis->GetApi<device_api>();
 	nsvr_device_basic_info info = { 0 };
 	enumerator->submit_getinfo(device_id, &info);
@@ -79,11 +80,11 @@ void NodalDevice::fetchDeviceInfo(uint64_t device_id) {
 	desc.id = device_id;
 	desc.nodeType = static_cast<NodeDescriptor::NodeType>(info.type);
 
-	createNewDevice(desc);
+	createNewNode(desc);
 
 }
 
-void NodalDevice::dynamicallyFetchDevices()
+void DeviceSystem::dynamicallyFetchDevices()
 {
 	device_api* enumerator = m_apis->GetApi<device_api>();
 
@@ -100,33 +101,33 @@ void NodalDevice::dynamicallyFetchDevices()
 
 
 
-void NodalDevice::handle_connect(uint64_t device_id)
+void DeviceSystem::handle_connect(uint64_t device_id)
 {
 	if (std::find(m_knownIds.begin(), m_knownIds.end(), device_id) == m_knownIds.end()) {
-		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] A new device was connected";
+		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] A new device was connected";
 		m_knownIds.push_back(device_id);
 		fetchDeviceInfo(device_id);
 	}
 	else {
-		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] An already known device was reconnected";
+		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] An already known device was reconnected";
 
 	}
 }
 
-void NodalDevice::handle_disconnect(uint64_t device_id)
+void DeviceSystem::handle_disconnect(uint64_t device_id)
 {
 	auto it = std::find(m_knownIds.begin(), m_knownIds.end(), device_id);
 	if (it != m_knownIds.end()) {
 		m_knownIds.erase(it);
-		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] A known device was disconnected";
+		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] A known device was disconnected";
 	}else {
-		BOOST_LOG_TRIVIAL(info) << "[NodalDevice][" << m_name << "] An unknown device was disconnected";
+		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem][" << m_name << "] An unknown device was disconnected";
 	}
 
 }
 
 
-void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
+void DeviceSystem::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 {
 	switch (event.events_case()) {
 	case NullSpaceIPC::HighLevelEvent::kSimpleHaptic:
@@ -136,14 +137,14 @@ void NodalDevice::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 		handlePlaybackEvent(event.parent_id(), event.playback_event());
 		break;
 	default:
-		BOOST_LOG_TRIVIAL(info) << "[NodalDevice] Unrecognized request: " << event.events_case();
+		BOOST_LOG_TRIVIAL(info) << "[DeviceSystem] Unrecognized request: " << event.events_case();
 		break;
 	}
 }
 
 
 
-void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
+void DeviceSystem::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
 
 	
@@ -187,7 +188,7 @@ void NodalDevice::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::Si
 
 
 
-void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event)
+void DeviceSystem::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event)
 {
 		if (playback_api* api = m_apis->GetApi<playback_api>()) {
 		switch (event.command()) {
@@ -201,14 +202,14 @@ void NodalDevice::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::Playba
 			api->submit_cancel(id);
 			break;
 		default:
-			BOOST_LOG_TRIVIAL(warning) << "[NodalDevice] Unknown playback event: " << event.command();
+			BOOST_LOG_TRIVIAL(warning) << "[DeviceSystem] Unknown playback event: " << event.command();
 			break;
 		}
 	}
 }
 
 //returns nullptr on failure
-Node * NodalDevice::findDevice(uint64_t id)
+Node * DeviceSystem::findDevice(uint64_t id)
 {
 	auto it = std::find_if(m_hapticDevices.begin(), m_hapticDevices.end(), [id](const std::unique_ptr<HapticNode>& node) {return node->id() == id; });
 	if (it != m_hapticDevices.end()) {
@@ -281,17 +282,17 @@ nsvr_region Node::region() const {
 	return m_region;
 }
 
-std::string NodalDevice::name() const
+std::string DeviceSystem::name() const
 {
 	return m_name;
 }
 
-bool NodalDevice::hasCapability(Apis name) const
+bool DeviceSystem::hasCapability(Apis name) const
 {
 	return m_apis->Supports(name);
 }
 
-void NodalDevice::setupHooks(HardwareCoordinator & coordinator)
+void DeviceSystem::setupHooks(HardwareCoordinator & coordinator)
 {
 	if (m_apis->Supports<tracking_api>()) {
 		for (auto& node : m_trackingDevices) {
@@ -300,14 +301,14 @@ void NodalDevice::setupHooks(HardwareCoordinator & coordinator)
 	}
 }
 
-void NodalDevice::teardownHooks() {
+void DeviceSystem::teardownHooks() {
 	for (auto& node : m_trackingDevices) {
 		node->TrackingSignal.disconnect_all_slots();
 	}
 	
 }
 
-void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
+void DeviceSystem::setupBodyRepresentation(HumanBodyNodes & body)
 {
 	bodygraph_api* b = m_apis->GetApi<bodygraph_api>();
 	if (b != nullptr) {
@@ -317,7 +318,7 @@ void NodalDevice::setupBodyRepresentation(HumanBodyNodes & body)
 	}
 }
 
-void NodalDevice::teardownBodyRepresentation(HumanBodyNodes & body)
+void DeviceSystem::teardownBodyRepresentation(HumanBodyNodes & body)
 {
 	for (auto& node : m_hapticDevices) {
 		body.RemoveNode(node.get());
@@ -327,7 +328,7 @@ void NodalDevice::teardownBodyRepresentation(HumanBodyNodes & body)
 
 
 
-std::vector<NodeView> NodalDevice::renderDevices()
+std::vector<NodeView> DeviceSystem::renderDevices()
 {
 	if (!m_isBodyGraphSetup.load()) {
 		return std::vector<NodeView>{};
@@ -363,7 +364,7 @@ std::vector<NodeView> NodalDevice::renderDevices()
 	return fullView;
 }
 
-void NodalDevice::run_update_loop_once(uint64_t dt)
+bool DeviceSystem::run_update_loop_once(uint64_t dt)
 {
 	if (auto api = m_apis->GetApi<updateloop_api>()) {
 		try {
@@ -371,9 +372,16 @@ void NodalDevice::run_update_loop_once(uint64_t dt)
 		}
 		catch (const std::runtime_error& err) {
 			BOOST_LOG_TRIVIAL(error) << "Runtime ERROR in plugin " << m_name << ": " << err.what();
-			//SHOULD TERMINATE THE PLUGIN AND REINSTANTIATE
+			return false;
 		}
 	}
+
+	return true;
+}
+
+uint32_t DeviceSystem::id() const
+{
+	return m_systemId;
 }
 
 TrackingNode::TrackingNode(const NodeDescriptor & info, PluginApis* capi)

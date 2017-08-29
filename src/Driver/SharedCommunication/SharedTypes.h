@@ -21,21 +21,25 @@ namespace NullSpace {
 			Quaternion right_upper_arm;
 		};
 
-		enum SuitStatus { Unknown, Connected, Disconnected };
-		typedef unsigned int SuitId;
+		enum NodeStatus { Unknown, Connected, Disconnected };
+		
+		typedef uint32_t SystemId;
 
-		struct SuitInfo {
-			SuitId Id;
-			SuitStatus Status;
-			SuitInfo() :Id(0), Status(SuitStatus::Unknown) {}
+		constexpr int MAX_NODES_PER_SYSTEM = 32;
+
+		struct NodeInfo {
+			char NodeName[128];
+			NodeStatus Status;
 		};
-
-		struct SuitsConnectionInfo {
-			std::time_t timestamp;
-			bool SuitsFound[4] = { false };
-			SuitInfo Suits[4];
-
+		struct SystemInfo {
+			SystemId Id; //0
+			char SystemName[128]; //Hardlight Mk III Suit
+			bool NodesFound[MAX_NODES_PER_SYSTEM] = { false };
+			NodeInfo Nodes[MAX_NODES_PER_SYSTEM];
 		};
+		
+
+	
 
 		struct ServiceInfo {
 			int ServiceMajor;
@@ -43,7 +47,6 @@ namespace NullSpace {
 
 		};
 
-		static const SuitsConnectionInfo NullSuitsConnectionInfo = {};
 		static const TrackingUpdate NullTrackingUpdate = {};
 
 

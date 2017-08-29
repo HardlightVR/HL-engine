@@ -5,8 +5,7 @@
 #include <iostream>
 #include "IHardwareDevice.h"
 #include "DeviceContainer.h"
-PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& coord) :
-	m_devices(coord),
+PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName) :
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
@@ -46,9 +45,9 @@ bool PluginInstance::ParseManifest()
 
 }
 
-void PluginInstance::InstantiateDevices()
+void PluginInstance::InstantiateDevices(DeviceContainer& container)
 {
-	m_devices.AddDevice(m_descriptor, m_apis, m_eventHandler);
+	container.AddDevice(m_descriptor, m_apis, m_eventHandler);
 }
 
 
@@ -88,6 +87,7 @@ bool PluginInstance::Configure()
 bool PluginInstance::Link()
 {
 	boost::system::error_code loadFailure;
+
 	m_dll = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
 	
 	if (loadFailure) {

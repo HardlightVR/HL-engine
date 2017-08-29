@@ -1,7 +1,6 @@
 #pragma once
 #include "DriverMessenger.h"
 #include "EventDispatcher.h"
-#include "Encoder.h"
 #include "SharedCommunication/ScheduledEvent.h"
 #include "HardwareCoordinator.h"
 #include "PluginManager.h"
@@ -27,7 +26,6 @@ private:
 	boost::asio::io_service& m_io;
 
 	DriverMessenger m_messenger;
-	Encoder _encoder;
 
 
 	ScheduledEvent m_curveEngineUpdate;

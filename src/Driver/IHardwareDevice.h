@@ -67,14 +67,14 @@ private:
 
 
 class HumanBodyNodes;
-class NodalDevice {
+class DeviceSystem {
 public:
 	using Region = std::string;
 	using RequestId = uint64_t;
-	NodalDevice(const HardwareDescriptor& desc, PluginApis& api, PluginEventSource& ev);
+	DeviceSystem(const HardwareDescriptor& desc, PluginApis& api, PluginEventSource& ev, uint32_t id);
 
-	NodalDevice& operator=(const NodalDevice&) = delete;
-	NodalDevice(const NodalDevice&) = delete;
+	DeviceSystem& operator=(const DeviceSystem&) = delete;
+	DeviceSystem(const DeviceSystem&) = delete;
 	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
 	
 	std::string name() const;
@@ -88,7 +88,9 @@ public:
 	
 	std::vector<NodeView> renderDevices();
 
-	void run_update_loop_once(uint64_t dt);
+	bool run_update_loop_once(uint64_t dt);
+
+	uint32_t id() const;
 private:
 	
 	HardwareDescriptor::Concept m_concept;
@@ -102,7 +104,7 @@ private:
 
 	void setupSubscriptions(PluginEventSource& ev);
 
-	void createNewDevice(const NodeDescriptor& descriptor);
+	void createNewNode(const NodeDescriptor& descriptor);
 	void parseDevices(const std::vector<NodeDescriptor>& descriptor);
 	void dynamicallyFetchDevices();
 
@@ -115,6 +117,7 @@ private:
 	Node* findDevice(uint64_t id);
 	BodyGraph m_graph;
 
+	uint32_t m_systemId;
 	std::atomic<bool> m_isBodyGraphSetup;
 
 	 

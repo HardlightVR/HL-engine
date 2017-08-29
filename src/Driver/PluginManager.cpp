@@ -9,14 +9,14 @@ PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw, s
 	, m_deviceContainer(hw)
 	, m_io(io)
 {
-
+	
 }
 
 bool PluginManager::LoadAll()
 {
-	linkAll();
-	instantiateAll();
-	configureAll();
+	for (const auto& pluginName : m_pluginNames) {
+		LoadPlugin(pluginName);
+	}
 	return true;
 }
 
@@ -27,69 +27,79 @@ bool PluginManager::UnloadAll()
 	return true;
 }
 
-
-
-
-
-bool PluginManager::linkAll()
+bool PluginManager::Reload(const std::string & name)
 {
-	for (const std::string& pluginName : m_pluginNames) {
-		//todo: fix
-		m_plugins.emplace(std::make_pair(pluginName, 
-			std::make_shared<PluginInstance>(
-				m_io,
-				pluginName,
-				m_deviceContainer
-			)
-		));
+	//it's not the plugin's job to clean up the DeviceContainer
+	//so we just unload it and try to reload it
 
-		if (!m_plugins.at(pluginName)->Link()) {
-			std::cout << "Warning: unable to link " << pluginName << '\n';
-		}
+	if (m_plugins[name]->Unload()) {
+		return m_plugins[name]->Load();
+	}
 
-		
+	return false;
+
+}
+
+
+
+
+bool PluginManager::linkPlugin(const std::string& name) {
+	auto instance = std::make_shared<PluginInstance>(m_io, name);
+	if (instance->Link()) {
+		m_plugins.insert(std::make_pair(name, instance));
+		return true;
+	}
+	
+	return false;
+	
+}
+bool PluginManager::instantiatePlugin(std::shared_ptr<PluginInstance>& plugin)
+{
+	return plugin->Load();
+}
+
+bool PluginManager::configurePlugin(std::shared_ptr<PluginInstance>& plugin)
+{
+	if (!plugin->Configure()) {
+		BOOST_LOG_TRIVIAL(warning) << "Couldn't configure " << plugin->GetDisplayName();
+		return false;
+	}
+
+	if (!plugin->ParseManifest()) {
+		BOOST_LOG_TRIVIAL(warning) << "Couldn't parse manifest of " << plugin->GetDisplayName();
+
+		return false;
+	}
+
+	plugin->InstantiateDevices(m_deviceContainer);
+	return true;
+}
+
+bool PluginManager::LoadPlugin(const std::string& name)
+{
+	if (!linkPlugin(name)) {
+		return false;
+	}
+
+	if (!instantiatePlugin(m_plugins[name])) {
+		return false;
+	}
+
+	if (!configurePlugin(m_plugins[name])) {
+		return false;
 	}
 
 	return true;
 }
 
-bool PluginManager::instantiateAll()
-{
-	for (auto& plugin : m_plugins) {
-		if (!plugin.second->Load()) {
-			std::cout << "Warning: unable to instantiate " << plugin.first << '\n';
-		}
-	}
 
-	return true;
-}
-
-bool PluginManager::configureAll()
-{
-	for (auto& plugin : m_plugins) {
-		if (plugin.second->Configure()) {
-			if (plugin.second->ParseManifest()) {
-				plugin.second->InstantiateDevices();
-			}
-			
-
-		}
-		else {
-			std::cout << "Warning: unable to configure " << plugin.first << '\n';
-			
-		}
-	}
-
-	return true;
-}
-
-bool PluginManager::destroyAll()
+void PluginManager::destroyAll()
 {
 	for (auto& plugin : m_plugins) {
 		if (!plugin.second->Unload()) {
 			std::cout << "Warning: unable to destroy " << plugin.first << '\n';
 		}
 	}
-	return true;
+
 }
 

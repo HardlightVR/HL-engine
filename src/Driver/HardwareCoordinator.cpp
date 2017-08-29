@@ -16,21 +16,30 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_pluginEventLoopInterval(boost::posix_time::millisec(16))
 	, m_pluginEventLoop(io, m_pluginEventLoopInterval)
 {
-	m_devices.OnDeviceAdded([this, &body = m_bodyRepresentation](NodalDevice* device) {
-		device->setupHooks(*this);
-		device->setupBodyRepresentation(body);
+	m_devices.OnSystemAdded([this, &body = m_bodyRepresentation](DeviceSystem* system) {
+		system->setupHooks(*this);
+		system->setupBodyRepresentation(body);
+		
+
+		NullSpace::SharedMemory::SystemInfo info = {};
+		info.Id = system->id();
+
+		memcpy_s(info.SystemName, 128, system->name().data(), system->name().size());
+		m_messenger.WriteSystem(info);
+
 	});
 
-	m_devices.OnDeviceRemoved([this, &body = m_bodyRepresentation](NodalDevice* device) {
-		device->teardownHooks();
-		device->teardownBodyRepresentation(body);
+	m_devices.OnPreSystemRemoved([this, &body = m_bodyRepresentation](DeviceSystem* system) {
+		system->teardownHooks();
+		system->teardownBodyRepresentation(body);
+
+		m_messenger.RemoveSystem(system->id());
 	});
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });
 	m_writeBodyRepresentation.Start();
 
 	m_pluginEventLoop.SetEvent([this]() {
-		//double dt = static_cast<double>();
 		this->runPluginUpdateLoops(m_pluginEventLoopInterval.total_milliseconds());
 	});
 	m_pluginEventLoop.Start();
@@ -45,7 +54,7 @@ void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(nsvr_re
 
 void HardwareCoordinator::runPluginUpdateLoops(uint64_t dt)
 {
-	m_devices.Each([delta_time = dt](NodalDevice* device) {
+	m_devices.Each([delta_time = dt](DeviceSystem* device) {
 		device->run_update_loop_once(delta_time);
 	});
 }
@@ -57,7 +66,7 @@ void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
-	m_devices.Each([&messenger = m_messenger](NodalDevice* device) {
+	m_devices.Each([&messenger = m_messenger](DeviceSystem* device) {
 
 		auto nodeView = device->renderDevices();
 
@@ -88,13 +97,13 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	// More complex behavior later
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](NodalDevice* device) {
+		m_devices.Each([&](DeviceSystem* device) {
 			device->deliverRequest(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](NodalDevice* device) {
+		m_devices.Each([&](DeviceSystem* device) {
 			device->deliverRequest(event);
 		});
 
@@ -113,7 +122,7 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 
 void HardwareCoordinator::Cleanup()
 {
-	m_devices.Each([this](NodalDevice* device) {
+	m_devices.Each([this](DeviceSystem* device) {
 		device->teardownHooks();
 	});
 }

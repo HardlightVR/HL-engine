@@ -156,7 +156,7 @@ void Driver::handleHaptics()
 
 void Driver::handleStatus()
 {
-	//m_messenger.WriteSuits(m_hardware.PollDevice());
+	//m_messenger.WriteSystems(m_hardware.PollDevice());
 }
 
 void DoForEachBit(std::function<void(Location l)> fn, uint32_t bits) {

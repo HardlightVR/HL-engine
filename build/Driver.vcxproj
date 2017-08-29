@@ -299,7 +299,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
   <ItemGroup>
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
-    <ClInclude Include="..\src\Driver\better_enum.h" />
     <ClInclude Include="..\src\Driver\BodyGraph.h" />
     <ClInclude Include="..\src\Driver\BodyRegion.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
@@ -313,6 +312,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
+    <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\HumanBodyNodes.h" />
@@ -353,13 +353,16 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SharedCommunication\readablesharedvector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
+    <ClInclude Include="..\src\Driver\better_enum.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
+    <ClInclude Include="..\src\Driver\nsvr_core_errors.h" />
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\pevent.h" />
+    <ClInclude Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h" />
@@ -414,6 +417,14 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     </ClCompile>
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
+    <ClCompile Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
@@ -462,9 +473,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="build.licenseheader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

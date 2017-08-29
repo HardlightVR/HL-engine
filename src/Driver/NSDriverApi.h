@@ -19,12 +19,12 @@ extern "C" {
 	struct NSVR_Driver_Context;
 	typedef struct NSVR_Driver_Context NSVR_Driver_Context_t;
 
-	NS_DRIVER_API NSVR_Driver_Context_t* __stdcall NSVR_Driver_Create();
-	NS_DRIVER_API void __stdcall NSVR_Driver_Destroy(NSVR_Driver_Context_t* ptr);
-	NS_DRIVER_API bool __stdcall NSVR_Driver_Shutdown(NSVR_Driver_Context_t* ptr);
-	NS_DRIVER_API void __stdcall NSVR_Driver_StartThread(NSVR_Driver_Context_t* ptr);
-	NS_DRIVER_API unsigned int __stdcall NSVR_Driver_GetVersion(void);
-	NS_DRIVER_API  int __stdcall NSVR_Driver_IsCompatibleDLL(void);
+	NS_DRIVER_API NSVR_Driver_Context_t* __cdecl NSVR_Driver_Create();
+	NS_DRIVER_API void __cdecl NSVR_Driver_Destroy(NSVR_Driver_Context_t* ptr);
+	NS_DRIVER_API bool __cdecl NSVR_Driver_Shutdown(NSVR_Driver_Context_t* ptr);
+	NS_DRIVER_API void __cdecl NSVR_Driver_StartThread(NSVR_Driver_Context_t* ptr);
+	NS_DRIVER_API unsigned int __cdecl NSVR_Driver_GetVersion(void);
+	NS_DRIVER_API  int __cdecl NSVR_Driver_IsCompatibleDLL(void);
 
 
 #ifdef __cplusplus
