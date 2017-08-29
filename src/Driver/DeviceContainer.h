@@ -18,8 +18,8 @@ public:
 	DeviceContainer();
 
 
-	void OnSystemAdded(DeviceFn);
-	void OnPreSystemRemoved(DeviceFn);
+	void OnDeviceAdded(DeviceFn);
+	void OnPreDeviceRemoved(DeviceFn);
 
 private:
 

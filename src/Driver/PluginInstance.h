@@ -27,6 +27,7 @@ public:
 
 	bool Configure();
 
+	bool run_update_loop_once(uint64_t dt);
 
 	bool Unload();
 	bool IsLoaded() const;

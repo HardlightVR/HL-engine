@@ -91,6 +91,7 @@ HardlightPlugin::HardlightPlugin() :
 	});
 
 	m_mockTracking.Start();
+
 }
 
 HardlightPlugin::~HardlightPlugin()
@@ -152,6 +153,8 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	};
 	body_api.client_data = this;
 	nsvr_register_bodygraph_api(core, &body_api);
+
+
 	return 1;
 }
 

@@ -88,8 +88,7 @@ public:
 	
 	std::vector<NodeView> renderDevices();
 
-	//todo: hmm. If each device is in the same system..we need to run it once per system
-	bool run_update_loop_once(uint64_t dt);
+	
 
 	uint32_t id() const;
 private:
@@ -102,7 +101,6 @@ private:
 	PluginApis* m_apis;
 	void fetchNodeInfo(uint64_t device_id);
 
-	void setupSubscriptions(PluginEventSource& ev);
 
 	void createNewNode(const NodeDescriptor& descriptor);
 	void parseNodes(const std::vector<NodeDescriptor>& descriptor);

@@ -79,12 +79,12 @@ DeviceContainer::DeviceContainer()
 	
 }
 
-void DeviceContainer::OnSystemAdded(DeviceFn fn)
+void DeviceContainer::OnDeviceAdded(DeviceFn fn)
 {
 	m_deviceAddedSubs.push_back(fn);
 }
 
-void DeviceContainer::OnPreSystemRemoved(DeviceFn fn)
+void DeviceContainer::OnPreDeviceRemoved(DeviceFn fn)
 {
 	m_deviceRemovedSubs.push_back(fn);
 }

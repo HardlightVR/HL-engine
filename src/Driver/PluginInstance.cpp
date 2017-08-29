@@ -88,6 +88,21 @@ bool PluginInstance::Configure()
 	return false;
 }
 
+bool PluginInstance::run_update_loop_once(uint64_t dt)
+{
+	if (auto api = m_apis.GetApi<updateloop_api>()) {
+		try {
+			api->submit_update(dt);
+		}
+		catch (const std::runtime_error& err) {
+			BOOST_LOG_TRIVIAL(error) << "Runtime ERROR in plugin " << m_displayName << ": " << err.what();
+			return false;
+		}
+	}
+
+	return true;
+}
+
 bool PluginInstance::Link()
 {
 	boost::system::error_code loadFailure;

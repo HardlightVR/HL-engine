@@ -8,8 +8,12 @@ PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw, s
 	, m_plugins()
 	, m_deviceContainer(hw)
 	, m_io(io)
+	, m_pluginEventLoop(io, boost::posix_time::millisec(16))
 {
-	
+	m_pluginEventLoop.SetEvent([this]() {
+		
+		this->run_event_loop(16); //todo: should store 16 as variable
+	});
 }
 
 bool PluginManager::LoadAll()
@@ -25,6 +29,15 @@ bool PluginManager::UnloadAll()
 {
 	destroyAll();
 	return true;
+}
+
+void PluginManager::run_event_loop(uint64_t dt)
+{
+	for (auto& plugin : m_plugins) {
+		//if return value is false, we should destroy and reinstantiate the plugin
+		//taking care to clean up the DeviceContainer somehow
+		plugin.second->run_update_loop_once(dt);
+	}
 }
 
 bool PluginManager::Reload(const std::string & name)

@@ -17,7 +17,6 @@ Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEvent
 	, m_isBodyGraphSetup(false)
 	, m_systemId(descriptor.id)
 {
-	setupSubscriptions(ev);
 	
 	if (!m_apis->Supports<device_api>()) {
 		//uh oh? Make it required
@@ -31,16 +30,6 @@ Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEvent
 }
 
 
-void Device::setupSubscriptions(PluginEventSource & ev)
-{
-	ev.Subscribe(nsvr_device_event_device_connected, [this](uint64_t device_id) {
-		handle_connect(device_id);
-	});
-
-	ev.Subscribe(nsvr_device_event_device_disconnected, [this](uint64_t device_id) {
-		handle_disconnect(device_id);
-	});
-}
 
 void Device::createNewNode(const NodeDescriptor& node)
 {
@@ -363,20 +352,7 @@ std::vector<NodeView> Device::renderDevices()
 	return fullView;
 }
 
-bool Device::run_update_loop_once(uint64_t dt)
-{
-	if (auto api = m_apis->GetApi<updateloop_api>()) {
-		try {
-			api->submit_update(dt);
-		}
-		catch (const std::runtime_error& err) {
-			BOOST_LOG_TRIVIAL(error) << "Runtime ERROR in plugin " << m_name << ": " << err.what();
-			return false;
-		}
-	}
 
-	return true;
-}
 
 uint32_t Device::id() const
 {

@@ -4,6 +4,7 @@
 #include <memory>
 #include "PluginInstance.h"
 #include <boost/asio/io_service.hpp>
+#include "ScheduledEvent.h"
 class DeviceContainer;
 class PluginManager {
 public:
@@ -15,6 +16,7 @@ public:
 	bool LoadAll();
 	bool UnloadAll();
 
+	void run_event_loop(uint64_t dt);
 	bool Reload(const std::string& name);
 
 private:
@@ -31,6 +33,7 @@ private:
 	std::unordered_map<std::string, std::shared_ptr<PluginInstance>> m_plugins;
 	DeviceContainer& m_deviceContainer;
 	boost::asio::io_service& m_io;
-	
+	ScheduledEvent m_pluginEventLoop;
+
 };
 

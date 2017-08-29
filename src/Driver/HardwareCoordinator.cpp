@@ -13,36 +13,31 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_messenger(messenger)
 	, m_bodyRepresentation{}
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
-	, m_pluginEventLoopInterval(boost::posix_time::millisec(16))
-	, m_pluginEventLoop(io, m_pluginEventLoopInterval)
 {
-	m_devices.OnSystemAdded([this, &body = m_bodyRepresentation](Device* system) {
-		system->setupHooks(*this);
-		system->setupBodyRepresentation(body);
+	m_devices.OnDeviceAdded([this, &body = m_bodyRepresentation](Device* device) {
+		device->setupHooks(*this);
+		device->setupBodyRepresentation(body);
 		
 
-		NullSpace::SharedMemory::SystemInfo info = {};
-		info.Id = system->id();
+		NullSpace::SharedMemory::DeviceInfo info = {};
+		info.Id = device->id();
 
-		memcpy_s(info.SystemName, 128, system->name().data(), system->name().size());
-		m_messenger.WriteSystem(info);
+		memcpy_s(info.DeviceName, 128, device->name().data(), device->name().size());
+		m_messenger.WriteDevice(info);
 
 	});
 
-	m_devices.OnPreSystemRemoved([this, &body = m_bodyRepresentation](Device* system) {
-		system->teardownHooks();
-		system->teardownBodyRepresentation(body);
+	m_devices.OnPreDeviceRemoved([this, &body = m_bodyRepresentation](Device* device) {
+		device->teardownHooks();
+		device->teardownBodyRepresentation(body);
 
-		m_messenger.RemoveSystem(system->id());
+		m_messenger.RemoveDevice(device->id());
 	});
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });
 	m_writeBodyRepresentation.Start();
 
-	m_pluginEventLoop.SetEvent([this]() {
-		this->runPluginUpdateLoops(m_pluginEventLoopInterval.total_milliseconds());
-	});
-	m_pluginEventLoop.Start();
+	
 }
 
 
@@ -52,12 +47,6 @@ void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(nsvr_re
 	hook.connect([this](nsvr_region r, nsvr_quaternion* q) { hook_writeTracking(r, q); });
 }
 
-void HardwareCoordinator::runPluginUpdateLoops(uint64_t dt)
-{
-	m_devices.Each([delta_time = dt](Device* device) {
-		device->run_update_loop_once(delta_time);
-	});
-}
 
 void HardwareCoordinator::hook_writeTracking(nsvr_region region, nsvr_quaternion * quat)
 {

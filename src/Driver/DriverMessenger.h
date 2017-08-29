@@ -21,8 +21,8 @@ public:
 	DriverMessenger(boost::asio::io_service& io);
 	~DriverMessenger();
 	void WriteTracking(uint32_t, NullSpace::SharedMemory::Quaternion quat);
-	void WriteSystem(const SystemInfo& s);
-	void RemoveSystem(uint32_t id);
+	void WriteDevice(const DeviceInfo& s);
+	void RemoveDevice(uint32_t id);
 	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
 	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
@@ -41,7 +41,7 @@ private:
 	//Write haptics data here
 	std::unique_ptr<OwnedReadableSharedQueue> m_hapticsData;
 
-	std::unique_ptr<OwnedWritableSharedVector<SystemInfo>> m_systems;
+	std::unique_ptr<OwnedWritableSharedVector<DeviceInfo>> m_systems;
 	//If logging, write data here
 	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
 
