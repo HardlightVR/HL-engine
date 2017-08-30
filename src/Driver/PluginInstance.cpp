@@ -5,6 +5,7 @@
 #include <iostream>
 #include "IHardwareDevice.h"
 #include "DeviceContainer.h"
+
 PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& d) :
 	m_fileName(fileName), 
 	m_loaded{ false },
@@ -35,7 +36,7 @@ bool PluginInstance::ParseManifest()
 {
 	std::string manifestFilename = m_fileName + "_manifest.json";
 
-	if (auto manifest = DriverConfigParser::ParseConfig(manifestFilename)) {
+	if (auto manifest = Parsing::ParseConfig(manifestFilename)) {
 		m_descriptor = *manifest;
 		return true;
 	}

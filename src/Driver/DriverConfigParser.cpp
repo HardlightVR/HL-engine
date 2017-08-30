@@ -164,7 +164,7 @@ namespace Parsing {
 			return false;
 		}
 
-		for (int i = 0; i < json["regions"].size(); i++){
+		for (std::size_t i = 0; i < json["regions"].size(); i++){
 			const auto& value = json["regions"][i];
 			if (!deserialize(descriptor.regions, value, errors)) {
 				errors.insert(errors.begin(), "Error parsing region [" + std::to_string(i) + "]");
@@ -249,52 +249,46 @@ namespace Parsing {
 	{
 	}
 
-}
 
+	boost::optional<Parsing::ManifestDescriptor> ParseConfig(const std::string & path)
+	{
+		try {
+			Json::Value root;
+			std::ifstream json(path, std::ifstream::binary);
+			json >> root;
 
+			Parsing::ManifestDescriptor manifest;
+			std::vector<std::string> errors;
+			if (!Parsing::deserialize(manifest, root, errors)) {
+				std::string header("When parsing the manifest at " + path + ":");
+				std::cout << header << '\n';
+				int len = header.length();
+				std::cout << std::string(len, '-') << '\n';
+				int indent_level = 0;
+				for (const auto& error : errors) {
+					std::cout << std::string(indent_level * 4, ' ') << error << '\n';
 
-
-DriverConfigParser::DriverConfigParser()
-{
-}
-
-
-
-boost::optional<Parsing::ManifestDescriptor> DriverConfigParser::ParseConfig(const std::string & path)
-{
-	try {
-		Json::Value root;
-		std::ifstream json(path, std::ifstream::binary);
-		json >> root;
-
-		Parsing::ManifestDescriptor manifest;
-		std::vector<std::string> errors;
-		if (!Parsing::deserialize(manifest, root, errors)) {
-			std::string header("When parsing the manifest at " + path + ":");
-			std::cout << header << '\n';
-			int len = header.length();
-			std::cout << std::string(len, '-') << '\n';
-			int indent_level = 0;
-			for (const auto& error : errors) {
-				std::cout << std::string(indent_level * 4, ' ') << error << '\n';
-
-				if (error.find("parsing") != std::string::npos) {
-					indent_level++;
+					if (error.find("parsing") != std::string::npos) {
+						indent_level++;
+					}
 				}
-			}
-			std::cout << std::string(len, '-') << '\n';
+				std::cout << std::string(len, '-') << '\n';
 
+				return boost::none;
+			}
+			else {
+				return manifest;
+			}
+
+		}
+		catch (const Json::Exception& e) {
+			std::cout << "There was a json exception when parsing " << path << ": " << e.what() << '\n';
 			return boost::none;
 		}
-		else {
-			return manifest;
-		}
 
 	}
-	catch (const Json::Exception& e) {
-		std::cout << "There was a json exception when parsing " << path << ": " << e.what() << '\n';
-		return boost::none;
-	}
-	
+
 }
+
+
 

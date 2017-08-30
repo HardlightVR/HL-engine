@@ -2,11 +2,8 @@
 
 #include <string>
 #include <vector>
-
 #include <boost/variant.hpp>
-#include <unordered_set>
-#include "Locator.h"
-
+#include "PluginAPI.h"
 namespace Parsing {
 	enum class Concept {
 		Unknown = 0,
@@ -74,14 +71,6 @@ namespace Parsing {
 	bool deserialize(BodyGraphDescriptor& descriptor, const Json::Value& json, std::string& error);
 	bool deserialize(ManifestDescriptor& descriptor, const Json::Value& json, std::string& error);
 
-
+	boost::optional<Parsing::ManifestDescriptor> ParseConfig(const std::string & path);
 }
 
-
-class DriverConfigParser {
-
-public:
-	DriverConfigParser();
-	static boost::optional<Parsing::ManifestDescriptor> ParseConfig(const std::string& path);
-
-};
