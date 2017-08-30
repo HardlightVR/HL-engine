@@ -156,15 +156,25 @@ subregion::subregion(shared_region region, segment_range segment_offset, angle_r
 }
 int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 {
-	boost::add_vertex(name, m_nodes);
-	
-	subregion::shared_region region = m_bodyparts[pose->bodypart].region->find_best_match(pose->segment_ratio, pose->rotation).second;
-	
-	std::cout << "[" << name << "] Registered on region "<< (uint64_t)region << "\n";
-	
-	m_nodes[name] = NodeData( name, *pose, region);
+	//To create a new node:
+		//First, add a vertex into the graph with the given name.
+		boost::add_vertex(name, m_nodes);
 
-	m_bodyparts[pose->bodypart].region->find(region)->hardware_defined_regions.push_back(name);
+		//Then, grab the bodypart corresponding with the given arguments.
+		auto& bodypart = m_bodyparts[pose->bodypart];
+
+		//Then ask that bodypart to find the nearest match to the given coordinates.
+		subregion::shared_region region = bodypart.region->find_best_match(pose->segment_ratio, pose->rotation).second;
+
+		//Update the vertex with the information that was found
+		m_nodes[name] = NodeData(name, *pose, region);
+
+		//Update the bodypart's subregion that corresponded with the match to have a reference to this graph node.
+		bodypart.region->find(region)->hardware_defined_regions.push_back(name);
+
+
+
+	std::cout << "[" << name << "] Registered on region " << (uint64_t)region << "\n";
 	return 0;
 }
 
@@ -177,12 +187,12 @@ int BodyGraph::ConnectNodes(const char* a, const char* b)
 
 void BodyGraph::Associate(const char * node, uint64_t device_id)
 {
-	m_nodes[node].addDevice(device_id);
+	m_nodes[node].addNode(device_id);
 }
 
 void BodyGraph::Unassociate(const char * node, uint64_t device_id)
 {
-	m_nodes[node].removeDevice(device_id);
+	m_nodes[node].removeNode(device_id);
 }
 
 
@@ -190,18 +200,22 @@ void BodyGraph::Unassociate(const char * node, uint64_t device_id)
 void BodyGraph::ClearAssociations(uint64_t device_id)
 {
 	BGL_FORALL_VERTICES_T(v, m_nodes, LabeledGraph) {
-		m_nodes.graph()[v].removeDevice(device_id);
+		m_nodes.graph()[v].removeNode(device_id);
 	}
 }
 
 
-
-std::vector<uint64_t> BodyGraph::getNodesForNamedRegion(subregion::shared_region region)
+// Retrieve any nodes that are associated with a particular named region
+std::vector<nsvr_node_id> BodyGraph::getNodesForNamedRegion(subregion::shared_region region)
 {
-	std::vector<uint64_t> devices;
+	std::vector<nsvr_node_id> nodes;
+
 	for (auto& bp : m_bodyparts) {
 		subregion* ptr = bp.second.region->find(region);
 		if (ptr != nullptr) {
+			
+			//If this region doesn't have any devices associated with it,
+			//Then we need to traverse upwards until we find one that does!
 			while (ptr->hardware_defined_regions.empty()) {
 				if (ptr->parent != nullptr) {
 					ptr = ptr->parent;
@@ -211,53 +225,59 @@ std::vector<uint64_t> BodyGraph::getNodesForNamedRegion(subregion::shared_region
 				}
 			}
 			
+			//Okay, we found some references - for each one, grab the associated nodes out of the graph
+			//and insert into our list.
 			for (const std::string& name : ptr->hardware_defined_regions) {
-				auto found = m_nodes[name].devices;
-				devices.insert(devices.end(), found.begin(), found.end());
+				auto& found = m_nodes[name].nodes;
+				nodes.insert(nodes.end(), found.begin(), found.end());
 			}
 		}
 	}
 
-	return devices;
+	std::sort(nodes.begin(), nodes.end());
+	nodes.erase(std::unique(nodes.begin(), nodes.end()), nodes.end());
+	return nodes;
 	
 }
 
-std::unordered_map<subregion::shared_region, std::vector<uint64_t>> BodyGraph::getAllDevices() const
+
+std::unordered_map<subregion::shared_region, std::vector<nsvr_node_id>> BodyGraph::getAllNodes() const
 {
 
-	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> devices;
+	std::unordered_map<subregion::shared_region, std::vector<nsvr_node_id>> nodes;
 
+	//Walk through the graph, and add any nodes that were found to the hashtable
 	BGL_FORALL_VERTICES_T(v, m_nodes, LabeledGraph) {
 		subregion::shared_region region = m_nodes.graph()[v].computed_region;
-		auto& deviceList = m_nodes.graph()[v].devices;
-		auto& currentDevices = devices[region];
-		currentDevices.insert(currentDevices.end(), deviceList.begin(), deviceList.end());
+		auto& nodeList = m_nodes.graph()[v].nodes;
+		auto& currentDevices = nodes[region];
+		currentDevices.insert(currentDevices.end(), nodeList.begin(), nodeList.end());
 	}
 
 	//make sure each list has no duplicates
-	for (auto& kvp : devices) {
+	for (auto& kvp : nodes) {
 		auto& list = kvp.second;
 		std::sort(list.begin(), list.end());
 		list.erase(std::unique(list.begin(), list.end()), list.end());
 	}
 
-	return devices;
+	return nodes;
 }
 
 
 
-void BodyGraph::NodeData::addDevice(uint64_t id)
+void BodyGraph::NodeData::addNode(nsvr_node_id id)
 {
-	auto it = std::find(devices.begin(), devices.end(), id);
-	if (it == devices.end()) {
-		devices.push_back(id);
+	auto it = std::find(nodes.begin(), nodes.end(), id);
+	if (it == nodes.end()) {
+		nodes.push_back(id);
 	}
 }
 
-void BodyGraph::NodeData::removeDevice(uint64_t id)
+void BodyGraph::NodeData::removeNode(nsvr_node_id id)
 {
-	auto it = std::remove(devices.begin(), devices.end(), id);
-	devices.erase(it, devices.end());
+	auto it = std::remove(nodes.begin(), nodes.end(), id);
+	nodes.erase(it, nodes.end());
 }
 
 

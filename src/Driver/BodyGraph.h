@@ -289,7 +289,7 @@ public:
 	std::vector<uint64_t> getNodesForNamedRegion(subregion::shared_region region);
 
 
-	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> getAllDevices() const;
+	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> getAllNodes() const;
 private:
 	
 	// This is the user facing data structure that hardware devs end up interfacing with.
@@ -297,7 +297,7 @@ private:
 		std::string name;
 		nsvr_bodygraph_region region;
 		subregion::shared_region computed_region;
-		std::vector<uint64_t> devices;
+		std::vector<nsvr_node_id> nodes;
 
 		NodeData() 
 			: name()
@@ -309,8 +309,8 @@ private:
 			, region(region)
 			, computed_region(namedRegion) {}
 		
-		void addDevice(uint64_t id);
-		void removeDevice(uint64_t id);
+		void addNode(nsvr_node_id id);
+		void removeNode(nsvr_node_id id);
 	};
 
 	using LabeledGraph = boost::labeled_graph<

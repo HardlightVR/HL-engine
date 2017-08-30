@@ -291,7 +291,7 @@ std::vector<NodeView> Device::renderDevices() const
 	}
 
 
-	auto devices = m_graph.getAllDevices();
+	auto devices = m_graph.getAllNodes();
 	std::vector<NodeView> fullView;
 	for (const auto& kvp : devices) {
 		NodeView view;
