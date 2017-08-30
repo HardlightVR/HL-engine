@@ -15,8 +15,8 @@ class PluginEventSource {
 public:
 	PluginEventSource(boost::asio::io_service& io);
 
-	using EventSignal = boost::signals2::signal<void(uint64_t)>;
-	void Raise(nsvr_device_event_type type, uint64_t id);
+	using EventSignal = boost::signals2::signal<void(nsvr_device_id)>;
+	void Raise(nsvr_device_event_type type, nsvr_device_id id);
 
 	void Subscribe(nsvr_device_event_type type, EventSignal::slot_type);
 private:

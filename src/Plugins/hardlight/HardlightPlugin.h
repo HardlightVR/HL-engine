@@ -22,8 +22,8 @@ public:
 	~HardlightPlugin();
 
 	int Configure(nsvr_core* ctx);
-	void BeginTracking(nsvr_tracking_stream* stream, nsvr_region region);
-	void EndTracking(nsvr_region region);
+	void BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id region);
+	void EndTracking(nsvr_node_id region);
 
 	void SetupBodygraph(nsvr_bodygraph* graph);
 private:

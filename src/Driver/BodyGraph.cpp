@@ -128,7 +128,7 @@ subregion::subregion()
 	, ang{ 0,0 }
 	, coords{ 0, 0, 0 }
 	, children()
-	, devices()
+	, hardware_defined_regions()
 	, parent(nullptr) {}
 
 subregion::subregion(shared_region region, segment_range segment_offset, angle_range angle_range)
@@ -136,7 +136,7 @@ subregion::subregion(shared_region region, segment_range segment_offset, angle_r
 	, seg(segment_offset)
 	, ang(angle_range)
 	, children()
-	, devices()
+	, hardware_defined_regions()
 	, parent(nullptr) {
 	calculateCoordinates();
 
@@ -147,7 +147,7 @@ subregion::subregion(shared_region region, segment_range segment_offset, angle_r
 	, seg(segment_offset)
 	, ang(angle_range)
 	, children(std::move(child_regions))
-	, devices()
+	, hardware_defined_regions()
 	, parent(nullptr) {
 
 	calculateCoordinates();
@@ -164,7 +164,7 @@ int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 	
 	m_nodes[name] = NodeData( name, *pose, region);
 
-	m_bodyparts[pose->bodypart].region->find(region)->devices.push_back(name);
+	m_bodyparts[pose->bodypart].region->find(region)->hardware_defined_regions.push_back(name);
 	return 0;
 }
 
@@ -196,13 +196,13 @@ void BodyGraph::ClearAssociations(uint64_t device_id)
 
 
 
-std::vector<uint64_t> BodyGraph::getDevicesForNamedRegion(subregion::shared_region region)
+std::vector<uint64_t> BodyGraph::getNodesForNamedRegion(subregion::shared_region region)
 {
 	std::vector<uint64_t> devices;
 	for (auto& bp : m_bodyparts) {
 		subregion* ptr = bp.second.region->find(region);
 		if (ptr != nullptr) {
-			while (ptr->devices.empty()) {
+			while (ptr->hardware_defined_regions.empty()) {
 				if (ptr->parent != nullptr) {
 					ptr = ptr->parent;
 				}
@@ -211,7 +211,7 @@ std::vector<uint64_t> BodyGraph::getDevicesForNamedRegion(subregion::shared_regi
 				}
 			}
 			
-			for (const std::string& name : ptr->devices) {
+			for (const std::string& name : ptr->hardware_defined_regions) {
 				auto found = m_nodes[name].devices;
 				devices.insert(devices.end(), found.begin(), found.end());
 			}

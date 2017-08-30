@@ -7,13 +7,13 @@
 #include <boost/log/trivial.hpp>
 #include "Locator.h"
 #include "HardwareCoordinator.h"
-#include "HumanBodyNodes.h"
 #include "BodyGraph.h"
+
 Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev)
 	: m_name(descriptor.displayName)
 	, m_apis(&capi)
-	, m_trackingDevices()
-	, m_hapticDevices()
+	, m_trackingNodes()
+	, m_hapticNodes()
 	, m_isBodyGraphSetup(false)
 	, m_deviceId(descriptor.id)
 {
@@ -38,11 +38,11 @@ void Device::createNewNode(const NodeDescriptor& node)
 	if (NodeDescriptor::NodeType::Haptic == node.type) {
 		//todo: fix
 		//BOOST_LOG_TRIVIAL(info) << "[Device] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
-		m_hapticDevices.push_back(std::make_unique<HapticNode>(node, m_apis));
+		m_hapticNodes.push_back(std::make_unique<HapticNode>(node, m_apis));
 	}
 	else if (NodeDescriptor::NodeType::Tracker == node.type) {
 		//BOOST_LOG_TRIVIAL(info) << "[Device] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
-		m_trackingDevices.push_back(std::make_unique<TrackingNode>(node, m_apis));
+		m_trackingNodes.push_back(std::make_unique<TrackingNode>(node, m_apis));
 
 	}
 }
@@ -109,42 +109,37 @@ void Device::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 
 void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleHaptic& simple)
 {
+	if (auto api = m_apis->GetApi<waveform_api>()) {
+		nsvr_waveform wave{};
+		wave.repetitions = static_cast<std::size_t>(simple.duration() / 0.25f);
+		wave.strength = simple.strength();
+		wave.waveform_id = static_cast<nsvr_default_waveform>(simple.effect());
 
-	
-	for (uint64_t region : simple.regions()) {
-		
-	
-
-		
-		auto devices = m_graph.getDevicesForNamedRegion(static_cast<subregion::shared_region>(region));
-
-
-		if (auto api = m_apis->GetApi<waveform_api>()) {
-			nsvr_waveform wave{};
-			wave.repetitions = static_cast<std::size_t>(simple.duration() / 0.25f);
-			wave.strength = simple.strength();
-			wave.waveform_id = static_cast<nsvr_default_waveform>(simple.effect());
-			for (const auto& device :devices) {
-				api->submit_activate(requestId, device, reinterpret_cast<nsvr_waveform*>(&wave));
+		for (uint64_t region : simple.regions()) {
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+			for (const auto& node : nodes) {
+				api->submit_activate(requestId, node, reinterpret_cast<nsvr_waveform*>(&wave));
 			}
 		}
-		else if (auto api = m_apis->GetApi<buffered_api>()) {
+	} 
 
-			double sampleDuration = 0;
-			api->submit_getsampleduration(&sampleDuration);
+	else if (auto api = m_apis->GetApi<buffered_api>()) {
+		double sampleDuration = 0;
+		api->submit_getsampleduration(&sampleDuration);
+		uint32_t numNecessarySamples = std::max<uint32_t>(1, static_cast<uint32_t>(simple.duration() / sampleDuration));
 
-			uint32_t numNecessarySamples = std::max<uint32_t>(1, static_cast<uint32_t>(simple.duration() / sampleDuration));
+		std::vector<double> samples(numNecessarySamples, simple.strength());
 
-			std::vector<double> samples(numNecessarySamples, simple.strength());
-
-			for (const auto& device : devices) {
-				api->submit_buffer(device, samples.data(), samples.size());
+		for (uint64_t region : simple.regions()) {
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+			for (const auto& node : nodes) {
+				api->submit_buffer(node, samples.data(), samples.size());
 			}
-		
-			
 		}
-		
- 	}
+	}
+	
+
+	
 }
 
 
@@ -172,24 +167,24 @@ void Device::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEve
 }
 
 //returns nullptr on failure
-const Node * Device::findDevice(uint64_t id) const
+const Node * Device::findNode(nsvr_node_id id) const
 {
-	auto it = std::find_if(m_hapticDevices.begin(), m_hapticDevices.end(), [id](const std::unique_ptr<HapticNode>& node) {return node->id() == id; });
-	if (it != m_hapticDevices.end()) {
+	auto it = std::find_if(m_hapticNodes.begin(), m_hapticNodes.end(), [id](const std::unique_ptr<HapticNode>& node) {return node->id() == id; });
+	if (it != m_hapticNodes.end()) {
 		return it->get();
 	}
 
-	auto it2 = std::find_if(m_trackingDevices.begin(), m_trackingDevices.end(), [id](const std::unique_ptr<TrackingNode>& node) { return node->id() == id; });
-	if (it2 != m_trackingDevices.end()) {
+	auto it2 = std::find_if(m_trackingNodes.begin(), m_trackingNodes.end(), [id](const std::unique_ptr<TrackingNode>& node) { return node->id() == id; });
+	if (it2 != m_trackingNodes.end()) {
 		return it2->get();
 	}
 
 	return nullptr;
 }
 
-Node * Device::findDevice(uint64_t id)
+Node * Device::findNode(uint64_t id)
 {
-	return const_cast<Node*>(static_cast<const Device&>(*this).findDevice(id));
+	return const_cast<Node*>(static_cast<const Device&>(*this).findNode(id));
 }
 
 
@@ -256,14 +251,14 @@ std::string Device::name() const
 void Device::setupHooks(HardwareCoordinator & coordinator)
 {
 	if (m_apis->Supports<tracking_api>()) {
-		for (auto& node : m_trackingDevices) {
+		for (auto& node : m_trackingNodes) {
 			coordinator.Hook_TrackingSlot(node->TrackingSignal);
 		}
 	}
 }
 
 void Device::teardownHooks() {
-	for (auto& node : m_trackingDevices) {
+	for (auto& node : m_trackingNodes) {
 		node->TrackingSignal.disconnect_all_slots();
 	}
 	
@@ -281,7 +276,7 @@ void Device::setupBodyRepresentation(HumanBodyNodes & body)
 
 void Device::teardownBodyRepresentation(HumanBodyNodes & body)
 {
-	for (auto& node : m_hapticDevices) {
+	for (auto& node : m_hapticNodes) {
 		body.RemoveNode(node.get());
 	}
 }
@@ -305,7 +300,7 @@ std::vector<NodeView> Device::renderDevices() const
 		for (const auto& id : kvp.second) {
 			NodeView::SingleNode singleNode;
 			
-			const Node* possibleNode = findDevice(id);
+			const Node* possibleNode = findNode(id);
 			if (possibleNode) {
 				const Renderable* possibleRenderable = dynamic_cast<const Renderable*>(possibleNode);
 				if (possibleRenderable) {

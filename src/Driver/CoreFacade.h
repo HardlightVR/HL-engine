@@ -1,11 +1,6 @@
 #pragma once
 #include "PluginAPI.h"
 
-namespace nsvr {
-	namespace pevents {
-		class device_event;
-	}
-}
 
 class PluginApis;
 class PluginEventSource;
@@ -17,7 +12,7 @@ public:
 	CoreFacade(PluginApis& apiRegistry, PluginEventSource& eventHandler);
 
 
-	void RaisePluginEvent(nsvr_device_event_type type, uint64_t id);
+	void RaisePluginEvent(nsvr_device_event_type type, nsvr_device_id id);
 
 	
 	template<typename InternalApi, typename ExternalApi>

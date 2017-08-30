@@ -9,7 +9,7 @@ PluginEventSource::PluginEventSource(boost::asio::io_service & io)
 ///
 /// Raise a plugin event. Called within the main entry points into the core API (CoreFacade).
 ///
-void PluginEventSource::Raise(nsvr_device_event_type type, uint64_t id)
+void PluginEventSource::Raise(nsvr_device_event_type type, nsvr_device_id id)
 {
 	// The goal here is to raise the event in the io thread, and not in the plugin's thread.
 	// This means event delivery is asynchronous. It also means we should research the thread safety 

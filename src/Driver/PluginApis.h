@@ -6,7 +6,6 @@
 #include <memory>
 #include <boost/optional.hpp>
 #include <boost/log/trivial.hpp>
-
 ///
 /// The purpose of this file is to wrap C callbacks with ones that we can more easily call from
 /// C++. Basically, we wrap each function pointer with some syntactic sugar so that we can call it just like a normal 
@@ -40,6 +39,7 @@ inline void callback<FnPtr, Arguments...>::operator()(Arguments ...argument)
 
 
 // We use a common base class so that the apis can be stored in a hashtable
+// Please, do replace with a better solution if found
 class plugin_api {
 public:
 	virtual ~plugin_api() {}
@@ -75,7 +75,7 @@ struct buffered_api : public plugin_api {
 	
 	callback<
 		nsvr_plugin_buffered_api::nsvr_buffered_submit,
-		uint64_t,
+		nsvr_node_id,
 		double*,
 		uint32_t
 	> submit_buffer;
@@ -101,7 +101,7 @@ struct preset_api : public plugin_api {
 	
 	callback<
 		nsvr_plugin_preset_api::nsvr_preset_handler, 
-		uint64_t,
+		nsvr_node_id,
 		nsvr_preset*
 	> submit_preset;
 
@@ -187,7 +187,7 @@ struct waveform_api : public plugin_api {
 	callback<
 		nsvr_plugin_waveform_api::nsvr_waveform_activate_handler,
 		uint64_t,
-		uint64_t,
+		nsvr_node_id,
 		nsvr_waveform*
 	> submit_activate;
 	static Apis getApiType() { return Apis::Waveform; }
@@ -251,7 +251,7 @@ struct updateloop_api : public plugin_api {
 // Represents the capabilities of a particular plugin, e.g. a plugin supports
 // the buffered api, the preset api, and the playback api.
 // A plugin may register these apis indirectly using Register, 
-// and we can retrieve and use it internally by calling GetApi.
+// and we can retrieve and use it internally by calling GetApi<T>()
 class PluginApis {
 public:
 

@@ -48,7 +48,7 @@ void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(uint64_
 }
 
 
-void HardwareCoordinator::hook_writeTracking(uint64_t node_id, nsvr_quaternion * quat)
+void HardwareCoordinator::hook_writeTracking(nsvr_node_id node_id, nsvr_quaternion * quat)
 {
 	//todo: we need to actually take the quaternion arriving from the device and translate it to a region, based on the BodyGraph
 	m_messenger.WriteTracking(node_id, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });

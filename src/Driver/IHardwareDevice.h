@@ -85,8 +85,8 @@ private:
 	
 	std::string m_name;
 
-	std::vector<std::unique_ptr<HapticNode>> m_hapticDevices;
-	std::vector<std::unique_ptr<TrackingNode>> m_trackingDevices;
+	std::vector<std::unique_ptr<HapticNode>> m_hapticNodes;
+	std::vector<std::unique_ptr<TrackingNode>> m_trackingNodes;
 	PluginApis* m_apis;
 	
 	
@@ -101,8 +101,8 @@ private:
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event);
 	
-	const Node* findDevice(uint64_t id) const;
-	Node* findDevice(uint64_t id);
+	const Node* findNode(uint64_t id) const;
+	Node* findNode(uint64_t id);
 
 	BodyGraph m_graph;
 
