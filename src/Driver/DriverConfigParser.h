@@ -5,69 +5,83 @@
 
 #include <boost/variant.hpp>
 #include <unordered_set>
+#include "Locator.h"
 
-class DeviceDescriptor {
-public:
-	DeviceDescriptor();
-	uint32_t id;
-	std::string displayName;
-
-};
-
-class NodeDescriptor {
-public:
-	enum class NodeType {
-		Unknown = 0,
-		Haptic,
-		Led,
-		Tracker
-	};
-	enum class Capability {
-		Unknown = 0,
-		Preset = 1 << 0,
-		Buffered = 1 << 1,
-		Dynamic = 1 << 2
-	};
-
-	uint64_t id;
-	std::string displayName;
-	NodeType type;
-	uint32_t capabilities;
-};
-
-class HardwareDescriptor {
-public:
+namespace Parsing {
 	enum class Concept {
 		Unknown = 0,
 		Suit,
 		Gun,
 		Controller
 	};
-	HardwareDescriptor();
 
-	std::string displayName;
-	Concept concept;
-	std::vector<DeviceDescriptor> devices;
-	unsigned int fileVersion;
-	static std::unordered_map<std::string, HardwareDescriptor::Concept> concept_map;
 
-};
+
+	enum class RegionType {
+		Unknown = 0,
+		Single, 
+		Strip
+	};
+
+	
+
+	struct LocationDescriptor {
+		double height;
+		double rotation;
+
+		LocationDescriptor();
+	};
+	struct SingleRegionDescriptor {
+		std::string name;
+		nsvr_bodypart bodypart;
+		LocationDescriptor location;
+
+		SingleRegionDescriptor();
+	};
+
+	struct MultiRegionDescriptor {
+		std::string name;
+		nsvr_bodypart bodypart;
+		LocationDescriptor location_start;
+		LocationDescriptor location_end;
+		uint32_t count;
+
+		MultiRegionDescriptor();
+
+	};
+
+	struct BodyGraphDescriptor {
+		using RegionDescriptor = boost::variant<SingleRegionDescriptor, MultiRegionDescriptor>;
+		std::vector<RegionDescriptor> regions;
+
+		BodyGraphDescriptor();
+	}; 
+	
+	struct ManifestDescriptor {
+		std::string pluginName;
+		uint32_t version;
+		Parsing::Concept concept;
+		BodyGraphDescriptor bodygraph;
+
+		ManifestDescriptor();
+
+	};
+
+
+	bool deserialize(LocationDescriptor& location, const Json::Value& json, std::string& error);
+	bool deserialize(SingleRegionDescriptor& descriptor, const Json::Value& json, std::string& error);
+	bool deserialize(MultiRegionDescriptor& descriptor, const Json::Value& json, std::string& error);
+	bool deserialize(BodyGraphDescriptor& descriptor, const Json::Value& json, std::string& error);
+	bool deserialize(ManifestDescriptor& descriptor, const Json::Value& json, std::string& error);
+
+
+}
+
+
 class DriverConfigParser {
 
 public:
 	DriverConfigParser();
-	static bool IsValidConfig(const std::string& path);
-	static HardwareDescriptor ParseConfig(const std::string& path);
-
-
-	static void parseDevice(HardwareDescriptor& descriptor, const Json::Value& devices);
-	//static DeviceDescriptor::Capability parseCapability(const std::string& param1);
-	//static DeviceDescriptor::NodeType parseNodeType(const std::string& param1);
-
-
-	
-
-	static std::unordered_map<std::string, NodeDescriptor::Capability> capability_map;
-	static std::unordered_map<std::string, NodeDescriptor::NodeType> node_type_map;
+	static boost::optional<Parsing::ManifestDescriptor> ParseConfig(const std::string& path);
 
 };

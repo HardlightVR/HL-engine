@@ -4,6 +4,13 @@
 #include <unordered_map>
 
 #include <mutex>
+
+
+struct DeviceDescriptor {
+	std::string displayName;
+	nsvr_device_id id;
+};
+
 // Should break this into two interfaces: adding/removing, and the data operations
 class DeviceContainer {
 public:

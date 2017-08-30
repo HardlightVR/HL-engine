@@ -234,7 +234,7 @@ void OpenVRWrapper::enumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* i
 void OpenVRWrapper::getNodeInfo(uint64_t id, nsvr_node_info* info) {
 	if (id == 0) {
 		info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
-		info->type = nsvr_device_type_haptic;
+		info->type = nsvr_node_type_haptic;
 		std::string name("Haptic Thumbpad");
 		std::copy(name.begin(), name.end(), info->name);
 

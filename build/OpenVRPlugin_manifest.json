@@ -2,17 +2,24 @@
    "name" : "Vive Controllers",
    "manifest-version":1,
    "concept" : "controller",
-   "devices" : [
-      {
-         "name" : "Vive Controller 1",
-         
-         "id" : 1
-       
-      },
-      {
-         "name" : "Vive Controller 2",
-         "id" : 2
-      }
-
-   ]
+   "bodygraph" : {
+   	"regions": [
+   		{
+   			"name" : "PalmLeftZone",
+   			"bodypart" : "palm_left",
+   			"location" : {
+   				"height" : 0.5,
+   				"rotation" : 0
+   			}
+   		},
+   		{
+   			"name" : "PalmRightZone",
+   			"bodypart" : "palm_right",
+   			"location" : {
+   				"height" : 0.5,
+   				"rotation" : 0
+   			}
+   		}
+   	]
+   }
 }

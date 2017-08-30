@@ -14,12 +14,18 @@
 #include <boost/mpl/pair.hpp>
 #include "BodyGraph.h"
 #include "Renderable.h"
-
 class PluginApis;
 class PluginEventSource;
 class HardwareCoordinator;
 
+struct DeviceDescriptor;
 
+struct NodeDescriptor {
+	nsvr_node_type type;
+	uint32_t capabilities;
+	std::string displayName;
+	nsvr_node_id id;
+};
 class Node {
 public:
 	Node(const NodeDescriptor&, PluginApis*);

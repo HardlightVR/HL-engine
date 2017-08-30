@@ -88,7 +88,7 @@ extern "C" {
 		nsvr_device_event_device_disconnected,
 	}; 
 
-	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, uint64_t id);
+	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, nsvr_device_id id);
 	
 
 
@@ -118,14 +118,15 @@ extern "C" {
 	} nsvr_node_capability;
 
 	typedef enum nsvr_node_type {
-		nsvr_device_type_unknown = 0,
-		nsvr_device_type_haptic,
-		nsvr_device_type_led
+		nsvr_node_type_unknown = 0,
+		nsvr_node_type_haptic,
+		nsvr_node_type_led,
+		nsvr_node_type_tracker
 	} nsvr_node_type;
 
 	typedef struct nsvr_node_info {
 		nsvr_node_id id;
-		uint32_t type;
+		nsvr_node_type type;
 		uint32_t capabilities;
 		char name[512];
 	} nsvr_node_info;

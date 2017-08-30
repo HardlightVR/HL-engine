@@ -157,7 +157,7 @@ void HardlightDevice::GetNodeInfo(uint64_t id, nsvr_node_info* info) {
 
 	if (it != m_drivers.end()) {
 		info->capabilities = nsvr_device_capability_dynamic;
-		info->type = nsvr_device_type_haptic;
+		info->type = nsvr_node_type_haptic;
 		info->id = id;
 
 		const auto& driver = it->second;

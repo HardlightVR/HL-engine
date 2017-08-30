@@ -1,12 +1,9 @@
-{  
-   "name":"Hardlight MKII Haptic Suit",
-   "manifest-version":1,
-   "concept":"suit",
-   "devices" : [
-      {
-         "name" : "Hardlight MKII Haptic Suit (16 zones)",
-         "id" : 0
-      }
-   ]
+{
+   "name": "Hardlight MKII Haptic Suit",
+   "manifest-version": 1,
+   "concept": "suit",
+   "bodygraph" : {
+      "regions": [
+      ]
+   }
 }
-

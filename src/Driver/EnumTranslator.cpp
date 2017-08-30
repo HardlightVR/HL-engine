@@ -33,6 +33,14 @@ std::string EnumTranslator::ToString(Effect effect) const
 }
 
 
+nsvr_bodypart EnumTranslator::ToBodypart(std::string bodypart, nsvr_bodypart default) const
+{
+	if (_bodypartMap.left.find(bodypart) != _bodypartMap.left.end()) {
+		return _bodypartMap.left.at(bodypart);
+	}
+	return default;
+}
+
 Effect EnumTranslator::ToEffect(std::string effect, Effect defaultEffect)
 {
 	
@@ -69,6 +77,7 @@ EnumTranslator::EnumTranslator() {
 	init_locations();
 	init_effects();
 	init_familymap();
+	init_bodyparts();
 	//this is error prone and I always forget to init a new one
 	//todo: make better
 }
@@ -183,6 +192,28 @@ void EnumTranslator::init_familymap()
 		("transition_hum", 15)
 		("triple_click", 16)
 		("doom_buzz", 666);
+}
+
+void EnumTranslator::init_bodyparts()
+{
+	boost::assign::insert(_bodypartMap)
+		("unknown", nsvr_bodypart_unknown)
+		("upperarm_left", nsvr_bodypart_upperarm_left)
+		("forearm_left", nsvr_bodypart_forearm_left)
+		("palm_left", nsvr_bodypart_palm_left)
+		("upperleg_left", nsvr_bodypart_upperleg_left)
+		("lowerleg_left", nsvr_bodypart_lowerleg_left)
+
+		("upperarm_right", nsvr_bodypart_upperarm_right)
+		("forearm_right", nsvr_bodypart_forearm_right)
+		("palm_right", nsvr_bodypart_palm_right)
+		("upperleg_right", nsvr_bodypart_upperleg_right)
+		("lowerleg_right", nsvr_bodypart_lowerleg_right)
+
+		("hips", nsvr_bodypart_hips)
+		("torso", nsvr_bodypart_torso)
+		("neck", nsvr_bodypart_neck)
+		("head", nsvr_bodypart_head);
 }
 
 

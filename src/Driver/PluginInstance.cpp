@@ -34,23 +34,13 @@ PluginInstance::~PluginInstance()
 bool PluginInstance::ParseManifest()
 {
 	std::string manifestFilename = m_fileName + "_manifest.json";
-	if (!DriverConfigParser::IsValidConfig(manifestFilename)) {
-		std::cout << manifestFilename << " is not a valid config file\n";
-		return false;
+
+	if (auto manifest = DriverConfigParser::ParseConfig(manifestFilename)) {
+		m_descriptor = *manifest;
+		return true;
 	}
-
-	try {
-		m_descriptor = DriverConfigParser::ParseConfig(manifestFilename);
-
-		
-	}
-	catch (const std::exception&) {
-		std::cout << "Unable to parse descriptor for " << m_fileName << '\n';
-		return false;
-	}
-
-	return true;
-
+	
+	return false;
 }
 
 

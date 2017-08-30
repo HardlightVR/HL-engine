@@ -74,12 +74,12 @@ bool PluginManager::instantiatePlugin(std::shared_ptr<PluginInstance>& plugin)
 bool PluginManager::configurePlugin(std::shared_ptr<PluginInstance>& plugin)
 {
 	if (!plugin->Configure()) {
-		BOOST_LOG_TRIVIAL(warning) << "Couldn't configure " << plugin->GetDisplayName();
+		BOOST_LOG_TRIVIAL(warning) << "Couldn't configure " << plugin->GetFileName();
 		return false;
 	}
 
 	if (!plugin->ParseManifest()) {
-		BOOST_LOG_TRIVIAL(warning) << "Couldn't parse manifest of " << plugin->GetDisplayName();
+		BOOST_LOG_TRIVIAL(warning) << "Couldn't parse manifest of " << plugin->GetFileName();
 
 		return false;
 	}

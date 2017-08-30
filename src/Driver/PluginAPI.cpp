@@ -41,7 +41,7 @@ return ExceptionGuard([core, api](){ \
 
 
 
-NSVR_CORE_RETURN(nsvr_result) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, uint64_t id)
+NSVR_CORE_RETURN(nsvr_result) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, nsvr_device_id id)
 {
 	RETURN_IF_NULL(core);
 
@@ -83,14 +83,6 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_waveform_getrepetitions(nsvr_waveform * req, 
 }
 
 
-NSVR_CORE_RETURN(nsvr_result) nsvr_playback_handle_getid(nsvr_playback_handle * handle, uint64_t * outId)
-{
-	RETURN_IF_NULL(handle);
-	RETURN_IF_NULL(outId);
-
-	*outId = handle->id;
-	return nsvr_success;
-}
 
 
 NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_connect(nsvr_bodygraph* body, const char* nodeA, const char* nodeB)
@@ -186,20 +178,6 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_clearassociations(nsvr_bodygraph * 
 	
 }
 
-NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_region_setwidthcm(nsvr_bodygraph_region * region, double centimeters)
-{
-	RETURN_IF_NULL(region);
-
-	region->width_cm = centimeters;
-	return 0;
-}
-NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_region_setheightcm(nsvr_bodygraph_region * region, double centimeters)
-{
-	RETURN_IF_NULL(region);
-
-	region->height_cm = centimeters;
-	return 0;
-}
 
 NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_region_setboundingboxdimensions(nsvr_bodygraph_region* region, double width, double height)
 {

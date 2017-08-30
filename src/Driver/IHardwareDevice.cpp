@@ -8,6 +8,7 @@
 #include "Locator.h"
 #include "HardwareCoordinator.h"
 #include "BodyGraph.h"
+#include "DeviceContainer.h"
 
 Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev)
 	: m_name(descriptor.displayName)
@@ -35,12 +36,12 @@ void Device::createNewNode(const NodeDescriptor& node)
 {
 	const auto& t = Locator::Translator();
 
-	if (NodeDescriptor::NodeType::Haptic == node.type) {
+	if (nsvr_node_type::nsvr_node_type_haptic == node.type) {
 		//todo: fix
 		//BOOST_LOG_TRIVIAL(info) << "[Device] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_hapticNodes.push_back(std::make_unique<HapticNode>(node, m_apis));
 	}
-	else if (NodeDescriptor::NodeType::Tracker == node.type) {
+	else if (nsvr_node_type::nsvr_node_type_tracker == node.type) {
 		//BOOST_LOG_TRIVIAL(info) << "[Device] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_trackingNodes.push_back(std::make_unique<TrackingNode>(node, m_apis));
 
@@ -64,9 +65,9 @@ void Device::fetchNodeInfo(uint64_t device_id) {
 
 	NodeDescriptor desc;
 	desc.capabilities = info.capabilities;
-	desc.displayName = info.name;
+	desc.displayName = std::string(info.name);
 	desc.id = device_id;
-	desc.type = static_cast<NodeDescriptor::NodeType>(info.type);
+	desc.type = info.type;
 
 	createNewNode(desc);
 

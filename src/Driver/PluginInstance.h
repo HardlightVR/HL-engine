@@ -57,7 +57,7 @@ private:
 
 
 	DeviceContainer& m_deviceContainer;
-	HardwareDescriptor m_descriptor;
+	Parsing::ManifestDescriptor m_descriptor;
 	PluginApis m_apis;
 	PluginEventSource m_eventHandler;
 	CoreFacade m_facade;
