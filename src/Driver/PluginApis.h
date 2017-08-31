@@ -138,7 +138,7 @@ struct sampling_api : public plugin_api{
 		: submit_query{ api->query_handler, api->client_data } {}
 	callback<
 		nsvr_plugin_sampling_api::nsvr_sampling_querystate, 
-		uint64_t,
+		nsvr_node_id,
 		nsvr_sampling_sample*
 	> submit_query;
 

@@ -139,6 +139,8 @@ extern "C" {
 
 	//question: should node IDs be unique per system?
 	typedef struct nsvr_plugin_device_api {
+		//todo: I think that commands must be sent with node, device id pair. As in, I think nodes shouldn't need unique ids between
+		//devices. Maybe?
 		typedef void(*nsvr_device_enumeratedevices)(nsvr_device_ids*, void*);
 		typedef void(*nsvr_device_enumeratenodes)(nsvr_device_id device_id, nsvr_node_ids*, void*);
 		typedef void(*nsvr_device_getnodeinfo)(nsvr_node_id node_id, nsvr_node_info* info, void*);
@@ -254,7 +256,7 @@ extern "C" {
 	} nsvr_sampling_sample;
 
 	typedef struct nsvr_plugin_sampling_api {
-		typedef void(*nsvr_sampling_querystate)(uint64_t device, nsvr_sampling_sample* outSample, void* client_data);
+		typedef void(*nsvr_sampling_querystate)(nsvr_node_id node_id, nsvr_sampling_sample* outSample, void* client_data);
 		nsvr_sampling_querystate query_handler;
 		void* client_data;
 	} nsvr_plugin_sampling_api;
@@ -307,6 +309,9 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core* core, nsvr_plugin_tracking_api* api);
 	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
 
+	typedef struct nsvr_plugin_simulation_api {
+
+	} nsvr_plugin_simulation_api;
 
 
 
