@@ -3,17 +3,17 @@
 #include <experimental/vector>
 
 
-void DeviceContainer::AddDevice(const DeviceDescriptor& desc, PluginApis& apis, PluginEventSource& ev)
+void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
 {
 	m_deviceLock.lock();
-	m_devices.push_back(std::make_unique<Device>(desc, apis, ev));
+	m_devices.push_back(std::make_unique<Device>(desc, apis, ev, std::move(bodyGraphDescriptor)));
 	m_deviceLock.unlock();
 
 
 	notify(m_deviceAddedSubs, m_devices.back().get());
 }
 
-void DeviceContainer::AddDevice(uint64_t id, PluginApis & apis, PluginEventSource & ev)
+void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, PluginEventSource & ev, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
 {
 	if (auto api = apis.GetApi<device_api>()) {
 
@@ -29,7 +29,7 @@ void DeviceContainer::AddDevice(uint64_t id, PluginApis & apis, PluginEventSourc
 			DeviceDescriptor desc;
 			desc.displayName = std::string(info.name);
 			desc.id = info.id;
-			AddDevice(desc, apis, ev);
+			addDevice(desc, apis, ev, std::move(bodyGraphDescriptor));
 		}
 	}
 

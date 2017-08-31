@@ -10,7 +10,9 @@
 #include "BodyGraph.h"
 #include "DeviceContainer.h"
 
-Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev)
+#include <boost/variant/variant.hpp>
+
+Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraph)
 	: m_name(descriptor.displayName)
 	, m_apis(&capi)
 	, m_trackingNodes()
@@ -19,14 +21,11 @@ Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEvent
 	, m_deviceId(descriptor.id)
 {
 	
-	if (!m_apis->Supports<device_api>()) {
-		//uh oh? Make it required
-	}
-	else {
-		dynamicallyFetchNodes();
-	}
+	
+	dynamicallyFetchNodes();
 
-
+	setupBodyRepresentationFromDescriptions(bodyGraph);
+	//setup the graph
 	
 }
 
@@ -189,7 +188,33 @@ Node * Device::findNode(uint64_t id)
 }
 
 
+class region_visitor : public boost::static_visitor<void> {
+private:
+	BodyGraph& m_graph;
+public:
+	region_visitor(BodyGraph& graph) : m_graph(graph) {
 
+	}
+	void operator()(const Parsing::SingleRegionDescriptor& single) {
+		nsvr_bodygraph_region region;
+		region.bodypart = single.bodypart;
+		region.rotation = single.location.rotation;
+		region.segment_ratio = single.location.height;
+		m_graph.CreateNode(single.name.c_str(), &region);
+	}
+
+	void operator()(const Parsing::MultiRegionDescriptor& multi) {
+		//not implemented yet
+	}
+};
+
+void Device::setupBodyRepresentationFromDescriptions(const Parsing::BodyGraphDescriptor& bodyGraph)
+{
+	region_visitor visitor(m_graph);
+	for (const auto& region : bodyGraph.regions) {
+		boost::apply_visitor(visitor, region);
+	}
+}
 
 HapticNode::HapticNode(const NodeDescriptor& info, PluginApis*c) 
 	: Node(info, c)
@@ -217,7 +242,7 @@ NodeView::NodeType HapticNode::Type() const
 
 
 
-uint64_t HapticNode::Id() const
+nsvr_node_id HapticNode::Id() const
 {
 	return m_id;
 }
@@ -231,7 +256,7 @@ Node::Node(const NodeDescriptor& description, PluginApis* apis)
 
 
 
-uint64_t Node::id() const
+nsvr_node_id Node::id() const
 {
 	return m_id;
 }
@@ -265,7 +290,7 @@ void Device::teardownHooks() {
 	
 }
 
-void Device::setupBodyRepresentation(HumanBodyNodes & body)
+void Device::setupBodyRepresentation()
 {
 	bodygraph_api* b = m_apis->GetApi<bodygraph_api>();
 	if (b != nullptr) {

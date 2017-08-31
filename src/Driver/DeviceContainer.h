@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 #include <mutex>
-
+#include "DriverConfigParser.h"
 
 struct DeviceDescriptor {
 	std::string displayName;
@@ -15,8 +15,7 @@ struct DeviceDescriptor {
 class DeviceContainer {
 public:
 	using DeviceFn = std::function<void(Device*)>;
-	void AddDevice(const DeviceDescriptor&, PluginApis&, PluginEventSource&);
-	void AddDevice(uint64_t id, PluginApis& apis, PluginEventSource& ev);
+	void AddDevice(nsvr_device_id id, PluginApis& apis, PluginEventSource& ev, Parsing::BodyGraphDescriptor);
 	void RemoveDevice(const std::string&);
 	
 	void RemoveDevice(uint64_t id);
@@ -29,6 +28,7 @@ public:
 	void OnPreDeviceRemoved(DeviceFn);
 
 private:
+	void addDevice(const DeviceDescriptor&, PluginApis&, PluginEventSource&, Parsing::BodyGraphDescriptor);
 
 	std::vector<std::unique_ptr<Device>> m_devices;
 

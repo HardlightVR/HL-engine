@@ -14,9 +14,9 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_bodyRepresentation{}
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 {
-	m_devices.OnDeviceAdded([this, &body = m_bodyRepresentation](Device* device) {
+	m_devices.OnDeviceAdded([this](Device* device) {
 		device->setupHooks(*this);
-		device->setupBodyRepresentation(body);
+		device->setupBodyRepresentation();
 		
 
 		NullSpace::SharedMemory::DeviceInfo info = {};

@@ -4,6 +4,7 @@
 #include <boost/type_index.hpp>
 #include <iostream>
 #include "IHardwareDevice.h"
+#include "PluginAPI.h"
 #include "DeviceContainer.h"
 
 PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& d) :
@@ -17,15 +18,16 @@ PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName
 	m_deviceContainer(d)
 	
 {
-	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [this](uint64_t device_id) {
-		m_deviceContainer.AddDevice(device_id, m_apis, m_eventHandler);
+	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [this](nsvr_device_id device_id) {
+		m_deviceContainer.AddDevice(device_id, m_apis, m_eventHandler, m_descriptor.bodygraph);
 	});
 
-	m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [this](uint64_t device_id) {
+	m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [this](nsvr_device_id device_id) {
 		m_deviceContainer.RemoveDevice(device_id);
 	});
 
 }
+
 
 
 PluginInstance::~PluginInstance()

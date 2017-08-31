@@ -14,6 +14,7 @@ PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw, s
 		
 		this->run_event_loop(16); //todo: should store 16 as variable
 	});
+	m_pluginEventLoop.Start();
 }
 
 bool PluginManager::LoadAll()
@@ -73,16 +74,18 @@ bool PluginManager::instantiatePlugin(std::shared_ptr<PluginInstance>& plugin)
 
 bool PluginManager::configurePlugin(std::shared_ptr<PluginInstance>& plugin)
 {
-	if (!plugin->Configure()) {
-		BOOST_LOG_TRIVIAL(warning) << "Couldn't configure " << plugin->GetFileName();
-		return false;
-	}
-
+	//The manifest must be parsed before instantiating the plugins
 	if (!plugin->ParseManifest()) {
 		BOOST_LOG_TRIVIAL(warning) << "Couldn't parse manifest of " << plugin->GetFileName();
 
 		return false;
 	}
+
+	if (!plugin->Configure()) {
+		BOOST_LOG_TRIVIAL(warning) << "Couldn't configure " << plugin->GetFileName();
+		return false;
+	}
+
 	return true;
 }
 

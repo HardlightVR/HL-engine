@@ -126,7 +126,7 @@ void OpenVRWrapper::configureBodyGraph(nsvr_bodygraph * graph)
 
 void OpenVRWrapper::update()
 {
-	
+
 	if (system) {
 		vr::VREvent_t event;
 			

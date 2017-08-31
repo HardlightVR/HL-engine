@@ -79,24 +79,5 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 }
 
 
-template<class THapticType>
-void PluginInstance::Dispatch(const std::string& region, const std::string& iface, const THapticType* input) {
-	std::vector<PluginInstance::ClientData> callbacks = getProviders(region, iface);
-	for (const PluginInstance::ClientData& clientData : callbacks) {
-		clientData.Callback(clientData.Data, region.c_str(), iface.c_str(), AS_TYPE(const nsvr_event_generic, input));
-	}
-}
-
-template<class THapticType>
-inline void PluginInstance::Broadcast(const std::string& iface,  const THapticType * input)
-{
-	for (const auto& region : m_interfaces) {
-		std::vector<PluginInstance::ClientData> callbacks = getProviders(region.first, iface);
-		for (const auto& clientData : callbacks) {
-			clientData.Callback(clientData.Data, region.first.c_str(), iface.c_str(), AS_TYPE(const nsvr_event_generic, input));
-		}
-	}
-	
-}
 
 

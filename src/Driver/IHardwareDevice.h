@@ -67,7 +67,7 @@ class Device {
 public:
 	using RequestId = uint64_t;
 
-	Device(const DeviceDescriptor& desc, PluginApis& api, PluginEventSource& ev);
+	Device(const DeviceDescriptor& desc, PluginApis& api, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraph);
 	Device& operator=(const Device&) = delete;
 	Device(const Device&) = delete;
 
@@ -79,7 +79,8 @@ public:
 	void setupHooks(HardwareCoordinator& coordinator);
 	void teardownHooks();
 
-	void setupBodyRepresentation(HumanBodyNodes&);
+	//todo: figure out if these need to be adding to a global graph, etc.
+	void setupBodyRepresentation();
 	void teardownBodyRepresentation(HumanBodyNodes&);
 	
 	std::vector<NodeView> renderDevices() const;
@@ -118,6 +119,7 @@ private:
 	 
 
 
+	void setupBodyRepresentationFromDescriptions(const Parsing::BodyGraphDescriptor& bodyGraph);
 };
 
 

@@ -259,11 +259,14 @@ namespace Parsing {
 
 			Parsing::ManifestDescriptor manifest;
 			std::vector<std::string> errors;
+
 			if (!Parsing::deserialize(manifest, root, errors)) {
 				std::string header("When parsing the manifest at " + path + ":");
 				std::cout << header << '\n';
+				
 				int len = header.length();
 				std::cout << std::string(len, '-') << '\n';
+				
 				int indent_level = 0;
 				for (const auto& error : errors) {
 					std::cout << std::string(indent_level * 4, ' ') << error << '\n';
@@ -272,8 +275,8 @@ namespace Parsing {
 						indent_level++;
 					}
 				}
-				std::cout << std::string(len, '-') << '\n';
 
+				std::cout << std::string(len, '-') << '\n';
 				return boost::none;
 			}
 			else {
