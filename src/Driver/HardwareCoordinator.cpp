@@ -35,7 +35,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	});
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });
-	m_writeBodyRepresentation.Start();
+//	m_writeBodyRepresentation.Start();
 
 	
 }
@@ -87,6 +87,7 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	// More complex behavior later
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
+		BOOST_LOG_TRIVIAL(info) << "Got haptic";
 		m_devices.Each([&](Device* device) {
 			device->deliverRequest(event);
 		});

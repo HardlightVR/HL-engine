@@ -129,7 +129,7 @@ namespace NullSpace {
 */
 
 
-		constexpr uint64_t SUBREGION_BLOCK = 1000000;
+		constexpr uint32_t SUBREGION_BLOCK = 1000000;
 
 		enum class nsvr_shared_region : uint32_t {
 			identifier_unknown,

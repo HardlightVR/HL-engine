@@ -145,6 +145,7 @@ void HardlightDevice::EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids*
 
 void HardlightDevice::EnumerateDevices(nsvr_device_ids * ids)
 {
+	//if (this->EnumerateNodesForDevice
 	ids->device_count = 1;
 	ids->ids[0] = THIS_SUIT_ID;
 }
