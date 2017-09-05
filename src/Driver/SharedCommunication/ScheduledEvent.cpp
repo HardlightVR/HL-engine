@@ -14,6 +14,8 @@ void ScheduledEvent::SetEvent(std::function<void(void)> someRegularEvent)
 	m_event = someRegularEvent;
 }
 
+
+
 void ScheduledEvent::Start()
 {
 	m_timer.expires_from_now(m_interval);

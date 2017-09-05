@@ -14,6 +14,7 @@
 #include <boost/mpl/pair.hpp>
 #include "BodyGraph.h"
 #include "Renderable.h"
+#include "SimulatedHapticNode.h"
 class PluginApis;
 class PluginEventSource;
 class HardwareCoordinator;
@@ -63,6 +64,7 @@ private:
 
 class HumanBodyNodes;
 
+//I want device to be agnostic to what type of nodes it holds..
 class Device {
 public:
 	using RequestId = uint64_t;
@@ -86,12 +88,12 @@ public:
 	std::vector<NodeView> renderDevices() const;
 
 	
-
+	void simulate(double dt);
 	nsvr_device_id id() const;
 private:
 	
 	std::string m_name;
-
+	std::unordered_map<nsvr_node_id, SimulatedHapticNode> m_simulatedNodes;
 	std::vector<std::unique_ptr<HapticNode>> m_hapticNodes;
 	std::vector<std::unique_ptr<TrackingNode>> m_trackingNodes;
 	PluginApis* m_apis;

@@ -35,7 +35,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	});
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });
-//	m_writeBodyRepresentation.Start();
+	m_writeBodyRepresentation.Start();
 
 	
 }
@@ -57,6 +57,7 @@ void HardwareCoordinator::hook_writeTracking(nsvr_node_id node_id, nsvr_quaterni
 void HardwareCoordinator::writeBodyRepresentation()
 {
 	m_devices.Each([&messenger = m_messenger](Device* device) {
+		device->simulate(.008);
 
 		auto nodeView = device->renderDevices();
 

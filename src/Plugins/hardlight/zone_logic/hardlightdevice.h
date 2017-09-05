@@ -18,7 +18,6 @@ public:
 	void Pause(ParentId  handle);
 	void Cancel(ParentId  handle);
 	void Unpause(ParentId  handle);
-	int Query(uint64_t device_id, nsvr_sampling_sample* outState);
 
 	void EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids);
 	void EnumerateDevices(nsvr_device_ids* ids);

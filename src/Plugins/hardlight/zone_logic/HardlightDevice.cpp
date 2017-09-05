@@ -102,32 +102,6 @@ void HardlightDevice::Unpause(ParentId  handle)
 	}
 }
 
-int HardlightDevice::Query(uint64_t node_id, nsvr_sampling_sample * outState)
-{
-	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device = node_id](const auto& driver) { return driver.second->GetId() == device; });
-	if (it != m_drivers.end()) {
-		if (it->second->IsPlaying()) {
-			outState->intensity = 1;
-		}
-		else {
-			outState->intensity = 0;
-		}
-	}
-
-	/*if (m_drivers.find(node) != m_drivers.end()) {
-		if (m_drivers.at(node)->IsPlaying()) {
-
-			outState->intensity = 1;
-		} 
-		else {
-			outState->intensity = 0;
-		}
-		return 1;
-	}
-*/
-	return 0;
-
-}
 
 void HardlightDevice::EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids)
 {

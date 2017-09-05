@@ -210,18 +210,7 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_register_buffered_api(nsvr_core* core, nsvr_plugin_buffered_api* api);
 
-	// If you have a "preset"-style API with calls similar to TriggerSpecialEffect() or TriggerPulse(int microseconds),
-	// implement the preset_api interface
 
-	typedef struct nsvr_preset nsvr_preset;
-
-	typedef struct nsvr_plugin_preset_api {
-		typedef void(*nsvr_preset_handler)(nsvr_node_id node_id, nsvr_preset*, void*);
-		nsvr_preset_handler preset_handler;
-		void* client_data;
-	} nsvr_plugin_preset_api;
-
-	NSVR_CORE_RETURN(int) nsvr_register_preset_api(nsvr_core* core, nsvr_plugin_preset_api* api);
 	
 
 	// A preset family specifies a certain feeling which your haptic device produces. 

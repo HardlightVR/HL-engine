@@ -39,6 +39,7 @@ void Device::createNewNode(const NodeDescriptor& node)
 		//todo: fix
 		//BOOST_LOG_TRIVIAL(info) << "[Device] Haptic node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
 		m_hapticNodes.push_back(std::make_unique<HapticNode>(node, m_apis));
+		m_simulatedNodes.insert(std::make_pair(node.id, SimulatedHapticNode()));
 	}
 	else if (nsvr_node_type::nsvr_node_type_tracker == node.type) {
 		//BOOST_LOG_TRIVIAL(info) << "[Device] Tracking node '" << node.displayName << "' on region " << t.ToRegionString(static_cast<nsvr_region>(node.region));
@@ -118,6 +119,7 @@ void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleH
 		for (uint64_t region : simple.regions()) {
 			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
 			for (const auto& node : nodes) {
+				m_simulatedNodes[node].submitHaptic(Waveform(requestId, wave.waveform_id, wave.strength, simple.duration()));
 				api->submit_activate(requestId, node, reinterpret_cast<nsvr_waveform*>(&wave));
 			}
 		}
@@ -133,6 +135,8 @@ void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleH
 		for (uint64_t region : simple.regions()) {
 			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
 			for (const auto& node : nodes) {
+				m_simulatedNodes[node].submitHaptic(Waveform(requestId, samples.data(), sampleDuration, samples.size()));
+
 				api->submit_buffer(node, samples.data(), samples.size());
 			}
 		}
@@ -148,16 +152,26 @@ void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleH
 
 void Device::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event)
 {
+	
 		if (playback_api* api = m_apis->GetApi<playback_api>()) {
 		switch (event.command()) {
 		case NullSpaceIPC::PlaybackEvent_Command_UNPAUSE:
 			api->submit_unpause(id);
+			for (auto& node : m_simulatedNodes) {
+				node.second.submitPlayback(id, SimulatedHapticNode::PlaybackCommand::Resume);
+			}
 			break;
 		case NullSpaceIPC::PlaybackEvent_Command_PAUSE:
 			api->submit_pause(id);
+			for (auto& node : m_simulatedNodes) {
+				node.second.submitPlayback(id, SimulatedHapticNode::PlaybackCommand::Pause);
+			}
 			break;
 		case NullSpaceIPC::PlaybackEvent_Command_CANCEL:
 			api->submit_cancel(id);
+			for (auto& node : m_simulatedNodes) {
+				node.second.submitPlayback(id, SimulatedHapticNode::PlaybackCommand::Cancel);
+			}
 			break;
 		default:
 			BOOST_LOG_TRIVIAL(warning) << "[Device] Unknown playback event: " << event.command();
@@ -226,12 +240,12 @@ HapticNode::HapticNode(const NodeDescriptor& info, PluginApis*c)
 
 NodeView::Data HapticNode::Render() const
 {
-	if (sampling_api* api = m_apis->GetApi<sampling_api>()) {
+	/*if (sampling_api* api = m_apis->GetApi<sampling_api>()) {
 		nsvr_sampling_sample state = { 0 };
 		api->submit_query(id(), &state);	
 		return NodeView::Data { state.data_0, state.data_1, state.data_2, state.intensity };
 	}
-
+*/
 	return NodeView::Data { 0, 0, 0, 0 };
 }
 
@@ -315,7 +329,7 @@ std::vector<NodeView> Device::renderDevices() const
 	if (!m_isBodyGraphSetup.load()) {
 		return std::vector<NodeView>{};
 	}
-
+	
 
 	auto devices = m_graph.getAllNodes();
 	std::vector<NodeView> fullView;
@@ -328,13 +342,19 @@ std::vector<NodeView> Device::renderDevices() const
 			
 			const Node* possibleNode = findNode(id);
 			if (possibleNode) {
-				const Renderable* possibleRenderable = dynamic_cast<const Renderable*>(possibleNode);
+				double strength = m_simulatedNodes.at(id).sample();
+				singleNode.DisplayData.intensity = static_cast<float>(strength);
+				singleNode.Id = id;
+				singleNode.Type = NodeView::NodeType::Haptic;
+				view.nodes.push_back(singleNode);
+
+				/*const Renderable* possibleRenderable = dynamic_cast<const Renderable*>(possibleNode);
 				if (possibleRenderable) {
 					singleNode.DisplayData = possibleRenderable->Render();
 					singleNode.Id = id;
 					singleNode.Type = possibleRenderable->Type();
 					view.nodes.push_back(singleNode);
-				}
+				}*/
 			}
 
 		}
@@ -347,6 +367,13 @@ std::vector<NodeView> Device::renderDevices() const
 }
 
 
+
+void Device::simulate(double dt)
+{
+	for (auto& node : m_simulatedNodes) {
+		node.second.update(dt);
+	}
+}
 
 uint32_t Device::id() const
 {
