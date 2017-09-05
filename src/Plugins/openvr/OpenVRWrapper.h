@@ -16,7 +16,7 @@ public:
 	void Configure(nsvr_core* core);
 	void configureBodyGraph(nsvr_bodygraph* graph);
 	void update();
-	void triggerHapticPulse(vr::TrackedDeviceIndex_t device, float strength);
+	void triggerHapticPulse(vr::TrackedDeviceIndex_t device, double strength);
 	void bufferedHaptics(uint64_t device_id, double* samples, uint32_t count);
 	void enumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids);
 	void getDeviceInfo(uint32_t id, nsvr_device_info* info);

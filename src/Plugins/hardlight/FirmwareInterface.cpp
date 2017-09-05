@@ -28,6 +28,9 @@ FirmwareInterface::~FirmwareInterface()
 {
 }
 
+
+
+
 void FirmwareInterface::writeBuffer() {
 	const std::size_t avail = _lfQueue.read_available();
 	if (avail == 0) {
@@ -37,7 +40,7 @@ void FirmwareInterface::writeBuffer() {
 	}
 	else if (avail > 0 && avail < BATCH_SIZE) {
 		if (_isBatching) {
-			//BOOST_LOG_TRIVIAL(trace) << "[FI] Waiting for batch..";
+		//	BOOST_LOG_TRIVIAL(trace) << "[FI] Waiting for batch..";
 
 		
 			_writeTimer.expires_from_now(_writeInterval);
@@ -45,7 +48,7 @@ void FirmwareInterface::writeBuffer() {
 			return;
 		}
 
-	//	BOOST_LOG_TRIVIAL(trace) << "[FI] Need to make new packet batch";
+		//BOOST_LOG_TRIVIAL(trace) << "[FI] Need to make new packet batch";
 
 		_isBatching = true;
 		_batchingDeadline.expires_from_now(_batchingTimeout);
@@ -54,7 +57,7 @@ void FirmwareInterface::writeBuffer() {
 				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 				const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
 				//	std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
-				//BOOST_LOG_TRIVIAL(trace) << "[FI] Sent an undersized packet batch";
+			//	BOOST_LOG_TRIVIAL(trace) << "[FI] Sent an undersized packet batch";
 
 				this->_adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
 					if (e) {
@@ -67,14 +70,13 @@ void FirmwareInterface::writeBuffer() {
 				_isBatching = false;
 			}
 		});
-		//	std::cout << "Some avail, waiting" << '\n';
 	}
 	else {
 		_isBatching = false;
 		_batchingDeadline.cancel();
 		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 		const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
-	//	BOOST_LOG_TRIVIAL(trace) << "[FI] Writing out a batch";
+		//BOOST_LOG_TRIVIAL(trace) << "[FI] Writing out a batch";
 
 		_adapter->Write(a, actualLen, [&](const boost::system::error_code& ec, std::size_t bytes_t) {
 

@@ -58,12 +58,6 @@ HardlightPlugin::HardlightPlugin() :
 
 			nsvr_tracking_stream_push(m_trackingStream, &quat);
 
-		/*	nsvr_device_event* event = nullptr;
-			nsvr_device_event_create(&event, nsvr_device_event_tracking_update);
-			nsvr_device_event_setid(event, 1);
-			nsvr_device_event_settrackingstate(event, id.c_str(), &quat);
-			nsvr_device_event_raise(m_core, event);
-			nsvr_device_event_destroy(&event);*/
 		}
 	});
 
@@ -174,112 +168,112 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 {
 	//Setup the initial zones
 
-	bodygraph_region chestActuator;
-	chestActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_highest, 350)
-		.setDimensions(6, 8);
+	//bodygraph_region chestActuator;
+	//chestActuator
+	//	.setLocation(nsvr_bodypart_torso, nsvr_location_highest, 350)
+	//	.setDimensions(6, 8);
 
-	bodygraph_region upperAbActuator;
-	upperAbActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1, 350)
-		.setDimensions(6, 4);
+	//bodygraph_region upperAbActuator;
+	//upperAbActuator
+	//	.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1, 350)
+	//	.setDimensions(6, 4);
 
-	bodygraph_region midAbActuator;
-	midAbActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_middle, 350)
-		.setDimensions(6, 4);
+	//bodygraph_region midAbActuator;
+	//midAbActuator
+	//	.setLocation(nsvr_bodypart_torso, nsvr_location_middle, 350)
+	//	.setDimensions(6, 4);
 
-	bodygraph_region lowerAbActuator;
-	lowerAbActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, 350)
-		.setDimensions(6, 4);
+	//bodygraph_region lowerAbActuator;
+	//lowerAbActuator
+	//	.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, 350)
+	//	.setDimensions(6, 4);
 
-	bodygraph_region shoulderActuator;
-	shoulderActuator
-		.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_highest, 180)
-		.setDimensions(4, 4);
+	//bodygraph_region shoulderActuator;
+	//shoulderActuator
+	//	.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_highest, 180)
+	//	.setDimensions(4, 4);
 
-	bodygraph_region upperArmActuator;
-	upperArmActuator
-		.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_middle, 180)
-		.setDimensions(6, 4);
+	//bodygraph_region upperArmActuator;
+	//upperArmActuator
+	//	.setLocation(nsvr_bodypart_upperarm_left, nsvr_location_middle, 180)
+	//	.setDimensions(6, 4);
 
-	bodygraph_region forearmActuator;
-	forearmActuator
-		.setLocation(nsvr_bodypart_forearm_left, nsvr_location_middle, 180)
-		.setDimensions(6, 4);
+	//bodygraph_region forearmActuator;
+	//forearmActuator
+	//	.setLocation(nsvr_bodypart_lowerarm_left, nsvr_location_middle, 180)
+	//	.setDimensions(6, 4);
 
-	bodygraph_region backActuator;
-	backActuator
-		.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, 185)
-		.setDimensions(6, 4);
-
-
-	//Create the left half of the body
-	nsvr_bodygraph_createnode(g, "Chest_Left", chestActuator.region);
-	nsvr_bodygraph_createnode(g, "Upper_Ab_Left", upperAbActuator.region);
-	nsvr_bodygraph_createnode(g, "Mid_Ab_Left", midAbActuator.region);
-	nsvr_bodygraph_createnode(g, "Lower_Ab_Left", lowerAbActuator.region);
-
-	nsvr_bodygraph_createnode(g, "Shoulder_Left", shoulderActuator.region);
-	nsvr_bodygraph_createnode(g, "Upper_Arm_Left", upperArmActuator.region);
-	nsvr_bodygraph_createnode(g, "Lower_Arm_Left", forearmActuator.region);
-
-	nsvr_bodygraph_createnode(g, "Back_Left", backActuator.region);
+	//bodygraph_region backActuator;
+	//backActuator
+	//	.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, 185)
+	//	.setDimensions(6, 4);
 
 
-	//Move the zones to the right side
-	chestActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest,  10);
-	upperAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1,  10);
-	midAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle, 10);
-	lowerAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, 10);
-	shoulderActuator.setLocation(nsvr_bodypart_upperarm_right, nsvr_location_highest, 180);
-	upperArmActuator.setLocation(nsvr_bodypart_upperarm_right, nsvr_location_middle, 180);
-	forearmActuator.setLocation(nsvr_bodypart_forearm_right, nsvr_location_middle, 180);
-	backActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, 175);
+	////Create the left half of the body
+	//nsvr_bodygraph_createnode(g, "Chest_Left", chestActuator.region);
+	//nsvr_bodygraph_createnode(g, "Upper_Ab_Left", upperAbActuator.region);
+	//nsvr_bodygraph_createnode(g, "Mid_Ab_Left", midAbActuator.region);
+	//nsvr_bodygraph_createnode(g, "Lower_Ab_Left", lowerAbActuator.region);
 
-	//Create the right half of the body
-	nsvr_bodygraph_createnode(g, "Chest_Right", chestActuator.region);
-	nsvr_bodygraph_createnode(g, "Upper_Ab_Right", upperAbActuator.region);
-	nsvr_bodygraph_createnode(g, "Mid_Ab_Right", midAbActuator.region);
-	nsvr_bodygraph_createnode(g, "Lower_Ab_Right", lowerAbActuator.region);
+	//nsvr_bodygraph_createnode(g, "Shoulder_Left", shoulderActuator.region);
+	//nsvr_bodygraph_createnode(g, "Upper_Arm_Left", upperArmActuator.region);
+	//nsvr_bodygraph_createnode(g, "Lower_Arm_Left", forearmActuator.region);
 
-	nsvr_bodygraph_createnode(g, "Shoulder_Right", shoulderActuator.region);
-	nsvr_bodygraph_createnode(g, "Upper_Arm_Right", upperArmActuator.region);
-	nsvr_bodygraph_createnode(g, "Lower_Arm_Right", forearmActuator.region);
-
-	nsvr_bodygraph_createnode(g, "Back_Right", backActuator.region);
-
-	//Connect all the zones, first the left
-	nsvr_bodygraph_connect(g, "Chest_Left", "Upper_Ab_Left");
-	nsvr_bodygraph_connect(g, "Upper_Ab_Left", "Mid_Ab_Left");
-	nsvr_bodygraph_connect(g, "Mid_Ab_Left", "Lower_Ab_Left");
-
-	nsvr_bodygraph_connect(g, "Chest_Left", "Shoulder_Left");
-	nsvr_bodygraph_connect(g, "Shoulder_Left", "Upper_Arm_Left");
-	nsvr_bodygraph_connect(g, "Upper_Arm_Left", "Lower_Arm_Left");
-
-	nsvr_bodygraph_connect(g, "Shoulder_Left", "Back_Left");
+	//nsvr_bodygraph_createnode(g, "Back_Left", backActuator.region);
 
 
-	//Then the right
-	nsvr_bodygraph_connect(g, "Chest_Right", "Upper_Ab_Right");
-	nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Mid_Ab_Right");
-	nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Lower_Ab_Right");
+	////Move the zones to the right side
+	//chestActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest,  10);
+	//upperAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle + .1,  10);
+	//midAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle, 10);
+	//lowerAbActuator.setLocation(nsvr_bodypart_torso, nsvr_location_middle - .2, 10);
+	//shoulderActuator.setLocation(nsvr_bodypart_upperarm_right, nsvr_location_highest, 180);
+	//upperArmActuator.setLocation(nsvr_bodypart_upperarm_right, nsvr_location_middle, 180);
+	//forearmActuator.setLocation(nsvr_bodypart_lowerarm_right, nsvr_location_middle, 180);
+	//backActuator.setLocation(nsvr_bodypart_torso, nsvr_location_highest - .1, 175);
 
-	nsvr_bodygraph_connect(g, "Chest_Right", "Shoulder_Right");
-	nsvr_bodygraph_connect(g, "Shoulder_Right", "Upper_Arm_Right");
-	nsvr_bodygraph_connect(g, "Upper_Arm_Right", "Lower_Arm_Right");
+	////Create the right half of the body
+	//nsvr_bodygraph_createnode(g, "Chest_Right", chestActuator.region);
+	//nsvr_bodygraph_createnode(g, "Upper_Ab_Right", upperAbActuator.region);
+	//nsvr_bodygraph_createnode(g, "Mid_Ab_Right", midAbActuator.region);
+	//nsvr_bodygraph_createnode(g, "Lower_Ab_Right", lowerAbActuator.region);
 
-	nsvr_bodygraph_connect(g, "Shoulder_Right", "Back_Right");
+	//nsvr_bodygraph_createnode(g, "Shoulder_Right", shoulderActuator.region);
+	//nsvr_bodygraph_createnode(g, "Upper_Arm_Right", upperArmActuator.region);
+	//nsvr_bodygraph_createnode(g, "Lower_Arm_Right", forearmActuator.region);
 
-	//Finally, cross connections
-	nsvr_bodygraph_connect(g, "Chest_Right", "Chest_Left");
-	nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Upper_Ab_Left");
-	nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Mid_Ab_Left");
-	nsvr_bodygraph_connect(g, "Lower_Ab_Right", "Lower_Ab_Left");
+	//nsvr_bodygraph_createnode(g, "Back_Right", backActuator.region);
 
-	nsvr_bodygraph_connect(g, "Back_Left", "Back_Right");
+	////Connect all the zones, first the left
+	//nsvr_bodygraph_connect(g, "Chest_Left", "Upper_Ab_Left");
+	//nsvr_bodygraph_connect(g, "Upper_Ab_Left", "Mid_Ab_Left");
+	//nsvr_bodygraph_connect(g, "Mid_Ab_Left", "Lower_Ab_Left");
+
+	//nsvr_bodygraph_connect(g, "Chest_Left", "Shoulder_Left");
+	//nsvr_bodygraph_connect(g, "Shoulder_Left", "Upper_Arm_Left");
+	//nsvr_bodygraph_connect(g, "Upper_Arm_Left", "Lower_Arm_Left");
+
+	//nsvr_bodygraph_connect(g, "Shoulder_Left", "Back_Left");
+
+
+	////Then the right
+	//nsvr_bodygraph_connect(g, "Chest_Right", "Upper_Ab_Right");
+	//nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Mid_Ab_Right");
+	//nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Lower_Ab_Right");
+
+	//nsvr_bodygraph_connect(g, "Chest_Right", "Shoulder_Right");
+	//nsvr_bodygraph_connect(g, "Shoulder_Right", "Upper_Arm_Right");
+	//nsvr_bodygraph_connect(g, "Upper_Arm_Right", "Lower_Arm_Right");
+
+	//nsvr_bodygraph_connect(g, "Shoulder_Right", "Back_Right");
+
+	////Finally, cross connections
+	//nsvr_bodygraph_connect(g, "Chest_Right", "Chest_Left");
+	//nsvr_bodygraph_connect(g, "Upper_Ab_Right", "Upper_Ab_Left");
+	//nsvr_bodygraph_connect(g, "Mid_Ab_Right", "Mid_Ab_Left");
+	//nsvr_bodygraph_connect(g, "Lower_Ab_Right", "Lower_Ab_Left");
+
+	//nsvr_bodygraph_connect(g, "Back_Left", "Back_Right");
 
 	//Lastly, we want to associate the actual devices with these logical zones
 	m_device.SetupDeviceAssociations(g);

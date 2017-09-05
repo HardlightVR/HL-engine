@@ -4,6 +4,106 @@
    "concept": "suit",
    "bodygraph" : {
       "regions": [
+      	{
+      		"name" : "upperChestActuators",
+      		"bodypart" : "torso",
+      		"location_start" : {
+      			"height" : 1.0,
+      			"rotation" : 350
+      		},
+      		"location_end" : {
+      			"height" : 1.0,
+      			"rotation" : 10
+      		},
+      		"count" : 2
+      	},
+      	{
+      		"name" : "leftAbActuators",
+      		"bodypart" : "torso",
+      		"location_start" : {
+      			"height" : 0.6,
+      			"rotation" : 350 
+      		},
+      		"location_end" : {
+      			"height" : 0.3,
+      			"rotation" : 350
+      		},
+      		"count" : 3
+      	},
+      	{
+      		"name" : "rightAbActuators",
+      		"bodypart" : "torso",
+      		"location_start" : {
+      			"height" : 0.6,
+      			"rotation" : 10
+      		},
+      		"location_end" : {
+      			"height" : 0.3,
+      			"rotation" : 10
+      		},
+      		"count" : 3
+      	},
+      	{
+      		"name" : "leftShoulderActuator",
+      		"bodypart" : "upperarm_left",
+      		"location" : {
+      			"height":1.0,
+      			"rotation" : 180
+      		}
+      	},
+      	{
+      		"name" : "rightShoulderActuator",
+      		"bodypart" : "upperarm_right",
+      		"location" : {
+      			"height":1.0,
+      			"rotation" : 180
+      		}
+      	},
+      	{
+      		"name" : "upperBackActuators",
+      		"bodypart" : "torso",
+      		"location_start" : {
+      			"height": 0.9,
+      			"rotation" : 180
+      		},
+      		"location_end" : {
+      			"height" : 0.9,
+      			"rotation" : 170
+      		},
+      		"count" : 2
+      	},
+      	{
+      		"name" : "leftUpperArmActuator",
+      		"bodypart" : "upperarm_left",
+      		"location" : {
+      			"height":0.5,
+      			"rotation" : 180
+      		}
+      	},
+      	{
+      		"name" : "rightUpperArmActuator",
+      		"bodypart" : "upperarm_right",
+      		"location" : {
+      			"height":0.5,
+      			"rotation" : 180
+      		}
+      	},
+      	{
+      		"name" : "leftLowerArmActuator",
+      		"bodypart" : "lowerarm_left",
+      		"location" : {
+      			"height":0.5,
+      			"rotation" : 180
+      		}
+      	},
+      	{
+      		"name" : "rightLowerArmActuator",
+      		"bodypart" : "lowerarm_right",
+      		"location" : {
+      			"height":0.5,
+      			"rotation" : 180
+      		}
+      	}
       ]
    }
 }

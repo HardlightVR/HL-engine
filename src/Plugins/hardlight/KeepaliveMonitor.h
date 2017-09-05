@@ -43,6 +43,12 @@ private:
 	std::vector<std::function<void()>> m_disconnectHandlers;
 	std::vector<std::function<void()>> m_reconnectHandlers;
 
+	// Max amount of failed pings before raising a disconnect
+	unsigned int m_maxFailedPings;
+
+	// Current amount of failed pings
+	unsigned int m_currentFailedPings;
+
 	void doKeepAlivePing();
 	void onReceiveResponse(const boost::system::error_code& ec);
 

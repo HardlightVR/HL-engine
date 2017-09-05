@@ -56,8 +56,8 @@ namespace Parsing {
 		}
 
 		const auto& translator = Locator::Translator();
-		nsvr_bodypart parsedBodypart = translator.ToBodypart(rawBodyPart, nsvr_bodypart_unknown);
-		if (parsedBodypart == nsvr_bodypart_unknown) {
+		descriptor.bodypart = translator.ToBodypart(rawBodyPart, nsvr_bodypart_unknown);
+		if (descriptor.bodypart == nsvr_bodypart_unknown) {
 			errors.push_back("Unrecognized bodypart: '" + rawBodyPart + "'");
 			return false;
 		}
@@ -94,13 +94,13 @@ namespace Parsing {
 
 
 		const auto& translator = Locator::Translator();
-		nsvr_bodypart parsedBodypart = translator.ToBodypart(rawBodyPart, nsvr_bodypart_unknown);
-		if (parsedBodypart == nsvr_bodypart_unknown) {
+		descriptor.bodypart= translator.ToBodypart(rawBodyPart, nsvr_bodypart_unknown);
+		if (descriptor.bodypart == nsvr_bodypart_unknown) {
 			errors.push_back("Unrecognized bodypart: '" + rawBodyPart + "'");
 			return false;
-		}
+		} 
 
-		descriptor.count = json.get("count", 1).asUInt();
+		descriptor.count = json.get("count", 2).asUInt();
 
 
 		if (!deserialize(descriptor.location_start, json["location_start"], errors)) {

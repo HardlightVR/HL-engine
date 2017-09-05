@@ -199,7 +199,11 @@ void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
 	}
 
 	//Okay, the port is open. Now send a ping to it.
-	m_port->async_write_some(boost::asio::buffer(m_pingData, 7), [](auto ec, auto bytes_transferred) { });
+	m_port->async_write_some(boost::asio::buffer(m_pingData, 7), [](auto ec, auto bytes_transferred) { 
+		if (ec) {
+			BOOST_LOG_TRIVIAL(warning) << "Couldn't send a ping to the port: " + ec.message();
+		}
+	});
 
 
 	
@@ -251,14 +255,20 @@ bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string
 	try {
 	
 		port.open(portName);
+
+		if (!port.is_open()) {
+			return false;
+		}
+
 		port.set_option(boost::asio::serial_port::baud_rate(115200));
 		port.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
 		port.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
 		port.set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
+		port.set_option(boost::asio::serial_port::character_size(8));
 	
-		if (!port.is_open()) {
-			return false;
-		}
+
+
+		
 	}
 	catch (const boost::system::system_error&) {
 	//	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Got an exception when trying to open port:  " << ec.what();

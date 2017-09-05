@@ -15,9 +15,9 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 {
 	m_devices.OnDeviceAdded([this](Device* device) {
-		device->setupHooks(*this);
-		device->setupBodyRepresentation();
-		
+		device->registerTrackedObjects([this](nsvr_node_id id, nsvr_quaternion* q) {
+			writeTracking(id, q);
+		});
 
 		NullSpace::SharedMemory::DeviceInfo info = {};
 		info.Id = device->id();
@@ -28,8 +28,6 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	});
 
 	m_devices.OnPreDeviceRemoved([this, &body = m_bodyRepresentation](Device* device) {
-		device->teardownHooks();
-		device->teardownBodyRepresentation(body);
 
 		m_messenger.RemoveDevice(device->id());
 	});
@@ -42,21 +40,17 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 
 
-void HardwareCoordinator::Hook_TrackingSlot(boost::signals2::signal<void(uint64_t, nsvr_quaternion*)> & hook)
-{
-	hook.connect([this](uint64_t r, nsvr_quaternion* q) { hook_writeTracking(r, q); });
-}
-
-
-void HardwareCoordinator::hook_writeTracking(nsvr_node_id node_id, nsvr_quaternion * quat)
+void HardwareCoordinator::writeTracking(nsvr_node_id node_id, nsvr_quaternion * quat)
 {
 	//todo: we need to actually take the quaternion arriving from the device and translate it to a region, based on the BodyGraph
+	//todo: we need synchronization
 	m_messenger.WriteTracking(node_id, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
 }
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
 	m_devices.Each([&messenger = m_messenger](Device* device) {
+		device->simulate(.008);
 
 		auto nodeView = device->renderDevices();
 
@@ -87,6 +81,7 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	// More complex behavior later
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
+		BOOST_LOG_TRIVIAL(info) << "Got haptic";
 		m_devices.Each([&](Device* device) {
 			device->deliverRequest(event);
 		});
@@ -113,7 +108,7 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 void HardwareCoordinator::Cleanup()
 {
 	m_devices.Each([this](Device* device) {
-		device->teardownHooks();
+	//	device->teardownHooks();
 	});
 }
 

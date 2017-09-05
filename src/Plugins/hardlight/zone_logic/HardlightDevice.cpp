@@ -50,15 +50,6 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	nsvr_register_playback_api(ctx, &playback_api);
 
 
-
-	nsvr_plugin_sampling_api sampling_api;
-	sampling_api.client_data = this;
-	sampling_api.query_handler = [](uint64_t device, nsvr_sampling_sample* outState, void* client_data) {
-		AS_TYPE(HardlightDevice, client_data)->Query(device, outState);
-	};
-
-	nsvr_register_sampling_api(ctx, &sampling_api);
-
 	
 	nsvr_plugin_device_api device_api;
 	device_api.client_data = this;
@@ -102,32 +93,6 @@ void HardlightDevice::Unpause(ParentId  handle)
 	}
 }
 
-int HardlightDevice::Query(uint64_t node_id, nsvr_sampling_sample * outState)
-{
-	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device = node_id](const auto& driver) { return driver.second->GetId() == device; });
-	if (it != m_drivers.end()) {
-		if (it->second->IsPlaying()) {
-			outState->intensity = 1;
-		}
-		else {
-			outState->intensity = 0;
-		}
-	}
-
-	/*if (m_drivers.find(node) != m_drivers.end()) {
-		if (m_drivers.at(node)->IsPlaying()) {
-
-			outState->intensity = 1;
-		} 
-		else {
-			outState->intensity = 0;
-		}
-		return 1;
-	}
-*/
-	return 0;
-
-}
 
 void HardlightDevice::EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids)
 {
@@ -145,6 +110,7 @@ void HardlightDevice::EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids*
 
 void HardlightDevice::EnumerateDevices(nsvr_device_ids * ids)
 {
+	//if (this->EnumerateNodesForDevice
 	ids->device_count = 1;
 	ids->ids[0] = THIS_SUIT_ID;
 }
@@ -191,6 +157,32 @@ void HardlightDevice::RaiseDeviceDisconnectionEvent(nsvr_core* core)
 
 void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 {
+	nsvr_bodygraph_associate(g, "upperChestActuators:0", m_drivers[Location::Chest_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftAbActuators:0", m_drivers[Location::Upper_Ab_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftAbActuators:1", m_drivers[Location::Mid_Ab_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftAbActuators:2", m_drivers[Location::Lower_Ab_Left]->GetId());
+
+	nsvr_bodygraph_associate(g, "leftShoulderActuator", m_drivers[Location::Shoulder_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftUpperArmActuator", m_drivers[Location::Upper_Arm_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftLowerArmActuator", m_drivers[Location::Forearm_Left]->GetId());
+
+	nsvr_bodygraph_associate(g, "upperBackActuators:0", m_drivers[Location::Upper_Back_Left]->GetId());
+
+
+	nsvr_bodygraph_associate(g, "upperChestActuators:1", m_drivers[Location::Chest_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightAbActuators:0", m_drivers[Location::Upper_Ab_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightAbActuators:1", m_drivers[Location::Mid_Ab_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightAbActuators:2", m_drivers[Location::Lower_Ab_Right]->GetId());
+
+	nsvr_bodygraph_associate(g, "rightShoulderActuator", m_drivers[Location::Shoulder_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightUpperArmActuator", m_drivers[Location::Upper_Arm_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightLowerArmActuator", m_drivers[Location::Forearm_Right]->GetId());
+
+	nsvr_bodygraph_associate(g, "upperBackActuators:1", m_drivers[Location::Upper_Back_Right]->GetId());
+
+
+	/*
+	
 	nsvr_bodygraph_associate(g, "Chest_Left", m_drivers[Location::Chest_Left]->GetId());
 	nsvr_bodygraph_associate(g, "Upper_Ab_Left", m_drivers[Location::Upper_Ab_Left]->GetId());
 	nsvr_bodygraph_associate(g, "Mid_Ab_Left", m_drivers[Location::Mid_Ab_Left]->GetId());
@@ -213,7 +205,7 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 	nsvr_bodygraph_associate(g, "Upper_Arm_Right", m_drivers[Location::Upper_Arm_Right]->GetId());
 	nsvr_bodygraph_associate(g, "Lower_Arm_Right", m_drivers[Location::Forearm_Right]->GetId());
 
-	nsvr_bodygraph_associate(g, "Back_Right", m_drivers[Location::Upper_Back_Right]->GetId());
+	nsvr_bodygraph_associate(g, "Back_Right", m_drivers[Location::Upper_Back_Right]->GetId());*/
 
 }
 

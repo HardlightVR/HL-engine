@@ -156,6 +156,11 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_device_api* api);
 	
 
+	typedef struct nsvr_plugin_prototype_api {
+
+	} nsvr_plugin_prototype_api;
+
+
 
 	typedef struct nsvr_plugin_updateloop_api {
 		typedef void(*nsvr_updateloop)(uint64_t delta_time_ms, void* cd);
@@ -187,18 +192,7 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_register_buffered_api(nsvr_core* core, nsvr_plugin_buffered_api* api);
 
-	// If you have a "preset"-style API with calls similar to TriggerSpecialEffect() or TriggerPulse(int microseconds),
-	// implement the preset_api interface
 
-	typedef struct nsvr_preset nsvr_preset;
-
-	typedef struct nsvr_plugin_preset_api {
-		typedef void(*nsvr_preset_handler)(nsvr_node_id node_id, nsvr_preset*, void*);
-		nsvr_preset_handler preset_handler;
-		void* client_data;
-	} nsvr_plugin_preset_api;
-
-	NSVR_CORE_RETURN(int) nsvr_register_preset_api(nsvr_core* core, nsvr_plugin_preset_api* api);
 	
 
 	// A preset family specifies a certain feeling which your haptic device produces. 
@@ -246,22 +240,7 @@ extern "C" {
 
 
 	
-	//Question: do we want to sample a device or sample a region?
-
-	typedef struct nsvr_sampling_sample {
-		float data_0;
-		float data_1;
-		float data_2;
-		float intensity;
-	} nsvr_sampling_sample;
-
-	typedef struct nsvr_plugin_sampling_api {
-		typedef void(*nsvr_sampling_querystate)(nsvr_node_id node_id, nsvr_sampling_sample* outSample, void* client_data);
-		nsvr_sampling_querystate query_handler;
-		void* client_data;
-	} nsvr_plugin_sampling_api;
-	NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core* core, nsvr_plugin_sampling_api* api);
-
+	
 
 	/////////////////////////////
 	// Extended Implementation //
@@ -298,7 +277,7 @@ extern "C" {
 
 
 	typedef struct nsvr_plugin_tracking_api {
-		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, uint64_t node_id, void* client_data);
+		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_node_id node_id, void* client_data);
 		typedef void(*nsvr_tracking_endstreaming)(uint64_t node_id, void* client_data);
 
 		nsvr_tracking_beginstreaming beginstreaming_handler;
@@ -309,23 +288,19 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core* core, nsvr_plugin_tracking_api* api);
 	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
 
-	typedef struct nsvr_plugin_simulation_api {
-
-	} nsvr_plugin_simulation_api;
-
 
 
 
 	typedef enum nsvr_bodypart {
 		nsvr_bodypart_unknown = 0,
 		nsvr_bodypart_upperarm_left ,
-		nsvr_bodypart_forearm_left,
+		nsvr_bodypart_lowerarm_left,
 		nsvr_bodypart_palm_left,
 		nsvr_bodypart_upperleg_left,
 		nsvr_bodypart_lowerleg_left,
 
 		nsvr_bodypart_upperarm_right ,
-		nsvr_bodypart_forearm_right,
+		nsvr_bodypart_lowerarm_right,
 		nsvr_bodypart_palm_right ,
 		nsvr_bodypart_upperleg_right,
 		nsvr_bodypart_lowerleg_right,

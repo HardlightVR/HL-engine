@@ -7,13 +7,15 @@ KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterfac
 	m_firmware(fi),
 	
 	m_responseTimer(io), 
-	m_responseTimeout(boost::posix_time::milliseconds(1000)),
+	m_responseTimeout(boost::posix_time::milliseconds(500)),
 	
 	m_pingTimer(io),
 	m_pingInterval(boost::posix_time::milliseconds(500)),
 	
 	m_lastestPingTime(0),
-	m_isConnected(false)
+	m_isConnected(false),
+	m_maxFailedPings(3),
+	m_currentFailedPings(0)
 	
 {
 
@@ -49,7 +51,7 @@ void KeepaliveMonitor::scheduleResponseTimer()
 void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_received)
 {
 	if (ping_received) {
-
+		m_currentFailedPings = 0;
 		if (!m_isConnected) {
 			raiseReconnect();
 			m_isConnected = true;
@@ -58,10 +60,19 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_r
 		m_lastestPingTime = m_responseTimeout.total_milliseconds() 
 			- m_responseTimer.expires_from_now().total_milliseconds();
 		schedulePingTimer();
+		BOOST_LOG_TRIVIAL(trace) << "[Keepalive] Last ping time: " << m_lastestPingTime;
 	}
 	else {
-		m_isConnected = false;
-		raiseDisconnect();
+		m_currentFailedPings++;
+		BOOST_LOG_TRIVIAL(trace) << "[Keepalive] Bad Ping [" << m_currentFailedPings << "/" << m_maxFailedPings << "]";
+
+		if (m_currentFailedPings < m_maxFailedPings) {
+			schedulePingTimer();
+		}else  {
+			m_isConnected = false;
+			m_currentFailedPings = 0;
+			raiseDisconnect();
+		}
 	}
 }
 
