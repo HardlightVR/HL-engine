@@ -12,20 +12,21 @@ struct nsvr_quaternion;
 class HardwareCoordinator
 {
 public:
+	using TrackingSignal = boost::signals2::signal<void(nsvr_node_id, nsvr_quaternion*)>;
 	HardwareCoordinator(boost::asio::io_service&, DriverMessenger& messenger, DeviceContainer& devices);
 
 
 	~HardwareCoordinator() = default;
 	void SetupSubscriptions(EventDispatcher& dispatcher);
 	void Cleanup();
-	void Hook_TrackingSlot(boost::signals2::signal<void(uint64_t, nsvr_quaternion*)>& hook);
+	void Hook_TrackingSlot(TrackingSignal& hook);
 private:
 	DriverMessenger& m_messenger;
 	DeviceContainer& m_devices;
 
 	HumanBodyNodes m_bodyRepresentation;
 
-	void hook_writeTracking(uint64_t region, nsvr_quaternion* quat);
+	void writeTracking(uint64_t region, nsvr_quaternion* quat);
 
 	ScheduledEvent m_writeBodyRepresentation;
 

@@ -162,24 +162,6 @@ extern "C" {
 
 
 
-	//Question: do we want to sample a device or sample a region?
-
-	typedef struct nsvr_sampling_sample {
-		float data_0;
-		float data_1;
-		float data_2;
-		float intensity;
-	} nsvr_sampling_sample;
-
-	typedef struct nsvr_plugin_sampling_api {
-		typedef void(*nsvr_sampling_querystate)(nsvr_node_id node_id, nsvr_sampling_sample* outSample, void* client_data);
-		nsvr_sampling_querystate query_handler;
-		void* client_data;
-	} nsvr_plugin_sampling_api;
-	NSVR_CORE_RETURN(int) nsvr_register_sampling_api(nsvr_core* core, nsvr_plugin_sampling_api* api);
-
-
-
 	typedef struct nsvr_plugin_updateloop_api {
 		typedef void(*nsvr_updateloop)(uint64_t delta_time_ms, void* cd);
 		nsvr_updateloop update_handler;
@@ -295,7 +277,7 @@ extern "C" {
 
 
 	typedef struct nsvr_plugin_tracking_api {
-		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, uint64_t node_id, void* client_data);
+		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_node_id node_id, void* client_data);
 		typedef void(*nsvr_tracking_endstreaming)(uint64_t node_id, void* client_data);
 
 		nsvr_tracking_beginstreaming beginstreaming_handler;

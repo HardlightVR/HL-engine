@@ -30,37 +30,32 @@ struct NodeDescriptor {
 class Node {
 public:
 	Node(const NodeDescriptor&, PluginApis*);
-	virtual ~Node() {}
-	uint64_t id() const;
+	nsvr_node_id id() const;
 	std::string name() const;
-protected:
-	std::string m_name;
-	uint64_t m_id;
-	PluginApis* m_apis;
-};
-
-class HapticNode : public Node, public Renderable  {
-public:
-	HapticNode(const NodeDescriptor& info, PluginApis*);
-	// Renderable support
-	NodeView::Data Render() const override;
-	NodeView::NodeType Type() const override;
-	uint64_t Id() const override;
-
-};
+	nsvr_node_type type() const;
 
 
-class TrackingNode : public Node {
-public:
-	TrackingNode(const NodeDescriptor& info, PluginApis*);
-	void BeginTracking();
-	void EndTracking();
-	void DeliverTracking(nsvr_quaternion* quat);
-	boost::signals2::signal<void(uint64_t, nsvr_quaternion*)> TrackingSignal;
+
 private:
-	nsvr_quaternion m_latestQuat;
+	std::string m_name;
+	nsvr_node_id m_id;
+	PluginApis* m_apis;
+	nsvr_node_type m_type;
+
+
 };
 
+//raii style?
+class TrackingStream {
+public:
+	TrackingStream(nsvr_node_id id, tracking_api* api);
+	~TrackingStream();
+	boost::signals2::signal<void(nsvr_node_id, nsvr_quaternion*)> Signal;
+	void deliver(nsvr_quaternion* q);
+private:
+	nsvr_node_id m_id;
+	tracking_api* m_api;
+};
 
 class HumanBodyNodes;
 
@@ -77,13 +72,8 @@ public:
 
 	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
 	
+	void registerTrackedObjects(const boost::signals2::signal<void(nsvr_node_id, nsvr_quaternion*)>::slot_type&);
 
-	void setupHooks(HardwareCoordinator& coordinator);
-	void teardownHooks();
-
-	//todo: figure out if these need to be adding to a global graph, etc.
-	void setupBodyRepresentation();
-	void teardownBodyRepresentation(HumanBodyNodes&);
 	
 	std::vector<NodeView> renderDevices() const;
 
@@ -91,11 +81,12 @@ public:
 	void simulate(double dt);
 	nsvr_device_id id() const;
 private:
-	
+	void setupDynamicBodyRepresentation();
+
 	std::string m_name;
 	std::unordered_map<nsvr_node_id, SimulatedHapticNode> m_simulatedNodes;
-	std::vector<std::unique_ptr<HapticNode>> m_hapticNodes;
-	std::vector<std::unique_ptr<TrackingNode>> m_trackingNodes;
+	std::unordered_map<nsvr_node_id, std::unique_ptr<TrackingStream>> m_trackedObjects;
+	std::vector<std::unique_ptr<Node>> m_nodes;
 	PluginApis* m_apis;
 	
 	
@@ -121,7 +112,7 @@ private:
 	 
 
 
-	void setupBodyRepresentationFromDescriptions(const Parsing::BodyGraphDescriptor& bodyGraph);
+	void setupInitialBodyRepresentation(const Parsing::BodyGraphDescriptor& bodyGraph);
 };
 
 

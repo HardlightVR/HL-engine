@@ -120,17 +120,7 @@ struct playback_api : public plugin_api {
 	static  Apis getApiType() { return Apis::Playback; }
 };
 
-struct sampling_api : public plugin_api{
-	sampling_api(nsvr_plugin_sampling_api* api) 
-		: submit_query{ api->query_handler, api->client_data } {}
-	callback<
-		nsvr_plugin_sampling_api::nsvr_sampling_querystate, 
-		nsvr_node_id,
-		nsvr_sampling_sample*
-	> submit_query;
 
-	static Apis getApiType() { return Apis::Sampling; }
-};
 
 
 struct device_api : public plugin_api {
@@ -212,12 +202,12 @@ struct tracking_api : public plugin_api {
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_beginstreaming,
 		nsvr_tracking_stream*,
-		uint64_t
+		nsvr_node_id
 	> submit_beginstreaming;
 
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_endstreaming,
-		uint64_t
+		nsvr_node_id
 	> submit_endstreaming;
 
 	static Apis getApiType() { return Apis::Tracking; }
