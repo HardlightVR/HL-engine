@@ -96,13 +96,13 @@ BodyGraph::BodyGraph()
 
 	m_bodyparts.emplace(nsvr_bodypart_upperarm_left, Bodypart( nsvr_bodypart_upperarm_left , 29.41, upper_arm_left ));
 
-	m_bodyparts.emplace(nsvr_bodypart_forearm_left, Bodypart ( nsvr_bodypart_forearm_left, 27.68, lower_arm_left ));
+	m_bodyparts.emplace(nsvr_bodypart_lowerarm_left, Bodypart ( nsvr_bodypart_lowerarm_left, 27.68, lower_arm_left ));
 
 	m_bodyparts.emplace(nsvr_bodypart_upperarm_right, Bodypart( nsvr_bodypart_upperarm_right, 29.41, upper_arm_right ));
 
-	m_bodyparts.emplace(nsvr_bodypart_forearm_right, Bodypart(nsvr_bodypart_forearm_right, 27.68, lower_arm_right));
+	m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
 
-	m_bodyparts.emplace(nsvr_bodypart_forearm_right, Bodypart(nsvr_bodypart_forearm_right, 27.68, lower_arm_right));
+	m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
 
 	m_bodyparts.emplace(nsvr_bodypart_lowerleg_left, Bodypart(nsvr_bodypart_lowerleg_left, 43.25, lower_leg_left));
 

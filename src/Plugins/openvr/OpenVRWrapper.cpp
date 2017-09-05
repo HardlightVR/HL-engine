@@ -108,18 +108,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 
 void OpenVRWrapper::configureBodyGraph(nsvr_bodygraph * graph)
 {
-	nsvr_bodygraph_region* controllerPalmRegion;
-	nsvr_bodygraph_region_create(&controllerPalmRegion);
-	nsvr_bodygraph_region_setboundingboxdimensions(controllerPalmRegion, 4, 4);
 
-	nsvr_bodygraph_region_setlocation(controllerPalmRegion, nsvr_bodypart_palm_left, 0.5, 0);
-	nsvr_bodygraph_createnode(graph, "Palm Left Zone", controllerPalmRegion);
-	
-	nsvr_bodygraph_region_setlocation(controllerPalmRegion, nsvr_bodypart_palm_right, 0.5, 0);
-	nsvr_bodygraph_createnode(graph, "Palm Right Zone", controllerPalmRegion);
-
-
-	nsvr_bodygraph_region_destroy(&controllerPalmRegion);
 
 	this->graph = graph;
 }
@@ -140,7 +129,7 @@ void OpenVRWrapper::update()
 	
 }
 
-void OpenVRWrapper::triggerHapticPulse(vr::TrackedDeviceIndex_t device, float strength)
+void OpenVRWrapper::triggerHapticPulse(vr::TrackedDeviceIndex_t device, double strength)
 {
 	assert(strength >= 0 && strength <= 1.0);
 	//4000microseconds = strongest..
@@ -202,11 +191,11 @@ void OpenVRWrapper::handleDeviceActivated(const vr::VREvent_t& event)
 
 	if (event.trackedDeviceIndex == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand)) {
 		nsvr_bodygraph_clearassociations(graph, event.trackedDeviceIndex);
-		nsvr_bodygraph_associate(graph, "Palm Left Zone", event.trackedDeviceIndex);
+		nsvr_bodygraph_associate(graph, "PalmLeftZone", event.trackedDeviceIndex);
 	}
 	else if (event.trackedDeviceIndex == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand)) {
 		nsvr_bodygraph_clearassociations(graph, event.trackedDeviceIndex);
-		nsvr_bodygraph_associate(graph, "Palm Right Zone", event.trackedDeviceIndex);
+		nsvr_bodygraph_associate(graph, "PalmRightZone", event.trackedDeviceIndex);
 	}
 }
 
@@ -271,13 +260,13 @@ void OpenVRWrapper::getDeviceInfo(uint32_t id, nsvr_device_info* info)
 	}
 }
 
-void sinsample(std::vector<double>& samples, float maxStrength, std::size_t numSamples) {
-	float clampedStrength = std::max(0.0f, std::min(1.0f, maxStrength));
+void sinsample(std::vector<double>& samples, double maxStrength, std::size_t numSamples) {
+	double clampedStrength = std::max(0.0, std::min(1.0, maxStrength));
 
-	float total = (M_PI/numSamples);
+	double total = (M_PI/numSamples);
 	for (std::size_t i = 0; i < numSamples; i++) {
 		
-		float s = std::sin((float)i*total)*clampedStrength;
+		double s = std::sin((double)i*total)*clampedStrength;
 		if (s > 0) {
 			samples.push_back(s);
 		}
@@ -288,13 +277,13 @@ void sinsample(std::vector<double>& samples, float maxStrength, std::size_t numS
 
 }
 
-void constant(std::vector<double>& samples, float strength, std::size_t numsamples) {
-	float clampedStrength = std::max(0.0f, std::min(1.0f, strength));
+void constant(std::vector<double>& samples, double strength, std::size_t numsamples) {
+	double clampedStrength = std::max(0.0, std::min(1.0, strength));
 	for (std::size_t i = 0; i < numsamples; i++) {
 		samples.push_back(clampedStrength);
 	}
 }
-std::vector<double> generateWaveform(float strength, nsvr_default_waveform family) {
+std::vector<double> generateWaveform(double strength, nsvr_default_waveform family) {
 	if (nsvr_preset_family_click == family) {
 		std::vector<double> samples;
 		sinsample(samples, strength, 10);

@@ -294,13 +294,13 @@ extern "C" {
 	typedef enum nsvr_bodypart {
 		nsvr_bodypart_unknown = 0,
 		nsvr_bodypart_upperarm_left ,
-		nsvr_bodypart_forearm_left,
+		nsvr_bodypart_lowerarm_left,
 		nsvr_bodypart_palm_left,
 		nsvr_bodypart_upperleg_left,
 		nsvr_bodypart_lowerleg_left,
 
 		nsvr_bodypart_upperarm_right ,
-		nsvr_bodypart_forearm_right,
+		nsvr_bodypart_lowerarm_right,
 		nsvr_bodypart_palm_right ,
 		nsvr_bodypart_upperleg_right,
 		nsvr_bodypart_lowerleg_right,

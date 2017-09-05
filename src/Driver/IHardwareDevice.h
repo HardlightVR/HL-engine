@@ -13,8 +13,8 @@
 #include <boost/mpl/map.hpp>
 #include <boost/mpl/pair.hpp>
 #include "BodyGraph.h"
-#include "Renderable.h"
 #include "SimulatedHapticNode.h"
+#include "NodeView.h"
 class PluginApis;
 class PluginEventSource;
 class HardwareCoordinator;
@@ -84,14 +84,15 @@ private:
 	void setupDynamicBodyRepresentation();
 
 	std::string m_name;
+
 	std::unordered_map<nsvr_node_id, SimulatedHapticNode> m_simulatedNodes;
 	std::unordered_map<nsvr_node_id, std::unique_ptr<TrackingStream>> m_trackedObjects;
 	std::vector<std::unique_ptr<Node>> m_nodes;
+
+
 	PluginApis* m_apis;
 	
 	
-
-
 	void dynamicallyFetchNodes();
 	void parseNodes(const std::vector<NodeDescriptor>& descriptor);
 	void createNewNode(const NodeDescriptor& descriptor);

@@ -157,6 +157,32 @@ void HardlightDevice::RaiseDeviceDisconnectionEvent(nsvr_core* core)
 
 void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 {
+	nsvr_bodygraph_associate(g, "upperChestActuators:0", m_drivers[Location::Chest_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftAbActuators:0", m_drivers[Location::Upper_Ab_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftAbActuators:1", m_drivers[Location::Mid_Ab_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftAbActuators:2", m_drivers[Location::Lower_Ab_Left]->GetId());
+
+	nsvr_bodygraph_associate(g, "leftShoulderActuator", m_drivers[Location::Shoulder_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftUpperArmActuator", m_drivers[Location::Upper_Arm_Left]->GetId());
+	nsvr_bodygraph_associate(g, "leftLowerArmActuator", m_drivers[Location::Forearm_Left]->GetId());
+
+	nsvr_bodygraph_associate(g, "upperBackActuators:0", m_drivers[Location::Upper_Back_Left]->GetId());
+
+
+	nsvr_bodygraph_associate(g, "upperChestActuators:1", m_drivers[Location::Chest_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightAbActuators:0", m_drivers[Location::Upper_Ab_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightAbActuators:1", m_drivers[Location::Mid_Ab_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightAbActuators:2", m_drivers[Location::Lower_Ab_Right]->GetId());
+
+	nsvr_bodygraph_associate(g, "rightShoulderActuator", m_drivers[Location::Shoulder_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightUpperArmActuator", m_drivers[Location::Upper_Arm_Right]->GetId());
+	nsvr_bodygraph_associate(g, "rightLowerArmActuator", m_drivers[Location::Forearm_Right]->GetId());
+
+	nsvr_bodygraph_associate(g, "upperBackActuators:1", m_drivers[Location::Upper_Back_Right]->GetId());
+
+
+	/*
+	
 	nsvr_bodygraph_associate(g, "Chest_Left", m_drivers[Location::Chest_Left]->GetId());
 	nsvr_bodygraph_associate(g, "Upper_Ab_Left", m_drivers[Location::Upper_Ab_Left]->GetId());
 	nsvr_bodygraph_associate(g, "Mid_Ab_Left", m_drivers[Location::Mid_Ab_Left]->GetId());
@@ -179,7 +205,7 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 	nsvr_bodygraph_associate(g, "Upper_Arm_Right", m_drivers[Location::Upper_Arm_Right]->GetId());
 	nsvr_bodygraph_associate(g, "Lower_Arm_Right", m_drivers[Location::Forearm_Right]->GetId());
 
-	nsvr_bodygraph_associate(g, "Back_Right", m_drivers[Location::Upper_Back_Right]->GetId());
+	nsvr_bodygraph_associate(g, "Back_Right", m_drivers[Location::Upper_Back_Right]->GetId());*/
 
 }
 
