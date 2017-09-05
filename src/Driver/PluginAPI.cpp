@@ -213,10 +213,6 @@ REGISTER_API(playback_api)
 
 REGISTER_API(buffered_api)
 
-REGISTER_API(preset_api)
-
-REGISTER_API(sampling_api)
-
 REGISTER_API(device_api)
 
 REGISTER_API(waveform_api)

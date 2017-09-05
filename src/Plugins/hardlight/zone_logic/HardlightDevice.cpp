@@ -50,15 +50,6 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	nsvr_register_playback_api(ctx, &playback_api);
 
 
-
-	nsvr_plugin_sampling_api sampling_api;
-	sampling_api.client_data = this;
-	sampling_api.query_handler = [](uint64_t device, nsvr_sampling_sample* outState, void* client_data) {
-		AS_TYPE(HardlightDevice, client_data)->Query(device, outState);
-	};
-
-	nsvr_register_sampling_api(ctx, &sampling_api);
-
 	
 	nsvr_plugin_device_api device_api;
 	device_api.client_data = this;

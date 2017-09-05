@@ -95,19 +95,6 @@ struct buffered_api : public plugin_api {
 	static Apis getApiType() { return Apis::Buffered; }
 };
 
-struct preset_api : public plugin_api {
-	preset_api(nsvr_plugin_preset_api* api)
-		: submit_preset{ api->preset_handler, api->client_data } {}
-	
-	callback<
-		nsvr_plugin_preset_api::nsvr_preset_handler, 
-		nsvr_node_id,
-		nsvr_preset*
-	> submit_preset;
-
-	static Apis getApiType() { return Apis::Preset; }
-};
-
 
 struct playback_api : public plugin_api {
 	playback_api(nsvr_plugin_playback_api* api)
