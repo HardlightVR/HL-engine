@@ -43,7 +43,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 	
 	nsvr_plugin_waveform_api waves;
 	waves.client_data = this;
-	waves.activate_handler = [](uint64_t request_id, uint64_t device_id, nsvr_waveform* wave, void* ud) {
+	waves.activate_handler = [](uint64_t request_id, nsvr_node_id device_id, nsvr_waveform* wave, void* ud) {
 		static_cast<OpenVRWrapper*>(ud)->triggerPreset(device_id, wave);
 	};
 	nsvr_register_waveform_api(core, &waves);
@@ -63,7 +63,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 		return wrapper->getDeviceInfo(id, info);
 	};
 
-	devices.getnodeinfo_handler = [](uint64_t node_id, nsvr_node_info* info, void *ud) {
+	devices.getnodeinfo_handler = [](nsvr_node_id node_id, nsvr_node_info* info, void *ud) {
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
 		return wrapper->getNodeInfo(node_id, info);
 	};
@@ -79,7 +79,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 	buffered_api.getsampleduration_handler = [](double* outDuration, void* ud) {
 		*outDuration = 5;
 	};
-	buffered_api.submit_handler = [](uint64_t request_id, uint64_t device_id, double* samples, uint32_t count, void* ud) {
+	buffered_api.submit_handler = [](uint64_t request_id, nsvr_node_id device_id, double* samples, uint32_t count, void* ud) {
 		AS_TYPE(OpenVRWrapper, ud)->bufferedHaptics(device_id, samples, count);
 	};
 
