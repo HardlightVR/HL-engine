@@ -21,7 +21,7 @@ public:
 	void Unpause(ParentId  handle);
 
 	void EnumerateNodesForDevice(nsvr_node_ids* ids);
-	void GetNodeInfo(uint64_t id, nsvr_node_info* info);
+	void GetNodeInfo(nsvr_node_id id, nsvr_node_info* info);
 	void SetupDeviceAssociations(nsvr_bodygraph* g);
 private:
 

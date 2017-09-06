@@ -22,7 +22,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 
 	constexpr int systemInfoSize = sizeof(NullSpace::SharedMemory::DeviceInfo);
 
-	m_systems = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*32);
+	m_devices = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*32);
 	m_tracking = std::make_unique<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>>(/* initial element capacity*/16, "ns-tracking-2");
 	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-vec", 2048);
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
@@ -47,10 +47,10 @@ void DriverMessenger::startSentinel() {
 
 void DriverMessenger::UpdateDeviceStatus(uint32_t id, DeviceStatus status)
 {
-	if (auto index = m_systems->Find([id](const DeviceInfo& s) {return s.Id == id; })) {
-		auto currentCopy = m_systems->Get(*index);
+	if (auto index = m_devices->Find([id](const DeviceInfo& s) {return s.Id == id; })) {
+		auto currentCopy = m_devices->Get(*index);
 		currentCopy.Status = status;
-		m_systems->Update(*index, currentCopy);
+		m_devices->Update(*index, currentCopy);
 	}
 	else {
 		BOOST_LOG_TRIVIAL(warning) << "[Messenger] Unable to update device " << id << " status, because it doesn't exist";
@@ -89,18 +89,18 @@ void DriverMessenger::WriteTracking(uint32_t region, NullSpace::SharedMemory::Qu
 void DriverMessenger::WriteDevice(const DeviceInfo&  system)
 {
 	auto sameId = [&system](const DeviceInfo& s) { return s.Id == system.Id; };
-	if (auto index = m_systems->Find(sameId))
+	if (auto index = m_devices->Find(sameId))
 	{
-		m_systems->Update(*index, system);
+		m_devices->Update(*index, system);
 	}
 	else {
-		m_systems->Push(system);
+		m_devices->Push(system);
 	}
 }
 
 void DriverMessenger::RemoveDevice(uint32_t id)
 {
-	m_systems->Remove([id](const DeviceInfo& s) {return s.Id == id; });
+	m_devices->Remove([id](const DeviceInfo& s) {return s.Id == id; });
 }
 
 void DriverMessenger::WriteBodyView(NullSpace::SharedMemory::RegionPair data)

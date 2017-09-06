@@ -19,7 +19,7 @@ public:
 	Location GetLocation();
 
 	bool IsPlaying();
-	uint64_t GetId();
+	uint32_t GetId();
 	void consumeLasting(BasicHapticEventData data, ParentId);
 	void controlEffect(ParentId handle, int command);
 	void realtime(std::vector<double> samples, ParentId);

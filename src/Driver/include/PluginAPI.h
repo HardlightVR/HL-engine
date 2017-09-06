@@ -35,7 +35,7 @@ extern "C" {
 
 	typedef enum nsvr_region { test = 0 } nsvr_region; //todo: deperecate
 
-	typedef uint64_t nsvr_node_id;
+	typedef uint32_t nsvr_node_id;
 	typedef uint32_t nsvr_device_id;
 
 	// As a plugin author, you may implement three levels of functionality.
@@ -274,7 +274,7 @@ extern "C" {
 
 	typedef struct nsvr_plugin_tracking_api {
 		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_node_id node_id, void* client_data);
-		typedef void(*nsvr_tracking_endstreaming)(uint64_t node_id, void* client_data);
+		typedef void(*nsvr_tracking_endstreaming)(nsvr_node_id node_id, void* client_data);
 
 		nsvr_tracking_beginstreaming beginstreaming_handler;
 		nsvr_tracking_endstreaming endstreaming_handler;

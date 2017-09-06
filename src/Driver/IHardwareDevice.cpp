@@ -59,14 +59,14 @@ void Device::parseNodes(const std::vector<NodeDescriptor>& descriptor)
 
 
 
-void Device::fetchNodeInfo(uint64_t device_id) {
+void Device::fetchNodeInfo(nsvr_node_id node_id) {
 	device_api* enumerator = m_apis->GetApi<device_api>();
 	nsvr_node_info info = { 0 };
-	enumerator->submit_getnodeinfo(device_id, &info);
+	enumerator->submit_getnodeinfo(node_id, &info);
 
 	NodeDescriptor desc;
 	desc.displayName = std::string(info.name);
-	desc.id = device_id;
+	desc.id = node_id;
 	desc.type = info.type;
 
 	createNewNode(desc);
@@ -200,7 +200,7 @@ const Node * Device::findNode(nsvr_node_id id) const
 	return nullptr;
 }
 
-Node * Device::findNode(uint64_t id)
+Node * Device::findNode(nsvr_node_id id)
 {
 	return const_cast<Node*>(static_cast<const Device&>(*this).findNode(id));
 }

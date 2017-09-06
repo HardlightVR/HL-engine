@@ -26,7 +26,7 @@ private:
 
 	HumanBodyNodes m_bodyRepresentation;
 
-	void writeTracking(uint64_t region, nsvr_quaternion* quat);
+	void writeTracking(nsvr_node_id region, nsvr_quaternion* quat);
 
 	ScheduledEvent m_writeBodyRepresentation;
 

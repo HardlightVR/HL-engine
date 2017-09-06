@@ -64,12 +64,12 @@ bool Hardlight_Mk3_ZoneDriver::IsPlaying()
 	return false;
 }
 
-uint64_t Hardlight_Mk3_ZoneDriver::GetId()
+uint32_t Hardlight_Mk3_ZoneDriver::GetId()
 {
 	//todo: fix
 	//this is temporary. Need to decide if IDs should be random? The same at startup?
 	//Follow an order? We should make a guideline for the platform and follow it.
-	return static_cast<uint64_t>(m_area);
+	return static_cast<uint32_t>(m_area);
 }
 
 //boost::optional<HapticDisplayInfo> Hardlight_Mk3_ZoneDriver::QueryCurrentlyPlaying()

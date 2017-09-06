@@ -286,10 +286,10 @@ public:
 	void ClearAssociations(nsvr_node_id node_id);
 
 
-	std::vector<uint64_t> getNodesForNamedRegion(subregion::shared_region region);
+	std::vector<nsvr_node_id> getNodesForNamedRegion(subregion::shared_region region);
 
 
-	std::unordered_map<subregion::shared_region, std::vector<uint64_t>> getAllNodes() const;
+	std::unordered_map<subregion::shared_region, std::vector<nsvr_node_id>> getAllNodes() const;
 private:
 	
 	// This is the user facing data structure that hardware devs end up interfacing with.

@@ -43,7 +43,7 @@ private:
 	//Write haptics data here
 	std::unique_ptr<OwnedReadableSharedQueue> m_hapticsData;
 
-	std::unique_ptr<OwnedWritableSharedVector<DeviceInfo>> m_systems;
+	std::unique_ptr<OwnedWritableSharedVector<DeviceInfo>> m_devices;
 	//If logging, write data here
 	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
 

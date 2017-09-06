@@ -143,37 +143,37 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_region_setlocation(nsvr_bodygraph_r
 	return 0;
 }
 
-NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_associate(nsvr_bodygraph * body, const char * node, uint64_t device_id)
+NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_associate(nsvr_bodygraph * body, const char * node, nsvr_node_id node_id)
 {
 	RETURN_IF_NULL(body);
 	RETURN_IF_NULL(node);
 
-	return ExceptionGuard([body, node, device_id]() {
-		AS_TYPE(BodyGraph, body)->Associate(node, device_id);
+	return ExceptionGuard([body, node, node_id]() {
+		AS_TYPE(BodyGraph, body)->Associate(node, node_id);
 		return nsvr_success;
 	});
 	
 }
 
-NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_unassociate(nsvr_bodygraph * body, const char * node, uint64_t device_id)
+NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_unassociate(nsvr_bodygraph * body, const char * node, nsvr_node_id node_id)
 {
 	RETURN_IF_NULL(body);
 	RETURN_IF_NULL(node);
 
-	return ExceptionGuard([body, node, device_id]() {
-		AS_TYPE(BodyGraph, body)->Unassociate(node, device_id);
+	return ExceptionGuard([body, node, node_id]() {
+		AS_TYPE(BodyGraph, body)->Unassociate(node, node_id);
 		return nsvr_success;
 	});
 	
 }
 
-NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_clearassociations(nsvr_bodygraph * body, uint64_t device_id)
+NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_clearassociations(nsvr_bodygraph * body, nsvr_node_id node_id)
 {
 
 	RETURN_IF_NULL(body);
 
-	return ExceptionGuard([body, device_id]() {
-		AS_TYPE(BodyGraph, body)->ClearAssociations(device_id);
+	return ExceptionGuard([body, node_id]() {
+		AS_TYPE(BodyGraph, body)->ClearAssociations(node_id);
 		return nsvr_success;
 	});
 	

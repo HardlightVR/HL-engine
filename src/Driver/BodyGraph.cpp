@@ -185,22 +185,22 @@ int BodyGraph::ConnectNodes(const char* a, const char* b)
 	return 0;
 }
 
-void BodyGraph::Associate(const char * node, uint64_t device_id)
+void BodyGraph::Associate(const char * node, nsvr_node_id node_id)
 {
-	m_nodes[node].addNode(device_id);
+	m_nodes[node].addNode(node_id);
 }
 
-void BodyGraph::Unassociate(const char * node, uint64_t device_id)
+void BodyGraph::Unassociate(const char * node, nsvr_node_id node_id)
 {
-	m_nodes[node].removeNode(device_id);
+	m_nodes[node].removeNode(node_id);
 }
 
 
 
-void BodyGraph::ClearAssociations(uint64_t device_id)
+void BodyGraph::ClearAssociations(nsvr_node_id node_id)
 {
 	BGL_FORALL_VERTICES_T(v, m_nodes, LabeledGraph) {
-		m_nodes.graph()[v].removeNode(device_id);
+		m_nodes.graph()[v].removeNode(node_id);
 	}
 }
 

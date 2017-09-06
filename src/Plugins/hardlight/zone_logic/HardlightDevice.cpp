@@ -93,7 +93,7 @@ void HardlightDevice::Unpause(ParentId  handle)
 
 void HardlightDevice::EnumerateNodesForDevice(nsvr_node_ids* ids)
 {
-	std::vector<uint64_t> found_ids;
+	std::vector<nsvr_node_id> found_ids;
 	for (const auto& device : m_drivers) {
 		found_ids.push_back(device.second->GetId());
 	}
@@ -106,7 +106,7 @@ void HardlightDevice::EnumerateNodesForDevice(nsvr_node_ids* ids)
 }
 
 
-void HardlightDevice::GetNodeInfo(uint64_t id, nsvr_node_info* info) {
+void HardlightDevice::GetNodeInfo(nsvr_node_id id, nsvr_node_info* info) {
 	const auto& t = Locator::Translator();
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [id = id](const auto& driver) {
 		return driver.second->GetId() == id;

@@ -95,14 +95,14 @@ private:
 	void dynamicallyFetchNodes();
 	void parseNodes(const std::vector<NodeDescriptor>& descriptor);
 	void createNewNode(const NodeDescriptor& descriptor);
-	void fetchNodeInfo(uint64_t device_id);
+	void fetchNodeInfo(nsvr_node_id node_id);
 
 
 	void handleSimpleHaptic(RequestId id, const ::NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEvent& event);
 	
-	const Node* findNode(uint64_t id) const;
-	Node* findNode(uint64_t id);
+	const Node* findNode(nsvr_node_id id) const;
+	Node* findNode(nsvr_node_id id);
 
 	BodyGraph m_graph;
 
