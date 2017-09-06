@@ -134,7 +134,7 @@ struct device_api : public plugin_api {
 
 	callback<
 		nsvr_plugin_device_api::nsvr_device_enumeratenodes,
-		uint32_t,
+		nsvr_device_id,
 		nsvr_node_ids*
 	> submit_enumeratenodes;
 
@@ -145,13 +145,14 @@ struct device_api : public plugin_api {
 
 	callback<
 		nsvr_plugin_device_api::nsvr_device_getdeviceinfo,
-		uint32_t,
+		nsvr_device_id,
 		nsvr_device_info*
 	> submit_getdeviceinfo;
 
+	//note: should probably also take the device id
 	callback<
 		nsvr_plugin_device_api::nsvr_device_getnodeinfo,
-		uint64_t,
+		nsvr_node_id,
 		nsvr_node_info*
 	> submit_getnodeinfo;
 
