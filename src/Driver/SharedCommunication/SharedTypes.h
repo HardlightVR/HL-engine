@@ -35,6 +35,8 @@ namespace NullSpace {
 			DeviceStatus Status;
 
 		};
+
+		constexpr int size = sizeof(DeviceInfo);
 		
 		struct SystemInfo {
 			char SystemName[128];

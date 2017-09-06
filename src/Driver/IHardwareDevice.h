@@ -23,7 +23,6 @@ struct DeviceDescriptor;
 
 struct NodeDescriptor {
 	nsvr_node_type type;
-	uint32_t capabilities;
 	std::string displayName;
 	nsvr_node_id id;
 };

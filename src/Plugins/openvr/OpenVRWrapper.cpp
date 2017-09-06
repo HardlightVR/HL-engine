@@ -79,7 +79,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 	buffered_api.getsampleduration_handler = [](double* outDuration, void* ud) {
 		*outDuration = 5;
 	};
-	buffered_api.submit_handler = [](uint64_t device_id, double* samples, uint32_t count, void* ud) {
+	buffered_api.submit_handler = [](uint64_t request_id, uint64_t device_id, double* samples, uint32_t count, void* ud) {
 		AS_TYPE(OpenVRWrapper, ud)->bufferedHaptics(device_id, samples, count);
 	};
 
@@ -222,7 +222,6 @@ void OpenVRWrapper::enumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* i
 }
 void OpenVRWrapper::getNodeInfo(uint64_t id, nsvr_node_info* info) {
 	if (id == 0) {
-		info->capabilities = nsvr_device_capability_preset | nsvr_device_capability_buffered;
 		info->type = nsvr_node_type_haptic;
 		std::string name("Haptic Thumbpad");
 		std::copy(name.begin(), name.end(), info->name);

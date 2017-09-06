@@ -110,24 +110,19 @@ extern "C" {
 		nsvr_device_id ids[128];
 		unsigned int device_count;
 	} nsvr_device_ids;
-	typedef enum nsvr_node_capability {
-		nsvr_device_capability_none = 0,
-		nsvr_device_capability_preset = 1 << 0,
-		nsvr_device_capability_buffered = 1 << 1,
-		nsvr_device_capability_dynamic = 1 << 2
-	} nsvr_node_capability;
+	
 
 	typedef enum nsvr_node_type {
 		nsvr_node_type_unknown = 0,
 		nsvr_node_type_haptic,
 		nsvr_node_type_led,
-		nsvr_node_type_tracker
+		nsvr_node_type_inertial_tracker,
+		nsvr_node_type_absolute_tracker
 	} nsvr_node_type;
 
 	typedef struct nsvr_node_info {
 		nsvr_node_id id;
 		nsvr_node_type type;
-		uint32_t capabilities;
 		char name[512];
 	} nsvr_node_info;
 

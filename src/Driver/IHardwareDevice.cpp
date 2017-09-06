@@ -65,7 +65,6 @@ void Device::fetchNodeInfo(uint64_t device_id) {
 	enumerator->submit_getnodeinfo(device_id, &info);
 
 	NodeDescriptor desc;
-	desc.capabilities = info.capabilities;
 	desc.displayName = std::string(info.name);
 	desc.id = device_id;
 	desc.type = info.type;
@@ -85,7 +84,7 @@ void Device::createNewNode(const NodeDescriptor& node)
 		m_simulatedNodes.insert(std::make_pair(node.id, SimulatedHapticNode()));
 	}
 
-	if (node.type == nsvr_node_type_tracker) {
+	if (node.type == nsvr_node_type_inertial_tracker) {
 		m_trackedObjects.insert(std::make_pair(node.id, 
 			std::make_unique<TrackingStream>(node.id, m_apis->GetApi<tracking_api>())));
 	}
@@ -347,7 +346,7 @@ void Device::registerTrackedObjects(const boost::signals2::signal<void(nsvr_node
 	boost::signals2::signal<void(nsvr_node_id, nsvr_quaternion*)> t;
 
 	for (auto& node : m_nodes) {
-		if (node->type() == nsvr_node_type_tracker) {
+		if (node->type() == nsvr_node_type_inertial_tracker) {
 			m_trackedObjects[node->id()]->Signal.connect(slot);
 		}
 	}
