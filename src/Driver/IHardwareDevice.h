@@ -114,6 +114,7 @@ private:
 
 
 	void setupInitialBodyRepresentation(const Parsing::BodyGraphDescriptor& bodyGraph);
+	void handleRealtimeEvent(uint64_t request_id, const NullSpaceIPC::RealtimeHaptic& realtime);
 };
 
 

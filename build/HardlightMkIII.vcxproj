@@ -317,6 +317,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h" />
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\zone_logic\BufferedEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardwareCommands.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\LiveBasicHapticEvent.h" />
@@ -358,6 +359,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\src\Plugins\hardlight\zone_logic\BufferedEvent.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightDevice.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\LiveBasicHapticEvent.cpp" />

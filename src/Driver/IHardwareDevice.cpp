@@ -12,6 +12,7 @@
 
 #include <boost/variant/variant.hpp>
 
+#include "WaveformGenerators.h"
 Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraph)
 	: m_name(descriptor.displayName)
 	, m_apis(&capi)
@@ -103,6 +104,9 @@ void Device::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 	case NullSpaceIPC::HighLevelEvent::kPlaybackEvent:
 		handlePlaybackEvent(event.parent_id(), event.playback_event());
 		break;
+	case NullSpaceIPC::HighLevelEvent::kRealtimeHaptic:
+		handleRealtimeEvent(event.parent_id(), event.realtime_haptic());
+		break;
 	default:
 		BOOST_LOG_TRIVIAL(info) << "[Device] Unrecognized request: " << event.events_case();
 		break;
@@ -127,20 +131,21 @@ void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleH
 			}
 		}
 	} 
-
-	else if (auto api = m_apis->GetApi<buffered_api>()) {
+	else
+	if (auto api = m_apis->GetApi<buffered_api>()) {
 		double sampleDuration = 0;
 		api->submit_getsampleduration(&sampleDuration);
 		uint32_t numNecessarySamples = std::max<uint32_t>(1, static_cast<uint32_t>(simple.duration() / sampleDuration));
 
-		std::vector<double> samples(numNecessarySamples, simple.strength());
+		auto samples = nsvr::waveforms::generateWaveform(simple.strength(), static_cast<nsvr_default_waveform>(simple.effect()));
+	//	std::vector<double> samples(numNecessarySamples, simple.strength());
 
 		for (uint64_t region : simple.regions()) {
 			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
 			for (const auto& node : nodes) {
 				m_simulatedNodes[node].submitHaptic(Waveform(requestId, samples.data(), sampleDuration, samples.size()));
 
-				api->submit_buffer(node, samples.data(), samples.size());
+				api->submit_buffer(requestId, node, samples.data(), samples.size());
 			}
 		}
 	}
@@ -254,6 +259,25 @@ void Device::setupInitialBodyRepresentation(const Parsing::BodyGraphDescriptor& 
 }
 
 
+
+void Device::handleRealtimeEvent(uint64_t request_id, const NullSpaceIPC::RealtimeHaptic& realtime)
+{
+	if (auto api = m_apis->GetApi<buffered_api>()) {
+		for (const auto& thing : realtime.magnitudes()) {
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(thing.region()));
+			for (const auto& node : nodes) {
+				double s = thing.strength();
+				m_simulatedNodes[node].submitHaptic(Waveform(request_id, &s, 0.1, 1));
+
+				api->submit_buffer(request_id, node, &s, 1);
+
+			}
+		}
+			
+		}
+
+		
+}
 
 Node::Node(const NodeDescriptor& description, PluginApis* apis)
 	: m_id{ description.id }

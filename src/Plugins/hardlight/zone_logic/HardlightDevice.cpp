@@ -29,7 +29,7 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_plugin_waveform_api waveform_api;
 	waveform_api.client_data = this;
-	waveform_api.activate_handler = [](uint64_t request_id, uint64_t device_id, nsvr_waveform* waveform, void* cd) {
+	waveform_api.activate_handler = [](uint64_t request_id, nsvr_node_id device_id, nsvr_waveform* waveform, void* cd) {
 		AS_TYPE(HardlightDevice, cd)->handle(request_id, device_id, waveform);
 	};
 
@@ -49,6 +49,18 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_register_playback_api(ctx, &playback_api);
 
+	nsvr_plugin_buffered_api buffered_api;
+	buffered_api.client_data = this;
+	buffered_api.getmaxsamples_handler = [](uint32_t* outMaxSamples, void* cd) {
+		*outMaxSamples = 512;
+	};
+	buffered_api.getsampleduration_handler = [](double* outDuration, void* cd) {
+		*outDuration = 0.25;
+	};
+	buffered_api.submit_handler = [](uint64_t request_id, nsvr_node_id id, double* amplitudes, uint32_t count, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->Buffered(request_id, id, amplitudes, count);
+	};
+	nsvr_register_buffered_api(ctx, &buffered_api);
 
 	
 	nsvr_plugin_device_api device_api;
@@ -180,33 +192,6 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 
 	nsvr_bodygraph_associate(g, "upperBackActuators:1", m_drivers[Location::Upper_Back_Right]->GetId());
 
-
-	/*
-	
-	nsvr_bodygraph_associate(g, "Chest_Left", m_drivers[Location::Chest_Left]->GetId());
-	nsvr_bodygraph_associate(g, "Upper_Ab_Left", m_drivers[Location::Upper_Ab_Left]->GetId());
-	nsvr_bodygraph_associate(g, "Mid_Ab_Left", m_drivers[Location::Mid_Ab_Left]->GetId());
-	nsvr_bodygraph_associate(g, "Lower_Ab_Left", m_drivers[Location::Lower_Ab_Left]->GetId());
-
-	nsvr_bodygraph_associate(g, "Shoulder_Left", m_drivers[Location::Shoulder_Left]->GetId());
-	nsvr_bodygraph_associate(g, "Upper_Arm_Left", m_drivers[Location::Upper_Arm_Left]->GetId());
-	nsvr_bodygraph_associate(g, "Lower_Arm_Left", m_drivers[Location::Forearm_Left]->GetId());
-
-	nsvr_bodygraph_associate(g, "Back_Left", m_drivers[Location::Upper_Back_Left]->GetId());
-
-
-
-	nsvr_bodygraph_associate(g, "Chest_Right", m_drivers[Location::Chest_Right]->GetId());
-	nsvr_bodygraph_associate(g, "Upper_Ab_Right", m_drivers[Location::Upper_Ab_Right]->GetId());
-	nsvr_bodygraph_associate(g, "Mid_Ab_Right", m_drivers[Location::Mid_Ab_Right]->GetId());
-	nsvr_bodygraph_associate(g, "Lower_Ab_Right", m_drivers[Location::Lower_Ab_Right]->GetId());
-
-	nsvr_bodygraph_associate(g, "Shoulder_Right", m_drivers[Location::Shoulder_Right]->GetId());
-	nsvr_bodygraph_associate(g, "Upper_Arm_Right", m_drivers[Location::Upper_Arm_Right]->GetId());
-	nsvr_bodygraph_associate(g, "Lower_Arm_Right", m_drivers[Location::Forearm_Right]->GetId());
-
-	nsvr_bodygraph_associate(g, "Back_Right", m_drivers[Location::Upper_Back_Right]->GetId());*/
-
 }
 
 void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave) {
@@ -226,6 +211,13 @@ void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_wavef
 		}
 		data.duration = duration;
 		(*it).second->consumeLasting(std::move(data), request_id);
+	}
+}
+void HardlightDevice::Buffered(uint64_t request_id, nsvr_node_id node_id, double * amps, uint32_t length)
+{
+	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id = node_id](const auto& driver) { return driver.second->GetId() == device_id; });
+	if (it != m_drivers.end()) {
+		(*it).second->realtime(std::vector<double>(amps, amps + length), request_id);
 	}
 }
 CommandBuffer HardlightDevice::GenerateHardwareCommands(float dt)

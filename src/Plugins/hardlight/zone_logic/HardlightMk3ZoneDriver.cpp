@@ -149,6 +149,12 @@ void Hardlight_Mk3_ZoneDriver::controlEffect(ParentId handle, int command)
 
 
 
+void Hardlight_Mk3_ZoneDriver::realtime(std::vector<double> samples, ParentId id)
+{
+	m_rtpModel.Put(BufferedEvent(id, m_gen(), std::move(samples)));
+	transitionInto(Mode::Realtime);
+}
+
 //void Hardlight_Mk3_ZoneDriver::consume(const NSVR_RealtimeEvent* realtime)
 //{
 //

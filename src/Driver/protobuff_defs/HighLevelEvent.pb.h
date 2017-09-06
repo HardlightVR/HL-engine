@@ -130,16 +130,16 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // repeated uint64 regions = 1;
+  // repeated uint32 regions = 1;
   int regions_size() const;
   void clear_regions();
   static const int kRegionsFieldNumber = 1;
-  ::google::protobuf::uint64 regions(int index) const;
-  void set_regions(int index, ::google::protobuf::uint64 value);
-  void add_regions(::google::protobuf::uint64 value);
-  const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+  ::google::protobuf::uint32 regions(int index) const;
+  void set_regions(int index, ::google::protobuf::uint32 value);
+  void add_regions(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
       regions() const;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_regions();
 
   // optional uint32 effect = 2;
@@ -165,7 +165,7 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 > regions_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > regions_;
   mutable int _regions_cached_byte_size_;
   ::google::protobuf::uint32 effect_;
   float strength_;
@@ -433,16 +433,11 @@ class RealtimeHaptic_Magnitude : public ::google::protobuf::Message /* @@protoc_
 
   // accessors -------------------------------------------------------
 
-  // optional string region = 1;
+  // optional uint32 region = 1;
   void clear_region();
   static const int kRegionFieldNumber = 1;
-  const ::std::string& region() const;
-  void set_region(const ::std::string& value);
-  void set_region(const char* value);
-  void set_region(const char* value, size_t size);
-  ::std::string* mutable_region();
-  ::std::string* release_region();
-  void set_allocated_region(::std::string* region);
+  ::google::protobuf::uint32 region() const;
+  void set_region(::google::protobuf::uint32 value);
 
   // optional float strength = 2;
   void clear_strength();
@@ -455,7 +450,7 @@ class RealtimeHaptic_Magnitude : public ::google::protobuf::Message /* @@protoc_
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::internal::ArenaStringPtr region_;
+  ::google::protobuf::uint32 region_;
   float strength_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
@@ -819,31 +814,31 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // SimpleHaptic
 
-// repeated uint64 regions = 1;
+// repeated uint32 regions = 1;
 inline int SimpleHaptic::regions_size() const {
   return regions_.size();
 }
 inline void SimpleHaptic::clear_regions() {
   regions_.Clear();
 }
-inline ::google::protobuf::uint64 SimpleHaptic::regions(int index) const {
+inline ::google::protobuf::uint32 SimpleHaptic::regions(int index) const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.regions)
   return regions_.Get(index);
 }
-inline void SimpleHaptic::set_regions(int index, ::google::protobuf::uint64 value) {
+inline void SimpleHaptic::set_regions(int index, ::google::protobuf::uint32 value) {
   regions_.Set(index, value);
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.regions)
 }
-inline void SimpleHaptic::add_regions(::google::protobuf::uint64 value) {
+inline void SimpleHaptic::add_regions(::google::protobuf::uint32 value) {
   regions_.Add(value);
   // @@protoc_insertion_point(field_add:NullSpaceIPC.SimpleHaptic.regions)
 }
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
 SimpleHaptic::regions() const {
   // @@protoc_insertion_point(field_list:NullSpaceIPC.SimpleHaptic.regions)
   return regions_;
 }
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 SimpleHaptic::mutable_regions() {
   // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.SimpleHaptic.regions)
   return &regions_;
@@ -991,48 +986,18 @@ CurveHaptic::samples() const {
 
 // RealtimeHaptic_Magnitude
 
-// optional string region = 1;
+// optional uint32 region = 1;
 inline void RealtimeHaptic_Magnitude::clear_region() {
-  region_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  region_ = 0u;
 }
-inline const ::std::string& RealtimeHaptic_Magnitude::region() const {
+inline ::google::protobuf::uint32 RealtimeHaptic_Magnitude::region() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-  return region_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  return region_;
 }
-inline void RealtimeHaptic_Magnitude::set_region(const ::std::string& value) {
+inline void RealtimeHaptic_Magnitude::set_region(::google::protobuf::uint32 value) {
   
-  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  region_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-}
-inline void RealtimeHaptic_Magnitude::set_region(const char* value) {
-  
-  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-}
-inline void RealtimeHaptic_Magnitude::set_region(const char* value, size_t size) {
-  
-  region_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-}
-inline ::std::string* RealtimeHaptic_Magnitude::mutable_region() {
-  
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-  return region_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* RealtimeHaptic_Magnitude::release_region() {
-  // @@protoc_insertion_point(field_release:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-  
-  return region_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void RealtimeHaptic_Magnitude::set_allocated_region(::std::string* region) {
-  if (region != NULL) {
-    
-  } else {
-    
-  }
-  region_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), region);
-  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
 }
 
 // optional float strength = 2;

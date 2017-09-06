@@ -22,7 +22,7 @@ public:
 	uint64_t GetId();
 	void consumeLasting(BasicHapticEventData data, ParentId);
 	void controlEffect(ParentId handle, int command);
-	//void realtime(uint16_t volume);
+	void realtime(std::vector<double> samples, ParentId);
 private:
 	::Location m_area;
 
