@@ -12,6 +12,8 @@
 
 #include <memory>
 
+
+
 using namespace NullSpace::SharedMemory;
 
 class DriverMessenger
@@ -65,6 +67,8 @@ private:
 
 	template<typename TResult, typename TQueueType>
 	std::vector<TResult> readFromStream(TQueueType& queue, std::size_t max_messages);
+public:
+	void UpdateDeviceStatus(uint32_t id, DeviceStatus status);
 };
 
 template<typename TResult, typename TQueueType>

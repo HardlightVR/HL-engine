@@ -95,6 +95,11 @@ void KeepaliveMonitor::ReceivePing()
 	m_responseTimer.cancel();
 }
 
+bool KeepaliveMonitor::IsConnected() const
+{
+	return m_isConnected;
+}
+
 void KeepaliveMonitor::OnDisconnect(std::function<void()> handler)
 {
 	m_disconnectHandlers.push_back(std::move(handler));

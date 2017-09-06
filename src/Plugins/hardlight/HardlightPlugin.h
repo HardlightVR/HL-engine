@@ -24,7 +24,10 @@ public:
 	int Configure(nsvr_core* ctx);
 	void BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id region);
 	void EndTracking(nsvr_node_id region);
-
+	void EnumerateNodesForDevice(nsvr_device_id, nsvr_node_ids* ids);
+	void EnumerateDevices(nsvr_device_ids* ids);
+	void GetDeviceInfo(nsvr_device_id id, nsvr_device_info* info);
+	void GetNodeInfo(nsvr_node_id id, nsvr_node_info* info);
 	void SetupBodygraph(nsvr_bodygraph* graph);
 private:
 	std::shared_ptr<IoService> m_io;

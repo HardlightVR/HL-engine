@@ -239,7 +239,7 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
     "\n\024HighLevelEvent.proto\022\014NullSpaceIPC\"S\n\014"
     "SimpleHaptic\022\017\n\007regions\030\001 \003(\r\022\016\n\006effect\030"
     "\002 \001(\r\022\020\n\010strength\030\003 \001(\002\022\020\n\010duration\030\004 \001("
-    "\002\"|\n\013CurveHaptic\022\017\n\007regions\030\001 \003(\004\0221\n\007sam"
+    "\002\"|\n\013CurveHaptic\022\017\n\007regions\030\001 \003(\r\0221\n\007sam"
     "ples\030\002 \003(\0132 .NullSpaceIPC.CurveHaptic.Sa"
     "mple\032)\n\006Sample\022\014\n\004time\030\001 \001(\002\022\021\n\tmagnitud"
     "e\030\002 \001(\002\"{\n\016RealtimeHaptic\022:\n\nmagnitudes\030"
@@ -1089,15 +1089,15 @@ bool CurveHaptic::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated uint64 regions = 1;
+      // repeated uint32 regions = 1;
       case 1: {
         if (tag == 10) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, this->mutable_regions())));
         } else if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  1, 10, input, this->mutable_regions())));
         } else {
           goto handle_unusual;
@@ -1147,13 +1147,13 @@ failure:
 void CurveHaptic::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:NullSpaceIPC.CurveHaptic)
-  // repeated uint64 regions = 1;
+  // repeated uint32 regions = 1;
   if (this->regions_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
     output->WriteVarint32(_regions_cached_byte_size_);
   }
   for (int i = 0; i < this->regions_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64NoTag(
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32NoTag(
       this->regions(i), output);
   }
 
@@ -1169,7 +1169,7 @@ void CurveHaptic::SerializeWithCachedSizes(
 ::google::protobuf::uint8* CurveHaptic::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.CurveHaptic)
-  // repeated uint64 regions = 1;
+  // repeated uint32 regions = 1;
   if (this->regions_size() > 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
       1,
@@ -1180,7 +1180,7 @@ void CurveHaptic::SerializeWithCachedSizes(
   }
   for (int i = 0; i < this->regions_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt64NoTagToArray(this->regions(i), target);
+      WriteUInt32NoTagToArray(this->regions(i), target);
   }
 
   // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
@@ -1198,12 +1198,12 @@ int CurveHaptic::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.CurveHaptic)
   int total_size = 0;
 
-  // repeated uint64 regions = 1;
+  // repeated uint32 regions = 1;
   {
     int data_size = 0;
     for (int i = 0; i < this->regions_size(); i++) {
       data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt64Size(this->regions(i));
+        UInt32Size(this->regions(i));
     }
     if (data_size > 0) {
       total_size += 1 +
@@ -1328,31 +1328,31 @@ void CurveHaptic_Sample::clear_magnitude() {
 
 // CurveHaptic
 
-// repeated uint64 regions = 1;
+// repeated uint32 regions = 1;
 int CurveHaptic::regions_size() const {
   return regions_.size();
 }
 void CurveHaptic::clear_regions() {
   regions_.Clear();
 }
- ::google::protobuf::uint64 CurveHaptic::regions(int index) const {
+ ::google::protobuf::uint32 CurveHaptic::regions(int index) const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.regions)
   return regions_.Get(index);
 }
- void CurveHaptic::set_regions(int index, ::google::protobuf::uint64 value) {
+ void CurveHaptic::set_regions(int index, ::google::protobuf::uint32 value) {
   regions_.Set(index, value);
   // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.regions)
 }
- void CurveHaptic::add_regions(::google::protobuf::uint64 value) {
+ void CurveHaptic::add_regions(::google::protobuf::uint32 value) {
   regions_.Add(value);
   // @@protoc_insertion_point(field_add:NullSpaceIPC.CurveHaptic.regions)
 }
- const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+ const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
 CurveHaptic::regions() const {
   // @@protoc_insertion_point(field_list:NullSpaceIPC.CurveHaptic.regions)
   return regions_;
 }
- ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+ ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 CurveHaptic::mutable_regions() {
   // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.CurveHaptic.regions)
   return &regions_;

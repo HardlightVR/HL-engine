@@ -132,6 +132,7 @@ extern "C" {
 	} nsvr_node_info;
 
 	typedef struct nsvr_device_info {
+		//todo: is the id field necessary?
 		nsvr_device_id id;
 		char name[512];
 	} nsvr_device_info;

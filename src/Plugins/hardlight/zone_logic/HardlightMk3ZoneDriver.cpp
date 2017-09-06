@@ -125,8 +125,9 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 
 void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data,ParentId id) {
 	data.area = static_cast<uint32_t>(m_area);
-	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data)));
 	transitionInto(Mode::Retained);
+
+	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data)));
 }
 
 void Hardlight_Mk3_ZoneDriver::controlEffect(ParentId handle, int command)
@@ -151,8 +152,9 @@ void Hardlight_Mk3_ZoneDriver::controlEffect(ParentId handle, int command)
 
 void Hardlight_Mk3_ZoneDriver::realtime(std::vector<double> samples, ParentId id)
 {
-	m_rtpModel.Put(BufferedEvent(id, m_gen(), std::move(samples)));
 	transitionInto(Mode::Realtime);
+
+	m_rtpModel.Put(BufferedEvent(id, m_gen(), std::move(samples)));
 }
 
 //void Hardlight_Mk3_ZoneDriver::consume(const NSVR_RealtimeEvent* realtime)

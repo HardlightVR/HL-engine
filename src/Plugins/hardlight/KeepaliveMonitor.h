@@ -16,6 +16,7 @@ public:
 	// Inform the monitor that ping data has been received
 	void ReceivePing();
 
+	bool IsConnected() const;
 
 	// Subscribe to disconnect and reconnect events
 	void OnDisconnect(std::function<void()>);

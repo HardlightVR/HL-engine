@@ -63,22 +63,7 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	nsvr_register_buffered_api(ctx, &buffered_api);
 
 	
-	nsvr_plugin_device_api device_api;
-	device_api.client_data = this;
-	device_api.enumeratenodes_handler = [](uint32_t device_id, nsvr_node_ids* ids, void* cd) {
-		AS_TYPE(HardlightDevice, cd)->EnumerateNodesForDevice(device_id, ids);
-	};
-	device_api.enumeratedevices_handler = [](nsvr_device_ids* ids, void* cd) {
-		AS_TYPE(HardlightDevice, cd)->EnumerateDevices(ids);
-	};
-	device_api.getdeviceinfo_handler = [](uint32_t id, nsvr_device_info* info, void* cd) {
-		AS_TYPE(HardlightDevice, cd)->GetDeviceInfo(id, info);
-	};
-
-	device_api.getnodeinfo_handler = [](uint64_t id, nsvr_node_info* info, void* cd) {
-		AS_TYPE(HardlightDevice, cd)->GetNodeInfo(id, info);
-	};
-	nsvr_register_device_api(ctx, &device_api);
+	
 	
 }
 
@@ -106,7 +91,7 @@ void HardlightDevice::Unpause(ParentId  handle)
 }
 
 
-void HardlightDevice::EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids)
+void HardlightDevice::EnumerateNodesForDevice(nsvr_node_ids* ids)
 {
 	std::vector<uint64_t> found_ids;
 	for (const auto& device : m_drivers) {
@@ -120,12 +105,6 @@ void HardlightDevice::EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids*
 	ids->node_count = found_ids.size();
 }
 
-void HardlightDevice::EnumerateDevices(nsvr_device_ids * ids)
-{
-	//if (this->EnumerateNodesForDevice
-	ids->device_count = 1;
-	ids->ids[0] = THIS_SUIT_ID;
-}
 
 void HardlightDevice::GetNodeInfo(uint64_t id, nsvr_node_info* info) {
 	const auto& t = Locator::Translator();
@@ -144,28 +123,9 @@ void HardlightDevice::GetNodeInfo(uint64_t id, nsvr_node_info* info) {
 
 	}
 }
-void HardlightDevice::GetDeviceInfo(uint32_t id, nsvr_device_info* info)
-{
-	info->id = THIS_SUIT_ID;
-	
-	std::string name("Hardlight Suit");
-	std::copy(name.begin(), name.end(), info->name);
-
-}
 
 
-void HardlightDevice::RaiseDeviceConnectionEvent(nsvr_core* core)
-{
-		nsvr_device_event_raise(core, nsvr_device_event_device_connected, THIS_SUIT_ID);
-	
-}
 
-void HardlightDevice::RaiseDeviceDisconnectionEvent(nsvr_core* core)
-{
-	
-		nsvr_device_event_raise(core, nsvr_device_event_device_disconnected, THIS_SUIT_ID);
-	
-}
 
 void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 {

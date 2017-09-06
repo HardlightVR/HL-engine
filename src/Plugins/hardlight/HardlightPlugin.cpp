@@ -24,11 +24,11 @@ HardlightPlugin::HardlightPlugin() :
 	m_adapter->SetMonitor(m_monitor);
 
 	m_monitor->OnReconnect([&]() {
-		m_device.RaiseDeviceConnectionEvent(m_core);
+		nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, 0);
 	});
 
 	m_monitor->OnDisconnect([&]() {
-		m_device.RaiseDeviceDisconnectionEvent(m_core);
+		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 0);
 	});
 
 	
@@ -148,7 +148,23 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	body_api.client_data = this;
 	nsvr_register_bodygraph_api(core, &body_api);
 
+	nsvr_plugin_device_api device_api;
+	device_api.client_data = this;
+	device_api.enumeratenodes_handler = [](nsvr_device_id device_id, nsvr_node_ids* ids, void* cd) {
+		AS_TYPE(HardlightPlugin, cd)->EnumerateNodesForDevice(device_id, ids);
+	};
+	device_api.enumeratedevices_handler = [](nsvr_device_ids* ids, void* cd) {
+		AS_TYPE(HardlightPlugin, cd)->EnumerateDevices(ids);
+	};
+	device_api.getdeviceinfo_handler = [](nsvr_device_id id, nsvr_device_info* info, void* cd) {
+		AS_TYPE(HardlightPlugin, cd)->GetDeviceInfo(id, info);
+	};
 
+	//Todo: GetNodeInfo should probably either take a device id, or nodes should be globaly unique. Think about this.
+	device_api.getnodeinfo_handler = [](nsvr_node_id id, nsvr_node_info* info, void* cd) {
+		AS_TYPE(HardlightPlugin, cd)->GetNodeInfo(id, info);
+	};
+	nsvr_register_device_api(core, &device_api);
 	return 1;
 }
 
@@ -162,6 +178,37 @@ void HardlightPlugin::EndTracking(nsvr_node_id region)
 {
 	m_firmware.DisableTracking();
 	m_trackingStream = nullptr;
+}
+
+void HardlightPlugin::EnumerateNodesForDevice(nsvr_device_id, nsvr_node_ids * ids)
+{
+	m_device.EnumerateNodesForDevice(ids);
+}
+
+void HardlightPlugin::EnumerateDevices(nsvr_device_ids* ids)
+{
+	if (m_monitor->IsConnected()) {
+		ids->device_count = 1;
+		ids->ids[0] = 0;
+	}
+	else {
+		ids->device_count = 0;
+	}
+}
+
+void HardlightPlugin::GetDeviceInfo(nsvr_device_id id, nsvr_device_info * info)
+{
+	if (id == 0) {
+		info->id = 0;
+		std::string device_name("Hardlight Suit");
+		std::copy(device_name.begin(), device_name.end(), info->name);
+	}
+}
+
+void HardlightPlugin::GetNodeInfo(nsvr_node_id id, nsvr_node_info* info)
+{
+
+	m_device.GetNodeInfo(id, info);
 }
 
 void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)

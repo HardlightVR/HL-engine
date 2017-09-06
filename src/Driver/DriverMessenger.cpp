@@ -44,6 +44,20 @@ void DriverMessenger::startSentinel() {
 	m_sentinelTimer.expires_from_now(m_sentinelInterval);
 	m_sentinelTimer.async_wait([&](auto error) {sentinelHandler(error); });
 }
+
+void DriverMessenger::UpdateDeviceStatus(uint32_t id, DeviceStatus status)
+{
+	if (auto index = m_systems->Find([id](const DeviceInfo& s) {return s.Id == id; })) {
+		auto currentCopy = m_systems->Get(*index);
+		currentCopy.Status = status;
+		m_systems->Update(*index, currentCopy);
+	}
+	else {
+		BOOST_LOG_TRIVIAL(warning) << "[Messenger] Unable to update device " << id << " status, because it doesn't exist";
+	}
+
+}
+
 void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 	if (!ec) {
 		m_sentinel->Write(std::time(nullptr));

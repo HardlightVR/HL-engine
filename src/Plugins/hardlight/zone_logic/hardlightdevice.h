@@ -20,12 +20,8 @@ public:
 	void Cancel(ParentId  handle);
 	void Unpause(ParentId  handle);
 
-	void EnumerateNodesForDevice(uint32_t device_id, nsvr_node_ids* ids);
-	void EnumerateDevices(nsvr_device_ids* ids);
-	void GetDeviceInfo(uint32_t id, nsvr_device_info* info);
+	void EnumerateNodesForDevice(nsvr_node_ids* ids);
 	void GetNodeInfo(uint64_t id, nsvr_node_info* info);
-	void RaiseDeviceConnectionEvent(nsvr_core* core);
-	void RaiseDeviceDisconnectionEvent(nsvr_core* core);
 	void SetupDeviceAssociations(nsvr_bodygraph* g);
 private:
 
@@ -33,7 +29,6 @@ private:
 	template<typename T>
 	void execute_region_specific(void* regioned_event);
 
-	const uint32_t THIS_SUIT_ID = 0;
 };
 
 template<typename T>

@@ -3,7 +3,7 @@
 #include "PluginInstance.h"
 #include "PluginApis.h"
 #include "nsvr_preset.h"
-
+#include <numeric>
 #include <boost/log/trivial.hpp>
 #include "Locator.h"
 #include "HardwareCoordinator.h"
@@ -106,6 +106,9 @@ void Device::deliverRequest(const NullSpaceIPC::HighLevelEvent& event)
 		break;
 	case NullSpaceIPC::HighLevelEvent::kRealtimeHaptic:
 		handleRealtimeEvent(event.parent_id(), event.realtime_haptic());
+		break;
+	case NullSpaceIPC::HighLevelEvent::kCurveHaptic:
+		handleCurveHaptic(event.parent_id(), event.curve_haptic());
 		break;
 	default:
 		BOOST_LOG_TRIVIAL(info) << "[Device] Unrecognized request: " << event.events_case();
@@ -277,6 +280,33 @@ void Device::handleRealtimeEvent(uint64_t request_id, const NullSpaceIPC::Realti
 		}
 
 		
+}
+
+void Device::handleCurveHaptic(uint64_t request_id, const NullSpaceIPC::CurveHaptic& curve)
+{
+	//procondition: the curve has > 0 samples
+	if (auto api = m_apis->GetApi<buffered_api>()) {
+		auto max_ele = *std::max_element(curve.samples().begin(), curve.samples().end(),[](const auto& lhs, const auto& rhs) {
+			return lhs.time() < rhs.time();
+		});
+
+	
+		std::vector<double> samples;
+		samples.reserve(curve.samples().size());
+		for (const auto& s : curve.samples()) {
+			samples.push_back(s.magnitude());
+		}
+
+		auto w = Waveform(request_id, samples.data(), 0.1, samples.size());
+
+		for (const auto& region : curve.regions()) {
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+
+			m_simulatedNodes[region].submitHaptic(w);
+			api->submit_buffer(request_id, nodes[0], samples.data(), samples.size());
+
+		}
+	}
 }
 
 Node::Node(const NodeDescriptor& description, PluginApis* apis)

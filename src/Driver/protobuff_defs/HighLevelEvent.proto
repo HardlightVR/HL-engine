@@ -13,7 +13,7 @@ message SimpleHaptic {
 
 
 message CurveHaptic {
-	repeated uint64 regions = 1;
+	repeated uint32 regions = 1;
 	message Sample {
 		float time = 1;
 		float magnitude = 2;

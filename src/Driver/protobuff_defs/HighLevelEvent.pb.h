@@ -331,16 +331,16 @@ class CurveHaptic : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   // accessors -------------------------------------------------------
 
-  // repeated uint64 regions = 1;
+  // repeated uint32 regions = 1;
   int regions_size() const;
   void clear_regions();
   static const int kRegionsFieldNumber = 1;
-  ::google::protobuf::uint64 regions(int index) const;
-  void set_regions(int index, ::google::protobuf::uint64 value);
-  void add_regions(::google::protobuf::uint64 value);
-  const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+  ::google::protobuf::uint32 regions(int index) const;
+  void set_regions(int index, ::google::protobuf::uint32 value);
+  void add_regions(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
       regions() const;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
       mutable_regions();
 
   // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
@@ -360,7 +360,7 @@ class CurveHaptic : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 > regions_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > regions_;
   mutable int _regions_cached_byte_size_;
   ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::CurveHaptic_Sample > samples_;
   mutable int _cached_size_;
@@ -922,31 +922,31 @@ inline void CurveHaptic_Sample::set_magnitude(float value) {
 
 // CurveHaptic
 
-// repeated uint64 regions = 1;
+// repeated uint32 regions = 1;
 inline int CurveHaptic::regions_size() const {
   return regions_.size();
 }
 inline void CurveHaptic::clear_regions() {
   regions_.Clear();
 }
-inline ::google::protobuf::uint64 CurveHaptic::regions(int index) const {
+inline ::google::protobuf::uint32 CurveHaptic::regions(int index) const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.regions)
   return regions_.Get(index);
 }
-inline void CurveHaptic::set_regions(int index, ::google::protobuf::uint64 value) {
+inline void CurveHaptic::set_regions(int index, ::google::protobuf::uint32 value) {
   regions_.Set(index, value);
   // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.regions)
 }
-inline void CurveHaptic::add_regions(::google::protobuf::uint64 value) {
+inline void CurveHaptic::add_regions(::google::protobuf::uint32 value) {
   regions_.Add(value);
   // @@protoc_insertion_point(field_add:NullSpaceIPC.CurveHaptic.regions)
 }
-inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
 CurveHaptic::regions() const {
   // @@protoc_insertion_point(field_list:NullSpaceIPC.CurveHaptic.regions)
   return regions_;
 }
-inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
 CurveHaptic::mutable_regions() {
   // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.CurveHaptic.regions)
   return &regions_;

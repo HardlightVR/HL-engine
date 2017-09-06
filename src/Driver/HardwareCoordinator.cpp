@@ -19,17 +19,18 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 			writeTracking(id, q);
 		});
 
-		NullSpace::SharedMemory::DeviceInfo info = {};
+		NullSpace::SharedMemory::DeviceInfo info = {0};
 		info.Id = device->id();
 
-		memcpy_s(info.DeviceName, 128, device->name().data(), device->name().size());
+		std::string strName = device->name();
+		std::copy(strName.begin(), strName.end(), info.DeviceName);
+		info.Status = Connected;
 		m_messenger.WriteDevice(info);
 
 	});
 
 	m_devices.OnPreDeviceRemoved([this, &body = m_bodyRepresentation](Device* device) {
-
-		m_messenger.RemoveDevice(device->id());
+		m_messenger.UpdateDeviceStatus(device->id(), DeviceStatus::Disconnected);
 	});
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });
@@ -91,32 +92,27 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 		m_devices.Each([&](Device* device) {
 			device->deliverRequest(event);
 		});
-
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kRealtimeHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		m_devices.Each([&](Device* device) {
 			device->deliverRequest(event);
 		});
-
 	});
 
-	
+	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kCurveHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
+		m_devices.Each([&](Device* device) {
+			device->deliverRequest(event);
+		});
+	});
 
 	
 	
 }
 
-// Must be called for a clean shutdown.
-// Else, say a plugin has hooked into the tracking system and is publishing tracking updates.
-// The system is shutting down and has destroyed its shared memory bridge - when suddenly the callback fires and tries to write
-// or find something in shared memory. We don't want plugins doing anything as we are shutting down.
-
 void HardwareCoordinator::Cleanup()
 {
-	m_devices.Each([this](Device* device) {
-	//	device->teardownHooks();
-	});
+	
 }
 
 

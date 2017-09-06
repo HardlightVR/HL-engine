@@ -47,7 +47,9 @@ public:
 		}
 	}
 
-
+	T Get(std::size_t index) {
+		return (*m_vector)[index];
+	}
 	void Remove(std::function<bool(const T& item)> predicate) {
 		m_vector->erase(std::remove_if(m_vector->begin(), m_vector->end(), predicate), m_vector->end());
 	}
@@ -56,7 +58,7 @@ public:
 		return m_vector->size();
 	}
 
-	void Update(std::size_t index, T item) noexcept {
+	void Update(std::size_t index, T item) {
 		if (m_vector != nullptr) {
 			(*m_vector)[index] = item;
 			
