@@ -154,6 +154,7 @@
     <ClInclude Include="..\src\Driver\targetver.h" />
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
+    <ClInclude Include="..\src\Driver\Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />

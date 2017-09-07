@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DriverMessenger.h"
-
+#include "Version.h"
 
 
 
@@ -16,7 +16,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>::remove("ns-tracking-data");
 	OwnedWritableSharedQueue::remove("ns-logging-data");
 	OwnedReadableSharedQueue::remove("ns-command-data");
-	WritableSharedObject<std::time_t>::remove("ns-sentinel");
+	WritableSharedObject<NullSpace::SharedMemory::SentinelObject>::remove("ns-sentinel");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>::remove("ns-device-mem");
 
@@ -31,7 +31,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	m_commandStream = std::make_unique<OwnedReadableSharedQueue>("ns-command-data",/* max elements */  512, /*max element byte size*/ 512);
 	static_assert(sizeof(std::time_t) == 8, "Time is wrong size");
 	
-	m_sentinel = std::make_unique<WritableSharedObject<std::time_t>>("ns-sentinel");
+	m_sentinel = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>> ("ns-sentinel");
 
 
 
@@ -60,7 +60,12 @@ void DriverMessenger::UpdateDeviceStatus(uint32_t id, DeviceStatus status)
 
 void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 	if (!ec) {
-		m_sentinel->Write(std::time(nullptr));
+		m_sentinel->Write(
+			NullSpace::SharedMemory::SentinelObject{ 
+				NullSpace::SharedMemory::ServiceInfo {SERVICE_VERSION_MAJOR, SERVICE_VERSION_MINOR}, 
+				std::time(nullptr) 
+			}
+		);
 		startSentinel();
 	}
 }

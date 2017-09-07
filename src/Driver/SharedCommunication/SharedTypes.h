@@ -45,11 +45,16 @@ namespace NullSpace {
 		};
 
 	
-
+		
 		struct ServiceInfo {
 			int ServiceMajor;
 			int ServiceMinor;
 
+		};
+
+		struct SentinelObject {
+			ServiceInfo Info;
+			std::time_t TimeStamp;
 		};
 
 		static const TrackingUpdate NullTrackingUpdate = {};

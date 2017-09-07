@@ -160,7 +160,9 @@ $make_installer = {
     param([HashTable]$dirs, [String] $destination, [HashTable] $options) 
 
 
-    $new_service_version = $options["service_version_bump"];
+    Read-Host "Make sure to bump the version number in Version.h in the Driver C++ project and rebuild. This is what is shown in the Version Info panel [enter]";
+
+
     $new_chimera_version = $options["chimera_version_bump"];
 
     # Load up the resx XML from the project
@@ -171,18 +173,12 @@ $make_installer = {
     if ($resx.root.data -eq $null) {
         Write-Host "Failed to read xml from the service gui's resx! Cannot bump versions automatically."
         Write-Host "Open up the GUI project, and navigate to the resources file. Use the helpful GUI to change the version strings."
-        Write-Host "    Service version: >> $new_service_version <<"
         Write-Host "    Chimera version: >> $new_chimera_version <<"
         Read-Host "Hit enter once that's done [enter]";
     } else {
 
-        # Read the previous versions 
-        $old_service_version = ($resx.root.data|where {$_.name -eq "ServiceVersion"})
         $old_chimera_version = ($resx.root.data|where {$_.name -eq "ChimeraVersion"})
 
-        Write-Host "Bumping service $($old_service_version.value) --> $($new_service_version)"
-
-        $old_service_version.Value = $new_service_version;
 
         Write-Host "Bumping chimera $($old_chimera_version.value) --> $($new_chimera_version)"
 

@@ -49,7 +49,7 @@ private:
 
 
 	//Write a timestamp here every so often to signify that this driver is alive
-	std::unique_ptr<WritableSharedObject<std::time_t>> m_sentinel;
+	std::unique_ptr<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>> m_sentinel;
 
 	//Read commands from here, such as ENABLE_TRACKING, DISABLE_TRACKING
 	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
