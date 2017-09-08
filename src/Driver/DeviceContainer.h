@@ -9,6 +9,7 @@
 struct DeviceDescriptor {
 	std::string displayName;
 	nsvr_device_id id;
+	nsvr_device_concept concept;
 };
 
 // Should break this into two interfaces: adding/removing, and the data operations

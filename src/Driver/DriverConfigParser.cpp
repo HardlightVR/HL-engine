@@ -10,6 +10,26 @@ namespace Parsing {
 		{ "gun", Concept::Gun }
 	};
 
+	double angle_distance(double angle_a, double angle_b) {
+		if (angle_a > angle_b) {
+			return (360 - angle_a) + angle_b;
+		}
+		else {
+			return angle_b - angle_a;
+		}
+	}
+	
+	LocationDescriptor lerp(const Parsing::LocationDescriptor& a, const Parsing::LocationDescriptor& b, float percentage) {
+		double lerped_height = (a.height * (1.0 - percentage)) + (b.height * percentage);
+		double real_lerped_rot = a.rotation + angle_distance(a.rotation, b.rotation)*percentage;
+		double z = fmod(real_lerped_rot, 360.0);
+		Parsing::LocationDescriptor result;
+		result.height = lerped_height;
+		result.rotation = z;
+		return result;
+	}
+	
+
 	bool deserialize(LocationDescriptor& location, const Json::Value& json, std::vector<std::string>& errors) {
 		if (!json.isObject()) {
 			errors.push_back("Must be object");

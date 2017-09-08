@@ -15,6 +15,7 @@
 #include "WaveformGenerators.h"
 Device::Device(const DeviceDescriptor& descriptor, PluginApis& capi, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraph)
 	: m_name(descriptor.displayName)
+	, m_concept(descriptor.concept)
 	, m_apis(&capi)
 	, m_nodes()
 	, m_isBodyGraphSetup(false)
@@ -205,23 +206,6 @@ Node * Device::findNode(nsvr_node_id id)
 	return const_cast<Node*>(static_cast<const Device&>(*this).findNode(id));
 }
 
-double angle_distance(double angle_a, double angle_b) {
-	if (angle_a > angle_b) {
-		return (360 - angle_a) + angle_b;
-	}
-	else {
-		return angle_b - angle_a;
-	}
-}
-Parsing::LocationDescriptor lerp(const Parsing::LocationDescriptor& a, const Parsing::LocationDescriptor& b, float percentage) {
-	double lerped_height = (a.height * (1.0 - percentage)) + (b.height * percentage);
-	double real_lerped_rot = a.rotation + angle_distance(a.rotation, b.rotation)*percentage;
-	double z = fmod(real_lerped_rot, 360.0);
-	Parsing::LocationDescriptor result;
-	result.height = lerped_height;
-	result.rotation = z;
-	return result;
-}
 
 class region_visitor : public boost::static_visitor<void> {
 private:
@@ -241,7 +225,7 @@ public:
 	
 	void operator()(const Parsing::MultiRegionDescriptor& multi) {
 		for (std::size_t i = 0; i < multi.count; i++) {
-			auto interp = lerp(multi.location_start, multi.location_end, (float)i / (multi.count-1));
+			auto interp = Parsing::lerp(multi.location_start, multi.location_end, (float)i / (multi.count-1));
 			nsvr_bodygraph_region region;
 			region.bodypart = multi.bodypart;
 			region.rotation = interp.rotation;

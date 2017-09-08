@@ -29,6 +29,7 @@ struct NodeDescriptor {
 class Node {
 public:
 	Node(const NodeDescriptor&, PluginApis*);
+	Node(const NodeDescriptor&) {}
 	nsvr_node_id id() const;
 	std::string name() const;
 	nsvr_node_type type() const;
@@ -68,20 +69,20 @@ public:
 	Device(const Device&) = delete;
 
 	std::string name() const;
+	nsvr_device_id id() const;
+
+	void simulate(double dt);
 
 	void deliverRequest(const NullSpaceIPC::HighLevelEvent& event);
 	
 	void registerTrackedObjects(const boost::signals2::signal<void(nsvr_node_id, nsvr_quaternion*)>::slot_type&);
 
-	
 	std::vector<NodeView> renderDevices() const;
 
 	
-	void simulate(double dt);
-	nsvr_device_id id() const;
 private:
 	void setupDynamicBodyRepresentation();
-
+	nsvr_device_concept m_concept;
 	std::string m_name;
 
 	std::unordered_map<nsvr_node_id, SimulatedHapticNode> m_simulatedNodes;

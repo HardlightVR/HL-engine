@@ -126,11 +126,22 @@ extern "C" {
 		char name[512];
 	} nsvr_node_info;
 
+	typedef enum nsvr_device_concept {
+		nsvr_device_concept_unknown,
+		nsvr_device_concept_suit,
+		nsvr_device_concept_controller,
+		nsvr_device_concept_headwear,
+		nsvr_device_concept_gun,
+		nsvr_device_concept_sword
+	} nsvr_device_concept;
+
 	typedef struct nsvr_device_info {
 		//todo: is the id field necessary?
 		nsvr_device_id id;
 		char name[512];
+		nsvr_device_concept concept;
 	} nsvr_device_info;
+
 	typedef struct nsvr_device_request nsvr_device_request;
 
 	//question: should node IDs be unique per system?

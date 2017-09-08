@@ -29,6 +29,7 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, PluginEven
 			DeviceDescriptor desc;
 			desc.displayName = std::string(info.name);
 			desc.id = info.id;
+			desc.concept = info.concept;
 			addDevice(desc, apis, ev, std::move(bodyGraphDescriptor));
 		}
 	}

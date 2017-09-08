@@ -155,6 +155,11 @@
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
+    <ClInclude Include="..\src\Driver\Device2.h" />
+    <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
+    <ClInclude Include="..\src\Driver\BodyGraphCreator.h" />
+    <ClInclude Include="..\src\Driver\HardwareNodeEnumerator.h" />
+    <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -213,5 +218,8 @@
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
+    <ClCompile Include="..\src\Driver\Device2.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareNodeEnumerator.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareBodygraphCreator.cpp" />
   </ItemGroup>
 </Project>

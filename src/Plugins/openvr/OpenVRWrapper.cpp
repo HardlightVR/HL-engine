@@ -233,6 +233,8 @@ void OpenVRWrapper::getDeviceInfo(uint32_t id, nsvr_device_info* info)
 	if (system) {
 		auto deviceClass = system->GetTrackedDeviceClass(id);
 		if (deviceClass == vr::TrackedDeviceClass_Controller) {
+			info->concept = nsvr_device_concept_controller;
+
 			if (id == system->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand)) {
 				std::string name("Controller (Left Hand)");
 				std::copy(name.begin(), name.end(), info->name);

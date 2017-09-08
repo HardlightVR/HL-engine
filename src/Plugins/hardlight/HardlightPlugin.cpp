@@ -202,6 +202,7 @@ void HardlightPlugin::GetDeviceInfo(nsvr_device_id id, nsvr_device_info * info)
 		info->id = 0;
 		std::string device_name("Hardlight Suit");
 		std::copy(device_name.begin(), device_name.end(), info->name);
+		info->concept = nsvr_device_concept_suit;
 	}
 }
 
