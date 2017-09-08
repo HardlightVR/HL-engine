@@ -16,9 +16,9 @@ public:
 
 	void handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave);
 	void Buffered(uint64_t request_id, nsvr_node_id node_id, double* amps, uint32_t length);
-	void Pause(ParentId  handle);
-	void Cancel(ParentId  handle);
-	void Unpause(ParentId  handle);
+	void Pause(ParentId handle, nsvr_node_id id);
+	void Cancel(ParentId handle,nsvr_node_id id);
+	void Unpause(ParentId handle, nsvr_node_id id);
 
 	void EnumerateNodesForDevice(nsvr_node_ids* ids);
 	void GetNodeInfo(nsvr_node_id id, nsvr_node_info* info);

@@ -86,7 +86,7 @@ namespace NullSpace {
 			using RegionType = uint32_t;
 			RegionType Region;
 			uint32_t Type;
-			uint64_t Id;
+			uint32_t Id;
 			Data Value;
 
 

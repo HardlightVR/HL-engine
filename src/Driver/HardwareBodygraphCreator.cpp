@@ -40,6 +40,12 @@ HardwareBodygraphCreator::HardwareBodygraphCreator(const Parsing::BodyGraphDescr
 	fetchDynamically();
 }
 
+std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegion(nsvr_region region) const
+{
+	return m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+
+}
+
 void HardwareBodygraphCreator::fetchFromDescription(const Parsing::BodyGraphDescriptor & descriptor)
 {
 	region_visitor visitor(m_graph);

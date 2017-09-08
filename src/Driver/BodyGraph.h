@@ -286,7 +286,7 @@ public:
 	void ClearAssociations(nsvr_node_id node_id);
 
 
-	std::vector<nsvr_node_id> getNodesForNamedRegion(subregion::shared_region region);
+	std::vector<nsvr_node_id> getNodesForNamedRegion(subregion::shared_region region) const;
 
 
 	std::unordered_map<subregion::shared_region, std::vector<nsvr_node_id>> getAllNodes() const;

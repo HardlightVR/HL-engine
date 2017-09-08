@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Driver">
@@ -129,6 +129,9 @@
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.h">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
@@ -148,9 +151,6 @@
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
-      <Filter>plugins\hardlight\zone_logic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Plugins\hardlight\zone_logic\BufferedEvent.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
   </ItemGroup>
@@ -230,6 +230,9 @@
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.cpp">
+      <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightDevice.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
@@ -248,6 +251,5 @@
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Plugins\hardlight\zone_logic\BufferedEvent.cpp" />
   </ItemGroup>
 </Project>

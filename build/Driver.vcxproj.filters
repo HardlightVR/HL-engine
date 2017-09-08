@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -24,10 +24,12 @@
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
     <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
     <ClInclude Include="..\src\Driver\BodyGraph.h" />
+    <ClInclude Include="..\src\Driver\BodyGraphCreator.h" />
     <ClInclude Include="..\src\Driver\BodyRegion.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\CoreFacade.h" />
     <ClInclude Include="..\src\Driver\CurveEngine.h" />
+    <ClInclude Include="..\src\Driver\Device2.h" />
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
@@ -37,9 +39,10 @@
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
     <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
+    <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
+    <ClInclude Include="..\src\Driver\HardwareNodeEnumerator.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
-    <ClInclude Include="..\src\Driver\HumanBodyNodes.h" />
     <ClInclude Include="..\src\Driver\IHardwareDevice.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
@@ -58,6 +61,7 @@
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
     <ClInclude Include="..\src\Driver\NSDriverApi.h" />
+    <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
@@ -114,7 +118,10 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
+    <ClInclude Include="..\src\Driver\Version.h" />
+    <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
     <ClInclude Include="..\src\Driver\better_enum.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h">
       <Filter>events_impl</Filter>
@@ -131,6 +138,7 @@
     <ClInclude Include="..\src\Driver\nsvr_core_errors.h" />
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
+    <ClInclude Include="..\src\Driver\nsvr_region.h" />
     <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.h">
       <Filter>protobuff_defs</Filter>
@@ -152,14 +160,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
-    <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
-    <ClInclude Include="..\src\Driver\Version.h" />
-    <ClInclude Include="..\src\Driver\Device2.h" />
-    <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
-    <ClInclude Include="..\src\Driver\BodyGraphCreator.h" />
-    <ClInclude Include="..\src\Driver\HardwareNodeEnumerator.h" />
-    <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -167,15 +167,17 @@
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\CoreFacade.cpp" />
     <ClCompile Include="..\src\Driver\CurveEngine.cpp" />
+    <ClCompile Include="..\src\Driver\Device2.cpp" />
     <ClCompile Include="..\src\Driver\DeviceContainer.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
     <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareBodygraphCreator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareNodeEnumerator.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
-    <ClCompile Include="..\src\Driver\HumanBodyNodes.cpp" />
     <ClCompile Include="..\src\Driver\IHardwareDevice.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
@@ -195,6 +197,8 @@
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
       <Filter>SharedCommunication</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
+    <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.cc">
@@ -216,10 +220,5 @@
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
-    <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
-    <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
-    <ClCompile Include="..\src\Driver\Device2.cpp" />
-    <ClCompile Include="..\src\Driver\HardwareNodeEnumerator.cpp" />
-    <ClCompile Include="..\src\Driver\HardwareBodygraphCreator.cpp" />
   </ItemGroup>
 </Project>

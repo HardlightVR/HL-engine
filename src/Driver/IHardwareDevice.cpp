@@ -167,19 +167,19 @@ void Device::handlePlaybackEvent(RequestId id, const ::NullSpaceIPC::PlaybackEve
 		if (playback_api* api = m_apis->GetApi<playback_api>()) {
 		switch (event.command()) {
 		case NullSpaceIPC::PlaybackEvent_Command_UNPAUSE:
-			api->submit_unpause(id);
+		//	api->submit_unpause(id);
 			for (auto& node : m_simulatedNodes) {
 				node.second.submitPlayback(id, SimulatedHapticNode::PlaybackCommand::Resume);
 			}
 			break;
 		case NullSpaceIPC::PlaybackEvent_Command_PAUSE:
-			api->submit_pause(id);
+		//	api->submit_pause(id);
 			for (auto& node : m_simulatedNodes) {
 				node.second.submitPlayback(id, SimulatedHapticNode::PlaybackCommand::Pause);
 			}
 			break;
 		case NullSpaceIPC::PlaybackEvent_Command_CANCEL:
-			api->submit_cancel(id);
+			//api->submit_cancel(id);
 			for (auto& node : m_simulatedNodes) {
 				node.second.submitPlayback(id, SimulatedHapticNode::PlaybackCommand::Cancel);
 			}

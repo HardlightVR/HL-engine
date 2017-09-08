@@ -11,7 +11,6 @@
 HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, DeviceContainer& devices )
 	: m_devices(devices)
 	, m_messenger(messenger)
-	, m_bodyRepresentation{}
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 {
 	m_devices.OnDeviceAdded([this](Device* device) {
@@ -29,7 +28,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 	});
 
-	m_devices.OnPreDeviceRemoved([this, &body = m_bodyRepresentation](Device* device) {
+	m_devices.OnPreDeviceRemoved([this](Device* device) {
 		m_messenger.UpdateDeviceStatus(device->id(), DeviceStatus::Disconnected);
 	});
 

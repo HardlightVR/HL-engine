@@ -33,7 +33,6 @@ extern "C" {
 	// Opaque type representing the core API provided to you
 	typedef struct nsvr_core nsvr_core;
 
-	typedef enum nsvr_region { test = 0 } nsvr_region; //todo: deperecate
 
 	typedef uint32_t nsvr_node_id;
 	typedef uint32_t nsvr_device_id;
@@ -256,9 +255,9 @@ extern "C" {
 
 	
 	typedef struct nsvr_plugin_playback_api {
-		typedef void(*nsvr_playback_pause)(uint64_t request_id, void* client_data);
-		typedef void(*nsvr_playback_unpause)(uint64_t request_id, void* client_data);
-		typedef void(*nsvr_playback_cancel)(uint64_t request_id, void* client_data);
+		typedef void(*nsvr_playback_pause)(uint64_t request_id, nsvr_node_id node_id, void* client_data);
+		typedef void(*nsvr_playback_unpause)(uint64_t request_id, nsvr_node_id node_id, void* client_data);
+		typedef void(*nsvr_playback_cancel)(uint64_t request_id, nsvr_node_id node_id, void* client_data);
 
 		nsvr_playback_pause pause_handler;
 		nsvr_playback_unpause unpause_handler;

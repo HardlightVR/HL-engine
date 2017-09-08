@@ -19,7 +19,7 @@ struct NodeView {
 	
 	struct SingleNode {
 		NodeType Type;
-		uint64_t Id;
+		nsvr_node_id Id;
 		Data DisplayData;
 
 	};

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Device2.h"
-
+#include "nsvr_region.h"
 Device2::Device2(DeviceDescriptor descriptor, std::unique_ptr<NodeDiscoverer> discoverer, std::unique_ptr<BodyGraphCreator> bodygraph)
 	: m_description(descriptor)
 	, m_discoverer(std::move(discoverer))
@@ -48,16 +48,16 @@ void Device2::handlePlaybackEvent(uint64_t id, const NullSpaceIPC::PlaybackEvent
 {
 	switch (playbackEvent.command()) {
 	case NullSpaceIPC::PlaybackEvent_Command_UNPAUSE:
-		api->submit_unpause(id);
+		//api->submit_unpause(id);
 		break;
 	case NullSpaceIPC::PlaybackEvent_Command_PAUSE:
-		api->submit_pause(id);
+		//api->submit_pause(id);
 		break;
 	case NullSpaceIPC::PlaybackEvent_Command_CANCEL:
-		api->submit_cancel(id);
+		//api->submit_cancel(id);
 		break;
 	default:
-		BOOST_LOG_TRIVIAL(warning) << "[Device] Unknown playback event: " << event.command();
+	//	BOOST_LOG_TRIVIAL(warning) << "[Device] Unknown playback event: " << event.command();
 		break;
 	}
 

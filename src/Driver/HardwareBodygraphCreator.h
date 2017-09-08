@@ -7,7 +7,7 @@ class HardwareBodygraphCreator : public BodyGraphCreator {
 public:
 	HardwareBodygraphCreator(const Parsing::BodyGraphDescriptor& descriptor, bodygraph_api* api);
 
-
+	std::vector<nsvr_node_id> GetNodesAtRegion(nsvr_region region) const override;
 	void ForEachNodeAtRegion(nsvr_region region, BodyGraphCreator::NodeAction action) override;
 private:
 	bodygraph_api* m_api;

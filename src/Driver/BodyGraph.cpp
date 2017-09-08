@@ -206,7 +206,7 @@ void BodyGraph::ClearAssociations(nsvr_node_id node_id)
 
 
 // Retrieve any nodes that are associated with a particular named region
-std::vector<nsvr_node_id> BodyGraph::getNodesForNamedRegion(subregion::shared_region region)
+std::vector<nsvr_node_id> BodyGraph::getNodesForNamedRegion(subregion::shared_region region) const
 {
 	std::vector<nsvr_node_id> nodes;
 

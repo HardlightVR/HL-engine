@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Driver", "Driver.vcxproj", "{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HardlightMkIII", "HardlightMkIII.vcxproj", "{4FC8F791-3B96-EB97-242A-5CBE1097C7FC}"
@@ -10,9 +8,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenVR", "OpenVR.vcxproj", "{7F884AC8-6B2A-759E-54E5-88F24026FCEE}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|UnitTestWin32 = Debug|UnitTestWin32
 		Debug|Win32 = Debug|Win32

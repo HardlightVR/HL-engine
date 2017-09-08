@@ -37,14 +37,14 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_plugin_playback_api playback_api;
 	playback_api.client_data = this;
-	playback_api.pause_handler = [](uint64_t handle, void* client_data) {
-		AS_TYPE(HardlightDevice, client_data)->Pause(handle);
+	playback_api.pause_handler = [](uint64_t handle, nsvr_node_id id, void* client_data) {
+		AS_TYPE(HardlightDevice, client_data)->Pause(handle, id);
 	};
-	playback_api.cancel_handler = [](uint64_t handle, void* client_data) {
-		AS_TYPE(HardlightDevice, client_data)->Cancel(handle);
+	playback_api.cancel_handler = [](uint64_t handle, nsvr_node_id id, void* client_data) {
+		AS_TYPE(HardlightDevice, client_data)->Cancel(handle, id);
 	};
-	playback_api.unpause_handler = [](uint64_t handle, void* client_data) {
-		AS_TYPE(HardlightDevice, client_data)->Unpause(handle);
+	playback_api.unpause_handler = [](uint64_t handle, nsvr_node_id id, void* client_data) {
+		AS_TYPE(HardlightDevice, client_data)->Unpause(handle, id);
 	};
 
 	nsvr_register_playback_api(ctx, &playback_api);
@@ -69,25 +69,22 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 
 
-void HardlightDevice::Pause(ParentId handle)
+void HardlightDevice::Pause(ParentId handle, nsvr_node_id id)
 {
-	for (auto& driver : m_drivers) {
-		driver.second->controlEffect(handle, 1);
-	}
+	Location loc = static_cast<Location>(id);
+	m_drivers[loc]->controlEffect(handle, 1);
 }
 
-void HardlightDevice::Cancel(ParentId  handle)
+void HardlightDevice::Cancel(ParentId  handle, nsvr_node_id id)
 {
-	for (auto& driver : m_drivers) {
-		driver.second->controlEffect(handle, 3);
-	}
+	Location loc = static_cast<Location>(id);
+	m_drivers[loc]->controlEffect(handle, 3);
 }
 
-void HardlightDevice::Unpause(ParentId  handle)
+void HardlightDevice::Unpause(ParentId  handle, nsvr_node_id id)
 {
-	for (auto& driver : m_drivers) {
-		driver.second->controlEffect(handle, 2);
-	}
+	Location loc = static_cast<Location>(id);
+	m_drivers[loc]->controlEffect(handle, 2);
 }
 
 
