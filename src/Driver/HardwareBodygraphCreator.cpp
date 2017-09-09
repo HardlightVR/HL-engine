@@ -46,6 +46,21 @@ std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegion(nsvr_region
 
 }
 
+std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegions(const std::vector<nsvr_region>& regions) const
+{
+	std::vector<nsvr_node_id> results;
+	for (const auto& region : regions) {
+		auto newResults = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+		results.insert(results.end(), newResults.begin(), newResults.end());
+	}
+
+	std::sort(results.begin(), results.end());
+	results.erase(std::unique(results.begin(), results.end()), results.end());
+	return results;
+}
+
+
+
 void HardwareBodygraphCreator::fetchFromDescription(const Parsing::BodyGraphDescriptor & descriptor)
 {
 	region_visitor visitor(m_graph);
@@ -65,6 +80,14 @@ void HardwareBodygraphCreator::ForEachNodeAtRegion(nsvr_region region, BodyGraph
 	std::vector<nsvr_node_id> node_ids = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
 
 	std::for_each(node_ids.begin(), node_ids.end(), action);
+}
+
+void HardwareBodygraphCreator::ForEachRegionPresent(std::function<void(nsvr_region, const std::vector<nsvr_node_id>&)> action)
+{
+	auto& allNodes = m_graph.getAllNodes();
+	for (auto& kvp : allNodes) {
+		action(static_cast<nsvr_region>(kvp.first), kvp.second);
+	}
 }
 
 

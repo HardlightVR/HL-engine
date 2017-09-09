@@ -2,17 +2,12 @@
 #include "DeviceContainer.h"
 #include <experimental/vector>
 
+#include "Device2.h"
 
-void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
-{
-	m_deviceLock.lock();
-	m_devices.push_back(std::make_unique<Device>(desc, apis, ev, std::move(bodyGraphDescriptor)));
-	m_deviceLock.unlock();
-
-
-	notify(m_deviceAddedSubs, m_devices.back().get());
-}
-
+#include "HardwareBodygraphCreator.h"
+#include "HardwareNodeEnumerator.h"
+#include "HardwarePlaybackController.h"
+#include "HapticInterface.h"
 void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, PluginEventSource & ev, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
 {
 	if (auto api = apis.GetApi<device_api>()) {
@@ -36,19 +31,28 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, PluginEven
 
 }
 
-void DeviceContainer::RemoveDevice(const std::string & name)
+
+void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
 {
-	for (const auto& device : m_devices) {
-		if (device->name() == name) {
-			notify(m_deviceRemovedSubs, device.get());
-		}
-	}
+	
+	auto playback = std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>());
+
+	auto bodygraph = std::make_shared<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>());
+
+	auto nodes =std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>());
+
+	auto haptics = std::make_unique<HapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>());
 
 	m_deviceLock.lock();
-	auto rem = std::remove_if(m_devices.begin(), m_devices.end(), [&](const auto& device) { return device->name() == name; });
-	m_devices.erase(rem, m_devices.end());
+
+	m_devices.push_back(std::make_unique<Device2>(desc, std::move(nodes), bodygraph, std::move(playback), std::move(haptics)));
+	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, apis, bodygraph));
+
 	m_deviceLock.unlock();
+	notify(m_deviceAddedSubs, m_devices.back().get());
 }
+
+
 
 
 void DeviceContainer::RemoveDevice(uint64_t id)
@@ -60,12 +64,17 @@ void DeviceContainer::RemoveDevice(uint64_t id)
 	}
 
 	m_deviceLock.lock();
-	auto rem = std::remove_if(m_devices.begin(), m_devices.end(), [&](const auto& device) { return device->id() == id; });
+
+	auto rem = std::remove_if(m_devices.begin(), m_devices.end(), [id](const auto& device) { return device->id() == id; });
 	m_devices.erase(rem, m_devices.end());
+
+	auto rem2 = std::remove_if(m_simulations.begin(), m_simulations.end(), [id](const auto& device) { return device->id() == id; });
+	m_simulations.erase(rem2, m_simulations.end());
+
 	m_deviceLock.unlock();
 }
 
-void DeviceContainer::Each(std::function<void(Device*)> forEach)
+void DeviceContainer::Each(std::function<void(Device2*)> forEach)
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 	for (auto& ptr : m_devices) {
@@ -73,6 +82,12 @@ void DeviceContainer::Each(std::function<void(Device*)> forEach)
 	}
 }
 
+void DeviceContainer::EachSimulation(std::function<void(SimulatedDevice*)> action) {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+	for (auto& ptr : m_simulations) {
+		action(ptr.get());
+	}
+}
 
 
 DeviceContainer::DeviceContainer() 
@@ -90,7 +105,7 @@ void DeviceContainer::OnPreDeviceRemoved(DeviceFn fn)
 	m_deviceRemovedSubs.push_back(fn);
 }
 
-void DeviceContainer::notify(const std::vector<DeviceFn>& subscribers, Device * device)
+void DeviceContainer::notify(const std::vector<DeviceFn>& subscribers, Device2 * device)
 {
 	for (const auto& fn : subscribers) {
 		fn(device);

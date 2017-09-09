@@ -28,8 +28,8 @@ struct NodeDescriptor {
 };
 class Node {
 public:
-	Node(const NodeDescriptor&, PluginApis*);
-	Node(const NodeDescriptor&) {}
+	Node(const NodeDescriptor&);
+	Node();
 	nsvr_node_id id() const;
 	std::string name() const;
 	nsvr_node_type type() const;
@@ -39,7 +39,6 @@ public:
 private:
 	std::string m_name;
 	nsvr_node_id m_id;
-	PluginApis* m_apis;
 	nsvr_node_type m_type;
 
 

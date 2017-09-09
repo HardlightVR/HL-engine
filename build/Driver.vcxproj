@@ -307,6 +307,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\CurveEngine.h" />
     <ClInclude Include="..\src\Driver\Device2.h" />
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
+    <ClInclude Include="..\src\Driver\DeviceDescriptor.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
@@ -315,9 +316,11 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
     <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
+    <ClInclude Include="..\src\Driver\HapticInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareNodeEnumerator.h" />
+    <ClInclude Include="..\src\Driver\HardwarePlaybackController.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
     <ClInclude Include="..\src\Driver\IHardwareDevice.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
@@ -334,6 +337,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
+    <ClInclude Include="..\src\Driver\PlaybackController.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
     <ClInclude Include="..\src\Driver\PluginEventSource.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
@@ -356,6 +360,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SharedCommunication\WriteableSharedObject.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\readablesharedvector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
+    <ClInclude Include="..\src\Driver\SimulatedDevice.h" />
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
@@ -392,9 +397,11 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
     <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\HapticInterface.cpp" />
     <ClCompile Include="..\src\Driver\HardwareBodygraphCreator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareNodeEnumerator.cpp" />
+    <ClCompile Include="..\src\Driver\HardwarePlaybackController.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
     <ClCompile Include="..\src\Driver\IHardwareDevice.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
@@ -425,6 +432,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\src\Driver\SimulatedDevice.cpp" />
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />

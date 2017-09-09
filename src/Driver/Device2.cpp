@@ -1,10 +1,19 @@
 #include "stdafx.h"
 #include "Device2.h"
 #include "nsvr_region.h"
-Device2::Device2(DeviceDescriptor descriptor, std::unique_ptr<NodeDiscoverer> discoverer, std::unique_ptr<BodyGraphCreator> bodygraph)
+
+Device2::Device2(
+	DeviceDescriptor descriptor, 
+	std::unique_ptr<NodeDiscoverer> discoverer, 
+	std::shared_ptr<BodyGraphCreator> bodygraph, 
+	std::unique_ptr<PlaybackController> playback,
+	std::unique_ptr<HapticInterface> haptics
+)
 	: m_description(descriptor)
 	, m_discoverer(std::move(discoverer))
-	, m_bodygraph(std::move(bodygraph))
+	, m_bodygraph(bodygraph)
+	, m_playback(std::move(playback))
+	, m_haptics(std::move(haptics))
 {
 
 }
@@ -30,38 +39,58 @@ void Device2::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
 	}
 }
 
+nsvr_device_id Device2::id() const
+{
+	return m_description.id;
+}
+
+std::string Device2::name() const
+{
+	return m_description.displayName;
+}
+
+template<typename T, typename E>
+std::vector<T> protoBufToVec(const google::protobuf::RepeatedField<E>& inArray) {
+	std::vector<T> result;
+	result.reserve(inArray.size());
+	for (const auto& a : inArray) {
+		result.push_back(static_cast<T>(a));
+	}
+	return result;
+}
+
 void Device2::handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple)
 {
-	for (const auto& proto_region : simple.regions()) {
-		nsvr_region region = static_cast<nsvr_region>(proto_region);
+	auto regions = protoBufToVec<nsvr_region>(simple.regions());
 
-		m_bodygraph->ForEachNodeAtRegion(region, [this](nsvr_node_id id) {
-			Node* node = m_discoverer->Get(id);
-			if (node->type() == nsvr_node_type_haptic) {
-				//submitWaveform(id, Waveform{});
-			}
-		});
+	auto allNodes = m_bodygraph->GetNodesAtRegions(regions);
+	
+	auto hapticNodes = m_discoverer->FilterByType(allNodes, nsvr_node_type_haptic);
+
+	for (nsvr_node_id node : hapticNodes) {
+		
+		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
 	}
+
+	m_playback->CreateEventRecord(event_id, allNodes);
+
 }
 
 void Device2::handlePlaybackEvent(uint64_t id, const NullSpaceIPC::PlaybackEvent& playbackEvent)
 {
+
 	switch (playbackEvent.command()) {
 	case NullSpaceIPC::PlaybackEvent_Command_UNPAUSE:
-		//api->submit_unpause(id);
+		m_playback->Resume(id);
 		break;
 	case NullSpaceIPC::PlaybackEvent_Command_PAUSE:
-		//api->submit_pause(id);
+		m_playback->Pause(id);
 		break;
 	case NullSpaceIPC::PlaybackEvent_Command_CANCEL:
-		//api->submit_cancel(id);
+		m_playback->Cancel(id);
 		break;
 	default:
-	//	BOOST_LOG_TRIVIAL(warning) << "[Device] Unknown playback event: " << event.command();
+		BOOST_LOG_TRIVIAL(warning) << "[Device] Unknown playback event: " << playbackEvent.command();
 		break;
 	}
-
-	m_discoverer->ForEachNode([](Node* node) {
-		//submitPlaybackCommand(node->id, command) //for simulation purposes
-	});
 }

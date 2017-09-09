@@ -6,6 +6,7 @@
 #include "PluginAPI.h"
 using namespace boost::bimaps;
 
+typedef uint32_t nsvr_region;
 typedef bimap<Effect, std::string> EffectMap;
 typedef bimap<Location, std::string> LocationMap;
 typedef bimap<Side, std::string> SideMap;

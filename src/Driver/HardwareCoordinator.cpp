@@ -5,6 +5,7 @@
 #include "DeviceContainer.h"
 #include "IHardwareDevice.h"
 #include "PluginAPI.h"
+#include "Device2.h"
 #include "DriverMessenger.h"
 #include "SharedTypes.h"
 #include <boost/variant.hpp>
@@ -13,10 +14,10 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_messenger(messenger)
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 {
-	m_devices.OnDeviceAdded([this](Device* device) {
-		device->registerTrackedObjects([this](nsvr_node_id id, nsvr_quaternion* q) {
-			writeTracking(id, q);
-		});
+	m_devices.OnDeviceAdded([this](Device2* device) {
+		//device->registerTrackedObjects([this](nsvr_node_id id, nsvr_quaternion* q) {
+	//		writeTracking(id, q);
+		//});
 
 		NullSpace::SharedMemory::DeviceInfo info = {0};
 		info.Id = device->id();
@@ -28,7 +29,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 	});
 
-	m_devices.OnPreDeviceRemoved([this](Device* device) {
+	m_devices.OnPreDeviceRemoved([this](Device2* device) {
 		m_messenger.UpdateDeviceStatus(device->id(), DeviceStatus::Disconnected);
 	});
 
@@ -49,10 +50,10 @@ void HardwareCoordinator::writeTracking(nsvr_node_id node_id, nsvr_quaternion * 
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
-	m_devices.Each([&messenger = m_messenger](Device* device) {
+	m_devices.EachSimulation([&messenger = m_messenger](SimulatedDevice* device) {
 		device->simulate(.008);
 
-		auto nodeView = device->renderDevices();
+		auto nodeView = device->render();
 
 		for (const auto& node : nodeView) {
 			for (const auto& single : node.nodes) {
@@ -82,26 +83,26 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		BOOST_LOG_TRIVIAL(info) << "Got haptic";
-		m_devices.Each([&](Device* device) {
-			device->deliverRequest(event);
+		m_devices.Each([&](Device2* device) {
+			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device* device) {
-			device->deliverRequest(event);
+		m_devices.Each([&](Device2* device) {
+			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kRealtimeHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device* device) {
-			device->deliverRequest(event);
+		m_devices.Each([&](Device2* device) {
+			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kCurveHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device* device) {
-			device->deliverRequest(event);
+		m_devices.Each([&](Device2* device) {
+			device->DispatchEvent(event);
 		});
 	});
 

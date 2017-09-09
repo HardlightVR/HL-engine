@@ -6,6 +6,7 @@ HardwareNodeEnumerator::HardwareNodeEnumerator(nsvr_device_id id, device_api * a
 	, m_nodes()
 	, m_id(id)
 {
+	Discover();
 }
 
 void HardwareNodeEnumerator::Discover()
@@ -28,6 +29,19 @@ void HardwareNodeEnumerator::ForEachNode(NodeDiscoverer::NodeAction action)
 	}
 }
 
+std::vector<Node*> HardwareNodeEnumerator::GetNodesOfType(nsvr_node_type type)
+{
+	std::vector<Node*> filteredNodes;
+	for (auto& kvp : m_nodes) {
+		if (kvp.second.type() == type) {
+			filteredNodes.push_back(&m_nodes.at(kvp.first));
+		}
+	}
+
+	return filteredNodes;
+
+}
+
 Node* HardwareNodeEnumerator::Get(nsvr_node_id id)
 {
 	if (m_nodes.find(id) != m_nodes.end()) {
@@ -35,6 +49,18 @@ Node* HardwareNodeEnumerator::Get(nsvr_node_id id)
 	} 
 
 	return nullptr;
+}
+
+std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_type type)
+{
+	std::vector<nsvr_node_id> output;
+	for (nsvr_node_id id : items) {
+		auto it = m_nodes.find(id);
+		if (it != m_nodes.end()) {
+			output.push_back(it->first);
+		}
+	}
+	return output;
 }
 
 void HardwareNodeEnumerator::fetchNodeInfo(nsvr_node_id node_id)
@@ -52,5 +78,5 @@ void HardwareNodeEnumerator::fetchNodeInfo(nsvr_node_id node_id)
 
 void HardwareNodeEnumerator::createNewNode(const NodeDescriptor& desc)
 {
-	m_nodes.insert(std::make_pair(desc.id, Node(desc)));
+	m_nodes[desc.id] = Node(desc);
 }

@@ -79,7 +79,7 @@ void Device::createNewNode(const NodeDescriptor& node)
 	const auto& t = Locator::Translator();
 
 
-	m_nodes.push_back(std::make_unique<Node>(node, m_apis));
+	m_nodes.push_back(std::make_unique<Node>(node));
 
 	if (node.type == nsvr_node_type_haptic) {
 		m_simulatedNodes.insert(std::make_pair(node.id, SimulatedHapticNode()));
@@ -292,12 +292,29 @@ void Device::handleCurveHaptic(uint64_t request_id, const NullSpaceIPC::CurveHap
 	}
 }
 
-Node::Node(const NodeDescriptor& description, PluginApis* apis)
-	: m_id{ description.id }
-	, m_name{ description.displayName }
-	, m_apis(apis)
-	, m_type(description.type)
-	{}
+//Hmm, we could probably wholesale replace Node with NodeDescriptor if node doesn't end up having any functionality..
+Node::Node(const NodeDescriptor& desc)
+	: m_id(desc.id)
+	, m_name(desc.displayName)
+	, m_type(desc.type)
+{
+
+}
+
+Node::Node()
+	: m_id(0)
+	, m_name()
+	, m_type()
+{
+
+}
+
+//Node::Node(const NodeDescriptor& description, PluginApis* apis)
+//	: m_id{ description.id }
+//	, m_name{ description.displayName }
+//	, m_apis(apis)
+//	, m_type(description.type)
+//	{}
 
 
 

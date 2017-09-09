@@ -17,6 +17,8 @@ struct callback {
 	FnPtr handler;
 	void* user_data;
 	
+	std::function<void(Arguments...)> instrumentation;
+
 	callback(FnPtr handler, void* ud);
 
 	// Invoke the callback
@@ -27,7 +29,8 @@ struct callback {
 template<typename FnPtr, typename ...Arguments>
 inline callback<FnPtr, Arguments...>::callback(FnPtr handler, void * ud) 
 	: handler(handler)
-	, user_data(ud) {}
+	, user_data(ud)
+	, instrumentation([](Arguments...) {}) {}
 
 
 // Here's where we pass in the user_data
@@ -35,6 +38,7 @@ template<typename FnPtr, typename ...Arguments>
 inline void callback<FnPtr, Arguments...>::operator()(Arguments ...argument)
 {
 	handler(std::forward<Arguments>(argument)..., user_data);
+	instrumentation(std::forward<Arguments>(argument)...);
 }
 
 
@@ -105,17 +109,20 @@ struct playback_api : public plugin_api {
 
 	callback<
 		nsvr_plugin_playback_api::nsvr_playback_cancel, 
-		uint64_t
+		uint64_t,
+		nsvr_node_id
 	> submit_cancel;
 
 	callback<
 		nsvr_plugin_playback_api::nsvr_playback_pause, 
-		uint64_t
+		uint64_t,
+		nsvr_node_id
 	> submit_pause;
 
 	callback<
 		nsvr_plugin_playback_api::nsvr_playback_unpause,
-		uint64_t
+		uint64_t,
+		nsvr_node_id
 	> submit_unpause;
 
 	static  Apis getApiType() { return Apis::Playback; }
