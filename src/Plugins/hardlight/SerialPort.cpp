@@ -25,7 +25,7 @@ SerialPort::SerialPort(std::string name, boost::asio::io_service & io, std::func
 	: m_name(name)
 	, m_io(io)
 	, m_pingTimer(io)
-	, m_pingTimeout(boost::posix_time::millisec(500))
+	, m_pingTimeout(boost::posix_time::millisec(250))
 	, m_port(std::make_unique<boost::asio::serial_port>(io))
 	, m_status(Status::Closed)
 	, m_doneFunc(doneFunc)
@@ -74,17 +74,52 @@ void SerialPort::async_open_port()
 
 void SerialPort::async_ping_port()
 {
+	BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Pinging " << m_name;
+
 	m_port->async_write_some(boost::asio::buffer(pingData), [this](const auto& ec, auto bytes_transferred) { write_handler(ec, bytes_transferred); });
+	m_pingTimer.expires_from_now(m_pingTimeout);
+	m_pingTimer.async_wait([this](const boost::system::error_code& ec) {
+		if (ec == boost::asio::error::operation_aborted) {
+			//canceled by the read handler, good news!
+			//no-op
+		}
+		else if (ec) {
+			//some other error?
+			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Timer was canceled, but it wasn't us that did it. Error: " << ec.message() << ", " << m_name;
+			m_status = Status::Unknown;
+			finish_protocol();
+		}
+		else {
+
+			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] It's dead " << m_name;
+
+			m_port->close();
+			m_status = Status::Unwritable;
+			finish_protocol();
+			
+		}
+	});
 }
 
 
 void SerialPort::write_handler(const boost::system::error_code & ec, std::size_t bytes_transferred)
 {
+	if (ec == boost::asio::error::operation_aborted) {
+		return;
+	}
+
+
+	m_pingTimer.cancel();
+
 	if (ec) {
+		BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Couldn't even write to it " << m_name;
+
 		m_status = Status::Unwritable;
 		finish_protocol();
 	}
 	else {
+		BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Pinged it, now waiting " << m_name;
+
 		m_io.post([this]() { async_wait_response(); });
 	}
 }
@@ -105,7 +140,7 @@ void SerialPort::finish_protocol()
 		m_doneFunc();
 	}
 	
-	//It's very important that the last one be the one to call the donefunc. Else, we would probably destroy the objects 
+	//It's very important that the last one be the one to call the doneFunc. Else, we would probably destroy the objects 
 	//while their handlers are still active. That would be bad. We could probably design this with enable_shared_from_this().
 
 }
@@ -116,23 +151,46 @@ void SerialPort::async_wait_response()
 	m_pingTimer.expires_from_now(m_pingTimeout);
 	m_pingTimer.async_wait([this](const boost::system::error_code& ec) {
 		if (ec == boost::asio::error::operation_aborted) {
-			//canceled, because of success :D
-			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Timer was canceled, good news!";
+			//canceled by the read handler, good news!
+			//no-op
 		}
 		else if (ec) {
 			//some other error?
-			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Timer was canceled, but it wasn't us that did it..";
+			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Timer was canceled, but it wasn't us that did it. Error: " << ec.message() << ", " << m_name;
 			m_status = Status::Unknown;
 			finish_protocol();
 		}	
 		else {
-			//the timer expired. Aka, no good. 
-			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Timer expired. No good.";
-			m_port->close();
-			m_status = Status::Unreadable;
-			finish_protocol();
+
+			boost::asio::serial_port::flow_control whichFlowControl;
+			boost::system::error_code fetchFlowControlError;
+			m_port->get_option(whichFlowControl, fetchFlowControlError);
+
+			if (whichFlowControl.value() == boost::asio::serial_port::flow_control::none) {
+				BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Trying again with flow control " << m_name;
+
+				//the timer expired. No good. 
+				m_io.post([this]() { async_try_with_flow_control(); });
+			}
+			else {
+
+				BOOST_LOG_TRIVIAL(trace) << "[SerialPort] It's dead " << m_name;
+
+				m_port->close();
+				m_status = Status::Unreadable;
+				finish_protocol();
+			}
 		}
 	});
+}
+
+void SerialPort::async_try_with_flow_control()
+{
+
+	m_port->set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
+	async_ping_port();
+
+	
 }
 
 void SerialPort::read_handler(const boost::system::error_code & ec, std::size_t bytes_transferred)

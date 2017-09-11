@@ -64,6 +64,11 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 		m_candidatePorts.push_back(std::make_unique<SerialPort>(portName, m_io, [this]() { findBestPort(); }));
 	}
 
+	//The way this works is that the slowest connecting port is the gatekeeper to actually connecting. The upper bound here is
+	//just the sum of the read and write timeouts, so not long (~1 second), but we could do better by selecting the first available port.
+	//A better design would probably instantiate a new suit immediately upon connecting, and then instantiate more as they are recognized.
+	//This is easier for now, because I can manage the lifetime of the ports by keeping them all around until the last succeeds or fails.
+
 	std::shared_ptr<std::size_t> numPortsToTest = std::make_shared<std::size_t>(0);
 	for (auto& port : m_candidatePorts) {
 		port->async_init_connection_process(numPortsToTest, m_candidatePorts.size());

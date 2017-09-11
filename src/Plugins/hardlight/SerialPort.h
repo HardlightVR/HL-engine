@@ -48,6 +48,7 @@ private:
 	void async_open_port();
 	void async_ping_port();
 	void async_wait_response();
+	void async_try_with_flow_control();
 	void read_handler(const boost::system::error_code& ec, std::size_t bytes_transferred);
 	void write_handler(const boost::system::error_code& ec, std::size_t bytes_transferred);
 	void finish_protocol();
