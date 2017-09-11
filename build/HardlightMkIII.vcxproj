@@ -312,6 +312,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClInclude Include="..\src\plugins\hardlight\Packet.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
+    <ClInclude Include="..\src\plugins\hardlight\SerialPort.h" />
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
     <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h" />
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
@@ -348,6 +349,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />

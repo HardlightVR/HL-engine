@@ -7,6 +7,7 @@
 #include "Locator.h"
 #include "AsyncTimeout.h"
 #include <boost/log/trivial.hpp>
+#include <boost/optional.hpp>
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
@@ -23,9 +24,54 @@ BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 
 void BoostSerialAdapter::Connect()
 {
-	//When we first connect, we don't want any delays
 	beginReconnectionProcess();
 }
+
+
+
+void BoostSerialAdapter::beginReconnectionProcess() {
+	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Disconnected from suit  ";
+	_isResetting = true;
+	scheduleImmediateSuitReconnect();
+}
+
+void BoostSerialAdapter::scheduleImmediateSuitReconnect()
+{
+	m_suitReconnectionTimer.expires_from_now(boost::posix_time::millisec(10));
+	m_suitReconnectionTimer.async_wait([this](auto err) { testAllPorts(err); });
+}
+
+
+
+void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
+	if (ec) {
+		return;
+	}
+
+	//First, we retrieve all the available ports. This is windows-only. 
+	CEnumerateSerial::CPortsArray ports;
+	CEnumerateSerial::CNamesArray names;
+	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
+		BOOST_LOG_TRIVIAL(info) << "[Adapter] No ports available on system. Check Device Manager for available devices.";
+
+		Locator::Logger().Log("Adapter", "No ports available on system. Check Device Manager for available devices.", LogLevel::Warning);
+	}
+
+	m_candidatePorts.clear();
+
+	for (std::size_t i = 0; i < ports.size(); ++i) {
+		std::string portName = "COM" + std::to_string(ports[i]);
+		m_candidatePorts.push_back(std::make_unique<SerialPort>(portName, m_io, [this]() { findBestPort(); }));
+	}
+
+	std::shared_ptr<std::size_t> numPortsToTest = std::make_shared<std::size_t>(0);
+	for (auto& port : m_candidatePorts) {
+		port->async_init_connection_process(numPortsToTest, m_candidatePorts.size());
+	}
+}
+
+
+
 
 void BoostSerialAdapter::Disconnect()
 {
@@ -41,66 +87,53 @@ void BoostSerialAdapter::Disconnect()
 
 void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, std::function<void(const boost::system::error_code&, std::size_t)> cb)
 {
-	//BOOST_LOG_TRIVIAL(info) << "Writing to suit";
 	if (this->m_port && this->m_port->is_open()) {
 		this->m_port->async_write_some(boost::asio::buffer(*bytes, length), cb);
 	}
 }
+
 void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length)
 {
 	if (this->m_port && this->m_port->is_open()) {
 		this->m_port->async_write_some(boost::asio::buffer(*bytes, length),
 			[bytes](const boost::system::error_code& error, std::size_t bytes_transferred) {
-			if (error) {
-				Locator::Logger().Log("Adapter", "Failed to write to suit!", LogLevel::Error);
-			}
 		});
 	}
 }
 
-
-void BoostSerialAdapter::kickoffSuitReading()
+void BoostSerialAdapter::findBestPort()
 {
-	if (!this->m_port || !this->m_port->is_open()) {
-		return;
+
+	std::unique_ptr<boost::asio::serial_port> possiblePort;
+	for (auto& candidate : m_candidatePorts) {
+		if (candidate->status() == SerialPort::Status::Connected) {
+			possiblePort = candidate->release();
+			break;
+		}
 	}
 
-	this->m_port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this]
-		(auto error, auto bytes_transferred) {
-		
-			if (!error) {
-				
-				if (!isPingPacket(m_data, bytes_transferred)) {
-					//if it's not a ping packet, put it into the data stream. Don't want pings cluttering stuff up.
-					m_outputSuitData->push(m_data, bytes_transferred);
-					std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
-				}
-				else {
-					assert(m_keepaliveMonitor);
-					m_keepaliveMonitor->ReceivePing();
-					
-				}
+	m_candidatePorts.clear();
 
-				kickoffSuitReading();
-			}	
-		}
-	);
-	
+	if (possiblePort) {
+		m_port = std::move(possiblePort);
+		endReconnectionProcess();
+	}
+	else {
+		scheduleDelayedSuitReconnect();
+	}
+
+}
+
+void BoostSerialAdapter::scheduleDelayedSuitReconnect()
+{
+	m_suitReconnectionTimer.expires_from_now(m_suitReconnectionTimeout);
+	m_suitReconnectionTimer.async_wait([this](auto err) { testAllPorts(err); });
 }
 
 
 
 
 
-
-
-void BoostSerialAdapter::beginReconnectionProcess() {
-	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Disconnected from suit  ";
-
-	std::cout << "Disconnected..\n";
-	_isResetting = true;
-	scheduleImmediateSuitReconnect();
-}
 void BoostSerialAdapter::endReconnectionProcess()
 {
 	_isResetting = false;
@@ -109,6 +142,34 @@ void BoostSerialAdapter::endReconnectionProcess()
 
 	kickoffSuitReading();
 }
+
+
+
+void BoostSerialAdapter::kickoffSuitReading()
+{
+	if (!m_port || !m_port->is_open()) {
+		return;
+	}
+
+	m_port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this]
+		(const auto& error, auto bytes_transferred) {
+			if (!error) {
+				if (!IsPingPacket(m_data, bytes_transferred)) {
+					//if it's not a ping packet, put it into the data stream. Don't want pings cluttering stuff up.
+					m_outputSuitData->push(m_data, bytes_transferred);
+					std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
+				}
+				else {
+					assert(m_keepaliveMonitor);
+					m_keepaliveMonitor->ReceivePing();
+				}
+				kickoffSuitReading();
+			}	
+		}
+	);
+}
+
+
 
 
 
@@ -130,181 +191,15 @@ void BoostSerialAdapter::SetMonitor(std::shared_ptr<KeepaliveMonitor> monitor)
 }
 
 
-
-
 BoostSerialAdapter::~BoostSerialAdapter()
 {
 	Disconnect();
 }
 
-/*
-This method kicks off the connection to the serial ports.
-
-It attempts to check all available ports, sending a ping to each. If it receives the magic response,
-it will use that port. 
-*/
-
-void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
-
-	if (ec) {
-		return;
-	}
-	//First, we retrieve all the available ports. This is windows-only. 
-	CEnumerateSerial::CPortsArray ports;
-	CEnumerateSerial::CNamesArray names;
-	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
-		BOOST_LOG_TRIVIAL(info) << "[Adapter] No ports available on system. Check Device Manager for available devices.";
-
-		Locator::Logger().Log("Adapter", "No ports available on system. Check Device Manager for available devices.", LogLevel::Warning);
-	}
-
-	//Then, we append "COM" to each of them.
-	std::vector<std::string> portNames;
-	for (std::size_t i = 0; i < ports.size(); ++i) {
-		portNames.push_back("COM" + std::to_string(ports[i]));
-		Locator::Logger().Log("Adapter", portNames.back());
-	}
-	
-	//Finally, we post the testOnePort method to the IO service. This method will test each port
-	//sequentially until it finds the correct port or runs out of ports, in which case it will
-	//start over again after a short delay.
-	m_io.post([this, portNames]() { testOnePort(portNames); });
-
-}
 
 
-//This is quite a large method. Not sure if splitting into two would 
-//help with understanding it, but if so then do it!
-//This method tries to connect to each port in the portNames list one after the other
-void BoostSerialAdapter::testOnePort(std::vector<std::string> portNames) {
-
-	//If the list of ports is empty, we've exhausted all our options.
-	//Therefore, we must wait a bit and then try everything again
-	if (portNames.empty()) {
-		scheduleDelayedSuitReconnect();
-		return;
-	}
-
-	//Call the port's destructor and reinstantiate it
-	m_port = std::make_unique<boost::asio::serial_port>(m_io);
-
-	//Grab the next portname and remove it from the vector
-	std::string portName = portNames.back();
-	portNames.pop_back();
-
-	//Attempt to simply open up the serial port. If that doesn't work, try the next..
-	if (!tryOpenPort(*m_port, portName)) {
-		m_io.post([portNames, this] {testOnePort(portNames); }); 
-		return;
-	}
-
-	//Okay, the port is open. Now send a ping to it.
-	m_port->async_write_some(boost::asio::buffer(m_pingData, 7), [](auto ec, auto bytes_transferred) { 
-		if (ec) {
-			BOOST_LOG_TRIVIAL(warning) << "Couldn't send a ping to the port: " + ec.message();
-		}
-	});
 
 
-	
-	//Read from the port with a specified timeout (if the timeout is reached, we move on to the next) 
-	auto timedReader = std::make_shared<AsyncTimeout>(m_io, boost::posix_time::millisec(m_initialConnectTimeout));
-	
-	timedReader->OnTimeout([&](){
-		//if we end up timing out, we should close the port if it was opened
-		if (m_port && m_port->is_open()) {
-			try {
-				m_port->close();
-			}
-			catch (const boost::system::system_error&) {
-				//intentionally left blank
-			}
-		}
-	});
-
-	//Begin the timeout countdown
-	
-
-	m_port->async_read_some(boost::asio::buffer(m_data, INCOMING_DATA_BUFFER_SIZE), [this, portNames, timedReader, portName] 
-		(auto ec, auto bytes_transferred) {
-		
-		//Stop the timed read from potentially expiring
-		timedReader->Cancel();
-
-		//Success case
-		if (!ec) {
-			assert(m_port && m_port->is_open());
-			if (isPingPacket(m_data, bytes_transferred)) {
-				BOOST_LOG_TRIVIAL(info) << "[Adapter] Connected to a suit on port " << portName;
-
-				m_io.post([this] { endReconnectionProcess(); });
-				return;
-			}
-		}
-
-		//got some kind of error reading, or it wasn't a ping packet, so try the next
-		m_io.post([portNames, this]() { testOnePort(portNames);});
-	});
-
-	timedReader->Go();
-
-}
-
-bool BoostSerialAdapter::tryOpenPort(boost::asio::serial_port& port, std::string portName)
-{
-	try {
-	
-		port.open(portName);
-
-		if (!port.is_open()) {
-			return false;
-		}
-
-		port.set_option(boost::asio::serial_port::baud_rate(115200));
-		port.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
-		port.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
-		port.set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
-		port.set_option(boost::asio::serial_port::character_size(8));
-	
-
-
-		
-	}
-	catch (const boost::system::system_error&) {
-	//	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Got an exception when trying to open port:  " << ec.what();
-		return false;
-	}
-
-	return true;
-}
-
-void BoostSerialAdapter::scheduleImmediateSuitReconnect()
-{
-	m_suitReconnectionTimer.expires_from_now(boost::posix_time::millisec(10));
-	m_suitReconnectionTimer.async_wait([this](auto err) {testAllPorts(err); });
-}
-
-bool BoostSerialAdapter::isPingPacket(uint8_t* data, std::size_t length)
-{
-	if (length < 3) {
-		return false;
-	}
-
-	return (
-			data[0] == '$'
-		 && data[1] == 0x02
-		 && data[2] == 0x02
-	);
-		
-}
-
-void BoostSerialAdapter::scheduleDelayedSuitReconnect()
-{
-
-	m_suitReconnectionTimer.expires_from_now(m_suitReconnectionTimeout);
-	m_suitReconnectionTimer.async_wait([this](auto err) {testAllPorts(err); });
-
-}
 
 
 

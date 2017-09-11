@@ -42,7 +42,7 @@ HardwareBodygraphCreator::HardwareBodygraphCreator(const Parsing::BodyGraphDescr
 
 std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegion(nsvr_region region) const
 {
-	return m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+	return m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(region));
 
 }
 
@@ -50,7 +50,7 @@ std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegions(const std:
 {
 	std::vector<nsvr_node_id> results;
 	for (const auto& region : regions) {
-		auto newResults = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+		auto newResults = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(region));
 		results.insert(results.end(), newResults.begin(), newResults.end());
 	}
 
@@ -77,7 +77,7 @@ void HardwareBodygraphCreator::fetchDynamically()
 
 void HardwareBodygraphCreator::ForEachNodeAtRegion(nsvr_region region, BodyGraphCreator::NodeAction action)
 {
-	std::vector<nsvr_node_id> node_ids = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+	std::vector<nsvr_node_id> node_ids = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(region));
 
 	std::for_each(node_ids.begin(), node_ids.end(), action);
 }

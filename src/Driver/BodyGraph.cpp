@@ -174,7 +174,7 @@ int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 
 
 
-	std::cout << "[" << name << "] Registered on region " << (uint64_t)region << "\n";
+	std::cout << "[" << name << "] Registered on region " << region._to_string() << "\n";
 	return 0;
 }
 
@@ -241,10 +241,10 @@ std::vector<nsvr_node_id> BodyGraph::getNodesForNamedRegion(subregion::shared_re
 }
 
 
-std::unordered_map<subregion::shared_region, std::vector<nsvr_node_id>> BodyGraph::getAllNodes() const
+std::unordered_map<subregion::shared_region::_enumerated, std::vector<nsvr_node_id>> BodyGraph::getAllNodes() const
 {
 
-	std::unordered_map<subregion::shared_region, std::vector<nsvr_node_id>> nodes;
+	std::unordered_map<subregion::shared_region::_enumerated, std::vector<nsvr_node_id>> nodes;
 
 	//Walk through the graph, and add any nodes that were found to the hashtable
 	BGL_FORALL_VERTICES_T(v, m_nodes, LabeledGraph) {

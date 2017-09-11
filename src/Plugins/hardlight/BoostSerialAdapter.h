@@ -4,7 +4,7 @@
 #include <boost/asio/serial_port.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "Synchronizer.h"
-
+#include "SerialPort.h"
 class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapter>
 {
 public:
@@ -65,17 +65,10 @@ private:
 	//Responsible for gathering the port names and calling testOnPort 
 	void testAllPorts(const boost::system::error_code& ec);
 	
-	//Responsible for checking one port for the suit
-	void testOnePort(std::vector<std::string> portNames);
 
-	//Attempts to open a port with a given name
-	bool tryOpenPort(boost::asio::serial_port& port, std::string portname);
-	
 	//Holds the common ping data
 	static uint8_t m_pingData[7];
 
-	//Checks if a given buffer is a ping packet
-	bool isPingPacket(uint8_t* data, std::size_t length);
 
 	//How long we wait for the suit before aborting a connection attempt
 	boost::posix_time::milliseconds m_initialConnectTimeout;
@@ -101,5 +94,8 @@ private:
 	boost::posix_time::milliseconds m_suitReconnectionTimeout;
 
 
+	std::vector<std::unique_ptr<SerialPort>> m_candidatePorts;
+
+	void findBestPort();
 };
 

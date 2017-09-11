@@ -358,6 +358,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SharedCommunication\WritableSharedObject.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\WritableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\WriteableSharedObject.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\better_enum.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\readablesharedvector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
     <ClInclude Include="..\src\Driver\SimulatedDevice.h" />
@@ -365,7 +366,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
-    <ClInclude Include="..\src\Driver\better_enum.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />

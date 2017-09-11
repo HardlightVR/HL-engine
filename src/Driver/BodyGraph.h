@@ -289,7 +289,7 @@ public:
 	std::vector<nsvr_node_id> getNodesForNamedRegion(subregion::shared_region region) const;
 
 
-	std::unordered_map<subregion::shared_region, std::vector<nsvr_node_id>> getAllNodes() const;
+	std::unordered_map<subregion::shared_region::_enumerated, std::vector<nsvr_node_id>> getAllNodes() const;
 private:
 	
 	// This is the user facing data structure that hardware devs end up interfacing with.

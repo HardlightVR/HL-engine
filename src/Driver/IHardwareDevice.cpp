@@ -127,7 +127,7 @@ void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleH
 		wave.waveform_id = static_cast<nsvr_default_waveform>(simple.effect());
 
 		for (uint64_t region : simple.regions()) {
-			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(region));
 			for (const auto& node : nodes) {
 				m_simulatedNodes[node].submitHaptic(Waveform(requestId, wave.waveform_id, wave.strength, simple.duration()));
 				api->submit_activate(requestId, node, reinterpret_cast<nsvr_waveform*>(&wave));
@@ -144,7 +144,7 @@ void Device::handleSimpleHaptic(RequestId requestId, const NullSpaceIPC::SimpleH
 	//	std::vector<double> samples(numNecessarySamples, simple.strength());
 
 		for (uint64_t region : simple.regions()) {
-			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(region));
 			for (const auto& node : nodes) {
 				m_simulatedNodes[node].submitHaptic(Waveform(requestId, samples.data(), sampleDuration, samples.size()));
 
@@ -250,7 +250,7 @@ void Device::handleRealtimeEvent(uint64_t request_id, const NullSpaceIPC::Realti
 {
 	if (auto api = m_apis->GetApi<buffered_api>()) {
 		for (const auto& thing : realtime.magnitudes()) {
-			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(thing.region()));
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(thing.region()));
 			for (const auto& node : nodes) {
 				double s = thing.strength();
 				m_simulatedNodes[node].submitHaptic(Waveform(request_id, &s, 0.1, 1));
@@ -283,7 +283,7 @@ void Device::handleCurveHaptic(uint64_t request_id, const NullSpaceIPC::CurveHap
 		auto w = Waveform(request_id, samples.data(), 0.1, samples.size());
 
 		for (const auto& region : curve.regions()) {
-			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region>(region));
+			auto nodes = m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(region));
 
 			m_simulatedNodes[region].submitHaptic(w);
 			api->submit_buffer(request_id, nodes[0], samples.data(), samples.size());

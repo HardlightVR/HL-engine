@@ -114,6 +114,9 @@
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\SerialPort.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -216,6 +219,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp">
