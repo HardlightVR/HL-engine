@@ -14,7 +14,7 @@ public:
 	using DeviceFn = std::function<void(Device2*)>;
 	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor);
 	
-	void RemoveDevice(uint64_t id);
+	void RemoveDevice(nsvr_device_id id);
 	void Each(DeviceFn);
 	void EachSimulation(std::function<void(SimulatedDevice*)> action);
 	DeviceContainer();

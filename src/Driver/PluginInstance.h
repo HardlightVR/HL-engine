@@ -7,7 +7,7 @@
 
 #include "CoreFacade.h"
 #include "PluginApis.h"
-#include "HardwareEventDispatcher.h"
+#include "PluginEventSource.h"
 #include "DriverConfigParser.h"
 
 class DeviceContainer;
@@ -39,7 +39,7 @@ public:
 	PluginInstance(PluginInstance&&) = delete;
 
 	Parsing::ManifestDescriptor descriptor() const;
-
+	PluginApis& apis();
 private:
 	std::unique_ptr<boost::dll::shared_library> m_dll;
 
@@ -56,7 +56,7 @@ private:
 
 	Parsing::ManifestDescriptor m_descriptor;
 	PluginApis m_apis;
-	std::unique_ptr<HardwareEventDispatcher> m_eventHandler;
+	std::unique_ptr<PluginEventSource> m_eventHandler;
 	CoreFacade m_facade;
 
 

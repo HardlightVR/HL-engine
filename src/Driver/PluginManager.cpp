@@ -3,6 +3,7 @@
 #include <iostream>
 #include <bitset>
 #include "DeviceContainer.h"
+#include "HardwareEventDispatcher.h"
 PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw, std::vector<std::string> plugins) 
 	: m_pluginNames(std::move(plugins))
 	, m_plugins()
@@ -59,8 +60,14 @@ bool PluginManager::Reload(const std::string & name)
 
 bool PluginManager::linkPlugin(const std::string& name) {
 
-	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io, m_deviceContainer);
-	
+	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
+	dispatcher->OnDeviceConnected([this](nsvr_device_id id, PluginApis& apis, const Parsing::ManifestDescriptor& description) {
+		m_deviceContainer.AddDevice(id, apis, description.bodygraph);
+	});
+
+	dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {
+		m_deviceContainer.RemoveDevice(id);
+	}); 
 
 	auto instance = std::make_shared<PluginInstance>(std::move(dispatcher), name);
 	if (instance->Link()) {

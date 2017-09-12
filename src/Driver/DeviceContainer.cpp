@@ -26,7 +26,7 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 			desc.displayName = std::string(info.name);
 			desc.id = info.id;
 			desc.concept = info.concept;
-			addDevice(desc, apis, ev, std::move(bodyGraphDescriptor), messenger);
+			addDevice(desc, apis, std::move(bodyGraphDescriptor));
 		}
 	}
 
@@ -40,7 +40,7 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 	auto bodygraph = std::make_shared<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>());
 
-	auto nodes = std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>(), messenger);
+	auto nodes = std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>());
 
 	auto haptics = std::make_unique<HapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>());
 
@@ -56,7 +56,7 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 
 
-void DeviceContainer::RemoveDevice(uint64_t id)
+void DeviceContainer::RemoveDevice(nsvr_device_id id)
 {
 	for (const auto& device : m_devices) {
 		if (device->id() == id) {

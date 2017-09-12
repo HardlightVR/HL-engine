@@ -151,4 +151,9 @@ Parsing::ManifestDescriptor PluginInstance::descriptor() const
 	return m_descriptor;
 }
 
+PluginApis & PluginInstance::apis()
+{
+	return m_apis;
+}
+
 

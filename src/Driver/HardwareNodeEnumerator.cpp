@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "HardwareNodeEnumerator.h"
 #include "DriverMessenger.h"
-HardwareNodeEnumerator::HardwareNodeEnumerator(nsvr_device_id id, device_api * api, DriverMessenger& messenger)
+HardwareNodeEnumerator::HardwareNodeEnumerator(nsvr_device_id id, device_api * api)
 	: m_api(api)
 	, m_nodes()
 	, m_id(id)
-	, m_messenger(messenger)
 {
 	Discover();
 }
@@ -81,9 +80,9 @@ void HardwareNodeEnumerator::createNewNode(const NodeDescriptor& desc)
 {
 	m_nodes[desc.id] = Node(desc);
 
-	NullSpace::SharedMemory::NodeInfo info = { 0 };
+	/*NullSpace::SharedMemory::NodeInfo info = { 0 };
 	info.Id = ((uint64_t)(m_id) << 32) | desc.id;
 	std::copy(desc.displayName.begin(), desc.displayName.end(), info.NodeName);
 	info.Type = desc.type;
-	m_messenger.WriteNode(info);
+	m_messenger.WriteNode(info);*/
 }
