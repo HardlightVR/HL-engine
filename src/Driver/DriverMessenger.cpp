@@ -12,16 +12,21 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 
 {
 
+
 	OwnedReadableSharedQueue::remove("ns-haptics-data");
 	WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>::remove("ns-tracking-data");
 	OwnedWritableSharedQueue::remove("ns-logging-data");
 	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<NullSpace::SharedMemory::SentinelObject>::remove("ns-sentinel");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
+	OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>::remove("ns-node-mem");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>::remove("ns-device-mem");
 
 	constexpr int systemInfoSize = sizeof(NullSpace::SharedMemory::DeviceInfo);
+	constexpr int nodeInfoSize = sizeof(NullSpace::SharedMemory::NodeInfo);
+
 	constexpr int regionPairSize = sizeof(NullSpace::SharedMemory::RegionPair);
+	m_nodes = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>>("ns-node-mem", "ns-node-data", nodeInfoSize * 512);
 
 	m_devices = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*32);
 	m_tracking = std::make_unique<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>>(/* initial element capacity*/16, "ns-tracking-2");
@@ -102,6 +107,25 @@ void DriverMessenger::WriteDevice(const DeviceInfo&  system)
 	else {
 		m_devices->Push(system);
 	}
+}
+
+void DriverMessenger::WriteNode(const NodeInfo & node)
+{
+	auto sameId = [&node](const NodeInfo& s) { return s.Id == node.Id; };
+	if (auto index = m_nodes->Find(sameId))
+	{
+		m_nodes->Update(*index, node);
+	}
+	else {
+		m_nodes->Push(node);
+	}
+
+}
+
+void DriverMessenger::RemoveNode(uint64_t id)
+{
+	m_nodes->Remove([id](const NodeInfo& s) {return s.Id == id; });
+
 }
 
 void DriverMessenger::RemoveDevice(uint32_t id)

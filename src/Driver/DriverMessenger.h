@@ -24,12 +24,13 @@ public:
 	~DriverMessenger();
 	void WriteTracking(uint32_t, NullSpace::SharedMemory::Quaternion quat);
 	void WriteDevice(const DeviceInfo& s);
+	void WriteNode(const NodeInfo& node);
+	void RemoveNode(uint64_t id);
 	void RemoveDevice(uint32_t id);
 	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
 	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
-	void WriteDeviceEvent(const NullSpaceIPC::DeviceEvent&);
 	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();
 	void Disconnect();
 private:
@@ -44,7 +45,9 @@ private:
 	std::unique_ptr<OwnedReadableSharedQueue> m_hapticsData;
 
 	std::unique_ptr<OwnedWritableSharedVector<DeviceInfo>> m_devices;
-	//If logging, write data here
+
+	std::unique_ptr<OwnedWritableSharedVector<NodeInfo>> m_nodes;
+
 	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
 
 

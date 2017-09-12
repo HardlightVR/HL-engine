@@ -4,12 +4,11 @@
 
 class PluginApis;
 class PluginEventSource;
-
 // This is the entrypoint that all plugin functions call into once they are configured.
 // It simply reroutes to the appropriate components.
 class CoreFacade {
 public:
-	CoreFacade(PluginApis& apiRegistry, PluginEventSource& eventHandler);
+	CoreFacade(PluginApis& apiRegistry, PluginEventSource* eventHandler);
 
 
 	void RaisePluginEvent(nsvr_device_event_type type, nsvr_device_id id);
@@ -19,7 +18,7 @@ public:
 	void RegisterPluginApi(ExternalApi* api);
 private:
 	PluginApis& m_pluginCapabilities;
-	PluginEventSource& m_eventHandler;
+	PluginEventSource* m_eventHandler;
 	
 };
 

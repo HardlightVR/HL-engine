@@ -7,8 +7,7 @@
 
 #include "CoreFacade.h"
 #include "PluginApis.h"
-#include "PluginEventSource.h"
-
+#include "HardwareEventDispatcher.h"
 #include "DriverConfigParser.h"
 
 class DeviceContainer;
@@ -18,7 +17,7 @@ class PluginInstance
 public:
 
 
-	PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& d);
+	PluginInstance(std::unique_ptr<PluginEventSource> dispatcher, std::string fileName);
 	~PluginInstance();
 	
 	bool ParseManifest();
@@ -39,7 +38,7 @@ public:
 	const PluginInstance& operator=(const PluginInstance&) = delete;
 	PluginInstance(PluginInstance&&) = delete;
 
-	
+	Parsing::ManifestDescriptor descriptor() const;
 
 private:
 	std::unique_ptr<boost::dll::shared_library> m_dll;
@@ -55,11 +54,9 @@ private:
 	std::string m_fileName;
 	bool m_loaded;
 
-
-	DeviceContainer& m_deviceContainer;
 	Parsing::ManifestDescriptor m_descriptor;
 	PluginApis m_apis;
-	PluginEventSource m_eventHandler;
+	std::unique_ptr<HardwareEventDispatcher> m_eventHandler;
 	CoreFacade m_facade;
 
 

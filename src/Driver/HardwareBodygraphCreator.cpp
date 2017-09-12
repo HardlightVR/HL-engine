@@ -43,7 +43,7 @@ HardwareBodygraphCreator::HardwareBodygraphCreator(const Parsing::BodyGraphDescr
 std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegion(nsvr_region region) const
 {
 	return m_graph.getNodesForNamedRegion(static_cast<subregion::shared_region::_enumerated>(region));
-
+	
 }
 
 std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegions(const std::vector<nsvr_region>& regions) const

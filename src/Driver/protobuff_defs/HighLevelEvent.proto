@@ -22,6 +22,8 @@ message CurveHaptic {
 	repeated Sample samples = 2;
 }
 
+
+
 message RealtimeHaptic {
 	message Magnitude {
 		uint32 region = 1;
@@ -43,6 +45,8 @@ message PlaybackEvent {
 	Command command = 1;
 	
 }
+
+
 message HighLevelEvent {
 	uint64 parent_id = 1;
 	oneof events {

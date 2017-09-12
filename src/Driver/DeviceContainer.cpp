@@ -8,7 +8,8 @@
 #include "HardwareNodeEnumerator.h"
 #include "HardwarePlaybackController.h"
 #include "HapticInterface.h"
-void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, PluginEventSource & ev, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
+#include "DriverMessenger.h"
+void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
 {
 	if (auto api = apis.GetApi<device_api>()) {
 
@@ -25,21 +26,21 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, PluginEven
 			desc.displayName = std::string(info.name);
 			desc.id = info.id;
 			desc.concept = info.concept;
-			addDevice(desc, apis, ev, std::move(bodyGraphDescriptor));
+			addDevice(desc, apis, ev, std::move(bodyGraphDescriptor), messenger);
 		}
 	}
 
 }
 
 
-void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, PluginEventSource& ev, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
+void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
 {
 	
 	auto playback = std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>());
 
 	auto bodygraph = std::make_shared<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>());
 
-	auto nodes = std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>());
+	auto nodes = std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>(), messenger);
 
 	auto haptics = std::make_unique<HapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>());
 
@@ -93,6 +94,19 @@ void DeviceContainer::EachSimulation(std::function<void(SimulatedDevice*)> actio
 DeviceContainer::DeviceContainer() 
 {
 	
+}
+
+Device2* DeviceContainer::Get(nsvr_device_id id)
+{
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
+	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id](const auto& device) { return device->id() == id; });
+	if (it != m_devices.end()) {
+		return (*it).get();
+	}
+	else {
+		return nullptr;
+	}
 }
 
 void DeviceContainer::OnDeviceAdded(DeviceFn fn)

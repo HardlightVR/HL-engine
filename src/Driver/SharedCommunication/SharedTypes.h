@@ -32,21 +32,21 @@ namespace NullSpace {
 		
 		struct DeviceInfo {
 			DeviceId Id; //0
+			uint32_t Concept;
 			char DeviceName[128]; //Hardlight Mk III Suit
 			DeviceStatus Status;
 
 		};
 
-		constexpr int size = sizeof(DeviceInfo);
-		
-		struct SystemInfo {
-			char SystemName[128];
-			uint32_t device_ids[MAX_DEVICES_PER_SYSTEM];
-			uint32_t num_devices;
+		struct NodeInfo {
+			uint64_t Id;
+			char NodeName[128];
+			uint32_t Region;
+			uint32_t Type;
 		};
 
-	
 		
+	
 		struct ServiceInfo {
 			int ServiceMajor;
 			int ServiceMinor;

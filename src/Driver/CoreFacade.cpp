@@ -4,7 +4,7 @@
 #include "PluginEventSource.h"
 
 
-CoreFacade::CoreFacade(PluginApis& capabilities, PluginEventSource& eventHandler)
+CoreFacade::CoreFacade(PluginApis& capabilities, PluginEventSource* eventHandler)
 	: m_eventHandler(eventHandler)
 	, m_pluginCapabilities(capabilities)
 {
@@ -15,5 +15,5 @@ CoreFacade::CoreFacade(PluginApis& capabilities, PluginEventSource& eventHandler
 
 void CoreFacade::RaisePluginEvent(nsvr_device_event_type type, nsvr_device_id id)
 {
-	m_eventHandler.Raise(type, id);
+	m_eventHandler->Raise(type, id);
 }

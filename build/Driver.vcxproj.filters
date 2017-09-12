@@ -43,6 +43,7 @@
     <ClInclude Include="..\src\Driver\HapticInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
+    <ClInclude Include="..\src\Driver\HardwareEventDispatcher.h" />
     <ClInclude Include="..\src\Driver\HardwareNodeEnumerator.h" />
     <ClInclude Include="..\src\Driver\HardwarePlaybackController.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
@@ -69,6 +70,7 @@
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PlaybackController.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
+    <ClInclude Include="..\src\Driver\PluginEventSink.h" />
     <ClInclude Include="..\src\Driver\PluginEventSource.h" />
     <ClInclude Include="..\src\Driver\PluginInstance.h" />
     <ClInclude Include="..\src\Driver\PluginManager.h" />
@@ -184,6 +186,7 @@
     <ClCompile Include="..\src\Driver\HapticInterface.cpp" />
     <ClCompile Include="..\src\Driver\HardwareBodygraphCreator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareEventDispatcher.cpp" />
     <ClCompile Include="..\src\Driver\HardwareNodeEnumerator.cpp" />
     <ClCompile Include="..\src\Driver\HardwarePlaybackController.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
@@ -200,7 +203,6 @@
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
     <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginApis.cpp" />
-    <ClCompile Include="..\src\Driver\PluginEventSource.cpp" />
     <ClCompile Include="..\src\Driver\PluginInstance.cpp" />
     <ClCompile Include="..\src\Driver\PluginManager.cpp" />
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">

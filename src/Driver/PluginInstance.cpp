@@ -7,26 +7,26 @@
 #include "PluginAPI.h"
 #include "DeviceContainer.h"
 
-PluginInstance::PluginInstance(boost::asio::io_service& io, std::string fileName, DeviceContainer& d) :
+PluginInstance::PluginInstance(std::unique_ptr<PluginEventSource> dispatcher, std::string fileName) :
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
 	m_apis(),
-	m_eventHandler(io),
-	m_facade(m_apis, m_eventHandler),
-	m_deviceContainer(d)
+	m_eventHandler(std::move(dispatcher)),
+	m_facade(m_apis, m_eventHandler.get())
 	
 {
-	m_eventHandler.Subscribe(nsvr_device_event_device_connected, [this](nsvr_device_id device_id) {
-		m_deviceContainer.AddDevice(device_id, m_apis, m_eventHandler, m_descriptor.bodygraph);
-	});
+	//m_eventHandler.Subscribe(nsvr_device_event_device_connected, [this](nsvr_device_id device_id) {
+	//	m_deviceContainer.AddDevice(device_id, m_apis, m_eventHandler, m_descriptor.bodygraph, );
+	//});
 
-	m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [this](nsvr_device_id device_id) {
-		m_deviceContainer.RemoveDevice(device_id);
-	});
+	//m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [this](nsvr_device_id device_id) {
+	//	m_deviceContainer.RemoveDevice(device_id);
+	//});
 
 }
+
 
 
 
@@ -144,6 +144,11 @@ std::string PluginInstance::GetFileName() const
 std::string PluginInstance::GetDisplayName() const
 {
 	return m_displayName;
+}
+
+Parsing::ManifestDescriptor PluginInstance::descriptor() const
+{
+	return m_descriptor;
 }
 
 

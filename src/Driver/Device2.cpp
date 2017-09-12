@@ -49,6 +49,12 @@ std::string Device2::name() const
 	return m_description.displayName;
 }
 
+
+nsvr_device_concept Device2::concept() const
+{
+	return m_description.concept;
+}
+
 template<typename T, typename E>
 std::vector<T> protoBufToVec(const google::protobuf::RepeatedField<E>& inArray) {
 	std::vector<T> result;

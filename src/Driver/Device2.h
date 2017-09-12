@@ -33,6 +33,7 @@ public:
 	void DispatchEvent(const NullSpaceIPC::HighLevelEvent& event);
 	nsvr_device_id id() const;
 	std::string name() const;
+	nsvr_device_concept concept() const;
 private:
 	DeviceDescriptor m_description;
 	std::unique_ptr<NodeDiscoverer> m_discoverer;

@@ -33,7 +33,8 @@ public:
 	nsvr_node_id id() const;
 	std::string name() const;
 	nsvr_node_type type() const;
-
+	//is physical or virtual 
+	//type of haptic
 
 
 private:

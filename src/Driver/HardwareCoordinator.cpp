@@ -25,7 +25,10 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 		std::string strName = device->name();
 		std::copy(strName.begin(), strName.end(), info.DeviceName);
 		info.Status = Connected;
+		info.Concept = static_cast<uint32_t>(device->concept());
 		m_messenger.WriteDevice(info);
+
+		
 
 	});
 

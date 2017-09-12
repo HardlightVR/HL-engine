@@ -58,7 +58,11 @@ bool PluginManager::Reload(const std::string & name)
 
 
 bool PluginManager::linkPlugin(const std::string& name) {
-	auto instance = std::make_shared<PluginInstance>(m_io, name, m_deviceContainer);
+
+	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io, m_deviceContainer);
+	
+
+	auto instance = std::make_shared<PluginInstance>(std::move(dispatcher), name);
 	if (instance->Link()) {
 		m_plugins.insert(std::make_pair(name, instance));
 		return true;
