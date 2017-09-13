@@ -9,7 +9,7 @@
 #include "HardwarePlaybackController.h"
 #include "HapticInterface.h"
 #include "DriverMessenger.h"
-void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
+void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
 	if (auto api = apis.GetApi<device_api>()) {
 
@@ -26,14 +26,14 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 			desc.displayName = std::string(info.name);
 			desc.id = info.id;
 			desc.concept = info.concept;
-			addDevice(desc, apis, std::move(bodyGraphDescriptor));
+			addDevice(desc, apis, std::move(bodyGraphDescriptor), originatingPlugin);
 		}
 	}
 
 }
 
 
-void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor)
+void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
 	
 	auto playback = std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>());
@@ -46,7 +46,7 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 	m_deviceLock.lock();
 
-	m_devices.push_back(std::make_unique<Device2>(desc, std::move(nodes), bodygraph, std::move(playback), std::move(haptics)));
+	m_devices.push_back(std::make_unique<Device2>(originatingPlugin, desc, std::move(nodes), bodygraph, std::move(playback), std::move(haptics)));
 	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, apis, bodygraph));
 
 	m_deviceLock.unlock();

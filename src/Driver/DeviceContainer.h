@@ -12,7 +12,7 @@ class DriverMessenger;
 class DeviceContainer {
 public:
 	using DeviceFn = std::function<void(Device2*)>;
-	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor);
+	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 	
 	void RemoveDevice(nsvr_device_id id);
 	void Each(DeviceFn);
@@ -25,7 +25,7 @@ public:
 	void OnPreDeviceRemoved(DeviceFn);
 
 private:
-	void addDevice(const DeviceDescriptor&, PluginApis&,  Parsing::BodyGraphDescriptor);
+	void addDevice(const DeviceDescriptor&, PluginApis&,  Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 
 	std::vector<std::unique_ptr<Device2>> m_devices;
 	std::vector<std::unique_ptr<SimulatedDevice>> m_simulations;

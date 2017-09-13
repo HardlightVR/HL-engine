@@ -24,6 +24,7 @@
 class Device2 {
 public:
 	Device2(
+		std::string parentPlugin,
 		DeviceDescriptor descriptor, 
 		std::unique_ptr<NodeDiscoverer>, 
 		std::shared_ptr<BodyGraphCreator>, 
@@ -34,7 +35,9 @@ public:
 	nsvr_device_id id() const;
 	std::string name() const;
 	nsvr_device_concept concept() const;
+	std::string parentPlugin() const;
 private:
+	std::string m_originator;
 	DeviceDescriptor m_description;
 	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::shared_ptr<BodyGraphCreator> m_bodygraph;

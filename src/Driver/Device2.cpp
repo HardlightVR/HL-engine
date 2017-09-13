@@ -3,6 +3,7 @@
 #include "nsvr_region.h"
 
 Device2::Device2(
+	std::string parentPlugin,
 	DeviceDescriptor descriptor, 
 	std::unique_ptr<NodeDiscoverer> discoverer, 
 	std::shared_ptr<BodyGraphCreator> bodygraph, 
@@ -14,8 +15,9 @@ Device2::Device2(
 	, m_bodygraph(bodygraph)
 	, m_playback(std::move(playback))
 	, m_haptics(std::move(haptics))
+	, m_originator(parentPlugin)
 {
-
+	
 }
 
 void Device2::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
@@ -53,6 +55,11 @@ std::string Device2::name() const
 nsvr_device_concept Device2::concept() const
 {
 	return m_description.concept;
+}
+
+std::string Device2::parentPlugin() const
+{
+	return m_originator;
 }
 
 template<typename T, typename E>

@@ -82,8 +82,18 @@ void PluginManager::TickOnce(uint64_t dt)
 
 bool PluginManager::Reload(const std::string & name)
 {
-	//it's not the plugin's job to clean up the DeviceContainer
-	//so we just unload it and try to reload it
+	//Todo: This is completely untested
+
+	std::vector<nsvr_device_id> toBeRemoved;
+	m_deviceContainer.Each([&name, &toBeRemoved](Device2* device) {
+		if (device->parentPlugin() == name) {
+			toBeRemoved.push_back(device->id());
+		}
+	});
+
+	for (nsvr_device_id id : toBeRemoved) {
+		m_deviceContainer.RemoveDevice(id);
+	}
 
 	if (m_plugins[name]->Unload()) {
 		return m_plugins[name]->Instantiate();
@@ -100,7 +110,7 @@ bool PluginManager::linkPlugin(const std::string& name) {
 
 	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
 	dispatcher->OnDeviceConnected([this](nsvr_device_id id, PluginApis& apis, const std::string& pluginName) {
-		m_deviceContainer.AddDevice(id, apis, m_pluginManifests.at(pluginName).bodygraph);
+		m_deviceContainer.AddDevice(id, apis, m_pluginManifests.at(pluginName).bodygraph, pluginName);
 	});
 
 	dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {

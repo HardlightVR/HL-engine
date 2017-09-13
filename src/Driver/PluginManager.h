@@ -1,27 +1,38 @@
 #pragma once
-#include <vector>
 #include <string>
 #include <memory>
-#include "PluginInstance.h"
+#include <unordered_map>
 #include <boost/asio/io_service.hpp>
-#include "ScheduledEvent.h"
-class DeviceContainer;
 
+#include "PluginInstance.h"
+#include "ScheduledEvent.h"
+
+
+class DeviceContainer;
 
 std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path&);
 
 
 class PluginManager {
 public:
-	PluginManager(boost::asio::io_service& io, DeviceContainer& coordinator);
-	PluginManager(const PluginInstance&) = delete;
+	//When PluginManager configures and instantiates all the plugins, 
+	//each plugin may provide some devices for use in the system.
+	//PluginManager needs somewhere to put them, but doesn't care beyond that (we deal with devices on a higher level than the Manager).
+
+	PluginManager(boost::asio::io_service& io, DeviceContainer& devices);
+	PluginManager(const PluginManager&) = delete;
 	const PluginManager& operator=(const PluginManager&) = delete;
 
+	//Look for any manifest files present and attempt to parse them, figuring out the .dll name, etc.
 	void Discover();
 
+	//Links, instantiates, and configures all the plugins discovered previously
 	void LoadAll();
+
+	//Unloads the plugins that are currently present
 	void UnloadAll();
 
+	//Runs each plugin's event loop once with a given ms delta time
 	void TickOnce(uint64_t dt);
 	bool Reload(const std::string& name);
 
