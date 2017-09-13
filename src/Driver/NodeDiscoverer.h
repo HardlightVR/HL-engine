@@ -4,6 +4,7 @@
 
 #include "PluginAPI.h"
 #include <functional>
+#include "Node.h"
 class NodeDiscoverer {
 public:
 	using NodeAction = std::function<void(Node*)>;

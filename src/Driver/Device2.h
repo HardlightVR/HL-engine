@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 #include "HapticInterface.h"
+#include "protobuff_defs/HighLevelEvent.pb.h"
 
 //theory:
 //NodeDiscoverer can be mocked out. So we can provide a bunch of fake nodes

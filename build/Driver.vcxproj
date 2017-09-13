@@ -322,7 +322,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\HardwareNodeEnumerator.h" />
     <ClInclude Include="..\src\Driver\HardwarePlaybackController.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
-    <ClInclude Include="..\src\Driver\IHardwareDevice.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
     <ClInclude Include="..\src\Driver\Json\JsonKeyValueConfig.h" />
@@ -334,6 +333,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
     <ClInclude Include="..\src\Driver\NSDriverApi.h" />
+    <ClInclude Include="..\src\Driver\Node.h" />
     <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
@@ -365,6 +365,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\SimulatedDevice.h" />
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
+    <ClInclude Include="..\src\Driver\TrackingStream.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
@@ -404,7 +405,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\HardwareNodeEnumerator.cpp" />
     <ClCompile Include="..\src\Driver\HardwarePlaybackController.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
-    <ClCompile Include="..\src\Driver\IHardwareDevice.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -419,6 +419,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\MessengerLogger.cpp" />
     <ClCompile Include="..\src\Driver\MyTestLog.cpp" />
     <ClCompile Include="..\src\Driver\NSDriverApi.cpp" />
+    <ClCompile Include="..\src\Driver\Node.cpp" />
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
     <ClCompile Include="..\src\Driver\PluginAPI.cpp" />
     <ClCompile Include="..\src\Driver\PluginApis.cpp" />
@@ -434,6 +435,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     </ClCompile>
     <ClCompile Include="..\src\Driver\SimulatedDevice.cpp" />
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
+    <ClCompile Include="..\src\Driver\TrackingStream.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />

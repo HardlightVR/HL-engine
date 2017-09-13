@@ -2,7 +2,7 @@
 #include "NodeDiscoverer.h"
 #include "PluginApis.h"
 #include <unordered_map>
-
+#include "Node.h"
 class DriverMessenger;
 
 class HardwareNodeEnumerator : public NodeDiscoverer {
