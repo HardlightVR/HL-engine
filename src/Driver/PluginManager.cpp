@@ -85,7 +85,7 @@ bool PluginManager::Reload(const std::string & name)
 	//Todo: This is completely untested
 
 	std::vector<nsvr_device_id> toBeRemoved;
-	m_deviceContainer.Each([&name, &toBeRemoved](Device2* device) {
+	m_deviceContainer.Each([&name, &toBeRemoved](Device* device) {
 		if (device->parentPlugin() == name) {
 			toBeRemoved.push_back(device->id());
 		}

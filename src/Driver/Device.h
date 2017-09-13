@@ -22,9 +22,9 @@
 
 // Then the function calls into the underlying apis will do nothing, but will also be replicated through the "instrumentation" pointer into simulated
 // functionality. 
-class Device2 {
+class Device {
 public:
-	Device2(
+	Device(
 		std::string parentPlugin,
 		DeviceDescriptor descriptor, 
 		std::unique_ptr<NodeDiscoverer>, 

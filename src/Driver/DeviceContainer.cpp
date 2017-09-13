@@ -2,7 +2,7 @@
 #include "DeviceContainer.h"
 #include <experimental/vector>
 
-#include "Device2.h"
+#include "Device.h"
 
 #include "HardwareBodygraphCreator.h"
 #include "HardwareNodeEnumerator.h"
@@ -46,7 +46,7 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 	m_deviceLock.lock();
 
-	m_devices.push_back(std::make_unique<Device2>(originatingPlugin, desc, std::move(nodes), bodygraph, std::move(playback), std::move(haptics)));
+	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, std::move(nodes), bodygraph, std::move(playback), std::move(haptics)));
 	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, apis, bodygraph));
 
 	m_deviceLock.unlock();
@@ -75,7 +75,7 @@ void DeviceContainer::RemoveDevice(nsvr_device_id id)
 	m_deviceLock.unlock();
 }
 
-void DeviceContainer::Each(std::function<void(Device2*)> forEach)
+void DeviceContainer::Each(std::function<void(Device*)> forEach)
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 	for (auto& ptr : m_devices) {
@@ -96,7 +96,7 @@ DeviceContainer::DeviceContainer()
 	
 }
 
-Device2* DeviceContainer::Get(nsvr_device_id id)
+Device* DeviceContainer::Get(nsvr_device_id id)
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 
@@ -119,7 +119,7 @@ void DeviceContainer::OnPreDeviceRemoved(DeviceFn fn)
 	m_deviceRemovedSubs.push_back(fn);
 }
 
-void DeviceContainer::notify(const std::vector<DeviceFn>& subscribers, Device2 * device)
+void DeviceContainer::notify(const std::vector<DeviceFn>& subscribers, Device * device)
 {
 	for (const auto& fn : subscribers) {
 		fn(device);

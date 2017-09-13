@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IHardwareDevice.h"
 
 #include "PluginAPI.h"
 #include <functional>

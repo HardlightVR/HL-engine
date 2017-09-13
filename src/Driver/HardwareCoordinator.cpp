@@ -3,9 +3,8 @@
 #include <iostream>
 #include "EventDispatcher.h"
 #include "DeviceContainer.h"
-#include "IHardwareDevice.h"
 #include "PluginAPI.h"
-#include "Device2.h"
+#include "Device.h"
 #include "DriverMessenger.h"
 #include "SharedTypes.h"
 #include <boost/variant.hpp>
@@ -14,7 +13,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_messenger(messenger)
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 {
-	m_devices.OnDeviceAdded([this](Device2* device) {
+	m_devices.OnDeviceAdded([this](Device* device) {
 		//device->registerTrackedObjects([this](nsvr_node_id id, nsvr_quaternion* q) {
 	//		writeTracking(id, q);
 		//});
@@ -32,7 +31,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 	});
 
-	m_devices.OnPreDeviceRemoved([this](Device2* device) {
+	m_devices.OnPreDeviceRemoved([this](Device* device) {
 		m_messenger.UpdateDeviceStatus(device->id(), DeviceStatus::Disconnected);
 	});
 
@@ -86,25 +85,25 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		BOOST_LOG_TRIVIAL(info) << "Got haptic";
-		m_devices.Each([&](Device2* device) {
+		m_devices.Each([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device2* device) {
+		m_devices.Each([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kRealtimeHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device2* device) {
+		m_devices.Each([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kCurveHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device2* device) {
+		m_devices.Each([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});

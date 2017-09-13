@@ -304,7 +304,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\BodyRegion.h" />
     <ClInclude Include="..\src\Driver\ConsoleLogger.h" />
     <ClInclude Include="..\src\Driver\CurveEngine.h" />
-    <ClInclude Include="..\src\Driver\Device2.h" />
+    <ClInclude Include="..\src\Driver\Device.h" />
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
     <ClInclude Include="..\src\Driver\DeviceDescriptor.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
@@ -391,7 +391,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\BodyGraph.cpp" />
     <ClCompile Include="..\src\Driver\ConsoleLogger.cpp" />
     <ClCompile Include="..\src\Driver\CurveEngine.cpp" />
-    <ClCompile Include="..\src\Driver\Device2.cpp" />
+    <ClCompile Include="..\src\Driver\Device.cpp" />
     <ClCompile Include="..\src\Driver\DeviceContainer.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />

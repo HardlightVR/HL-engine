@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "Device2.h"
+#include "Device.h"
 #include "nsvr_region.h"
 
-Device2::Device2(
+Device::Device(
 	std::string parentPlugin,
 	DeviceDescriptor descriptor, 
 	std::unique_ptr<NodeDiscoverer> discoverer, 
@@ -20,7 +20,7 @@ Device2::Device2(
 	
 }
 
-void Device2::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
+void Device::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
 {
 	switch (event.events_case()) {
 	case NullSpaceIPC::HighLevelEvent::kSimpleHaptic:
@@ -41,23 +41,23 @@ void Device2::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
 	}
 }
 
-nsvr_device_id Device2::id() const
+nsvr_device_id Device::id() const
 {
 	return m_description.id;
 }
 
-std::string Device2::name() const
+std::string Device::name() const
 {
 	return m_description.displayName;
 }
 
 
-nsvr_device_concept Device2::concept() const
+nsvr_device_concept Device::concept() const
 {
 	return m_description.concept;
 }
 
-std::string Device2::parentPlugin() const
+std::string Device::parentPlugin() const
 {
 	return m_originator;
 }
@@ -72,7 +72,7 @@ std::vector<T> protoBufToVec(const google::protobuf::RepeatedField<E>& inArray) 
 	return result;
 }
 
-void Device2::handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple)
+void Device::handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple)
 {
 	auto regions = protoBufToVec<nsvr_region>(simple.regions());
 
@@ -89,7 +89,7 @@ void Device2::handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHa
 
 }
 
-void Device2::handlePlaybackEvent(uint64_t id, const NullSpaceIPC::PlaybackEvent& playbackEvent)
+void Device::handlePlaybackEvent(uint64_t id, const NullSpaceIPC::PlaybackEvent& playbackEvent)
 {
 
 	switch (playbackEvent.command()) {

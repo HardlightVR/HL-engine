@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <unordered_map>
-#include "Device2.h"
+#include "Device.h"
 #include <mutex>
 #include "DriverConfigParser.h"
 #include "SimulatedDevice.h"
@@ -11,7 +11,7 @@
 class DriverMessenger;
 class DeviceContainer {
 public:
-	using DeviceFn = std::function<void(Device2*)>;
+	using DeviceFn = std::function<void(Device*)>;
 	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 	
 	void RemoveDevice(nsvr_device_id id);
@@ -19,7 +19,7 @@ public:
 	void EachSimulation(std::function<void(SimulatedDevice*)> action);
 	DeviceContainer();
 
-	Device2* Get(nsvr_device_id id);
+	Device* Get(nsvr_device_id id);
 
 	void OnDeviceAdded(DeviceFn);
 	void OnPreDeviceRemoved(DeviceFn);
@@ -27,13 +27,13 @@ public:
 private:
 	void addDevice(const DeviceDescriptor&, PluginApis&,  Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 
-	std::vector<std::unique_ptr<Device2>> m_devices;
+	std::vector<std::unique_ptr<Device>> m_devices;
 	std::vector<std::unique_ptr<SimulatedDevice>> m_simulations;
 	std::vector<DeviceFn> m_deviceAddedSubs;
 	std::vector<DeviceFn> m_deviceRemovedSubs;
 
 	std::mutex m_deviceLock;
-	void notify(const std::vector<DeviceFn>& devices, Device2* device);
+	void notify(const std::vector<DeviceFn>& devices, Device* device);
 	
 };
 
