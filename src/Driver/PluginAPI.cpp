@@ -148,8 +148,7 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_associate(nsvr_bodygraph * body, co
 	RETURN_IF_NULL(node);
 
 	return ExceptionGuard([body, node, node_id]() {
-		AS_TYPE(BodyGraph, body)->Associate(node, node_id);
-		return nsvr_success;
+		return AS_TYPE(BodyGraph, body)->Associate(node, node_id);
 	});
 	
 }
@@ -160,8 +159,7 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_bodygraph_unassociate(nsvr_bodygraph * body, 
 	RETURN_IF_NULL(node);
 
 	return ExceptionGuard([body, node, node_id]() {
-		AS_TYPE(BodyGraph, body)->Unassociate(node, node_id);
-		return nsvr_success;
+		return AS_TYPE(BodyGraph, body)->Unassociate(node, node_id);
 	});
 	
 }

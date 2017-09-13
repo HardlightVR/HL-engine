@@ -5,6 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <cmath>
+#include "nsvr_core_errors.h"
 
 double to_radians(double degrees) {
 	return (degrees * M_PI) / 180.0;
@@ -87,38 +88,38 @@ BodyGraph::BodyGraph()
 	auto left_palm = std::shared_ptr<subregion>(new
 		subregion(region::identifier_palm_left, segment_range::full, angle_range::full));
 
-	auto right_palm = std::shared_ptr<subregion>(new
-		subregion(region::identifier_palm_right, segment_range::full, angle_range::full));
+auto right_palm = std::shared_ptr<subregion>(new
+	subregion(region::identifier_palm_right, segment_range::full, angle_range::full));
 
-	m_bodyparts.emplace(nsvr_bodypart_head, Bodypart(nsvr_bodypart_head, 19.03, head));
+m_bodyparts.emplace(nsvr_bodypart_head, Bodypart(nsvr_bodypart_head, 19.03, head));
 
-	m_bodyparts.emplace(nsvr_bodypart_torso, Bodypart(nsvr_bodypart_torso, 51.9, entire_torso));
+m_bodyparts.emplace(nsvr_bodypart_torso, Bodypart(nsvr_bodypart_torso, 51.9, entire_torso));
 
-	m_bodyparts.emplace(nsvr_bodypart_upperarm_left, Bodypart( nsvr_bodypart_upperarm_left , 29.41, upper_arm_left ));
+m_bodyparts.emplace(nsvr_bodypart_upperarm_left, Bodypart(nsvr_bodypart_upperarm_left, 29.41, upper_arm_left));
 
-	m_bodyparts.emplace(nsvr_bodypart_lowerarm_left, Bodypart ( nsvr_bodypart_lowerarm_left, 27.68, lower_arm_left ));
+m_bodyparts.emplace(nsvr_bodypart_lowerarm_left, Bodypart(nsvr_bodypart_lowerarm_left, 27.68, lower_arm_left));
 
-	m_bodyparts.emplace(nsvr_bodypart_upperarm_right, Bodypart( nsvr_bodypart_upperarm_right, 29.41, upper_arm_right ));
+m_bodyparts.emplace(nsvr_bodypart_upperarm_right, Bodypart(nsvr_bodypart_upperarm_right, 29.41, upper_arm_right));
 
-	m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
+m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
 
-	m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
+m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
 
-	m_bodyparts.emplace(nsvr_bodypart_lowerleg_left, Bodypart(nsvr_bodypart_lowerleg_left, 43.25, lower_leg_left));
+m_bodyparts.emplace(nsvr_bodypart_lowerleg_left, Bodypart(nsvr_bodypart_lowerleg_left, 43.25, lower_leg_left));
 
-	m_bodyparts.emplace(nsvr_bodypart_upperleg_left, Bodypart(nsvr_bodypart_upperleg_left, 43.25, upper_leg_left));
+m_bodyparts.emplace(nsvr_bodypart_upperleg_left, Bodypart(nsvr_bodypart_upperleg_left, 43.25, upper_leg_left));
 
-	m_bodyparts.emplace(nsvr_bodypart_lowerleg_right, Bodypart(nsvr_bodypart_lowerleg_right, 43.25, lower_leg_right));
+m_bodyparts.emplace(nsvr_bodypart_lowerleg_right, Bodypart(nsvr_bodypart_lowerleg_right, 43.25, lower_leg_right));
 
-	m_bodyparts.emplace(nsvr_bodypart_upperleg_right, Bodypart(nsvr_bodypart_upperleg_right, 43.25, upper_leg_right));
+m_bodyparts.emplace(nsvr_bodypart_upperleg_right, Bodypart(nsvr_bodypart_upperleg_right, 43.25, upper_leg_right));
 
 
-	m_bodyparts.emplace(nsvr_bodypart_palm_left, Bodypart(nsvr_bodypart_palm_left, 10.0, left_palm));
-	m_bodyparts.emplace(nsvr_bodypart_palm_right, Bodypart(nsvr_bodypart_palm_right, 10.0, right_palm));
+m_bodyparts.emplace(nsvr_bodypart_palm_left, Bodypart(nsvr_bodypart_palm_left, 10.0, left_palm));
+m_bodyparts.emplace(nsvr_bodypart_palm_right, Bodypart(nsvr_bodypart_palm_right, 10.0, right_palm));
 
-	for (auto& bp : m_bodyparts) {
-		bp.second.region->init_backlinks();
-	}
+for (auto& bp : m_bodyparts) {
+	bp.second.region->init_backlinks();
+}
 
 }
 
@@ -158,41 +159,60 @@ int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 {
 	//To create a new node:
 		//First, add a vertex into the graph with the given name.
-		boost::add_vertex(name, m_nodes);
+	boost::add_vertex(name, m_nodes);
 
-		//Then, grab the bodypart corresponding with the given arguments.
-		auto& bodypart = m_bodyparts[pose->bodypart];
+	//Then, grab the bodypart corresponding with the given arguments.
+	auto& bodypart = m_bodyparts[pose->bodypart];
 
-		//Then ask that bodypart to find the nearest match to the given coordinates.
-		subregion::shared_region region = bodypart.region->find_best_match(pose->segment_ratio, pose->rotation).second;
+	//Then ask that bodypart to find the nearest match to the given coordinates.
+	subregion::shared_region region = bodypart.region->find_best_match(pose->segment_ratio, pose->rotation).second;
 
-		//Update the vertex with the information that was found
-		m_nodes[name] = NodeData(name, *pose, region);
+	//Update the vertex with the information that was found
+	m_nodes[name] = NodeData(name, *pose, region);
 
-		//Update the bodypart's subregion that corresponded with the match to have a reference to this graph node.
-		bodypart.region->find(region)->hardware_defined_regions.push_back(name);
+	//Update the bodypart's subregion that corresponded with the match to have a reference to this graph node.
+	bodypart.region->find(region)->hardware_defined_regions.push_back(name);
 
 
 
-		BOOST_LOG_TRIVIAL(info) << "[BodyGraph] Node [" << name << "] registered on region " << region._to_string();
+	BOOST_LOG_TRIVIAL(info) << "[BodyGraph] Node [" << name << "] registered on region " << region._to_string();
 	return 0;
 }
 
 
 int BodyGraph::ConnectNodes(const char* a, const char* b)
 {
-	boost::add_edge_by_label(a, b, m_nodes);
-	return 0;
+	if (m_nodes.vertex(a) != LabeledGraph::null_vertex() && m_nodes.vertex(b) != LabeledGraph::null_vertex()) {
+		boost::add_edge_by_label(a, b, m_nodes);
+		return nsvr_success;
+	}
+	else {
+		return nsvr_error_nosuchnode;
+	}
 }
 
-void BodyGraph::Associate(const char * node, nsvr_node_id node_id)
+int BodyGraph::Associate(const char * node, nsvr_node_id node_id)
 {
-	m_nodes[node].addNode(node_id);
-}
+	if (m_nodes.vertex(node) != LabeledGraph::null_vertex()) {
+		m_nodes[node].addNode(node_id);
+		return nsvr_success;
+	}
+	else {
+		return nsvr_error_nosuchnode;
+	}
 
-void BodyGraph::Unassociate(const char * node, nsvr_node_id node_id)
+}
+	
+
+int BodyGraph::Unassociate(const char * node, nsvr_node_id node_id)
 {
-	m_nodes[node].removeNode(node_id);
+	if (m_nodes.vertex(node) != LabeledGraph::null_vertex()) {
+		m_nodes[node].removeNode(node_id);
+		return nsvr_success;
+	}
+	else {
+		return nsvr_error_nosuchnode;
+	}
 }
 
 

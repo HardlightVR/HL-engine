@@ -281,8 +281,8 @@ public:
 	BodyGraph();
 	int CreateNode(const char* name, nsvr_bodygraph_region* pose);
 	int ConnectNodes(const char* a, const char* b);
-	void Associate(const char * node, nsvr_node_id node_id);
-	void Unassociate(const char * node, nsvr_node_id node_id);
+	int Associate(const char * node, nsvr_node_id node_id);
+	int Unassociate(const char * node, nsvr_node_id node_id);
 	void ClearAssociations(nsvr_node_id node_id);
 
 
@@ -319,7 +319,7 @@ private:
 	>;
 
 	std::unordered_map<nsvr_bodypart, Bodypart> m_bodyparts;
-
+	
 	LabeledGraph m_nodes;
 	
 };

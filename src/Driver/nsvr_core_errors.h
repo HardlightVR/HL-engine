@@ -34,7 +34,10 @@ typedef enum nsvr_error_type {
 	/* General errors*/
 	nsvr_error_unknown = -1000,
 	nsvr_error_nullargument = -1001,
-	nsvr_error_invalidargument = -1002
+	nsvr_error_invalidargument = -1002,
+
+	/* Bodygraph errors */
+	nsvr_error_nosuchnode = -2000
 
 
 
