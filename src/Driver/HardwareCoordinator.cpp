@@ -125,10 +125,5 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	
 }
 
-void HardwareCoordinator::Cleanup()
-{
-	
-}
-
 
 

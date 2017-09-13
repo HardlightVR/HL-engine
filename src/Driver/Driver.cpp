@@ -128,7 +128,6 @@ bool Driver::StartThread()
 bool Driver::Shutdown()
 {
 	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Shutting down";
-	m_coordinator.Cleanup();
 
 	m_curveEngineUpdate.Stop();
 	m_statusPush.Stop();

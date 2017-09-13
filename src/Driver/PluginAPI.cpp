@@ -8,12 +8,11 @@
 #include "nsvr_preset.h"
 #include "nsvr_playback_handle.h"
 #include <boost/variant/get.hpp>
-#include "IHardwareDevice.h"
 #include "BodyGraph.h"
 #include "nsvr_core_errors.h"
 #include "BodyRegion.h"
 #include "ExceptionGuard.h"
-
+#include "TrackingStream.h"
 #define NULL_ARGUMENT_CHECKS
 
 

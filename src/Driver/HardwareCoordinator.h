@@ -3,7 +3,6 @@
 class EventDispatcher;
 class DeviceContainer;
 class DriverMessenger;
-struct nsvr_quaternion;
 
 #include "ScheduledEvent.h"
 #include "PluginAPI.h"
@@ -17,8 +16,6 @@ public:
 
 	~HardwareCoordinator() = default;
 	void SetupSubscriptions(EventDispatcher& dispatcher);
-	void Cleanup();
-	void Hook_TrackingSlot(TrackingSignal& hook);
 private:
 	DriverMessenger& m_messenger;
 	DeviceContainer& m_devices;
