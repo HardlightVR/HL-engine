@@ -33,7 +33,7 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_register_##name##(nsvr_core* core, nsvr_plugi
 RETURN_IF_NULL(core); \
 RETURN_IF_NULL(api);\
 return ExceptionGuard([core, api](){ \
-	AS_TYPE(CoreFacade, core)->RegisterPluginApi<##name##>(api); \
+	AS_TYPE(PluginInstance, core)->RegisterPluginApi<##name##>(api); \
 	return nsvr_success; \
 }); \
 }
@@ -46,7 +46,7 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_device_event_raise(nsvr_core* core, nsvr_devi
 	RETURN_IF_NULL(core);
 
 	return ExceptionGuard([core, type, id]() {
-		AS_TYPE(CoreFacade, core)->RaisePluginEvent(type, id);
+		AS_TYPE(PluginInstance, core)->RaiseEvent(type, id);
 		return nsvr_success;
 	});
 }

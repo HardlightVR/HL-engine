@@ -13,8 +13,7 @@ PluginInstance::PluginInstance(std::unique_ptr<PluginEventSource> dispatcher, st
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
 	m_apis(),
-	m_eventHandler(std::move(dispatcher)),
-	m_facade(m_apis, m_eventHandler.get())
+	m_eventHandler(std::move(dispatcher))
 	
 {
 	//m_eventHandler.Subscribe(nsvr_device_event_device_connected, [this](nsvr_device_id device_id) {
@@ -75,7 +74,7 @@ bool PluginInstance::Load()
 bool PluginInstance::Configure()
 {
 	if (m_pluginFunctions.configure) {
-		return m_pluginFunctions.configure(m_pluginPointer, reinterpret_cast<nsvr_core*>(&m_facade));
+		return m_pluginFunctions.configure(m_pluginPointer, reinterpret_cast<nsvr_core*>(this));
 	}
 	
 	return false;
@@ -156,4 +155,8 @@ PluginApis & PluginInstance::apis()
 	return m_apis;
 }
 
+void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
+{
+	m_eventHandler->Raise(type, id, *this);
+}
 
