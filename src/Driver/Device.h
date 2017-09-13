@@ -1,15 +1,11 @@
 #pragma once
-
+#include <memory>
+#include <string>
 #include "NodeDiscoverer.h"
 #include "BodyGraphCreator.h"
 #include "PlaybackController.h"
-#include <memory>
 #include "DeviceDescriptor.h"
-
-#include <unordered_map>
-#include <vector>
 #include "HapticInterface.h"
-#include "protobuff_defs/HighLevelEvent.pb.h"
 
 //theory:
 //NodeDiscoverer can be mocked out. So we can provide a bunch of fake nodes
@@ -22,13 +18,19 @@
 
 // Then the function calls into the underlying apis will do nothing, but will also be replicated through the "instrumentation" pointer into simulated
 // functionality. 
+
+namespace NullSpaceIPC {
+	class HighLevelEvent;
+	class SimpleHaptic;
+	class PlaybackEvent;
+}
 class Device {
 public:
 	Device(
 		std::string parentPlugin,
 		DeviceDescriptor descriptor, 
+		std::shared_ptr<BodyGraphCreator>,
 		std::unique_ptr<NodeDiscoverer>, 
-		std::shared_ptr<BodyGraphCreator>, 
 		std::unique_ptr<PlaybackController>, 
 		std::unique_ptr<HapticInterface>
 	);
@@ -40,8 +42,8 @@ public:
 private:
 	std::string m_originator;
 	DeviceDescriptor m_description;
-	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::shared_ptr<BodyGraphCreator> m_bodygraph;
+	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::unique_ptr<PlaybackController> m_playback;
 	std::unique_ptr<HapticInterface> m_haptics;
 	void handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple);

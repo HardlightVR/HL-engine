@@ -1,18 +1,19 @@
 #include "stdafx.h"
 #include "Device.h"
 #include "nsvr_region.h"
+#include "protobuff_defs/HighLevelEvent.pb.h"
 
 Device::Device(
 	std::string parentPlugin,
 	DeviceDescriptor descriptor, 
+	std::shared_ptr<BodyGraphCreator> bodygraph,
 	std::unique_ptr<NodeDiscoverer> discoverer, 
-	std::shared_ptr<BodyGraphCreator> bodygraph, 
 	std::unique_ptr<PlaybackController> playback,
 	std::unique_ptr<HapticInterface> haptics
 )
 	: m_description(descriptor)
-	, m_discoverer(std::move(discoverer))
 	, m_bodygraph(bodygraph)
+	, m_discoverer(std::move(discoverer))
 	, m_playback(std::move(playback))
 	, m_haptics(std::move(haptics))
 	, m_originator(parentPlugin)

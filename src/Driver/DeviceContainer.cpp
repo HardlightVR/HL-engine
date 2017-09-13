@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "DeviceContainer.h"
+
 #include <experimental/vector>
-
-#include "Device.h"
-
 #include "HardwareBodygraphCreator.h"
 #include "HardwareNodeEnumerator.h"
 #include "HardwarePlaybackController.h"
@@ -46,7 +44,7 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 	m_deviceLock.lock();
 
-	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, std::move(nodes), bodygraph, std::move(playback), std::move(haptics)));
+	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, bodygraph, std::move(nodes), std::move(playback), std::move(haptics)));
 	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, apis, bodygraph));
 
 	m_deviceLock.unlock();

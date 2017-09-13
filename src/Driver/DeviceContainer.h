@@ -1,12 +1,14 @@
 #pragma once
+#include <functional>
+#include <string>
 #include <memory>
-#include <unordered_map>
-#include "Device.h"
+#include <vector>
 #include <mutex>
-#include "DriverConfigParser.h"
+#include "Device.h"
 #include "SimulatedDevice.h"
-#include "DeviceDescriptor.h"
-// Should break this into two interfaces: adding/removing, and the data operations
+#include "PluginAPI.h"
+#include "PluginApis.h"
+#include "DriverConfigParser.h"
 
 class DriverMessenger;
 class DeviceContainer {
