@@ -16,13 +16,7 @@ PluginInstance::PluginInstance(std::unique_ptr<PluginEventSource> dispatcher, st
 	m_eventHandler(std::move(dispatcher))
 	
 {
-	//m_eventHandler.Subscribe(nsvr_device_event_device_connected, [this](nsvr_device_id device_id) {
-	//	m_deviceContainer.AddDevice(device_id, m_apis, m_eventHandler, m_descriptor.bodygraph, );
-	//});
 
-	//m_eventHandler.Subscribe(nsvr_device_event_device_disconnected, [this](nsvr_device_id device_id) {
-	//	m_deviceContainer.RemoveDevice(device_id);
-	//});
 
 }
 
@@ -102,7 +96,13 @@ bool PluginInstance::Link()
 	m_dll = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
 	
 	if (loadFailure) {
-		std::cout << "Failed to load " << m_fileName << ": " << loadFailure.message() << ".\n";
+		BOOST_LOG_TRIVIAL(error) << "Failed to load " << m_fileName << " (.dll/.so): " << loadFailure.message();
+		if (loadFailure.value() == 126) {
+			BOOST_LOG_TRIVIAL(error) << "Common causes:";
+			BOOST_LOG_TRIVIAL(error) << "1) The DLL name does not correspond to the manifest name (Plugin_manifest.json => Plugin.dll)";
+			BOOST_LOG_TRIVIAL(error) << "2) The DLL has additional dependencies which were not found";
+
+		}
 		return false;
 	}
 

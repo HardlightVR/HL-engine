@@ -4,12 +4,13 @@
 #include <bitset>
 #include "DeviceContainer.h"
 #include "HardwareEventDispatcher.h"
-PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw, std::vector<std::string> plugins) 
-	: m_pluginNames(std::move(plugins))
-	, m_plugins()
+#include <boost/filesystem.hpp>
+PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw) 
+	: m_plugins()
 	, m_deviceContainer(hw)
 	, m_io(io)
 	, m_pluginEventLoop(io, boost::posix_time::millisec(16))
+	, m_pluginManifests()
 {
 	m_pluginEventLoop.SetEvent([this]() {
 		
@@ -18,10 +19,35 @@ PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw, s
 	m_pluginEventLoop.Start();
 }
 
+void PluginManager::Discover()
+{
+	namespace fs = boost::filesystem;
+	fs::directory_iterator it(fs::current_path());
+	fs::directory_iterator endit;
+
+	std::vector<fs::path> paths;
+	while (it != endit) {
+		if (fs::is_regular_file(*it) && Parsing::IsProbablyManifest(it->path().string())) {
+			paths.push_back(it->path());
+		}
+		++it;
+	}
+
+
+	for (const auto& manifest : paths) {
+		if (auto config = Parsing::ParseConfig(manifest.string())) {
+			std::string stem = manifest.stem().string();
+			std::string dllName = stem.substr(0, stem.find_last_of('_'));
+
+			m_pluginManifests[dllName] = *config;
+		}
+	}
+}
+
 bool PluginManager::LoadAll()
 {
-	for (const auto& pluginName : m_pluginNames) {
-		LoadPlugin(pluginName);
+	for (const auto& nameManifestPair : m_pluginManifests) {
+		LoadPlugin(nameManifestPair.first);
 	}
 	return true;
 }

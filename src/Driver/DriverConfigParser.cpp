@@ -4,6 +4,17 @@
 #include <fstream>
 #include "Locator.h"
 namespace Parsing {
+
+
+	bool IsProbablyManifest(const std::string& path_string) {
+		boost::filesystem::path path(path_string);
+		if (!path.has_stem()) {
+			return false;
+		}
+		std::string stem = path.stem().string();
+
+		return stem.find("_manifest") != std::string::npos;
+	}
 	static std::unordered_map<std::string, Concept> concept_map = {
 		{ "suit", Concept::Suit },
 		{ "controller", Concept::Controller },

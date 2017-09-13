@@ -174,7 +174,7 @@ int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 
 
 
-	std::cout << "[" << name << "] Registered on region " << region._to_string() << "\n";
+		BOOST_LOG_TRIVIAL(info) << "[BodyGraph] Node [" << name << "] registered on region " << region._to_string();
 	return 0;
 }
 

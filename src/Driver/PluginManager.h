@@ -8,10 +8,11 @@
 class DeviceContainer;
 class PluginManager {
 public:
-	PluginManager(boost::asio::io_service& io, DeviceContainer& coordinator,std::vector<std::string> plugins);
+	PluginManager(boost::asio::io_service& io, DeviceContainer& coordinator);
 	PluginManager(const PluginInstance&) = delete;
 	const PluginManager& operator=(const PluginManager&) = delete;
 
+	void Discover();
 
 	bool LoadAll();
 	bool UnloadAll();
@@ -27,9 +28,9 @@ private:
 
 	bool LoadPlugin(const std::string& name);
 
+	std::unordered_map<std::string, Parsing::ManifestDescriptor> m_pluginManifests;
 
 	void destroyAll();
-	std::vector<std::string> m_pluginNames;
 	std::unordered_map<std::string, std::shared_ptr<PluginInstance>> m_plugins;
 	DeviceContainer& m_deviceContainer;
 	boost::asio::io_service& m_io;
