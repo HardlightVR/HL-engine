@@ -5,18 +5,23 @@
 #include "DeviceContainer.h"
 #include "HardwareEventDispatcher.h"
 #include <boost/filesystem.hpp>
-PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw) 
+PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw)
 	: m_plugins()
 	, m_deviceContainer(hw)
 	, m_io(io)
 	, m_pluginEventLoop(io, boost::posix_time::millisec(16))
 	, m_pluginManifests()
+	, m_fatalErrorHandler([]() {})
 {
 	m_pluginEventLoop.SetEvent([this]() {
-		
-		this->TickOnce(16); //todo: should store 16 as variable
+
+		if (!this->TickOnce(16)) {//todo: should store 16 as variable
+			m_fatalErrorHandler();
+		}
 	});
+
 	m_pluginEventLoop.Start();
+
 }
 
 std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path& root) {
@@ -71,13 +76,33 @@ void PluginManager::UnloadAll()
 	destroyAll();
 }
 
-void PluginManager::TickOnce(uint64_t dt)
+bool PluginManager::TickOnce(uint64_t dt)
 {
+	std::vector<std::string> crashedPlugins;
 	for (auto& plugin : m_plugins) {
 		//if return value is false, we should destroy and reinstantiate the plugin
 		//taking care to clean up the DeviceContainer somehow
-		plugin.second->tick_once(dt);
+		
+		if (!plugin.second->tick_once(dt)) {
+			crashedPlugins.push_back(plugin.first);
+		}
+	
 	}
+
+	for (auto& crashedPlugin : crashedPlugins) {
+		if (m_plugins[crashedPlugin]->Unload()) {
+			m_plugins.erase(crashedPlugin);
+			BOOST_LOG_TRIVIAL(info) << "[PluginManager] Successfully unloaded misbehaving plugin " << crashedPlugin;
+		}
+		else {
+			BOOST_LOG_TRIVIAL(info) << "[PluginManager] Unable to unload misbehaving plugin " << crashedPlugin;
+			return false;
+
+		}
+
+	}
+
+	return true;
 }
 
 bool PluginManager::Reload(const std::string & name)
@@ -101,6 +126,11 @@ bool PluginManager::Reload(const std::string & name)
 
 	return false;
 
+}
+
+void PluginManager::OnFatalError(std::function<void()> handler)
+{
+	m_fatalErrorHandler = handler;
 }
 
 

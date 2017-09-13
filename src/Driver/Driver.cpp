@@ -11,7 +11,7 @@
 #include "IoService.h"
 
 
-
+//Belongs in the hardlight plugin now
 //void extractDrvData(const packet& packet) {
 //	//as status register:
 //	uint8_t whichDrv = packet.raw[4];
@@ -50,7 +50,11 @@ Driver::Driver() :
 
 
 {
-	
+	m_pluginManager.OnFatalError([this]() {
+		this->Shutdown();
+		std::exit(-100);
+	});
+
 	m_pluginManager.Discover();
 	m_pluginManager.LoadAll();
 

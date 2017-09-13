@@ -33,11 +33,15 @@ public:
 	void UnloadAll();
 
 	//Runs each plugin's event loop once with a given ms delta time
-	void TickOnce(uint64_t dt);
+	//It is a fatal error if this method returns false. The program should be terminated as gracefully as possible. 
+	bool TickOnce(uint64_t dt);
 	bool Reload(const std::string& name);
+
+	void OnFatalError(std::function<void()> handler);
 
 private:
 
+	std::function<void()> m_fatalErrorHandler;
 	bool linkPlugin(const std::string& name);
 	bool instantiatePlugin(PluginInstance* plugin);
 	bool configurePlugin(PluginInstance* plugin);

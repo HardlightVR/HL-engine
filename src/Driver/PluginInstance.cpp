@@ -3,7 +3,6 @@
 
 #include <boost/type_index.hpp>
 #include <iostream>
-#include "IHardwareDevice.h"
 #include "PluginAPI.h"
 #include "DeviceContainer.h"
 
@@ -76,7 +75,8 @@ bool PluginInstance::tick_once(uint64_t dt)
 		}
 	}
 
-	return true;
+	bool result = true;
+	return result;
 }
 
 bool PluginInstance::Link()

@@ -14,10 +14,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 {
 	m_devices.OnDeviceAdded([this](Device* device) {
-		//device->registerTrackedObjects([this](nsvr_node_id id, nsvr_quaternion* q) {
-	//		writeTracking(id, q);
-		//});
-
+	
 		NullSpace::SharedMemory::DeviceInfo info = {0};
 		info.Id = device->id();
 
