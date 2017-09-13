@@ -31,7 +31,7 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 	});
 
-	m_devices.OnPreDeviceRemoved([this](Device* device) {
+	m_devices.OnDeviceRemoved([this](Device* device) {
 		m_messenger.UpdateDeviceStatus(device->id(), DeviceStatus::Disconnected);
 	});
 
@@ -85,25 +85,25 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		BOOST_LOG_TRIVIAL(info) << "Got haptic";
-		m_devices.Each([&](Device* device) {
+		m_devices.EachDevice([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device* device) {
+		m_devices.EachDevice([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kRealtimeHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device* device) {
+		m_devices.EachDevice([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kCurveHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.Each([&](Device* device) {
+		m_devices.EachDevice([&](Device* device) {
 			device->DispatchEvent(event);
 		});
 	});

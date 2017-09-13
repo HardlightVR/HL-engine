@@ -9,25 +9,32 @@
 #include "PluginAPI.h"
 #include "PluginApis.h"
 #include "DriverConfigParser.h"
+#include <boost/signals2.hpp>
 
 class DriverMessenger;
 class DeviceContainer {
 public:
+	using DeviceEvent = boost::signals2::signal<void(Device*)>;
 	using DeviceFn = std::function<void(Device*)>;
+	using SimFn = std::function<void(SimulatedDevice*)>;
+
 	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 	
 	void RemoveDevice(nsvr_device_id id);
-	void Each(DeviceFn);
-	void EachSimulation(std::function<void(SimulatedDevice*)> action);
-	DeviceContainer();
+	void EachDevice(DeviceFn action);
+	void EachSimulation(SimFn action);
 
 	Device* Get(nsvr_device_id id);
 
-	void OnDeviceAdded(DeviceFn);
-	void OnPreDeviceRemoved(DeviceFn);
+	//these functions should be very short as a lock is held during them
+	void OnDeviceAdded(DeviceEvent::slot_type slot);
+	void OnDeviceRemoved(DeviceEvent::slot_type slot);
 
 private:
 	void addDevice(const DeviceDescriptor&, PluginApis&,  Parsing::BodyGraphDescriptor, std::string originatingPlugin);
+	
+	DeviceEvent m_onDeviceAdded;
+	DeviceEvent m_onDeviceRemoved;
 
 	std::vector<std::unique_ptr<Device>> m_devices;
 	std::vector<std::unique_ptr<SimulatedDevice>> m_simulations;
@@ -35,7 +42,6 @@ private:
 	std::vector<DeviceFn> m_deviceRemovedSubs;
 
 	std::mutex m_deviceLock;
-	void notify(const std::vector<DeviceFn>& devices, Device* device);
 	
 };
 

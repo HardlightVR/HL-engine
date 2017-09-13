@@ -48,7 +48,8 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, apis, bodygraph));
 
 	m_deviceLock.unlock();
-	notify(m_deviceAddedSubs, m_devices.back().get());
+
+	m_onDeviceAdded(m_devices.back().get());
 }
 
 
@@ -56,24 +57,23 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 void DeviceContainer::RemoveDevice(nsvr_device_id id)
 {
-	for (const auto& device : m_devices) {
-		if (device->id() == id) {
-			notify(m_deviceRemovedSubs, device.get());
-		}
-	}
-
 	m_deviceLock.lock();
 
-	auto rem = std::remove_if(m_devices.begin(), m_devices.end(), [id](const auto& device) { return device->id() == id; });
-	m_devices.erase(rem, m_devices.end());
-
-	auto rem2 = std::remove_if(m_simulations.begin(), m_simulations.end(), [id](const auto& device) { return device->id() == id; });
-	m_simulations.erase(rem2, m_simulations.end());
+	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id](const auto& device) { return device->id() == id; });
+	if (it != m_devices.end()) {
+		m_onDeviceRemoved(it->get());
+		m_devices.erase(it);
+		auto sim = std::find_if(m_simulations.begin(), m_simulations.end(), [id](const auto& device) { return device->id() == id; });
+		m_simulations.erase(sim);
+	}
 
 	m_deviceLock.unlock();
+
+
 }
 
-void DeviceContainer::Each(std::function<void(Device*)> forEach)
+
+void DeviceContainer::EachDevice(DeviceFn forEach)
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 	for (auto& ptr : m_devices) {
@@ -81,18 +81,13 @@ void DeviceContainer::Each(std::function<void(Device*)> forEach)
 	}
 }
 
-void DeviceContainer::EachSimulation(std::function<void(SimulatedDevice*)> action) {
+void DeviceContainer::EachSimulation(SimFn action) {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 	for (auto& ptr : m_simulations) {
 		action(ptr.get());
 	}
 }
 
-
-DeviceContainer::DeviceContainer() 
-{
-	
-}
 
 Device* DeviceContainer::Get(nsvr_device_id id)
 {
@@ -107,20 +102,14 @@ Device* DeviceContainer::Get(nsvr_device_id id)
 	}
 }
 
-void DeviceContainer::OnDeviceAdded(DeviceFn fn)
+void DeviceContainer::OnDeviceAdded(DeviceEvent::slot_type slot)
 {
-	m_deviceAddedSubs.push_back(fn);
+	m_onDeviceAdded.connect(slot);
 }
 
-void DeviceContainer::OnPreDeviceRemoved(DeviceFn fn)
+void DeviceContainer::OnDeviceRemoved(DeviceEvent::slot_type slot)
 {
-	m_deviceRemovedSubs.push_back(fn);
+	m_onDeviceRemoved.connect(slot);
 }
 
-void DeviceContainer::notify(const std::vector<DeviceFn>& subscribers, Device * device)
-{
-	for (const auto& fn : subscribers) {
-		fn(device);
-	}
-}
 
