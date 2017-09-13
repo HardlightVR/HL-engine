@@ -83,7 +83,20 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	// For now, I'm simply forwarding the relevant events to all the devices
 	// More complex behavior later
 	
-	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
+	sdkEvents.Subscribe(
+	{ 
+		NullSpaceIPC::HighLevelEvent::kSimpleHaptic,
+		NullSpaceIPC::HighLevelEvent::kPlaybackEvent,
+		NullSpaceIPC::HighLevelEvent::kRealtimeHaptic,
+		NullSpaceIPC::HighLevelEvent::kCurveHaptic
+	}, 
+	[&](const NullSpaceIPC::HighLevelEvent& event) {
+		m_devices.EachDevice([&](Device* device) {
+			device->DispatchEvent(event);
+		});
+	});
+
+	/*sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		BOOST_LOG_TRIVIAL(info) << "Got haptic";
 		m_devices.EachDevice([&](Device* device) {
 			device->DispatchEvent(event);
@@ -107,7 +120,7 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 			device->DispatchEvent(event);
 		});
 	});
-
+*/
 	
 	
 }

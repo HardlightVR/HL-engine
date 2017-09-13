@@ -17,6 +17,13 @@ void EventDispatcher::Subscribe(NullSpaceIPC::HighLevelEvent::EventsCase which_e
 	m_subscribers[which_event].connect(rec);
 }
 
+void EventDispatcher::Subscribe(std::initializer_list<NullSpaceIPC::HighLevelEvent::EventsCase> events, EventSignal::slot_type rec)
+{
+	for (const auto& ev_case : events) {
+		m_subscribers[ev_case].connect(rec);
+	}
+}
+
 
 
 void EventDispatcher::ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event)

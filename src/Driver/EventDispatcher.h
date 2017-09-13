@@ -12,7 +12,7 @@ public:
 
 
 	void Subscribe(NullSpaceIPC::HighLevelEvent::EventsCase which_event,  EventSignal::slot_type rec);
-
+	void Subscribe(std::initializer_list<NullSpaceIPC::HighLevelEvent::EventsCase> events, EventSignal::slot_type rec);
 	void ReceiveHighLevelEvent(const NullSpaceIPC::HighLevelEvent& event);
 
 
