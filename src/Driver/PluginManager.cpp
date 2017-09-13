@@ -14,7 +14,7 @@ PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw)
 {
 	m_pluginEventLoop.SetEvent([this]() {
 		
-		this->run_event_loop(16); //todo: should store 16 as variable
+		this->TickOnce(16); //todo: should store 16 as variable
 	});
 	m_pluginEventLoop.Start();
 }
@@ -58,27 +58,25 @@ void PluginManager::Discover()
 	}
 }
 
-bool PluginManager::LoadAll()
+void PluginManager::LoadAll()
 {
 	for (const auto& nameManifestPair : m_pluginManifests) {
 		LoadPlugin(nameManifestPair.first);
 	}
-	return true;
 }
 
 
-bool PluginManager::UnloadAll()
+void PluginManager::UnloadAll()
 {
 	destroyAll();
-	return true;
 }
 
-void PluginManager::run_event_loop(uint64_t dt)
+void PluginManager::TickOnce(uint64_t dt)
 {
 	for (auto& plugin : m_plugins) {
 		//if return value is false, we should destroy and reinstantiate the plugin
 		//taking care to clean up the DeviceContainer somehow
-		plugin.second->run_update_loop_once(dt);
+		plugin.second->tick_once(dt);
 	}
 }
 
@@ -88,7 +86,7 @@ bool PluginManager::Reload(const std::string & name)
 	//so we just unload it and try to reload it
 
 	if (m_plugins[name]->Unload()) {
-		return m_plugins[name]->Load();
+		return m_plugins[name]->Instantiate();
 	}
 
 	return false;
@@ -118,12 +116,12 @@ bool PluginManager::linkPlugin(const std::string& name) {
 	return false;
 	
 }
-bool PluginManager::instantiatePlugin(std::shared_ptr<PluginInstance>& plugin)
+bool PluginManager::instantiatePlugin(PluginInstance* plugin)
 {
-	return plugin->Load();
+	return plugin->Instantiate();
 }
 
-bool PluginManager::configurePlugin(std::shared_ptr<PluginInstance>& plugin)
+bool PluginManager::configurePlugin(PluginInstance* plugin)
 {
 	//The manifest must be parsed before instantiating the plugins
 	if (!plugin->ParseManifest()) {
@@ -146,11 +144,11 @@ bool PluginManager::LoadPlugin(const std::string& name)
 		return false;
 	}
 
-	if (!instantiatePlugin(m_plugins[name])) {
+	if (!instantiatePlugin(m_plugins[name].get())) {
 		return false;
 	}
 
-	if (!configurePlugin(m_plugins[name])) {
+	if (!configurePlugin(m_plugins[name].get())) {
 		return false;
 	}
 
@@ -162,7 +160,7 @@ void PluginManager::destroyAll()
 {
 	for (auto& plugin : m_plugins) {
 		if (!plugin.second->Unload()) {
-			std::cout << "Warning: unable to destroy " << plugin.first << '\n';
+			BOOST_LOG_TRIVIAL(error) << "[PluginManager] Warning: unable to destroy " << plugin.first;
 		}
 	}
 

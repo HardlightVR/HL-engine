@@ -43,7 +43,7 @@ bool PluginInstance::ParseManifest()
 
 //Precondition: linked successfully
 //does nothing if already loaded. May want to reinstantiate instead. We'll see.
-bool PluginInstance::Load()
+bool PluginInstance::Instantiate()
 {
 	if (m_loaded) {
 		return true;
@@ -74,7 +74,7 @@ bool PluginInstance::Configure()
 	return false;
 }
 
-bool PluginInstance::run_update_loop_once(uint64_t dt)
+bool PluginInstance::tick_once(uint64_t dt)
 {
 	if (auto api = m_apis.GetApi<updateloop_api>()) {
 		try {

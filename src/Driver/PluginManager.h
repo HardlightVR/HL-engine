@@ -19,17 +19,17 @@ public:
 
 	void Discover();
 
-	bool LoadAll();
-	bool UnloadAll();
+	void LoadAll();
+	void UnloadAll();
 
-	void run_event_loop(uint64_t dt);
+	void TickOnce(uint64_t dt);
 	bool Reload(const std::string& name);
 
 private:
 
 	bool linkPlugin(const std::string& name);
-	bool instantiatePlugin(std::shared_ptr<PluginInstance>& plugin);
-	bool configurePlugin(std::shared_ptr<PluginInstance>& plugin);
+	bool instantiatePlugin(PluginInstance* plugin);
+	bool configurePlugin(PluginInstance* plugin);
 
 	bool LoadPlugin(const std::string& name);
 
