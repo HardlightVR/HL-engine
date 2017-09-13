@@ -6,6 +6,11 @@
 #include <boost/asio/io_service.hpp>
 #include "ScheduledEvent.h"
 class DeviceContainer;
+
+
+std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path&);
+
+
 class PluginManager {
 public:
 	PluginManager(boost::asio::io_service& io, DeviceContainer& coordinator);
@@ -31,6 +36,8 @@ private:
 	std::unordered_map<std::string, Parsing::ManifestDescriptor> m_pluginManifests;
 
 	void destroyAll();
+
+
 	std::unordered_map<std::string, std::shared_ptr<PluginInstance>> m_plugins;
 	DeviceContainer& m_deviceContainer;
 	boost::asio::io_service& m_io;

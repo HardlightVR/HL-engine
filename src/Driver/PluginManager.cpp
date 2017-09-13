@@ -19,20 +19,34 @@ PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw)
 	m_pluginEventLoop.Start();
 }
 
+std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path& root) {
+	namespace fs = boost::filesystem;
+
+	std::vector<fs::path> paths;
+
+	try {
+		fs::directory_iterator it(root);
+		fs::directory_iterator endit;
+
+		while (it != endit) {
+			if (fs::is_regular_file(*it) && Parsing::IsProbablyManifest(it->path().string())) {
+				paths.push_back(it->path());
+			}
+			++it;
+		}
+	}
+	catch (const boost::filesystem::filesystem_error& ec) {
+		BOOST_LOG_TRIVIAL(error) << "[PluginDiscovery] " << ec.what();
+	}
+
+	return paths;
+}
+
 void PluginManager::Discover()
 {
 	namespace fs = boost::filesystem;
-	fs::directory_iterator it(fs::current_path());
-	fs::directory_iterator endit;
 
-	std::vector<fs::path> paths;
-	while (it != endit) {
-		if (fs::is_regular_file(*it) && Parsing::IsProbablyManifest(it->path().string())) {
-			paths.push_back(it->path());
-		}
-		++it;
-	}
-
+	std::vector<fs::path> paths = findManifests(fs::current_path());
 
 	for (const auto& manifest : paths) {
 		if (auto config = Parsing::ParseConfig(manifest.string())) {
