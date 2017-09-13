@@ -37,7 +37,6 @@ public:
 	const PluginInstance& operator=(const PluginInstance&) = delete;
 	PluginInstance(PluginInstance&&) = delete;
 
-	Parsing::ManifestDescriptor descriptor() const;
 	PluginApis& apis();
 
 	template<typename InternalApi, typename ExternalApi>
@@ -59,7 +58,6 @@ private:
 	std::string m_fileName;
 	bool m_loaded;
 
-	Parsing::ManifestDescriptor m_descriptor;
 	PluginApis m_apis;
 	std::unique_ptr<PluginEventSource> m_eventHandler;
 

@@ -27,17 +27,7 @@ PluginInstance::~PluginInstance()
 {
 }
 
-bool PluginInstance::ParseManifest()
-{
-	std::string manifestFilename = m_fileName + "_manifest.json";
 
-	if (auto manifest = Parsing::ParseConfig(manifestFilename)) {
-		m_descriptor = *manifest;
-		return true;
-	}
-	
-	return false;
-}
 
 
 
@@ -145,10 +135,6 @@ std::string PluginInstance::GetDisplayName() const
 	return m_displayName;
 }
 
-Parsing::ManifestDescriptor PluginInstance::descriptor() const
-{
-	return m_descriptor;
-}
 
 PluginApis & PluginInstance::apis()
 {

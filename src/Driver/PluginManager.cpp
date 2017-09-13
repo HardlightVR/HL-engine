@@ -99,8 +99,8 @@ bool PluginManager::Reload(const std::string & name)
 bool PluginManager::linkPlugin(const std::string& name) {
 
 	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
-	dispatcher->OnDeviceConnected([this](nsvr_device_id id, PluginApis& apis, const Parsing::ManifestDescriptor& description) {
-		m_deviceContainer.AddDevice(id, apis, description.bodygraph);
+	dispatcher->OnDeviceConnected([this](nsvr_device_id id, PluginApis& apis, const std::string& pluginName) {
+		m_deviceContainer.AddDevice(id, apis, m_pluginManifests.at(pluginName).bodygraph);
 	});
 
 	dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {
@@ -123,12 +123,6 @@ bool PluginManager::instantiatePlugin(PluginInstance* plugin)
 
 bool PluginManager::configurePlugin(PluginInstance* plugin)
 {
-	//The manifest must be parsed before instantiating the plugins
-	if (!plugin->ParseManifest()) {
-		BOOST_LOG_TRIVIAL(warning) << "Couldn't parse manifest of " << plugin->GetFileName();
-
-		return false;
-	}
 
 	if (!plugin->Configure()) {
 		BOOST_LOG_TRIVIAL(warning) << "Couldn't configure " << plugin->GetFileName();
