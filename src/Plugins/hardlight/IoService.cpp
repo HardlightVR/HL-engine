@@ -10,7 +10,7 @@
 
 IoService::IoService():
 	m_io(), 
-	_work(),
+	m_work(),
 	_running(false), 
 	_readyToResumeIO(2),
 	_shouldQuit{false}, 
@@ -67,7 +67,7 @@ void IoService::start() {
 		auto& log = Locator::Logger();
 		while (!_shouldQuit.load()) {
 			try {
-				_work = std::make_unique<boost::asio::io_service::work>(m_io);
+				m_work = std::make_unique<boost::asio::io_service::work>(m_io);
 
 				BOOST_LOG_TRIVIAL(info) << "[IoS] Starting";
 
