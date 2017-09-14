@@ -80,9 +80,5 @@ void HardwareNodeEnumerator::createNewNode(const NodeDescriptor& desc)
 {
 	m_nodes[desc.id] = Node(desc);
 
-	/*NullSpace::SharedMemory::NodeInfo info = { 0 };
-	info.Id = ((uint64_t)(m_id) << 32) | desc.id;
-	std::copy(desc.displayName.begin(), desc.displayName.end(), info.NodeName);
-	info.Type = desc.type;
-	m_messenger.WriteNode(info);*/
+	
 }

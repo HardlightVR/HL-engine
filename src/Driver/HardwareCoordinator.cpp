@@ -24,12 +24,25 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 		info.Concept = static_cast<uint32_t>(device->concept());
 		m_messenger.WriteDevice(info);
 
-		
+		device->ForEachNode([this, device](Node* node) {
+			
+			NullSpace::SharedMemory::NodeInfo info = { 0 };
+			info.Id = ((uint64_t)(device->id()) << 32) | node->id();
+			std::string nodeName = node->name();
+			std::copy(nodeName.begin(), nodeName.end(), info.NodeName);
+			info.Type = node->type();
+			m_messenger.WriteNode(info);
+		});
 
 	});
 
 	m_devices.OnDeviceRemoved([this](Device* device) {
 		m_messenger.UpdateDeviceStatus(device->id(), DeviceStatus::Disconnected);
+		device->ForEachNode([this, device](Node* node) {
+			uint64_t externalId  = ((uint64_t)(device->id()) << 32) | node->id();
+
+			m_messenger.RemoveNode(externalId);
+		});
 	});
 
 	m_writeBodyRepresentation.SetEvent([this]() { this->writeBodyRepresentation(); });

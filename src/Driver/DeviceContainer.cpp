@@ -39,6 +39,7 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 	auto bodygraph = std::make_shared<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>());
 
 	auto nodes = std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>());
+	
 
 	auto haptics = std::make_unique<HapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>());
 

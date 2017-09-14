@@ -63,6 +63,11 @@ std::string Device::parentPlugin() const
 	return m_originator;
 }
 
+void Device::ForEachNode(std::function<void(Node*)> action)
+{
+	m_discoverer->ForEachNode(action);
+}
+
 template<typename T, typename E>
 std::vector<T> protoBufToVec(const google::protobuf::RepeatedField<E>& inArray) {
 	std::vector<T> result;

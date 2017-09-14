@@ -19,7 +19,6 @@ public:
 	PluginInstance(std::unique_ptr<PluginEventSource> dispatcher, std::string fileName);
 	~PluginInstance();
 	
-	bool ParseManifest();
 	bool Link();
 	bool Instantiate();
 

@@ -39,6 +39,8 @@ public:
 	std::string name() const;
 	nsvr_device_concept concept() const;
 	std::string parentPlugin() const;
+
+	void ForEachNode(std::function<void(Node*)> action);
 private:
 	std::string m_originator;
 	DeviceDescriptor m_description;
