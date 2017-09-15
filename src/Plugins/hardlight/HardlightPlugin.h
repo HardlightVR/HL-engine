@@ -29,6 +29,8 @@ public:
 	void GetDeviceInfo(nsvr_device_id id, nsvr_device_info* info);
 	void GetNodeInfo(nsvr_node_id id, nsvr_node_info* info);
 	void SetupBodygraph(nsvr_bodygraph* graph);
+
+	
 private:
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;

@@ -2,13 +2,14 @@
 #include <string>
 #include <memory>
 #include <boost/dll.hpp>
-#include <boost/log/trivial.hpp>
 #include "PluginAPI.h"
 
 #include "PluginApis.h"
 #include "PluginEventSource.h"
 #include "DriverConfigParser.h"
-
+#include <boost/log/sources/logger.hpp>
+#include <boost/log/sources/basic_logger.hpp>
+#include <boost/log/sources/severity_channel_logger.hpp>
 class DeviceContainer;
 
 class PluginInstance
@@ -16,7 +17,7 @@ class PluginInstance
 public:
 
 
-	PluginInstance(std::unique_ptr<PluginEventSource> dispatcher, std::string fileName);
+	PluginInstance(boost::asio::io_service& io, std::unique_ptr<PluginEventSource> dispatcher, std::string fileName);
 	~PluginInstance();
 	
 	bool Link();
@@ -42,11 +43,11 @@ public:
 	void RegisterPluginApi(ExternalApi* api);
 
 	void RaiseEvent(nsvr_device_event_type type, nsvr_device_id id);
+	void Log(nsvr_loglevel level, const char * component, const char * message);
 
 private:
 	std::unique_ptr<boost::dll::shared_library> m_dll;
-
-
+	boost::asio::io_service& m_io;
 	typedef std::function<int(nsvr_plugin_api*)> plugin_registration_t;
 	plugin_registration_t m_pluginRegisterFunction;
 

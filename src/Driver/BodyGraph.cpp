@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BodyGraph.h"
 #include <boost/graph/iteration_macros.hpp>
+#include <boost/log/trivial.hpp>
 #include <memory>
 #define _USE_MATH_DEFINES
 #include <math.h>

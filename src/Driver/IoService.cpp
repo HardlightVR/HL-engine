@@ -2,6 +2,7 @@
 #include "IoService.h"
 #include <iostream>
 #include "Locator.h"
+#include <boost/log/trivial.hpp>
 IoService::IoService()
 	: m_io()
 	, m_work()

@@ -23,7 +23,6 @@ public:
 	void Shutdown();
 
 	//Restart the IO service. Necessary for serial port resetting
-	void RestartIOService(std::function<void()> ioResetCallback);
 private:
 
 	void start();

@@ -15,6 +15,8 @@ NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api * api)
 		Locator::initialize();
 		Locator::provide(new EnumTranslator());
 		*plugin = AS_TYPE(nsvr_plugin, new HardlightPlugin());
+
+
 		return 1;
 	};
 
@@ -24,8 +26,12 @@ NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api * api)
 	};
 
 	api->configure = [](nsvr_plugin* plugin, nsvr_core* core) {
+		nsvr_log(core, nsvr_loglevel_info, "PluginRegistration", "Hello from the hardlight plugin!");
 		return AS_TYPE(HardlightPlugin, plugin)->Configure(core);
+		
 	};
+
+
 
 	return 1;
 }

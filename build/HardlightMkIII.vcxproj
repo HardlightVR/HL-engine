@@ -316,6 +316,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
     <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h" />
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
+    <ClInclude Include="..\src\plugins\hardlight\logger.h" />
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h" />
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.h" />

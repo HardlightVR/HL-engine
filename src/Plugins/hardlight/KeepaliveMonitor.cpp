@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "KeepaliveMonitor.h"
-#include <boost\log\trivial.hpp> 
 #include "FirmwareInterface.h"
-
+#include "logger.h"
 KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterface& fi):
 	m_firmware(fi),
 	
@@ -60,11 +59,12 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_r
 		m_lastestPingTime = m_responseTimeout.total_milliseconds() 
 			- m_responseTimer.expires_from_now().total_milliseconds();
 		schedulePingTimer();
-		BOOST_LOG_TRIVIAL(trace) << "[Keepalive] Last ping time: " << m_lastestPingTime;
+
+		core_log("KeepAlive", std::string("Last ping time: " + m_lastestPingTime));
 	}
 	else {
 		m_currentFailedPings++;
-		BOOST_LOG_TRIVIAL(trace) << "[Keepalive] Bad Ping [" << m_currentFailedPings << "/" << m_maxFailedPings << "]";
+		core_log("KeepAlive", std::string("Bad ping [" + m_currentFailedPings + '/' + m_maxFailedPings + ']'));
 
 		if (m_currentFailedPings < m_maxFailedPings) {
 			schedulePingTimer();

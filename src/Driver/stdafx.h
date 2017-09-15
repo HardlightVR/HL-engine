@@ -18,19 +18,11 @@
 #include <iostream>
 #include <unordered_map>
 #include <iterator>
-#include <unordered_map>
 #include <algorithm>
-#include <unordered_set>
-#include <fstream>
-#include <mutex>
 
 /* boost */
 
 
-#include <boost/log/core.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost\log\expressions.hpp>
 
 #include <boost\thread.hpp>
 #include <boost\asio\placeholders.hpp>

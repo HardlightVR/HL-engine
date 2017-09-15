@@ -65,6 +65,8 @@ extern "C" {
 		nsvr_plugin_init init;
 		nsvr_plugin_configure configure;
 		nsvr_plugin_free free;
+
+
 	} nsvr_plugin_api;
 
 
@@ -81,15 +83,25 @@ extern "C" {
 
 	typedef struct nsvr_device_event nsvr_device_event;
 
-	enum nsvr_device_event_type {
+	typedef enum nsvr_device_event_type {
 		nsvr_device_event_unknown = 0,
 		nsvr_device_event_device_connected,
 		nsvr_device_event_device_disconnected,
-	}; 
+	} nsvr_device_event_type;
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, nsvr_device_id id);
 	
 
+	typedef enum nsvr_loglevel {
+		nsvr_loglevel_trace,
+		nsvr_loglevel_info,
+		nsvr_loglevel_warning,
+		nsvr_loglevel_error,
+		nsvr_loglevel_fatal
+	} nsvr_log_level;
+
+
+	NSVR_CORE_RETURN(int) nsvr_log(nsvr_core* core, nsvr_loglevel level, const char* component, const char* message);
 
 	typedef struct nsvr_quaternion {
 		float w;

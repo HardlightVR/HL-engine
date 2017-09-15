@@ -3,7 +3,7 @@
 #include "Locator.h"
 #include "InstructionSet.h"
 #include "HardwareCommandVisitor.h"
-#include <boost\log\trivial.hpp>
+#include "logger.h"
 FirmwareInterface::FirmwareInterface(std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io):
 m_instructionSet(std::make_shared<InstructionSet>()),
 _adapter(adapter),
@@ -40,7 +40,6 @@ void FirmwareInterface::writeBuffer() {
 	}
 	else if (avail > 0 && avail < BATCH_SIZE) {
 		if (_isBatching) {
-		//	BOOST_LOG_TRIVIAL(trace) << "[FI] Waiting for batch..";
 
 		
 			_writeTimer.expires_from_now(_writeInterval);
@@ -48,7 +47,6 @@ void FirmwareInterface::writeBuffer() {
 			return;
 		}
 
-		//BOOST_LOG_TRIVIAL(trace) << "[FI] Need to make new packet batch";
 
 		_isBatching = true;
 		_batchingDeadline.expires_from_now(_batchingTimeout);
@@ -56,12 +54,10 @@ void FirmwareInterface::writeBuffer() {
 			if (!ec) {
 				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 				const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
-				//	std::cout << "had to send a mini batch of " << actualLen << " cookies\n";
-			//	BOOST_LOG_TRIVIAL(trace) << "[FI] Sent an undersized packet batch";
 
 				this->_adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
 					if (e) {
-					//	BOOST_LOG_TRIVIAL(info) << "[FI] Failed to write an undersized packet batch: " << e.message();
+						core_log(nsvr_loglevel_warning, "FirmwareInterface", "Failed to write to suit while batching");
 					}
 				}
 				);
@@ -76,12 +72,11 @@ void FirmwareInterface::writeBuffer() {
 		_batchingDeadline.cancel();
 		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 		const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
-		//BOOST_LOG_TRIVIAL(trace) << "[FI] Writing out a batch";
 
 		_adapter->Write(a, actualLen, [&](const boost::system::error_code& ec, std::size_t bytes_t) {
 
 			if (ec) {
-			//	BOOST_LOG_TRIVIAL(info) << "[FI] Failed to write a full packet batch";
+				core_log(nsvr_loglevel_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");
 
 			}
 		}
@@ -94,22 +89,12 @@ void FirmwareInterface::writeBuffer() {
 
 void FirmwareInterface::EnableTracking()
 {
-	if (_builder.UseInstruction("IMU_ENABLE").Verify()) {
-		chooseExecutionStrategy(_builder.Build());
-	}
-	else {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
+	VerifyThenExecute(_builder.UseInstruction("IMU_ENABLE"));
 }
 
 void FirmwareInterface::DisableTracking()
 {
-	if (_builder.UseInstruction("IMU_DISABLE").Verify()) {
-		chooseExecutionStrategy(_builder.Build());
-	}
-	else {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
+	VerifyThenExecute(_builder.UseInstruction("IMU_DISABLE"));
 }
 
 void FirmwareInterface::RequestSuitVersion()
@@ -137,8 +122,7 @@ void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
 		chooseExecutionStrategy(builder.Build());
 	}
 	else {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << builder.GetDebugString();
-
+		core_log(nsvr_loglevel_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
 	}
 }
 
@@ -209,23 +193,17 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to find atom '" << effectString << "' in the instruction set";
+		core_log(nsvr_loglevel_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));
 		return;
 	}
 
 	auto actualEffect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
-	if (_builder.UseInstruction("PLAY_EFFECT")
-		.WithParam("zone", Locator::Translator().ToString(location))
-		.WithParam("effect", Locator::Translator().ToString(actualEffect))
-		.Verify())
-	{
-		chooseExecutionStrategy(_builder.Build());
 
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
+
+	VerifyThenExecute(_builder.UseInstruction("PLAY_EFFECT")
+		.WithParam("zone", Locator::Translator().ToString(location))
+		.WithParam("effect", Locator::Translator().ToString(actualEffect)));
+
 }
 
 //TODO: STUFF BROKEN. LOCATION IS WRONG. EITYHER BEING PASSED BY API WRONG OR SOMETHING ELSE
@@ -233,22 +211,15 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 {
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to find atom '" << effectString << "' in the instruction set";
+		core_log(nsvr_loglevel_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));
 		return;
 	}
 
 	auto actualEffect = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
-	if (_builder.UseInstruction("PLAY_CONTINUOUS")
+	
+	VerifyThenExecute(_builder.UseInstruction("PLAY_CONTINUOUS")
 		.WithParam("effect", Locator::Translator().ToString(actualEffect))
-		.WithParam("zone", Locator::Translator().ToString(location))
-		.Verify())
-	{
-		chooseExecutionStrategy(_builder.Build());
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
+		.WithParam("zone", Locator::Translator().ToString(location)));
 }
 
 void FirmwareInterface::chooseExecutionStrategy(const Packet & packet)
@@ -260,15 +231,6 @@ void FirmwareInterface::chooseExecutionStrategy(const Packet & packet)
 
 void FirmwareInterface::HaltEffect(Location location)
 {
-	if (_builder.UseInstruction("HALT_SINGLE")
-		.WithParam("zone", Locator::Translator().ToString(location))
-		.Verify())
-	{
-		chooseExecutionStrategy(_builder.Build());
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(error) << "[FI] Failed to build instruction " << _builder.GetDebugString();
-	}
-
+	VerifyThenExecute(_builder.UseInstruction("HALT_SINGLE")
+		.WithParam("zone", Locator::Translator().ToString(location)));
 }

@@ -2,13 +2,14 @@
 #include <functional>
 #include "protobuff_defs/DriverCommand.pb.h"
 #include "SuitVersionInfo.h"
-#include <boost/log/core.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-#include <boost/log/trivial.hpp>
-#include "MyTestLog.h"
+
+#include "logger.h"
+
+
 #include "Driver.h"
 #include "Enums.h"
 #include "IoService.h"
+
 
 
 //Belongs in the hardlight plugin now
@@ -50,6 +51,8 @@ Driver::Driver() :
 
 
 {
+
+
 	m_pluginManager.OnFatalError([this]() {
 		this->Shutdown();
 		std::exit(-100);
@@ -60,17 +63,8 @@ Driver::Driver() :
 
 	m_coordinator.SetupSubscriptions(m_eventDispatcher);
 
-	using namespace boost::log;
 
-	typedef sinks::synchronous_sink<MyTestLog> sink_t;
 
-	boost::shared_ptr<sink_t> sink(new sink_t());
-	sink->locked_backend()->ProvideMessenger(m_messenger);
-
-	//todo: re-add the gameplay plugin sink when we figure out a better way of dropping messages, etc.
-	//core::get()->add_sink(sink);
-	
-	BOOST_LOG_TRIVIAL(info) << "[DriverMain] All plugins instantiated.";
 
 	/*m_hardware.RegisterPacketCallback(SuitPacket::PacketType::SuitVersion, [this](auto packet) {
 		SuitVersionInfo version(packet);

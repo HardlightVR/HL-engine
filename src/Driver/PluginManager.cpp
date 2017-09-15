@@ -147,7 +147,7 @@ bool PluginManager::linkPlugin(const std::string& name) {
 		m_deviceContainer.RemoveDevice(id);
 	}); 
 
-	auto instance = std::make_shared<PluginInstance>(std::move(dispatcher), name);
+	auto instance = std::make_shared<PluginInstance>(m_io, std::move(dispatcher), name);
 	if (instance->Link()) {
 		m_plugins.insert(std::make_pair(name, instance));
 		return true;

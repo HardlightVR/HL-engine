@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SerialPort.h"
-#include <boost/log/trivial.hpp>
-
+#include "logger.h"
 const uint8_t SerialPort::pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
 
@@ -74,7 +73,7 @@ void SerialPort::async_open_port()
 
 void SerialPort::async_ping_port()
 {
-	BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Pinging " << m_name;
+	core_log("SerialPort", std::string("Pinging " + m_name));
 
 	m_port->async_write_some(boost::asio::buffer(pingData), [this](const auto& ec, auto bytes_transferred) { write_handler(ec, bytes_transferred); });
 	m_pingTimer.expires_from_now(m_pingTimeout);
@@ -85,14 +84,12 @@ void SerialPort::async_ping_port()
 		}
 		else if (ec) {
 			//some other error?
-			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Timer was canceled, but it wasn't us that did it. Error: " << ec.message() << ", " << m_name;
+			core_log(nsvr_loglevel_trace, "SerialPort", std::string("Timer was canceled, unknown error: " + ec.message() + ", " + m_name));
 			m_status = Status::Unknown;
 			finish_protocol();
 		}
 		else {
-
-			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] It's dead " << m_name;
-
+			core_log(nsvr_loglevel_trace, "SerialPort", std::string(m_name + " is not gonna work"));
 			m_port->close();
 			m_status = Status::Unwritable;
 			finish_protocol();
@@ -112,14 +109,12 @@ void SerialPort::write_handler(const boost::system::error_code & ec, std::size_t
 	m_pingTimer.cancel();
 
 	if (ec) {
-		BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Couldn't even write to it " << m_name;
-
+		core_log("SerialPort", std::string("Couldn't write to " + m_name));
 		m_status = Status::Unwritable;
 		finish_protocol();
 	}
 	else {
-		BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Pinged it, now waiting " << m_name;
-
+		core_log("SerialPort", std::string("Waiting on " + m_name));
 		m_io.post([this]() { async_wait_response(); });
 	}
 }
@@ -156,7 +151,7 @@ void SerialPort::async_wait_response()
 		}
 		else if (ec) {
 			//some other error?
-			BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Timer was canceled, but it wasn't us that did it. Error: " << ec.message() << ", " << m_name;
+			core_log(nsvr_loglevel_warning, "SerialPort", std::string("Timer was canceled on port " + m_name + ", error: " + ec.message()));
 			m_status = Status::Unknown;
 			finish_protocol();
 		}	
@@ -167,14 +162,13 @@ void SerialPort::async_wait_response()
 			m_port->get_option(whichFlowControl, fetchFlowControlError);
 
 			if (whichFlowControl.value() == boost::asio::serial_port::flow_control::none) {
-				BOOST_LOG_TRIVIAL(trace) << "[SerialPort] Trying again with flow control " << m_name;
+				core_log("SerialPort", std::string("Trying " + m_name + " again with hardware flow control"));
 
 				//the timer expired. No good. 
 				m_io.post([this]() { async_try_with_flow_control(); });
 			}
 			else {
-
-				BOOST_LOG_TRIVIAL(trace) << "[SerialPort] It's dead " << m_name;
+				core_log("SerialPort", std::string("Abandoning hope on port " + m_name));
 
 				m_port->close();
 				m_status = Status::Unreadable;

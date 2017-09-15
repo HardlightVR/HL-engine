@@ -6,8 +6,8 @@
 #include "enumser.h"
 #include "Locator.h"
 #include "AsyncTimeout.h"
-#include <boost/log/trivial.hpp>
 #include <boost/optional.hpp>
+#include "logger.h"
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
@@ -30,7 +30,7 @@ void BoostSerialAdapter::Connect()
 
 
 void BoostSerialAdapter::beginReconnectionProcess() {
-	BOOST_LOG_TRIVIAL(trace) << "[Adapter] Disconnected from suit  ";
+	core_log(nsvr_loglevel_info, "SerialAdapter", "Disconnected from suit");
 	_isResetting = true;
 	scheduleImmediateSuitReconnect();
 }
@@ -52,9 +52,7 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
 	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
-		BOOST_LOG_TRIVIAL(info) << "[Adapter] No ports available on system. Check Device Manager for available devices.";
-
-		Locator::Logger().Log("Adapter", "No ports available on system. Check Device Manager for available devices.", LogLevel::Warning);
+		core_log(nsvr_loglevel_info, "SerialAdapter", "No ports available on the system");
 	}
 
 	m_candidatePorts.clear();

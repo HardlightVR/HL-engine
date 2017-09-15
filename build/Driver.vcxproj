@@ -329,6 +329,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\Json\json.h" />
     <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\Driver\Locator.h" />
+    <ClInclude Include="..\src\Driver\logger.h" />
     <ClInclude Include="..\src\Driver\LoggingUtils.h" />
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
@@ -372,6 +373,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
+    <ClInclude Include="..\src\Driver\logging_initialization.h" />
     <ClInclude Include="..\src\Driver\nsvr_core_errors.h" />
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
@@ -415,6 +417,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\Driver\Locator.cpp" />
+    <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\LoggingUtils.cpp" />
     <ClCompile Include="..\src\Driver\MessengerLogger.cpp" />
     <ClCompile Include="..\src\Driver\MyTestLog.cpp" />
@@ -437,6 +440,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
     <ClCompile Include="..\src\Driver\TrackingStream.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
+    <ClCompile Include="..\src\Driver\logging_initialization.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.cc">

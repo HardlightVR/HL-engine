@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MyTestLog.h"
-
+#include <boost/log/expressions.hpp>
 
 
 MyTestLog::MyTestLog(DriverMessenger & messenger):

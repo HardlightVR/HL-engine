@@ -4,6 +4,10 @@
 #include <iostream>
 #include <typeinfo>
 #include "PluginAPIWrapper.h"
+
+
+nsvr_core* global_core = nullptr;
+
 HardlightPlugin::HardlightPlugin() :
 	m_io(std::make_shared<IoService>()),
 	m_dispatcher(),
@@ -127,6 +131,7 @@ int HardlightPlugin::Configure(nsvr_core* core)
 
 
 	m_core = core;
+	global_core = core;
 	m_device.Configure(core);
 
 	nsvr_plugin_tracking_api tracking_api;

@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Synchronizer.h"
 #include <iostream>
-#include <boost\log\trivial.hpp>
+#include "logger.h"
 bool Synchronizer::Synchronized()
 {
 	return this->syncState == Synchronizer::State::Synchronized;
@@ -111,8 +111,7 @@ void Synchronizer::confirmSync()
 	packet possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
 		this->syncState = State::Synchronized;
-		BOOST_LOG_TRIVIAL(info) << "[Sync] Stream synced";
-
+		core_log("Synchronizer", "Stream synced");
 	}
 	else {
 		this->syncState = State::SearchingForSync;
@@ -129,9 +128,7 @@ void Synchronizer::monitorSync()
 	else {
 		this->badSyncCounter = 1;
 		this->syncState = Synchronizer::State::ConfirmingSyncLoss;
-
-		BOOST_LOG_TRIVIAL(info) << "[Sync] Confirming sync loss..";
-
+		core_log("Synchronizer", "Confirming sync loss..");
 	}
 }
 
@@ -142,13 +139,13 @@ void Synchronizer::confirmSyncLoss()
 	if (!this->packetIsWellFormed(possiblePacket)) {
 		this->badSyncCounter++;
 		if (this->badSyncCounter >= BAD_SYNC_LIMIT) {
-			BOOST_LOG_TRIVIAL(info) << "[Sync] Sync loss confirmed, searching..";
+			core_log("Synchronizer", "Sync loss confirmed, searching for sync..");
 
 			this->syncState = Synchronizer::State::SearchingForSync;
 		}
 	}
 	else {
-		BOOST_LOG_TRIVIAL(info) << "[Sync] Achieved sync";
+		core_log("Synchronizer", "Sync achieved.");
 
 		this->syncState = Synchronizer::State::Synchronized;
 	//	this->_dispatcher.Dispatch(possiblePacket);
@@ -166,9 +163,8 @@ packet Synchronizer::dequeuePacket() const
 		assert(numPopped == PACKET_LENGTH);
 	
 	}
-	catch (const std::exception& ) {
-		BOOST_LOG_TRIVIAL(info) << "[Sync] Tried to read from stream but wasn't enough data";
-
+	catch (const std::exception& e) {
+		core_log(nsvr_loglevel_error, "Synchronizer", std::string("Tried to read from the data stream, but there wasn't enough data!" + std::string(e.what())));
 	}
 	return p;
 

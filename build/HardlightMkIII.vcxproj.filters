@@ -126,6 +126,9 @@
     <ClInclude Include="..\src\plugins\hardlight\enumser.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\logger.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>

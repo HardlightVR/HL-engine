@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "RtpModel.h"
-#include <boost/log/trivial.hpp>
 
 
 RtpModel::RtpModel(Location area) : 
@@ -45,7 +44,6 @@ CommandBuffer RtpModel::Update(float dt)
 
 	std::lock_guard<std::mutex> guard(volumeValueProtector);
 
-	//BOOST_LOG_TRIVIAL(info) << "[RtpModel] Size of the queue: " << m_samples.read_available();
 	if (!m_samples.empty()) {
 		double vol = m_samples.front();
 		m_samples.pop();

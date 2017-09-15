@@ -5,14 +5,15 @@
 #include <iostream>
 #include "PluginAPI.h"
 #include "DeviceContainer.h"
-
-PluginInstance::PluginInstance(std::unique_ptr<PluginEventSource> dispatcher, std::string fileName) :
+#include "logger.h"
+PluginInstance::PluginInstance(boost::asio::io_service& io, std::unique_ptr<PluginEventSource> dispatcher, std::string fileName) :
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
 	m_apis(),
-	m_eventHandler(std::move(dispatcher))
+	m_eventHandler(std::move(dispatcher)),
+	m_io(io)
 	
 {
 
@@ -70,7 +71,7 @@ bool PluginInstance::tick_once(uint64_t dt)
 			api->submit_update(dt);
 		}
 		catch (const std::runtime_error& err) {
-			BOOST_LOG_TRIVIAL(error) << "Runtime ERROR in plugin " << m_displayName << ": " << err.what();
+		//	BOOST_LOG_TRIVIAL(error) << "Runtime ERROR in plugin " << m_displayName << ": " << err.what();
 			return false;
 		}
 	}
@@ -86,17 +87,17 @@ bool PluginInstance::Link()
 	m_dll = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
 	
 	if (loadFailure) {
-		BOOST_LOG_TRIVIAL(error) << "Failed to load " << m_fileName << " (.dll/.so): " << loadFailure.message();
+	//	BOOST_LOG_TRIVIAL(error) << "Failed to load " << m_fileName << " (.dll/.so): " << loadFailure.message();
 		if (loadFailure.value() == 126) {
-			BOOST_LOG_TRIVIAL(error) << "Common causes:";
-			BOOST_LOG_TRIVIAL(error) << "1) The DLL name does not correspond to the manifest name (Plugin_manifest.json => Plugin.dll)";
-			BOOST_LOG_TRIVIAL(error) << "2) The DLL has additional dependencies which were not found";
+		//	BOOST_LOG_TRIVIAL(error) << "Common causes:";
+		//	BOOST_LOG_TRIVIAL(error) << "1) The DLL name does not correspond to the manifest name (Plugin_manifest.json => Plugin.dll)";
+		//	BOOST_LOG_TRIVIAL(error) << "2) The DLL has additional dependencies which were not found";
 
 		}
 		return false;
 	}
 
-	std::cout << "Loaded " << m_fileName << ".\n";
+	//BOOST_LOG_TRIVIAL(info) << "Loaded " << m_fileName;
 
 	if (!tryLoad(m_dll, "nsvr_plugin_register", m_pluginRegisterFunction)) {
 		return false;
@@ -144,5 +145,12 @@ PluginApis & PluginInstance::apis()
 void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
 {
 	m_eventHandler->Raise(type, id, *this);
+}
+
+void PluginInstance::Log(nsvr_loglevel level, const char * component, const char * message)
+{
+	m_io.post([level, cmp = std::string(component), msg = std::string(message), filename = m_fileName]() {
+		BOOST_LOG_SEV(sclogger::get(), level) << "[" << filename << "]:[" << cmp << "] " << msg;
+	});
 }
 
