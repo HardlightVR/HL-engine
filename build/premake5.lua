@@ -18,7 +18,7 @@ workspace "Driver"
 project "Driver" 
 	
 	targetdir "bin/%{cfg.buildcfg}/%{cfg.platform}"
-	targetname "Driver"
+	targetname "NSVREngine"
 	
 	-- dependencies
 	protobuf_incl_dir = "D:/protobuf-3.0.0/cmake/build/solution/include"
@@ -233,7 +233,7 @@ project "HardlightMkIII"
 	filter "configurations:Release"
 		defines {"NDEBUG"}
 		optimize "On" 
-		links { "Driver"}
+		links { "NSVREngine"}
 		libdirs {
 			nsvr_core_win32_dir_release
 		}

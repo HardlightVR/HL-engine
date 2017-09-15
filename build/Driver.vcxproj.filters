@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -144,6 +144,7 @@
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
       <Filter>include\events</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\logger.h" />
     <ClInclude Include="..\src\Driver\logging_initialization.h" />
     <ClInclude Include="..\src\Driver\nsvr_core_errors.h" />
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
@@ -170,7 +171,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\logger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -213,6 +213,7 @@
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
     <ClCompile Include="..\src\Driver\TrackingStream.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
+    <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\logging_initialization.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />
@@ -235,6 +236,5 @@
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
-    <ClCompile Include="..\src\Driver\logger.cpp" />
   </ItemGroup>
 </Project>

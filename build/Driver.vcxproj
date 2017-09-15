@@ -95,42 +95,42 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\Debug\Win32\</OutDir>
     <IntDir>obj\Win32\Debug\Driver\</IntDir>
-    <TargetName>Driver</TargetName>
+    <TargetName>NSVREngine</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\Debug\Win64\</OutDir>
     <IntDir>obj\Win64\Debug\Driver\</IntDir>
-    <TargetName>Driver</TargetName>
+    <TargetName>NSVREngine</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>bin\Debug\UnitTestWin32\</OutDir>
     <IntDir>obj\UnitTestWin32\Debug\Driver\</IntDir>
-    <TargetName>Driver</TargetName>
+    <TargetName>NSVREngine</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\Release\Win32\</OutDir>
     <IntDir>obj\Win32\Release\Driver\</IntDir>
-    <TargetName>Driver</TargetName>
+    <TargetName>NSVREngine</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\Release\Win64\</OutDir>
     <IntDir>obj\Win64\Release\Driver\</IntDir>
-    <TargetName>Driver</TargetName>
+    <TargetName>NSVREngine</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\Release\UnitTestWin32\</OutDir>
     <IntDir>obj\UnitTestWin32\Release\Driver\</IntDir>
-    <TargetName>Driver</TargetName>
+    <TargetName>NSVREngine</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -152,11 +152,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Debug;D:\Libraries\boost\boost_1_61_0\stage\win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>bin\Debug\Win32\Driver.lib</ImportLibrary>
+      <ImportLibrary>bin\Debug\Win32\NSVREngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Debug\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Debug\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\Driver.dll ..\build &gt; nul)</Command>
+      <Command>IF EXIST bin\Debug\Win32\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\NSVREngine.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\NSVREngine.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Debug\Win32\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\NSVREngine.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win32\NSVREngine.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
@@ -177,11 +177,11 @@ IF EXIST bin\Debug\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win32\Driver.d
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>bin\Debug\Win64\Driver.lib</ImportLibrary>
+      <ImportLibrary>bin\Debug\Win64\NSVREngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\Driver.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Debug\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\Driver.dll ..\build &gt; nul)</Command>
+      <Command>IF EXIST bin\Debug\Win64\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\NSVREngine.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\NSVREngine.dll bin\Debug\UnitTestWin32 &gt; nul)
+IF EXIST bin\Debug\Win64\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Debug\Win64\NSVREngine.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Debug\Win64\NSVREngine.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
@@ -232,11 +232,11 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Release;D:\Libraries\boost\boost_1_61_0\stage\win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>bin\Release\Win32\Driver.lib</ImportLibrary>
+      <ImportLibrary>bin\Release\Win32\NSVREngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Release\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\Driver.dll bin\Release\UnitTestWin32 &gt; nul)
-IF EXIST bin\Release\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\Driver.dll ..\build &gt; nul)</Command>
+      <Command>IF EXIST bin\Release\Win32\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\NSVREngine.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\NSVREngine.dll bin\Release\UnitTestWin32 &gt; nul)
+IF EXIST bin\Release\Win32\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\NSVREngine.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win32\NSVREngine.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
@@ -260,11 +260,11 @@ IF EXIST bin\Release\Win32\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win32\Driv
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ImportLibrary>bin\Release\Win64\Driver.lib</ImportLibrary>
+      <ImportLibrary>bin\Release\Win64\NSVREngine.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Release\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\Driver.dll bin\Release\UnitTestWin32 &gt; nul)
-IF EXIST bin\Release\Win64\Driver.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\Driver.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\Driver.dll ..\build &gt; nul)</Command>
+      <Command>IF EXIST bin\Release\Win64\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\NSVREngine.dll bin\Release\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\NSVREngine.dll bin\Release\UnitTestWin32 &gt; nul)
+IF EXIST bin\Release\Win64\NSVREngine.dll\ (xcopy /Q /E /Y /I bin\Release\Win64\NSVREngine.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Release\Win64\NSVREngine.dll ..\build &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
@@ -329,7 +329,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\Json\json.h" />
     <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\Driver\Locator.h" />
-    <ClInclude Include="..\src\Driver\logger.h" />
     <ClInclude Include="..\src\Driver\LoggingUtils.h" />
     <ClInclude Include="..\src\Driver\MessengerLogger.h" />
     <ClInclude Include="..\src\Driver\MyTestLog.h" />
@@ -373,6 +372,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
+    <ClInclude Include="..\src\Driver\logger.h" />
     <ClInclude Include="..\src\Driver\logging_initialization.h" />
     <ClInclude Include="..\src\Driver\nsvr_core_errors.h" />
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
@@ -417,7 +417,6 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\Driver\Locator.cpp" />
-    <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\LoggingUtils.cpp" />
     <ClCompile Include="..\src\Driver\MessengerLogger.cpp" />
     <ClCompile Include="..\src\Driver\MyTestLog.cpp" />
@@ -440,6 +439,7 @@ IF EXIST ..\src\Driver\*.json\ (xcopy /Q /E /Y /I ..\src\Driver\*.json ..\build 
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
     <ClCompile Include="..\src\Driver\TrackingStream.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
+    <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\logging_initialization.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
     <ClCompile Include="..\src\Driver\pevent.cpp" />

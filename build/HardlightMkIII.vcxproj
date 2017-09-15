@@ -223,9 +223,13 @@ IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>NSVREngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win32\HardlightPlugin.lib</ImportLibrary>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
     <PostBuildEvent>
       <Command>IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
 IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul)</Command>
@@ -250,9 +254,13 @@ IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\P
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>NSVREngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win64\HardlightPlugin.lib</ImportLibrary>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <ClCompile>
@@ -273,9 +281,13 @@ IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\P
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>NSVREngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
     <PostBuildEvent>
       <Command>IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
 IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul)</Command>
