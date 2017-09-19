@@ -51,7 +51,8 @@ Driver::Driver() :
 
 
 {
-
+	//BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "Plugin host initialized";
+	LOG_INFO() << "Plugin host initialized";
 
 	m_pluginManager.OnFatalError([this]() {
 		this->Shutdown();
@@ -125,7 +126,7 @@ bool Driver::StartThread()
 
 bool Driver::Shutdown()
 {
-	BOOST_LOG_TRIVIAL(info) << "[DriverMain] Shutting down";
+	BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "Shutting down plugin host";
 
 	m_curveEngineUpdate.Stop();
 	m_statusPush.Stop();

@@ -12,7 +12,7 @@ int main()
 	using driver_start_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_stop_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_destroy_t = std::function<void(NSVR_Driver_Context_t*)>;
-
+	using driver_version_t = std::function<unsigned int(void)>;
 	boost::system::error_code loadFailure;
 	auto driver = std::make_unique<boost::dll::shared_library>("NSVREngine", boost::dll::load_mode::append_decorations, loadFailure);
 	if (loadFailure) {
@@ -41,6 +41,13 @@ int main()
 		std::cout << "Couldn't find NSVR_Driver_Destroy()\n";
 	}
 
+	driver_version_t driver_getversion;
+	if (!tryLoad(driver, "NSVR_Driver_GetVersion", driver_getversion)) {
+		std::cout << "Couldn't find NSVR_Driver_GetVersion()\n";
+	}
+
+	unsigned int version = driver_getversion();
+	std::cout << "========= NSVREngine Version " << (version >> 16) << "." << ((version << 16) >> 16) << " =========\n";
 	NSVR_Driver_Context_t* context = driver_create();
 	driver_start(context);
 	std::cin.get();

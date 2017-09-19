@@ -289,7 +289,6 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
   <ItemGroup>
     <ClCompile Include="..\src\plugins\openvr\ExportedAPI.cpp" />
     <ClCompile Include="..\src\plugins\openvr\OpenVRWrapper.cpp" />
-    <ClCompile Include="..\src\plugins\openvr\main.cpp" />
     <ClCompile Include="..\src\plugins\openvr\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">Create</PrecompiledHeader>

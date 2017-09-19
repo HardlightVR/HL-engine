@@ -41,9 +41,6 @@
     <ClCompile Include="..\src\plugins\openvr\OpenVRWrapper.cpp">
       <Filter>plugins\openvr</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\plugins\openvr\main.cpp">
-      <Filter>plugins\openvr</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\plugins\openvr\stdafx.cpp">
       <Filter>plugins\openvr</Filter>
     </ClCompile>

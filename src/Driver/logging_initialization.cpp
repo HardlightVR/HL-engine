@@ -21,9 +21,17 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/support/date_time.hpp>
 #include <boost/log/sources/severity_channel_logger.hpp>
+
+#include <boost/log/attributes/attribute.hpp>
+#include <boost/log/attributes/attribute_value.hpp>
+#include <boost/log/attributes/attribute_value_impl.hpp>
+#include <boost/log/attributes/attribute_cast.hpp>
+
 #include "logger.h"
 BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", nsvr_loglevel)
-
+BOOST_LOG_ATTRIBUTE_KEYWORD(plugin_name, "Plugin", std::string)
+BOOST_LOG_ATTRIBUTE_KEYWORD(component, "Component", std::string)
+BOOST_LOG_ATTRIBUTE_KEYWORD(channel, "Channel", std::string)
 
 std::ostream& operator<< (std::ostream& strm, nsvr_loglevel level)
 {
@@ -45,7 +53,6 @@ std::ostream& operator<< (std::ostream& strm, nsvr_loglevel level)
 }
 
 
-
 void initialize_logging() {
 
 	boost::filesystem::path::imbue(std::locale("C"));
@@ -63,9 +70,18 @@ void initialize_logging() {
 
 	//Here's the common formatter
 	logging::formatter fmt = expr::stream
-		<< std::setw(6) << std::setfill('0') <<
-		expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d, %H:%M:%S")
-		<<std::setfill(' ') << ": <" << severity << ">\t" << expr::smessage;
+		<< std::setw(6) 
+		<< expr::format_date_time<boost::posix_time::ptime >("TimeStamp", "[%Y-%m-%d, %H:%M:%S.%f]")
+		<< ": <" 
+		<< severity 
+		<< "> " 
+		<< expr::if_(expr::has_attr(plugin_name))[
+			expr::stream << "[Plugin = " << plugin_name << "]"
+		]
+		<< expr::if_(expr::has_attr(component))[
+			expr::stream << "[Component = " << component << "]"
+		]
+		<< " " << expr::smessage;
 		
 	logging::core::get()->reset_filter();
 	//Here's the console sink
@@ -77,7 +93,10 @@ void initialize_logging() {
 	boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
 	sink->locked_backend()->add_stream(stream);
 	sink->set_formatter(fmt);
-	sink->set_filter(severity >= nsvr_loglevel_warning);
+	sink->set_filter(
+		(severity >= nsvr_loglevel_warning && channel == "plugin") || 
+		(severity >= nsvr_loglevel_info && channel == "core")
+	);
 
 	logging::core::get()->add_sink(sink);
 
@@ -91,6 +110,6 @@ void initialize_logging() {
 
 	logging::add_common_attributes();
 
-	my_logger& lg = sclogger::get();
+	logging::core::get()->add_global_attribute("ThreadID", attrs::current_thread_id());
 
 }

@@ -10,16 +10,7 @@
 
 OpenVRWrapper::OpenVRWrapper() 
 {
-	vr::EVRInitError eError = vr::VRInitError_None;
-	system = vr::VR_Init(&eError, vr::VRApplication_Background);
-	if (eError != vr::VRInitError_None)
-	{
-		system = NULL;
-		char buf[1024];
-		sprintf_s(buf, sizeof(buf), "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError));
-		std::cout << buf << '\n';
-
-	}
+	
 
 
 	
@@ -38,7 +29,16 @@ OpenVRWrapper::~OpenVRWrapper()
 
 void OpenVRWrapper::Configure(nsvr_core* core)
 {
+	vr::EVRInitError eError = vr::VRInitError_None;
+	system = vr::VR_Init(&eError, vr::VRApplication_Background);
+	if (eError != vr::VRInitError_None)
+	{
+		system = NULL;
+		char buf[1024];
+		sprintf_s(buf, sizeof(buf), "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError));
+		nsvr_log(core, nsvr_loglevel_warning, "Configuration", buf);
 
+	}
 
 	
 	nsvr_plugin_waveform_api waves;
@@ -104,6 +104,10 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 		AS_TYPE(OpenVRWrapper, cd)->update();
 	};
 	nsvr_register_updateloop_api(core, &update);
+
+
+
+	
 }
 
 void OpenVRWrapper::configureBodyGraph(nsvr_bodygraph * graph)

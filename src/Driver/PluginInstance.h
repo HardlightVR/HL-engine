@@ -10,6 +10,7 @@
 #include <boost/log/sources/logger.hpp>
 #include <boost/log/sources/basic_logger.hpp>
 #include <boost/log/sources/severity_channel_logger.hpp>
+#include "logger.h"
 class DeviceContainer;
 
 class PluginInstance
@@ -51,6 +52,8 @@ private:
 	typedef std::function<int(nsvr_plugin_api*)> plugin_registration_t;
 	plugin_registration_t m_pluginRegisterFunction;
 
+	my_logger m_logger;
+
 	nsvr_plugin_api m_pluginFunctions;
 	nsvr_plugin* m_pluginPointer;
 
@@ -73,7 +76,7 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 		//return (bool)result;
 	}
 	catch (const boost::system::system_error&) {
-		BOOST_LOG_TRIVIAL(warning) << "[PluginInstance] Unable to find function named " << symbol << '\n';
+		BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_warning) << "[PluginInstance] Unable to find function named " << symbol << '\n';
 		return false;
 	}
 
@@ -87,5 +90,4 @@ inline void PluginInstance::RegisterPluginApi(ExternalApi * api)
 
 
 
-//TODO put corecafade back in the plugin
 

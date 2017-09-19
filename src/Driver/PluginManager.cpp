@@ -54,21 +54,21 @@ void PluginManager::Discover()
 
 	std::vector<fs::path> paths = findManifests(fs::current_path());
 
-	BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_info) << "[PluginManager] " << " Found " << paths.size() << " plugin manifests:";
+	BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "[PluginManager] " << " Found " << paths.size() << " plugin manifests:";
 	for (const auto& manifest : paths) {
-		BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_info) <<  "--> " << manifest;
+		BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) <<  "--> " << manifest;
 	}
 
 	for (const auto& manifest : paths) {
-		BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_info) << "[PluginManager] " << " Attempting to parse " << manifest.stem().string();
+		BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "[PluginManager] " << " Attempting to parse " << manifest.stem().string();
 		if (auto config = Parsing::ParseConfig(manifest.string())) {
 			std::string stem = manifest.stem().string();
 			std::string dllName = stem.substr(0, stem.find_last_of('_'));
 			m_pluginManifests[dllName] = *config;
-			BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_info) << "--> Success. Assuming dll name is " << dllName;
+			BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "--> Success. Assuming dll name is " << dllName;
 		}
 		else {
-			BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_info) << "--> Failure";
+			BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "--> Failure";
 
 		}
 	}
@@ -103,10 +103,10 @@ bool PluginManager::TickOnce(uint64_t dt)
 	for (auto& crashedPlugin : crashedPlugins) {
 		if (m_plugins[crashedPlugin]->Unload()) {
 			m_plugins.erase(crashedPlugin);
-			BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_info) << "[PluginManager] Successfully unloaded misbehaving plugin " << crashedPlugin;
+			BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "[PluginManager] Successfully unloaded misbehaving plugin " << crashedPlugin;
 		}
 		else {
-			BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_info) << "[PluginManager] Unable to unload misbehaving plugin " << crashedPlugin;
+			BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "[PluginManager] Unable to unload misbehaving plugin " << crashedPlugin;
 			return false;
 
 		}
@@ -176,7 +176,7 @@ bool PluginManager::configurePlugin(PluginInstance* plugin)
 {
 
 	if (!plugin->Configure()) {
-		BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_warning) << "Couldn't configure " << plugin->GetFileName();
+		BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_warning) << "Couldn't configure " << plugin->GetFileName();
 		return false;
 	}
 
@@ -205,7 +205,7 @@ void PluginManager::destroyAll()
 {
 	for (auto& plugin : m_plugins) {
 		if (!plugin.second->Unload()) {
-			BOOST_LOG_SEV(sclogger::get(), nsvr_loglevel_error) << "[PluginManager] Warning: unable to destroy " << plugin.first;
+			BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_error) << "[PluginManager] Warning: unable to destroy " << plugin.first;
 		}
 	}
 
