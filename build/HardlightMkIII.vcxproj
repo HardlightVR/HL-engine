@@ -150,6 +150,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>NSVREngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win32\HardlightPlugin.lib</ImportLibrary>
     </Link>
@@ -175,6 +176,7 @@ IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plu
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>NSVREngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win64\HardlightPlugin.lib</ImportLibrary>
     </Link>
@@ -196,6 +198,7 @@ IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plu
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>NSVREngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -227,9 +230,6 @@ IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win32\HardlightPlugin.lib</ImportLibrary>
     </Link>
-    <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
     <PostBuildEvent>
       <Command>IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
 IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul)</Command>
@@ -258,9 +258,6 @@ IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\P
       <AdditionalLibraryDirectories>bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win64\HardlightPlugin.lib</ImportLibrary>
     </Link>
-    <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <ClCompile>
@@ -285,9 +282,6 @@ IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\P
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
-    <ProjectReference>
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
     <PostBuildEvent>
       <Command>IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
 IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul)</Command>
@@ -381,11 +375,6 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\RtpModel.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Driver.vcxproj">
-      <Project>{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

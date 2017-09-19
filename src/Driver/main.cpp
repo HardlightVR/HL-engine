@@ -2,18 +2,50 @@
 #include "stdafx.h"
 
 #include "NSDriverApi.h"
-
-
-
-
+#include <memory>
+#include "PluginInstance.h"
+#include <boost/dll.hpp>
+#include <functional>
 int main()
 {
-	
-	NSVR_Driver_Context_t* context = NSVR_Driver_Create();
-	NSVR_Driver_StartThread(context);
+	using driver_create_t = std::function<NSVR_Driver_Context_t*(void)>;
+	using driver_start_t = std::function<void(NSVR_Driver_Context_t*)>;
+	using driver_stop_t = std::function<void(NSVR_Driver_Context_t*)>;
+	using driver_destroy_t = std::function<void(NSVR_Driver_Context_t*)>;
+
+	boost::system::error_code loadFailure;
+	auto driver = std::make_unique<boost::dll::shared_library>("NSVREngine", boost::dll::load_mode::append_decorations, loadFailure);
+	if (loadFailure) {
+		std::cout << "Couldn't load NSVREngine.dll\n";
+	}
+
+	driver_create_t driver_create;
+
+	if (!tryLoad(driver, "NSVR_Driver_Create", driver_create)) {
+		std::cout << "Couldn't find NSVR_Driver_Create()\n";
+	}
+
+	driver_start_t driver_start;
+
+	if (!tryLoad(driver, "NSVR_Driver_StartThread", driver_start)) {
+		std::cout << "Couldn't find NSVR_Driver_Create()\n";
+	}
+	driver_stop_t driver_stop;
+
+	if (!tryLoad(driver, "NSVR_Driver_Shutdown", driver_stop)) {
+		std::cout << "Couldn't find NSVR_Driver_Shutdown()\n";
+	}
+	driver_destroy_t driver_destroy;
+
+	if (!tryLoad(driver, "NSVR_Driver_Destroy", driver_destroy)) {
+		std::cout << "Couldn't find NSVR_Driver_Destroy()\n";
+	}
+
+	NSVR_Driver_Context_t* context = driver_create();
+	driver_start(context);
 	std::cin.get();
-	NSVR_Driver_Shutdown(context);
-	NSVR_Driver_Destroy(context);
+	driver_stop(context);
+	driver_destroy(context);
 	return 0;
 }
 

@@ -224,7 +224,7 @@ project "HardlightMkIII"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
 		optimize "Off"
-		links {"Driver"}
+		links {"NSVREngine"}
 		libdirs {
 			nsvr_core_win32_dir_debug
 
@@ -322,7 +322,7 @@ project "OpenVR"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
 		optimize "Off"
-		links {"Driver", "openvr_api"}
+		links {"NSVREngine", "openvr_api"}
 		libdirs {
 			nsvr_core_win32_dir_debug,
 			openvr_win32_dir
@@ -331,7 +331,7 @@ project "OpenVR"
 	filter "configurations:Release"
 		defines {"NDEBUG"}
 		optimize "On" 
-		links { "Driver", "openvr_api"}
+		links { "NSVREngine", "openvr_api"}
 		libdirs {
 			nsvr_core_win32_dir_release,
 			openvr_win32_dir

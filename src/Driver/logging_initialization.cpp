@@ -30,7 +30,7 @@ std::ostream& operator<< (std::ostream& strm, nsvr_loglevel level)
 	static const char* strings[] =
 	{
 		"trace",
-		"infodd",
+		"info",
 		"warning",
 		"error",
 		"fatal"
@@ -77,7 +77,7 @@ void initialize_logging() {
 	boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
 	sink->locked_backend()->add_stream(stream);
 	sink->set_formatter(fmt);
-	sink->set_filter(severity >= nsvr_loglevel_trace);
+	sink->set_filter(severity >= nsvr_loglevel_warning);
 
 	logging::core::get()->add_sink(sink);
 
@@ -92,6 +92,5 @@ void initialize_logging() {
 	logging::add_common_attributes();
 
 	my_logger& lg = sclogger::get();
-	BOOST_LOG_SEV(lg, nsvr_loglevel_info) << "Logger initialized";
 
 }

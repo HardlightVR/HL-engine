@@ -86,6 +86,7 @@ bool PluginInstance::Link()
 
 	m_dll = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
 	
+	//todo: add these errors back in
 	if (loadFailure) {
 	//	BOOST_LOG_TRIVIAL(error) << "Failed to load " << m_fileName << " (.dll/.so): " << loadFailure.message();
 		if (loadFailure.value() == 126) {

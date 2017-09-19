@@ -150,7 +150,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NSVREngine.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Debug\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win32\OpenVRPlugin.lib</ImportLibrary>
     </Link>
@@ -176,7 +176,7 @@ IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugin
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NSVREngine.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Debug\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win64\OpenVRPlugin.lib</ImportLibrary>
     </Link>
@@ -198,7 +198,7 @@ IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugin
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NSVREngine.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Debug\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -222,7 +222,7 @@ IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugin
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NSVREngine.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Release\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win32\OpenVRPlugin.lib</ImportLibrary>
     </Link>
@@ -250,7 +250,7 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NSVREngine.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Release\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win64\OpenVRPlugin.lib</ImportLibrary>
     </Link>
@@ -274,7 +274,7 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NSVREngine.lib;openvr_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>bin\Release\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -298,11 +298,6 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Driver.vcxproj">
-      <Project>{3150C8AE-1DF2-F284-06AD-06D9F2ED79D5}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
