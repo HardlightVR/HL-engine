@@ -144,6 +144,8 @@ function tag([String] $git_repo, [string]$tag, [string]$tag_msg) {
 $make_diagnostics_tool = { 
     param([HashTable]$dirs, [String] $destination, [HashTable] $options) 
 
+    #note: we also need alll the graphics dlls here. Need to find out exactly what is required.
+    
     $essential_files = "DiagnosticsTool.exe", "NSLoader.dll", "PadToZone.json", "VertexShader.txt", "FragmentShader.txt", "Zones.json", "imgui.ini"
     $build_path = Join-Path $dirs["diagnostic_tool"] "build/bin/Release/Win32"
 
