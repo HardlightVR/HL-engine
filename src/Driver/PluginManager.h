@@ -42,18 +42,23 @@ public:
 private:
 
 	std::function<void()> m_fatalErrorHandler;
-	bool linkPlugin(const std::string& name);
+	std::unique_ptr<PluginInstance> linkPlugin(const std::string& name);
 	bool instantiatePlugin(PluginInstance* plugin);
 	bool configurePlugin(PluginInstance* plugin);
 
-	bool LoadPlugin(const std::string& name);
+	bool LoadPlugin(const std::string& searchDirectory, const std::string& dllName);
 
-	std::unordered_map<std::string, Parsing::ManifestDescriptor> m_pluginManifests;
+	struct PluginInfo {
+		using PluginName = std::string;
+		Parsing::ManifestDescriptor Descriptor;
+		std::string DllPath;
+	};
+	std::unordered_map<PluginInfo::PluginName, PluginInfo> m_pluginInfo;
 
 	void destroyAll();
 
 
-	std::unordered_map<std::string, std::shared_ptr<PluginInstance>> m_plugins;
+	std::unordered_map<std::string, std::unique_ptr<PluginInstance>> m_plugins;
 	DeviceContainer& m_deviceContainer;
 	boost::asio::io_service& m_io;
 	ScheduledEvent m_pluginEventLoop;

@@ -11,7 +11,7 @@ PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw)
 	, m_deviceContainer(hw)
 	, m_io(io)
 	, m_pluginEventLoop(io, boost::posix_time::millisec(16))
-	, m_pluginManifests()
+	, m_pluginInfo()
 	, m_fatalErrorHandler([]() {})
 {
 	m_pluginEventLoop.SetEvent([this]() {
@@ -30,13 +30,18 @@ std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path
 
 	std::vector<fs::path> paths;
 
+	std::unordered_map<std::string, std::vector<fs::directory_entry>> directoryManifestMap;
 	try {
 		fs::directory_iterator it(root);
 		fs::directory_iterator endit;
 
 		while (it != endit) {
-			if (fs::is_regular_file(*it) && Parsing::IsProbablyManifest(it->path().string())) {
-				paths.push_back(it->path());
+			if (fs::is_directory(*it)) {
+				std::vector<fs::directory_entry> dirs;
+
+				std::copy(fs::directory_iterator(*it), fs::directory_iterator(), std::back_inserter(dirs));
+				directoryManifestMap[it->path().string()] = dirs;
+
 			}
 			++it;
 		}
@@ -45,6 +50,14 @@ std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path
 		BOOST_LOG_TRIVIAL(error) << "[PluginDiscovery] " << ec.what();
 	}
 
+
+	for (const auto& dir : directoryManifestMap) {
+		for (const auto& entry : dir.second) {
+			if (fs::is_regular_file(entry) && Parsing::IsProbablyManifest(entry.path().string())) {
+				paths.push_back(entry.path());
+			}
+		}
+	}
 	return paths;
 }
 
@@ -52,9 +65,9 @@ void PluginManager::Discover()
 {
 	namespace fs = boost::filesystem;
 
-	std::vector<fs::path> paths = findManifests(fs::current_path());
+	std::vector<fs::path> paths = findManifests(fs::current_path() / "plugins");
 
-	BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "[PluginManager] " << " Found " << paths.size() << " plugin manifests:";
+	BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "[PluginManager] " << " Found " << paths.size() << " plugin manifests";
 	for (const auto& manifest : paths) {
 		BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) <<  "--> " << manifest;
 	}
@@ -64,7 +77,8 @@ void PluginManager::Discover()
 		if (auto config = Parsing::ParseConfig(manifest.string())) {
 			std::string stem = manifest.stem().string();
 			std::string dllName = stem.substr(0, stem.find_last_of('_'));
-			m_pluginManifests[dllName] = *config;
+			m_pluginInfo[dllName].Descriptor = *config;
+			m_pluginInfo[dllName].DllPath = manifest.parent_path().string();
 			BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "--> Success. Assuming dll name is " << dllName;
 		}
 		else {
@@ -76,8 +90,8 @@ void PluginManager::Discover()
 
 void PluginManager::LoadAll()
 {
-	for (const auto& nameManifestPair : m_pluginManifests) {
-		LoadPlugin(nameManifestPair.first);
+	for (const auto& nameManifestPair : m_pluginInfo) {
+		LoadPlugin(nameManifestPair.second.DllPath, nameManifestPair.first);
 	}
 }
 
@@ -147,24 +161,26 @@ void PluginManager::OnFatalError(std::function<void()> handler)
 
 
 
-bool PluginManager::linkPlugin(const std::string& name) {
+std::unique_ptr<PluginInstance> PluginManager::linkPlugin(const std::string& filename) {
+
 
 	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
 	dispatcher->OnDeviceConnected([this](nsvr_device_id id, PluginApis& apis, const std::string& pluginName) {
-		m_deviceContainer.AddDevice(id, apis, m_pluginManifests.at(pluginName).bodygraph, pluginName);
+		m_deviceContainer.AddDevice(id, apis, m_pluginInfo.at(pluginName).Descriptor.bodygraph, pluginName);
 	});
 
 	dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {
 		m_deviceContainer.RemoveDevice(id);
 	}); 
 
-	auto instance = std::make_shared<PluginInstance>(m_io, std::move(dispatcher), name);
-	if (instance->Link()) {
-		m_plugins.insert(std::make_pair(name, instance));
-		return true;
-	}
+	auto instance = std::make_unique<PluginInstance>(m_io, std::move(dispatcher), filename);
 	
-	return false;
+	if (instance->Link()) {
+		return instance;
+	}
+	else {
+		return std::unique_ptr<PluginInstance>();
+	}
 	
 }
 bool PluginManager::instantiatePlugin(PluginInstance* plugin)
@@ -183,17 +199,21 @@ bool PluginManager::configurePlugin(PluginInstance* plugin)
 	return true;
 }
 
-bool PluginManager::LoadPlugin(const std::string& name)
+bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::string& dllName)
 {
-	if (!linkPlugin(name)) {
+	auto plugin = linkPlugin((boost::filesystem::path(searchDirectory) / dllName).string());
+	if (plugin) {
+		m_plugins[dllName] = std::move(plugin);
+	}
+	else {
 		return false;
 	}
 
-	if (!instantiatePlugin(m_plugins[name].get())) {
+	if (!instantiatePlugin(m_plugins[dllName].get())) {
 		return false;
 	}
 
-	if (!configurePlugin(m_plugins[name].get())) {
+	if (!configurePlugin(m_plugins[dllName].get())) {
 		return false;
 	}
 

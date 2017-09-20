@@ -65,6 +65,8 @@ private:
 	std::unique_ptr<PluginEventSource> m_eventHandler;
 
 
+public:
+	int GetWorkingDirectory(nsvr_directory* outDir);
 };
 
 template<class TFunc>

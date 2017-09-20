@@ -86,7 +86,7 @@ bool PluginInstance::Link()
 {
 	boost::system::error_code loadFailure;
 
-	m_dll = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations, loadFailure);
+	m_dll = std::make_unique<boost::dll::shared_library>(m_fileName, boost::dll::load_mode::append_decorations | boost::dll::load_mode::load_with_altered_search_path, loadFailure);
 	
 	if (loadFailure) {
 		LOG_ERROR() << "Failed to load " << m_fileName << " (.dll/.so): " << loadFailure.message();
@@ -161,5 +161,16 @@ void PluginInstance::Log(nsvr_loglevel level, const char * component, const char
 
 		BOOST_LOG_SEV(lg, level) << msg;
 	});
+}
+
+int PluginInstance::GetWorkingDirectory(nsvr_directory* outDir)
+{
+	std::fill(outDir->path, outDir->path + 500, 0);
+	//this may not correspond to the dll location, but for now it does, so we use that
+	boost::filesystem::path dllPath(m_fileName);
+	std::string path = dllPath.parent_path().string();
+
+	std::copy(path.begin(), path.end(), outDir->path);
+	return 1;
 }
 

@@ -57,6 +57,15 @@ NSVR_CORE_RETURN(int) nsvr_log(nsvr_core * core, nsvr_loglevel level, const char
 	return nsvr_success;
 }
 
+NSVR_CORE_RETURN(int) nsvr_filesystem_getdatadirectory(nsvr_core * core, nsvr_directory* outDir)
+{
+	RETURN_IF_NULL(core);
+	RETURN_IF_NULL(outDir);
+	return ExceptionGuard([core, outDir]() {
+		return AS_TYPE(PluginInstance, core)->GetWorkingDirectory(outDir);
+	});
+}
+
 
 
 

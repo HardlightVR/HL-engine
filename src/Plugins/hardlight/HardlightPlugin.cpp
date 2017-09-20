@@ -170,6 +170,9 @@ int HardlightPlugin::Configure(nsvr_core* core)
 		AS_TYPE(HardlightPlugin, cd)->GetNodeInfo(id, info);
 	};
 	nsvr_register_device_api(core, &device_api);
+
+	nsvr_directory dir = { 0 };
+	nsvr_filesystem_getdatadirectory(core, &dir);
 	return 1;
 }
 

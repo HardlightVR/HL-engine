@@ -103,6 +103,11 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_log(nsvr_core* core, nsvr_loglevel level, const char* component, const char* message);
 
+	typedef struct nsvr_directory {
+		char path[1024];
+	} nsvr_directory;
+	NSVR_CORE_RETURN(int) nsvr_filesystem_getdatadirectory(nsvr_core* core, nsvr_directory* outDir);
+
 	typedef struct nsvr_quaternion {
 		float w;
 		float x;
@@ -359,6 +364,7 @@ extern "C" {
 	} nsvr_plugin_bodygraph_api;
 
 	NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core* core, nsvr_plugin_bodygraph_api* api);
+
 
 
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "Json/json.h"
 #include <unordered_map>
-
+#include <boost/filesystem.hpp>
 namespace nsvr {
 namespace tools {
 namespace json {
@@ -11,7 +11,7 @@ template<typename TKey, typename TValue>
 std::unordered_map<TKey, TValue> parseDictFromDict(std::string path, std::function<TKey(const Json::Value&)> parseKey, std::function<TValue(const Json::Value&)> parseValue, Json::Value defaultValue = Json::Value()) {
 	
 	Json::Value root;
-	std::ifstream json(path, std::ifstream::binary);
+	std::ifstream json((boost::filesystem::current_path() / path).string(), std::ifstream::binary);
 
 	//this may throw a Json::Exception
 	json >> root;
@@ -33,7 +33,7 @@ template<typename TKey, typename TValue>
 std::unordered_map<TKey, TValue> parseDictFromArray(std::string path, std::function<std::tuple<TKey, TValue>(const Json::Value&)> parser) {
 
 	Json::Value root;
-	std::ifstream json(path, std::ifstream::binary);
+	std::ifstream json((boost::filesystem::current_path() / path).string(), std::ifstream::binary);
 
 	//this may throw a Json::Exception
 	json >> root;
