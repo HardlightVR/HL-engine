@@ -20,7 +20,7 @@ void HardwareEventDispatcher::Raise(nsvr_device_event_type type, nsvr_device_id 
 
 		switch (type) {
 		case nsvr_device_event_device_connected:
-			m_onDeviceCreated(id, instance.apis(), instance.GetFileName());
+			m_onDeviceCreated(id, instance.apis());
 			break;
 		case nsvr_device_event_device_disconnected:
 			m_onDeviceDisconnected(id);

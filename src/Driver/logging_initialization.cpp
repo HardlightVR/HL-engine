@@ -72,9 +72,12 @@ void initialize_logging() {
 	logging::formatter fmt = expr::stream
 		<< std::setw(6) 
 		<< expr::format_date_time<boost::posix_time::ptime >("TimeStamp", "[%Y-%m-%d, %H:%M:%S.%f]")
-		<< ": <" 
-		<< severity 
-		<< "> " 
+		<< expr::if_(expr::has_attr(severity))[
+			expr::stream
+			<< "<" 
+			<< severity 
+			<< "> " 
+		]
 		<< expr::if_(expr::has_attr(plugin_name))[
 			expr::stream << "[Plugin = " << plugin_name << "]"
 		]

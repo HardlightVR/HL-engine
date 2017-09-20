@@ -7,19 +7,21 @@
 #include "DeviceContainer.h"
 
 
-PluginInstance::PluginInstance(boost::asio::io_service& io, std::unique_ptr<PluginEventSource> dispatcher, std::string fileName) :
+PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName) :
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
 	m_pluginRegisterFunction{},
 	m_apis(),
-	m_eventHandler(std::move(dispatcher)),
+	m_eventHandler(),
 	m_io(io),
 	m_logger(boost::log::keywords::channel = "plugin")
 	
 {
+	boost::filesystem::path pluginPath(m_fileName);
+	
 
-	m_logger.add_attribute("Plugin", boost::log::attributes::constant<std::string>(m_fileName));
+	m_logger.add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
 }
 
 
@@ -161,6 +163,11 @@ void PluginInstance::Log(nsvr_loglevel level, const char * component, const char
 
 		BOOST_LOG_SEV(lg, level) << msg;
 	});
+}
+
+void PluginInstance::setDispatcher(std::unique_ptr<PluginEventSource> dispatcher)
+{
+	m_eventHandler = std::move(dispatcher);
 }
 
 int PluginInstance::GetWorkingDirectory(nsvr_directory* outDir)

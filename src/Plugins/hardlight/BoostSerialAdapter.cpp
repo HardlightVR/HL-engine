@@ -8,6 +8,7 @@
 #include "AsyncTimeout.h"
 #include <boost/optional.hpp>
 #include "logger.h"
+#include <atomic>
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
@@ -67,9 +68,10 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	//A better design would probably instantiate a new suit immediately upon connecting, and then instantiate more as they are recognized.
 	//This is easier for now, because I can manage the lifetime of the ports by keeping them all around until the last succeeds or fails.
 
-	std::shared_ptr<std::size_t> numPortsToTest = std::make_shared<std::size_t>(0);
+	auto numPortsToTest = std::make_shared<std::atomic<std::size_t>>(0);
+	std::size_t total = m_candidatePorts.size();
 	for (auto& port : m_candidatePorts) {
-		port->async_init_connection_process(numPortsToTest, m_candidatePorts.size());
+		port->async_init_connection_process(numPortsToTest, total);
 	}
 }
 

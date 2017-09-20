@@ -60,11 +60,13 @@ void KeepaliveMonitor::onReceiveResponse(const boost::system::error_code& ping_r
 			- m_responseTimer.expires_from_now().total_milliseconds();
 		schedulePingTimer();
 
-		core_log("KeepAlive", std::string("Last ping time: " + m_lastestPingTime));
+		core_log("KeepAlive", std::string("Last ping time: " + std::to_string(m_lastestPingTime)));
 	}
 	else {
 		m_currentFailedPings++;
-		core_log("KeepAlive", std::string("Bad ping [" + m_currentFailedPings + '/' + m_maxFailedPings + ']'));
+		std::stringstream fmt;
+		fmt << "Bad ping [" << m_currentFailedPings << "/" << m_maxFailedPings << "]";
+		core_log("KeepAlive", fmt.str());
 
 		if (m_currentFailedPings < m_maxFailedPings) {
 			schedulePingTimer();

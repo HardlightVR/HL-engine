@@ -164,16 +164,16 @@ void PluginManager::OnFatalError(std::function<void()> handler)
 std::unique_ptr<PluginInstance> PluginManager::linkPlugin(const std::string& filename) {
 
 
-	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
-	dispatcher->OnDeviceConnected([this](nsvr_device_id id, PluginApis& apis, const std::string& pluginName) {
-		m_deviceContainer.AddDevice(id, apis, m_pluginInfo.at(pluginName).Descriptor.bodygraph, pluginName);
-	});
+	//auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
+	//dispatcher->OnDeviceConnected([this](nsvr_device_id id, PluginApis& apis, const std::string& pluginName) {
+	//	m_deviceContainer.AddDevice(id, apis, m_pluginInfo.at(pluginName).Descriptor.bodygraph, pluginName);
+	//});
 
-	dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {
-		m_deviceContainer.RemoveDevice(id);
-	}); 
+	//dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {
+	//	m_deviceContainer.RemoveDevice(id);
+	//}); 
 
-	auto instance = std::make_unique<PluginInstance>(m_io, std::move(dispatcher), filename);
+	auto instance = std::make_unique<PluginInstance>(m_io, filename);
 	
 	if (instance->Link()) {
 		return instance;
@@ -203,7 +203,20 @@ bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::st
 {
 	auto plugin = linkPlugin((boost::filesystem::path(searchDirectory) / dllName).string());
 	if (plugin) {
+	
 		m_plugins[dllName] = std::move(plugin);
+
+
+		auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
+		dispatcher->OnDeviceConnected([this, dll = dllName](nsvr_device_id id, PluginApis& apis) {
+			m_deviceContainer.AddDevice(id, apis, m_pluginInfo.at(dll).Descriptor.bodygraph, dll);
+		});
+		dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {
+			m_deviceContainer.RemoveDevice(id);
+		}); 
+
+		m_plugins[dllName]->setDispatcher(std::move(dispatcher));
+
 	}
 	else {
 		return false;

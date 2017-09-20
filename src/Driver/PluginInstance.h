@@ -18,7 +18,7 @@ class PluginInstance
 public:
 
 
-	PluginInstance(boost::asio::io_service& io, std::unique_ptr<PluginEventSource> dispatcher, std::string fileName);
+	PluginInstance(boost::asio::io_service& io, std::string fileName);
 	~PluginInstance();
 	
 	bool Link();
@@ -45,6 +45,8 @@ public:
 
 	void RaiseEvent(nsvr_device_event_type type, nsvr_device_id id);
 	void Log(nsvr_loglevel level, const char * component, const char * message);
+
+	void setDispatcher(std::unique_ptr<PluginEventSource> dispatcher);
 
 private:
 	std::unique_ptr<boost::dll::shared_library> m_dll;

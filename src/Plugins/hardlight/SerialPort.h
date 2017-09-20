@@ -3,7 +3,7 @@
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/serial_port.hpp>
 #include "AsyncTimeout.h"
-
+#include <atomic>
 
 
 bool IsPingPacket(uint8_t* data, std::size_t length);
@@ -22,7 +22,7 @@ public:
 		Unwritable
 	};
 	SerialPort(std::string name, boost::asio::io_service& io, std::function<void()>);
-	void async_init_connection_process(std::shared_ptr<std::size_t> num_tested_so_far, std::size_t total_amount);
+	void async_init_connection_process(std::shared_ptr<std::atomic<std::size_t>> num_tested_so_far, std::size_t total_amount);
 	Status status() const;
 	std::unique_ptr<boost::asio::serial_port> release();
 private:
@@ -41,7 +41,7 @@ private:
 
 	//our incoming data buffer 
 	uint8_t m_data[INCOMING_DATA_BUFFER_SIZE];
-	std::shared_ptr<std::size_t> m_sentinel;
+	std::shared_ptr<std::atomic<std::size_t>> m_sentinel;
 	std::size_t m_totalAmount;
 
 	std::function<void()> m_doneFunc;

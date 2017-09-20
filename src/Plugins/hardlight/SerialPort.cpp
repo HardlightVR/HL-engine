@@ -31,7 +31,7 @@ SerialPort::SerialPort(std::string name, boost::asio::io_service & io, std::func
 {
 }
 
-void SerialPort::async_init_connection_process(std::shared_ptr<std::size_t> num_tested_so_far, std::size_t total_amount)
+void SerialPort::async_init_connection_process(std::shared_ptr<std::atomic<std::size_t>> num_tested_so_far, std::size_t total_amount)
 {
 	m_sentinel = num_tested_so_far;
 	m_totalAmount = total_amount;
@@ -129,7 +129,6 @@ void SerialPort::finish_protocol()
 	//The last one is responsible for invoking the "done" function. 
 
 	(*m_sentinel)++;
-
 
 	if (*m_sentinel == m_totalAmount) {
 		m_doneFunc();

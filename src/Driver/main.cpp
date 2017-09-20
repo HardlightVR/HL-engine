@@ -3,9 +3,9 @@
 
 #include "NSDriverApi.h"
 #include <memory>
-#include "PluginInstance.h"
 #include <boost/dll.hpp>
 #include <functional>
+#include "PluginInstance.h"
 int main()
 {
 	using driver_create_t = std::function<NSVR_Driver_Context_t*(void)>;
