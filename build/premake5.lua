@@ -76,19 +76,21 @@ project "Driver"
 	filter {"platforms:Win32 or platforms:Win64"}
 		kind "SharedLib"
 		postbuildcommands {
-			"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} bin/%{cfg.buildcfg}/UnitTestWin32",
+			"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} bin/%{cfg.buildcfg}/UnitTestWin32"
 			-- see note at top [0]
-			"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} ../build"		
+			--"{COPY} %{cfg.targetdir}/%{cfg.targetname}%{cfg.targetextension} ../build"		
 
 		}
 
 
 	filter {"platforms:UnitTestWin32"}
 		kind "ConsoleApp"
+		debugdir "%{cfg.targetdir}"
+
 		postbuildcommands {
-			"{COPY} ../src/Driver/*.json %{cfg.targetdir}",
+		--	"{COPY} ../src/Driver/*.json %{cfg.targetdir}",
 			-- see note at top [0]
-			"{COPY} ../src/Driver/*.json ../build/"
+		--	"{COPY} ../src/Driver/*.json ../build/"
 
 		}
 
@@ -190,6 +192,9 @@ project "HardlightMkIII"
 	nsvr_core_win32_dir_debug = "../build/bin/Debug/Win32"
 	nsvr_core_win32_dir_release = "../build/bin/Release/Win32"
 
+	nsvr_core_win32_executable_debug = "../build/bin/Debug/UnitTestWin32"
+	nsvr_core_win32_executable_release = "../build/bin/Release/UnitTestWin32"
+
 	defines {"BOOST_THREAD_USE_LIB"}
 
 	filter {"files:**.pb.cc"}
@@ -210,16 +215,13 @@ project "HardlightMkIII"
 		architecture "x86"
 
 		defines {"WIN32", "_WIN32_WINNT=0x0A00"}
-		postbuildcommands {
-			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll bin/Debug/UnitTestWin32",		
-			-- see note at top [0]
-			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll ../build/"		
-
-
-		}
+		
+		
 		libdirs {
 			boost_win32_dir
 		}
+
+
 	filter "configurations:Debug"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
@@ -229,7 +231,13 @@ project "HardlightMkIII"
 			nsvr_core_win32_dir_debug
 
 		}
+	
+		postbuildcommands {
+			"{MKDIR} %{nsvr_core_win32_executable_debug}/plugins/hardlight",
+			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll %{nsvr_core_win32_executable_debug}/plugins/hardlight",
+			"{COPY} ../src/Plugins/hardlight/*.json  %{nsvr_core_win32_executable_debug}/plugins/hardlight"
 
+		}
 	filter "configurations:Release"
 		defines {"NDEBUG"}
 		optimize "On" 
@@ -237,7 +245,12 @@ project "HardlightMkIII"
 		libdirs {
 			nsvr_core_win32_dir_release
 		}
-
+		postbuildcommands {
+			"{MKDIR} %{nsvr_core_win32_executable_release}/plugins/hardlight",
+			"{COPY} %{cfg.targetdir}/HardlightPlugin.dll %{nsvr_core_win32_executable_release}/plugins/hardlight",
+			"{COPY} ../src/Plugins/hardlight/*.json  %{nsvr_core_win32_executable_release}/plugins/hardlight"
+		
+		}
 	filter {"system:Windows"}
 		defines {"_WINDOWS", "_USRDLL"}
 
@@ -278,7 +291,8 @@ project "OpenVR"
 		"../src/Driver/include/**.h"
 	}
 
-	
+		nsvr_core_win32_executable_debug = "../build/bin/Debug/UnitTestWin32"
+	nsvr_core_win32_executable_release = "../build/bin/Release/UnitTestWin32"
 
 	pchheader "stdafx.h"
 	pchsource "../src/plugins/openvr/stdafx.cpp"
@@ -310,14 +324,8 @@ project "OpenVR"
 
 		defines {"WIN32", "_WIN32_WINNT=0x0A00"}
 		
-	filter "platforms:Win32" 
-	postbuildcommands {
-			"{COPY} %{cfg.targetdir}/OpenVRPlugin.dll bin/Debug/UnitTestWin32",		
-			-- see note at top [0]
-			"{COPY} %{cfg.targetdir}/OpenVRPlugin.dll ../build/"		
-
-
-		}
+	
+	
 	filter "configurations:Debug"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
@@ -326,6 +334,14 @@ project "OpenVR"
 		libdirs {
 			nsvr_core_win32_dir_debug,
 			openvr_win32_dir
+		}
+	
+		postbuildcommands {
+			"{MKDIR} %{nsvr_core_win32_executable_debug}/plugins/openvr",
+			"{COPY} %{cfg.targetdir}/OpenVRPlugin.dll %{nsvr_core_win32_executable_debug}/plugins/openvr",	
+			"{COPY} openvr/openvr_api.dll  %{nsvr_core_win32_executable_debug}/plugins/openvr",
+			"{COPY} ../src/Plugins/openvr/*.json  %{nsvr_core_win32_executable_debug}/plugins/openvr"
+
 		}
 
 	filter "configurations:Release"
@@ -336,6 +352,13 @@ project "OpenVR"
 			nsvr_core_win32_dir_release,
 			openvr_win32_dir
 		}
+		postbuildcommands {
+		"{MKDIR} %{nsvr_core_win32_executable_release}/plugins/openvr",
+			"{COPY} %{cfg.targetdir}/OpenVRPlugin.dll %{nsvr_core_win32_executable_release}/plugins/openvr",	
+			"{COPY} openvr/openvr_api.dll  %{nsvr_core_win32_executable_release}/plugins/openvr",
+			"{COPY} ../src/Plugins/openvr/*.json  %{nsvr_core_win32_executable_release}/plugins/openvr"
+		}
+
 
 	filter {"system:Windows"}
 		defines {"_WINDOWS", "_USRDLL"}

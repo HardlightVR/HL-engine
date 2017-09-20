@@ -155,8 +155,9 @@
       <ImportLibrary>bin\Plugins\Debug\Win32\HardlightPlugin.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll ..\build &gt; nul)</Command>
+      <Command>mkdir ..\build\bin\Debug\UnitTestWin32\plugins\hardlight
+IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\HardlightPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul)
+IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
@@ -180,6 +181,11 @@ IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plu
       <AdditionalLibraryDirectories>bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win64\HardlightPlugin.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir ..\build\bin\Debug\UnitTestWin32\plugins\hardlight
+IF EXIST bin\Plugins\Debug\Win64\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win64\HardlightPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win64\HardlightPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul)
+IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
     <ClCompile>
@@ -203,8 +209,9 @@ IF EXIST bin\Plugins\Debug\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plu
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul)</Command>
+      <Command>mkdir ..\build\bin\Debug\UnitTestWin32\plugins\hardlight
+IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul)
+IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\hardlight &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -231,8 +238,9 @@ IF EXIST bin\Plugins\Debug\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I
       <ImportLibrary>bin\Plugins\Release\Win32\HardlightPlugin.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build &gt; nul)</Command>
+      <Command>mkdir ..\build\bin\Release\UnitTestWin32\plugins\hardlight
+IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\HardlightPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul)
+IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
@@ -258,6 +266,11 @@ IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\P
       <AdditionalLibraryDirectories>bin\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win64\HardlightPlugin.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir ..\build\bin\Release\UnitTestWin32\plugins\hardlight
+IF EXIST bin\Plugins\Release\Win64\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win64\HardlightPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win64\HardlightPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul)
+IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <ClCompile>
@@ -283,8 +296,9 @@ IF EXIST bin\Plugins\Release\Win32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\P
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build &gt; nul)</Command>
+      <Command>mkdir ..\build\bin\Release\UnitTestWin32\plugins\hardlight
+IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul)
+IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\hardlight\*.json  ..\build\bin\Release\UnitTestWin32\plugins\hardlight &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -317,6 +331,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\Packet.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
+    <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\SerialPort.h" />
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
@@ -355,6 +370,7 @@ IF EXIST bin\Plugins\Release\UnitTestWin32\HardlightPlugin.dll\ (xcopy /Q /E /Y 
     <ClCompile Include="..\src\plugins\hardlight\Packet.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />

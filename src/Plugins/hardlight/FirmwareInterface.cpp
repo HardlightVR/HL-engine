@@ -4,8 +4,8 @@
 #include "InstructionSet.h"
 #include "HardwareCommandVisitor.h"
 #include "logger.h"
-FirmwareInterface::FirmwareInterface(std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io):
-m_instructionSet(std::make_shared<InstructionSet>()),
+FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io):
+m_instructionSet(std::make_shared<InstructionSet>(data_dir)),
 _adapter(adapter),
 _builder(m_instructionSet),
 _writeTimer(io),

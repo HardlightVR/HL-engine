@@ -25,7 +25,7 @@ private:
 class InstructionSet
 {
 public:
-	InstructionSet();
+	InstructionSet(const std::string& data_dir);
 	~InstructionSet(); 
 	bool LoadAll();
 	const std::unordered_map<std::string, Instruction>& Instructions() const;
@@ -33,6 +33,7 @@ public:
 	const std::unordered_map<std::string, Atom>& Atoms() const;
 
 private:
+	std::string _dataDir;
 	std::unordered_map<std::string, Atom> _atoms;
 
 	std::unordered_map<std::string, Instruction> _instructions;

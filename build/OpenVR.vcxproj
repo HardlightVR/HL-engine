@@ -155,8 +155,10 @@
       <ImportLibrary>bin\Plugins\Debug\Win32\OpenVRPlugin.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\OpenVRPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\OpenVRPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\OpenVRPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\OpenVRPlugin.dll ..\build &gt; nul)</Command>
+      <Command>mkdir ..\build\bin\Debug\UnitTestWin32\plugins\openvr
+IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win32\OpenVRPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win32\OpenVRPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST openvr\openvr_api.dll\ (xcopy /Q /E /Y /I openvr\openvr_api.dll  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I openvr\openvr_api.dll  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
@@ -180,6 +182,12 @@ IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugin
       <AdditionalLibraryDirectories>bin\Debug\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win64\OpenVRPlugin.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir ..\build\bin\Debug\UnitTestWin32\plugins\openvr
+IF EXIST bin\Plugins\Debug\Win64\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\Win64\OpenVRPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\Win64\OpenVRPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST openvr\openvr_api.dll\ (xcopy /Q /E /Y /I openvr\openvr_api.dll  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I openvr\openvr_api.dll  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">
     <ClCompile>
@@ -202,6 +210,12 @@ IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugin
       <AdditionalLibraryDirectories>bin\Debug\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir ..\build\bin\Debug\UnitTestWin32\plugins\openvr
+IF EXIST bin\Plugins\Debug\UnitTestWin32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Debug\UnitTestWin32\OpenVRPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Debug\UnitTestWin32\OpenVRPlugin.dll ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST openvr\openvr_api.dll\ (xcopy /Q /E /Y /I openvr\openvr_api.dll  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I openvr\openvr_api.dll  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Debug\UnitTestWin32\plugins\openvr &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -227,8 +241,10 @@ IF EXIST bin\Plugins\Debug\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugin
       <ImportLibrary>bin\Plugins\Release\Win32\OpenVRPlugin.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\OpenVRPlugin.dll bin\Debug\UnitTestWin32 &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\OpenVRPlugin.dll bin\Debug\UnitTestWin32 &gt; nul)
-IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\OpenVRPlugin.dll ..\build &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\OpenVRPlugin.dll ..\build &gt; nul)</Command>
+      <Command>mkdir ..\build\bin\Release\UnitTestWin32\plugins\openvr
+IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win32\OpenVRPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win32\OpenVRPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST openvr\openvr_api.dll\ (xcopy /Q /E /Y /I openvr\openvr_api.dll  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I openvr\openvr_api.dll  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">
@@ -254,6 +270,12 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
       <AdditionalLibraryDirectories>bin\Release\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Release\Win64\OpenVRPlugin.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir ..\build\bin\Release\UnitTestWin32\plugins\openvr
+IF EXIST bin\Plugins\Release\Win64\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\Win64\OpenVRPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\Win64\OpenVRPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST openvr\openvr_api.dll\ (xcopy /Q /E /Y /I openvr\openvr_api.dll  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I openvr\openvr_api.dll  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">
     <ClCompile>
@@ -278,6 +300,12 @@ IF EXIST bin\Plugins\Release\Win32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plug
       <AdditionalLibraryDirectories>bin\Release\Win32;..\..\openvr\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir ..\build\bin\Release\UnitTestWin32\plugins\openvr
+IF EXIST bin\Plugins\Release\UnitTestWin32\OpenVRPlugin.dll\ (xcopy /Q /E /Y /I bin\Plugins\Release\UnitTestWin32\OpenVRPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I bin\Plugins\Release\UnitTestWin32\OpenVRPlugin.dll ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST openvr\openvr_api.dll\ (xcopy /Q /E /Y /I openvr\openvr_api.dll  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I openvr\openvr_api.dll  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)
+IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul) ELSE (xcopy /Q /Y /I ..\src\Plugins\openvr\*.json  ..\build\bin\Release\UnitTestWin32\plugins\openvr &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />

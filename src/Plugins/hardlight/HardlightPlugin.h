@@ -18,7 +18,7 @@
 
 class HardlightPlugin {
 public:
-	HardlightPlugin();
+	HardlightPlugin(const std::string& data_dir);
 	~HardlightPlugin();
 
 	int Configure(nsvr_core* ctx);
@@ -37,7 +37,6 @@ private:
 	std::unique_ptr<BoostSerialAdapter> m_adapter;
 	FirmwareInterface m_firmware;
 
-	//just give out the shared pointers address
 	HardlightDevice m_device;
 	std::shared_ptr<KeepaliveMonitor> m_monitor;
 

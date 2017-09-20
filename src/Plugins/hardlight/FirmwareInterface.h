@@ -8,13 +8,14 @@ class FirmwareInterface
 {
 	
 public:
+	
 	struct AudioOptions {
 		int AudioMax;
 		int AudioMin;
 		int PeakTime;
 		int Filter;
 	};
-	FirmwareInterface(std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io);
+	FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io);
 	~FirmwareInterface();
 
 	void Execute(const CommandBuffer& buffer);

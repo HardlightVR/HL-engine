@@ -111,6 +111,9 @@
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -219,6 +222,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp">

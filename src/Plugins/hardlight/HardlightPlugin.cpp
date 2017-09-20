@@ -8,11 +8,11 @@
 
 nsvr_core* global_core = nullptr;
 
-HardlightPlugin::HardlightPlugin() :
+HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	m_io(std::make_shared<IoService>()),
 	m_dispatcher(),
 	m_adapter(std::make_unique<BoostSerialAdapter>(m_io->GetIOService())),
-	m_firmware(m_adapter, m_io->GetIOService()),
+	m_firmware(data_dir, m_adapter, m_io->GetIOService()),
 	m_monitor(std::make_shared<KeepaliveMonitor>(m_io->GetIOService(), m_firmware)),
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, m_io->GetIOService())),
 	m_device(),
