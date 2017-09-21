@@ -202,14 +202,14 @@ $make_installer = {
   
 
 
-    $essential_files = "setup.exe", "NSVRServiceSetup.msi"
+    $essential_files = "setup.exe", "HardlightServiceSetup.msi"
     $essential_folders = "vcredist_x86", "vcredist_x64", "DotNetFX45"
 
     $build_path = Join-Path $dirs["installer"] "NSVRServiceSetup\Release"
 
     
     sign_binary $build_path "setup.exe"
-    sign_binary $build_path "NSVRServiceSetup.msi"
+    sign_binary $build_path "HardlightServiceSetup.msi"
 
 
     copy_all $build_path $essential_files $destination
