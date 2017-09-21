@@ -18,6 +18,16 @@ bool IsPingPacket(uint8_t* data, std::size_t length)
 		);
 }
 
+SerialPort::~SerialPort()
+{
+	m_pingTimer.cancel();
+	boost::system::error_code ec;
+
+	if (m_port && m_port->is_open()) {
+		m_port->close(ec);
+	}
+}
+
 //Make sure that the lifetime of the SerialPort object outlives the async operations. Either use
 //enable shared from this, or take care of it in the adapter
 SerialPort::SerialPort(std::string name, boost::asio::io_service & io, std::function<void()> doneFunc)
@@ -54,9 +64,9 @@ void SerialPort::async_open_port()
 	boost::system::error_code ec;
 	m_port->open(m_name, ec);
 
-	m_port->set_option(boost::asio::serial_port::baud_rate(115200));
+	m_port->set_option(boost::asio::serial_port::baud_rate(9600));
 	m_port->set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
-	m_port->set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::none));
+	m_port->set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
 	m_port->set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
 	m_port->set_option(boost::asio::serial_port::character_size(8));
 
@@ -67,8 +77,9 @@ void SerialPort::async_open_port()
 	}
 	else {
 		m_status = Status::Open;
-		m_io.post([this]() { async_ping_port(); });
+		m_io.post([this]() { async_ping_port(); }); 
 	}
+
 }
 
 void SerialPort::async_ping_port()

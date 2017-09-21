@@ -21,6 +21,7 @@ public:
 		Unreadable,
 		Unwritable
 	};
+	~SerialPort();
 	SerialPort(std::string name, boost::asio::io_service& io, std::function<void()>);
 	void async_init_connection_process(std::shared_ptr<std::atomic<std::size_t>> num_tested_so_far, std::size_t total_amount);
 	Status status() const;
