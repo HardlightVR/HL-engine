@@ -10,9 +10,9 @@ Param(
  	"unity" = "C:\Users\NullSpace Team\Documents\NullSpace SDK 0.1.1\Assets\NullSpace SDK\Plugins";
  }
 $project_dll_names = @{
-	"plugin" = "NSLoader.dll";
-	"wrapper" = "NSLoaderWrapper.dll", "NSLoader.dll", "NSLoaderWrapper.XML"
-	"unity" = "NSLoader.dll", "NSLoaderWrapper.dll"
+	"plugin" = "Hardlight.dll";
+	"wrapper" = "HardlightUnity.dll", "Hardlight.dll", "HardlightUnity.XML"
+	"unity" = "Hardlight.dll", "HardlightUnity.dll"
 }
 
 

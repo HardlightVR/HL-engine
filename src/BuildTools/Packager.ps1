@@ -146,7 +146,7 @@ $make_diagnostics_tool = {
 
     #note: we also need alll the graphics dlls here. Need to find out exactly what is required.
     
-    $essential_files = "DiagnosticsTool.exe", "NSLoader.dll", "PadToZone.json", "VertexShader.txt", "FragmentShader.txt", "Zones.json", "imgui.ini"
+    $essential_files = "DiagnosticsTool.exe", "Hardlight.dll", "PadToZone.json", "VertexShader.txt", "FragmentShader.txt", "Zones.json", "imgui.ini"
     $build_path = Join-Path $dirs["diagnostic_tool"] "build/bin/Release/Win32"
 
     sign_binary $build_path "DiagnosticsTool.exe"
@@ -250,8 +250,8 @@ $make_unrealplugin = {
         New-Item -ItemType Directory -Force -Path (Join-Path $temp_path "Binaries/Win32") | Out-Null
         New-Item -ItemType Directory -Force -Path (Join-Path $temp_path "Binaries/Win64") | Out-Null
 
-        $win32_dll = [io.path]::combine($temp_path, $plugin_name, "ThirdParty/NullSpaceVR/lib/Win32/NSLoader.dll")
-        $win64_dll = [io.path]::combine($temp_path, $plugin_name, "ThirdParty/NullSpaceVR/lib/Win64/NSLoader.dll")
+        $win32_dll = [io.path]::combine($temp_path, $plugin_name, "ThirdParty/NullSpaceVR/lib/Win32/Hardlight.dll")
+        $win64_dll = [io.path]::combine($temp_path, $plugin_name, "ThirdParty/NullSpaceVR/lib/Win64/Hardlight.dll")
 
         $win32_size = get_file_size_kb $win32_dll
         $win64_size = get_file_size_kb $win64_dll

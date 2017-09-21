@@ -18,7 +18,7 @@ workspace "Driver"
 project "Driver" 
 	
 	targetdir "bin/%{cfg.buildcfg}/%{cfg.platform}"
-	targetname "NSVREngine"
+	targetname "HardlightPlatform"
 	
 	-- dependencies
 	protobuf_incl_dir = "D:/protobuf-3.0.0/cmake/build/solution/include"
@@ -42,7 +42,7 @@ project "Driver"
 		"C++11"
 
 	}
-	--links {"System", "UnityEditor", "UnityEngine", "System.ServiceProcess"}
+	--links {"System", "UnityEditor", "UnityEngine", "System.PlatformProcess"}
 
 	files {
 		"../src/Driver/**.cpp",
@@ -226,7 +226,7 @@ project "HardlightMkIII"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
 		optimize "Off"
-		links {"NSVREngine"}
+		links {"HardlightPlatform"}
 		libdirs {
 			nsvr_core_win32_dir_debug
 
@@ -241,7 +241,7 @@ project "HardlightMkIII"
 	filter "configurations:Release"
 		defines {"NDEBUG"}
 		optimize "On" 
-		links { "NSVREngine"}
+		links { "HardlightPlatform"}
 		libdirs {
 			nsvr_core_win32_dir_release
 		}
@@ -330,7 +330,7 @@ project "OpenVR"
 		defines {"DEBUG", "_DEBUG"}
 		symbols "On"
 		optimize "Off"
-		links {"NSVREngine", "openvr_api"}
+		links {"HardlightPlatform", "openvr_api"}
 		libdirs {
 			nsvr_core_win32_dir_debug,
 			openvr_win32_dir
@@ -347,7 +347,7 @@ project "OpenVR"
 	filter "configurations:Release"
 		defines {"NDEBUG"}
 		optimize "On" 
-		links { "NSVREngine", "openvr_api"}
+		links { "HardlightPlatform", "openvr_api"}
 		libdirs {
 			nsvr_core_win32_dir_release,
 			openvr_win32_dir

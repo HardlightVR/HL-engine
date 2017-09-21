@@ -14,9 +14,9 @@ int main()
 	using driver_destroy_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_version_t = std::function<unsigned int(void)>;
 	boost::system::error_code loadFailure;
-	auto driver = std::make_unique<boost::dll::shared_library>("NSVREngine", boost::dll::load_mode::append_decorations, loadFailure);
+	auto driver = std::make_unique<boost::dll::shared_library>("HardlightPlatform", boost::dll::load_mode::append_decorations, loadFailure);
 	if (loadFailure) {
-		std::cout << "Couldn't load NSVREngine.dll\n";
+		std::cout << "Couldn't load HardlightPlatform.dll\n";
 	}
 
 	driver_create_t driver_create;
