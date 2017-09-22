@@ -33,7 +33,7 @@ private:
 	boost::posix_time::milliseconds m_pingInterval;
 
 	// Timer responsible for firing ping events
-	boost::asio::deadline_timer m_pingTimer;
+	boost::asio::deadline_timer m_writeTimer;
 
 	// How long we wait for a response before timing out
 	boost::posix_time::milliseconds m_responseTimeout;
