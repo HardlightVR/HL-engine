@@ -126,7 +126,7 @@ bool Driver::StartThread()
 
 bool Driver::Shutdown()
 {
-	BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_info) << "Shutting down plugin host";
+	BOOST_LOG_SEV(clogger::get(), nsvr_severity_info) << "Shutting down plugin host";
 
 	m_curveEngineUpdate.Stop();
 	m_statusPush.Stop();

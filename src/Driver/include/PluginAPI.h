@@ -92,16 +92,16 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, nsvr_device_id id);
 	
 
-	typedef enum nsvr_loglevel {
-		nsvr_loglevel_trace,
-		nsvr_loglevel_info,
-		nsvr_loglevel_warning,
-		nsvr_loglevel_error,
-		nsvr_loglevel_fatal
-	} nsvr_log_level;
+	typedef enum nsvr_severity {
+		nsvr_severity_trace,
+		nsvr_severity_info,
+		nsvr_severity_warning,
+		nsvr_severity_error,
+		nsvr_severity_fatal
+	} nsvr_severity;
 
 
-	NSVR_CORE_RETURN(int) nsvr_log(nsvr_core* core, nsvr_loglevel level, const char* component, const char* message);
+	NSVR_CORE_RETURN(int) nsvr_log(nsvr_core* core, nsvr_severity level, const char* component, const char* message);
 
 	typedef struct nsvr_directory {
 		char path[1024];

@@ -155,7 +155,7 @@ void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
 	m_eventHandler->Raise(type, id, *this);
 }
 
-void PluginInstance::Log(nsvr_loglevel level, const char * component, const char * message)
+void PluginInstance::Log(nsvr_severity level, const char * component, const char * message)
 {
 	m_io.post([&lg = m_logger, level, cmp = std::string(component), msg = std::string(message)]() {
 		//plogger::get().add_attribute("Component", boost::log::attributes::constant<std::string>(cmp));

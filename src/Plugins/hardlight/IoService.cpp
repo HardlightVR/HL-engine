@@ -78,7 +78,7 @@ void IoService::start() {
 				_doneResettingIO.notify_one();
 			}
 			catch (boost::system::system_error& ec) {
-				core_log(nsvr_loglevel_error, "IoService", ec.what());
+				core_log(nsvr_severity_error, "IoService", ec.what());
 
 			}
 

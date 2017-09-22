@@ -44,7 +44,7 @@ public:
 	void RegisterPluginApi(ExternalApi* api);
 
 	void RaiseEvent(nsvr_device_event_type type, nsvr_device_id id);
-	void Log(nsvr_loglevel level, const char * component, const char * message);
+	void Log(nsvr_severity level, const char * component, const char * message);
 
 	void setDispatcher(std::unique_ptr<PluginEventSource> dispatcher);
 
@@ -80,7 +80,7 @@ bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string
 		//return (bool)result;
 	}
 	catch (const boost::system::system_error&) {
-		BOOST_LOG_SEV(clogger::get(), nsvr_loglevel_warning) << "[PluginInstance] Unable to find function named " << symbol << '\n';
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "[PluginInstance] Unable to find function named " << symbol << '\n';
 		return false;
 	}
 

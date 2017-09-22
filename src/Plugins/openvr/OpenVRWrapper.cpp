@@ -36,7 +36,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 		system = NULL;
 		char buf[1024];
 		sprintf_s(buf, sizeof(buf), "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError));
-		nsvr_log(core, nsvr_loglevel_warning, "Configuration", buf);
+		nsvr_log(core, nsvr_severity_warning, "Configuration", buf);
 
 	}
 

@@ -28,12 +28,12 @@
 #include <boost/log/attributes/attribute_cast.hpp>
 
 #include "logger.h"
-BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", nsvr_loglevel)
+BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", nsvr_severity)
 BOOST_LOG_ATTRIBUTE_KEYWORD(plugin_name, "Plugin", std::string)
 BOOST_LOG_ATTRIBUTE_KEYWORD(component, "Component", std::string)
 BOOST_LOG_ATTRIBUTE_KEYWORD(channel, "Channel", std::string)
 
-std::ostream& operator<< (std::ostream& strm, nsvr_loglevel level)
+std::ostream& operator<< (std::ostream& strm, nsvr_severity level)
 {
 	static const char* strings[] =
 	{
@@ -97,8 +97,8 @@ void initialize_logging() {
 	sink->locked_backend()->add_stream(stream);
 	sink->set_formatter(fmt);
 	sink->set_filter(
-		(severity >= nsvr_loglevel_warning && channel == "plugin") || 
-		(severity >= nsvr_loglevel_info && channel == "core")
+		(severity >= nsvr_severity_warning && channel == "plugin") || 
+		(severity >= nsvr_severity_info && channel == "core")
 	);
 
 	logging::core::get()->add_sink(sink);

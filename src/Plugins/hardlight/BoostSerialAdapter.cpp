@@ -31,7 +31,7 @@ void BoostSerialAdapter::Connect()
 
 
 void BoostSerialAdapter::beginReconnectionProcess() {
-	core_log(nsvr_loglevel_info, "SerialAdapter", "Disconnected from suit");
+	core_log(nsvr_severity_info, "SerialAdapter", "Disconnected from suit");
 	_isResetting = true;
 	scheduleImmediateSuitReconnect();
 }
@@ -53,7 +53,7 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::CNamesArray names;
 	if (!CEnumerateSerial::UsingQueryDosDevice(ports)) {
-		core_log(nsvr_loglevel_info, "SerialAdapter", "No ports available on the system");
+		core_log(nsvr_severity_info, "SerialAdapter", "No ports available on the system");
 	}
 
 	m_candidatePorts.clear();

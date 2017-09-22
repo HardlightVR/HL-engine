@@ -25,6 +25,9 @@ SerialPort::~SerialPort()
 
 	if (m_port && m_port->is_open()) {
 		m_port->close(ec);
+		if (m_port->is_open()) {
+			core_log(nsvr_severity_fatal, "SerialPort", "WTF NO");
+		}
 	}
 }
 
@@ -64,18 +67,21 @@ void SerialPort::async_open_port()
 	boost::system::error_code ec;
 	m_port->open(m_name, ec);
 
-	m_port->set_option(boost::asio::serial_port::baud_rate(9600));
-	m_port->set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
-	m_port->set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
-	m_port->set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
-	m_port->set_option(boost::asio::serial_port::character_size(8));
-
 
 	if (ec) {
+		core_log(nsvr_severity_error, "SerialPort", ec.message());
+
 		m_status = Status::Closed;
 		finish_protocol();
 	}
 	else {
+		m_port->set_option(boost::asio::serial_port::baud_rate(9600));
+		m_port->set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
+		m_port->set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
+		m_port->set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
+		m_port->set_option(boost::asio::serial_port::character_size(8));
+
+
 		m_status = Status::Open;
 		m_io.post([this]() { async_ping_port(); }); 
 	}
@@ -95,12 +101,12 @@ void SerialPort::async_ping_port()
 		}
 		else if (ec) {
 			//some other error?
-			core_log(nsvr_loglevel_trace, "SerialPort", std::string("Timer was canceled, unknown error: " + ec.message() + ", " + m_name));
+			core_log(nsvr_severity_trace, "SerialPort", std::string("Timer was canceled, unknown error: " + ec.message() + ", " + m_name));
 			m_status = Status::Unknown;
 			finish_protocol();
 		}
 		else {
-			core_log(nsvr_loglevel_trace, "SerialPort", std::string(m_name + " is not gonna work"));
+			core_log(nsvr_severity_trace, "SerialPort", std::string(m_name + " is not gonna work"));
 			m_port->close();
 			m_status = Status::Unwritable;
 			finish_protocol();
@@ -120,7 +126,6 @@ void SerialPort::write_handler(const boost::system::error_code & ec, std::size_t
 	m_pingTimer.cancel();
 
 	if (ec) {
-		core_log("SerialPort", std::string("Couldn't write to " + m_name));
 		m_status = Status::Unwritable;
 		finish_protocol();
 	}
@@ -161,7 +166,7 @@ void SerialPort::async_wait_response()
 		}
 		else if (ec) {
 			//some other error?
-			core_log(nsvr_loglevel_warning, "SerialPort", std::string("Timer was canceled on port " + m_name + ", error: " + ec.message()));
+			core_log(nsvr_severity_warning, "SerialPort", std::string("Timer was canceled on port " + m_name + ", error: " + ec.message()));
 			m_status = Status::Unknown;
 			finish_protocol();
 		}	

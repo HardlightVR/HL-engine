@@ -164,7 +164,7 @@ packet Synchronizer::dequeuePacket() const
 	
 	}
 	catch (const std::exception& e) {
-		core_log(nsvr_loglevel_error, "Synchronizer", std::string("Tried to read from the data stream, but there wasn't enough data!" + std::string(e.what())));
+		core_log(nsvr_severity_error, "Synchronizer", std::string("Tried to read from the data stream, but there wasn't enough data!" + std::string(e.what())));
 	}
 	return p;
 

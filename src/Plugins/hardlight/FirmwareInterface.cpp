@@ -57,7 +57,7 @@ void FirmwareInterface::writeBuffer() {
 
 				this->_adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
 					if (e) {
-						core_log(nsvr_loglevel_warning, "FirmwareInterface", "Failed to write to suit while batching");
+						core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while batching");
 					}
 				}
 				);
@@ -76,7 +76,7 @@ void FirmwareInterface::writeBuffer() {
 		_adapter->Write(a, actualLen, [&](const boost::system::error_code& ec, std::size_t bytes_t) {
 
 			if (ec) {
-				core_log(nsvr_loglevel_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");
+				core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");
 
 			}
 		}
@@ -122,7 +122,7 @@ void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
 		chooseExecutionStrategy(builder.Build());
 	}
 	else {
-		core_log(nsvr_loglevel_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
+		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
 	}
 }
 
@@ -193,7 +193,7 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
-		core_log(nsvr_loglevel_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));
+		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));
 		return;
 	}
 
@@ -211,7 +211,7 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 {
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
-		core_log(nsvr_loglevel_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));
+		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));
 		return;
 	}
 
