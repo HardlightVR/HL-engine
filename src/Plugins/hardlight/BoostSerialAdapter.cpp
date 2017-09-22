@@ -31,6 +31,11 @@ void BoostSerialAdapter::Connect()
 
 
 void BoostSerialAdapter::beginReconnectionProcess() {
+	if (m_port && m_port->is_open()) {
+		m_port->cancel();
+		boost::system::error_code ignored;
+		m_port->close(ignored);
+	}
 	core_log(nsvr_severity_info, "SerialAdapter", "Disconnected from suit");
 	_isResetting = true;
 	scheduleImmediateSuitReconnect();
@@ -56,7 +61,7 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 		core_log(nsvr_severity_info, "SerialAdapter", "No ports available on the system");
 	}
 
-	m_candidatePorts.clear();
+	assert(m_candidatePorts.empty());
 
 	for (std::size_t i = 0; i < ports.size(); ++i) {
 		std::string portName = "COM" + std::to_string(ports[i]);
@@ -71,7 +76,7 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	auto numPortsToTest = std::make_shared<std::atomic<std::size_t>>(0);
 	std::size_t total = m_candidatePorts.size();
 	for (auto& port : m_candidatePorts) {
-		port->async_init_connection_process(numPortsToTest, total);
+		port->start_connect(numPortsToTest, total);
 	}
 }
 
@@ -113,7 +118,9 @@ void BoostSerialAdapter::findBestPort()
 	for (auto& candidate : m_candidatePorts) {
 		if (candidate->status() == SerialPort::Status::Connected) {
 			possiblePort = candidate->release();
-			break;
+		}
+		else {
+			candidate->stop();
 		}
 	}
 

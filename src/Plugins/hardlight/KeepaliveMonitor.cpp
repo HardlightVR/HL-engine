@@ -8,7 +8,7 @@ KeepaliveMonitor::KeepaliveMonitor(boost::asio::io_service& io, FirmwareInterfac
 	m_responseTimer(io), 
 	m_responseTimeout(boost::posix_time::milliseconds(500)),
 	
-	m_pingTimer(io),
+	m_writeTimer(io),
 	m_pingInterval(boost::posix_time::milliseconds(500)),
 	
 	m_lastestPingTime(0),
@@ -28,8 +28,8 @@ void KeepaliveMonitor::BeginMonitoring()
 
 void KeepaliveMonitor::schedulePingTimer()
 {
-	m_pingTimer.expires_from_now(m_pingInterval);
-	m_pingTimer.async_wait([&](auto& ec) { doKeepAlivePing(); });
+	m_writeTimer.expires_from_now(m_pingInterval);
+	m_writeTimer.async_wait([&](auto& ec) { doKeepAlivePing(); });
 }
 
 
