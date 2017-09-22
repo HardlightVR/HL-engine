@@ -85,7 +85,7 @@ void SerialPort::async_open_port()
 		core_log(nsvr_severity_error, "SerialPort", ec.message());
 		m_protocolFinished = true;
 		stop();
-		snap_back_to_reality();
+		check_if_all_ports_finished();
 	}
 	else {
 		core_log("SerialPort", std::string("Setting port options on " + m_name));
@@ -122,14 +122,14 @@ void SerialPort::write_handler(const boost::system::error_code & ec, std::size_t
 		m_status = Status::TimedOutWriting;
 		m_protocolFinished = true;
 		stop();
-		snap_back_to_reality();
+		check_if_all_ports_finished();
 	}
 	else if (ec) {
 		//there was an actual error writing to the port
 		m_status = Status::Unwritable;
 		m_protocolFinished = true;
 		stop();
-		snap_back_to_reality();
+		check_if_all_ports_finished();
 	}
 	else {
 		start_read();
@@ -137,7 +137,7 @@ void SerialPort::write_handler(const boost::system::error_code & ec, std::size_t
 }
 
 
-void SerialPort::snap_back_to_reality()
+void SerialPort::check_if_all_ports_finished()
 {
 	//All of the SerialPort instances are sharing this sentinel value. When each finishes the connection routine,
 	//we increment and then check against how many should have completed. If this value doesn't reach the total amount at some point,
@@ -196,12 +196,6 @@ void SerialPort::start_read()
 	m_port->async_read_some(boost::asio::buffer(m_data), [this](const auto& ec, auto bytes_transferred) { read_handler(ec, bytes_transferred); });
 }
 
-void SerialPort::async_try_with_flow_control()
-{
-
-	m_port->set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
-	async_ping_port();
-}
 
 void SerialPort::read_handler(const boost::system::error_code & ec, std::size_t bytes_transferred)
 {
@@ -216,12 +210,12 @@ void SerialPort::read_handler(const boost::system::error_code & ec, std::size_t 
 		m_status = IsPingPacket(m_data, bytes_transferred) ? Status::Connected : Status::BadReturnPing;
 		core_log("SerialPort", std::string(m_name + ": " + (m_status == Status::Connected ? std::string("connected") : std::string("bad ping response."))));
 		
-		snap_back_to_reality();
+		check_if_all_ports_finished();
 	}
 	else {
 		m_protocolFinished = true;
 		stop();
-		snap_back_to_reality();
+		check_if_all_ports_finished();
 	}
 	
 
