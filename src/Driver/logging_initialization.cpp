@@ -97,7 +97,7 @@ void initialize_logging() {
 	sink->locked_backend()->add_stream(stream);
 	sink->set_formatter(fmt);
 	sink->set_filter(
-		(severity >= nsvr_severity_warning && channel == "plugin") || 
+		(severity >= nsvr_severity_trace && channel == "plugin") || 
 		(severity >= nsvr_severity_info && channel == "core")
 	);
 

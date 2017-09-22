@@ -26,7 +26,7 @@ SerialPort::~SerialPort()
 	if (m_port && m_port->is_open()) {
 		m_port->close(ec);
 		if (m_port->is_open()) {
-			core_log(nsvr_severity_fatal, "SerialPort", "WTF NO");
+			core_log(nsvr_severity_fatal, "SerialPort", "Really bad state: the port is open after it closed. Remember what you were doing to the suit when this happened. casey@hardlightvr.com");
 		}
 	}
 }
@@ -49,7 +49,7 @@ void SerialPort::async_init_connection_process(std::shared_ptr<std::atomic<std::
 	m_sentinel = num_tested_so_far;
 	m_totalAmount = total_amount;
 
-	m_io.post([this]() { async_open_port();  });
+	async_open_port();
 }
 
 SerialPort::Status SerialPort::status() const
@@ -83,7 +83,7 @@ void SerialPort::async_open_port()
 
 
 		m_status = Status::Open;
-		m_io.post([this]() { async_ping_port(); }); 
+		async_ping_port(); 
 	}
 
 }
@@ -131,7 +131,7 @@ void SerialPort::write_handler(const boost::system::error_code & ec, std::size_t
 	}
 	else {
 		core_log("SerialPort", std::string("Waiting on " + m_name));
-		m_io.post([this]() { async_wait_response(); });
+		async_wait_response();
 	}
 }
 
@@ -180,7 +180,7 @@ void SerialPort::async_wait_response()
 				core_log("SerialPort", std::string("Trying " + m_name + " again with hardware flow control"));
 
 				//the timer expired. No good. 
-				m_io.post([this]() { async_try_with_flow_control(); });
+				async_try_with_flow_control();
 			}
 			else {
 				core_log("SerialPort", std::string("Abandoning hope on port " + m_name));
