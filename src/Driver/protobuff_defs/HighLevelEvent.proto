@@ -3,12 +3,22 @@ syntax = "proto3";
 package NullSpaceIPC;
 
 
+message RegionList {
+	repeated uint32 regions = 1;
+}
+
+message NodeList {
+	repeated uint64 nodes = 1;
+}
 
 message SimpleHaptic {
-	repeated uint32 regions = 1;
-	uint32 effect = 2;
-	float strength = 3;
-	float duration = 4;
+	oneof where {
+		RegionList regions = 1;
+		NodeList nodes = 2;
+	}
+	uint32 effect = 3;
+	float strength = 4;
+	float duration = 5;
 }
 
 

@@ -7,6 +7,9 @@
 #include "HardwarePlaybackController.h"
 #include "HapticInterface.h"
 #include "DriverMessenger.h"
+
+//todo: we need a translation table from device -> user facing device
+
 void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
 	if (auto api = apis.GetApi<device_api>()) {

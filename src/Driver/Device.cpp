@@ -80,18 +80,23 @@ std::vector<T> protoBufToVec(const google::protobuf::RepeatedField<E>& inArray) 
 
 void Device::handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple)
 {
-	auto regions = protoBufToVec<nsvr_region>(simple.regions());
-
-	auto allNodes = m_bodygraph->GetNodesAtRegions(regions);
+	std::vector<nsvr_node_id> nodes;
+	if (simple.where_case() == NullSpaceIPC::SimpleHaptic::kNodes) {
+		nodes = protoBufToVec<nsvr_node_id>(simple.nodes().nodes());
+	}
+	else {
+		auto regions = protoBufToVec<nsvr_region>(simple.regions().regions());
+		nodes = m_bodygraph->GetNodesAtRegions(regions);
+	}
 	
-	auto hapticNodes = m_discoverer->FilterByType(allNodes, nsvr_node_type_haptic);
+
+	auto hapticNodes = m_discoverer->FilterByType(nodes, nsvr_node_type_haptic);
 
 	for (nsvr_node_id node : hapticNodes) {
-		
 		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
 	}
 
-	m_playback->CreateEventRecord(event_id, allNodes);
+	m_playback->CreateEventRecord(event_id, hapticNodes);
 
 }
 

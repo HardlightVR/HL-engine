@@ -40,9 +40,11 @@ void protobuf_ShutdownFile_HighLevelEvent_2eproto();
 class CurveHaptic;
 class CurveHaptic_Sample;
 class HighLevelEvent;
+class NodeList;
 class PlaybackEvent;
 class RealtimeHaptic;
 class RealtimeHaptic_Magnitude;
+class RegionList;
 class SimpleHaptic;
 
 enum PlaybackEvent_Command {
@@ -70,6 +72,184 @@ inline bool PlaybackEvent_Command_Parse(
 }
 // ===================================================================
 
+class RegionList : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.RegionList) */ {
+ public:
+  RegionList();
+  virtual ~RegionList();
+
+  RegionList(const RegionList& from);
+
+  inline RegionList& operator=(const RegionList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RegionList& default_instance();
+
+  void Swap(RegionList* other);
+
+  // implements Message ----------------------------------------------
+
+  inline RegionList* New() const { return New(NULL); }
+
+  RegionList* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RegionList& from);
+  void MergeFrom(const RegionList& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(RegionList* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint32 regions = 1;
+  int regions_size() const;
+  void clear_regions();
+  static const int kRegionsFieldNumber = 1;
+  ::google::protobuf::uint32 regions(int index) const;
+  void set_regions(int index, ::google::protobuf::uint32 value);
+  void add_regions(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      regions() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_regions();
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.RegionList)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > regions_;
+  mutable int _regions_cached_byte_size_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static RegionList* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class NodeList : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.NodeList) */ {
+ public:
+  NodeList();
+  virtual ~NodeList();
+
+  NodeList(const NodeList& from);
+
+  inline NodeList& operator=(const NodeList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const NodeList& default_instance();
+
+  void Swap(NodeList* other);
+
+  // implements Message ----------------------------------------------
+
+  inline NodeList* New() const { return New(NULL); }
+
+  NodeList* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const NodeList& from);
+  void MergeFrom(const NodeList& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(NodeList* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint64 nodes = 1;
+  int nodes_size() const;
+  void clear_nodes();
+  static const int kNodesFieldNumber = 1;
+  ::google::protobuf::uint64 nodes(int index) const;
+  void set_nodes(int index, ::google::protobuf::uint64 value);
+  void add_nodes(::google::protobuf::uint64 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+      nodes() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+      mutable_nodes();
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.NodeList)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint64 > nodes_;
+  mutable int _nodes_cached_byte_size_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static NodeList* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.SimpleHaptic) */ {
  public:
   SimpleHaptic();
@@ -84,6 +264,12 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   static const ::google::protobuf::Descriptor* descriptor();
   static const SimpleHaptic& default_instance();
+
+  enum WhereCase {
+    kRegions = 1,
+    kNodes = 2,
+    WHERE_NOT_SET = 0,
+  };
 
   void Swap(SimpleHaptic* other);
 
@@ -130,47 +316,65 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // repeated uint32 regions = 1;
-  int regions_size() const;
+  // optional .NullSpaceIPC.RegionList regions = 1;
+  bool has_regions() const;
   void clear_regions();
   static const int kRegionsFieldNumber = 1;
-  ::google::protobuf::uint32 regions(int index) const;
-  void set_regions(int index, ::google::protobuf::uint32 value);
-  void add_regions(::google::protobuf::uint32 value);
-  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-      regions() const;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-      mutable_regions();
+  const ::NullSpaceIPC::RegionList& regions() const;
+  ::NullSpaceIPC::RegionList* mutable_regions();
+  ::NullSpaceIPC::RegionList* release_regions();
+  void set_allocated_regions(::NullSpaceIPC::RegionList* regions);
 
-  // optional uint32 effect = 2;
+  // optional .NullSpaceIPC.NodeList nodes = 2;
+  bool has_nodes() const;
+  void clear_nodes();
+  static const int kNodesFieldNumber = 2;
+  const ::NullSpaceIPC::NodeList& nodes() const;
+  ::NullSpaceIPC::NodeList* mutable_nodes();
+  ::NullSpaceIPC::NodeList* release_nodes();
+  void set_allocated_nodes(::NullSpaceIPC::NodeList* nodes);
+
+  // optional uint32 effect = 3;
   void clear_effect();
-  static const int kEffectFieldNumber = 2;
+  static const int kEffectFieldNumber = 3;
   ::google::protobuf::uint32 effect() const;
   void set_effect(::google::protobuf::uint32 value);
 
-  // optional float strength = 3;
+  // optional float strength = 4;
   void clear_strength();
-  static const int kStrengthFieldNumber = 3;
+  static const int kStrengthFieldNumber = 4;
   float strength() const;
   void set_strength(float value);
 
-  // optional float duration = 4;
+  // optional float duration = 5;
   void clear_duration();
-  static const int kDurationFieldNumber = 4;
+  static const int kDurationFieldNumber = 5;
   float duration() const;
   void set_duration(float value);
 
+  WhereCase where_case() const;
   // @@protoc_insertion_point(class_scope:NullSpaceIPC.SimpleHaptic)
  private:
+  inline void set_has_regions();
+  inline void set_has_nodes();
+
+  inline bool has_where() const;
+  void clear_where();
+  inline void clear_has_where();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > regions_;
-  mutable int _regions_cached_byte_size_;
   ::google::protobuf::uint32 effect_;
   float strength_;
   float duration_;
+  union WhereUnion {
+    WhereUnion() {}
+    ::NullSpaceIPC::RegionList* regions_;
+    ::NullSpaceIPC::NodeList* nodes_;
+  } where_;
   mutable int _cached_size_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
   friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
   friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
   friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
@@ -812,39 +1016,173 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
 // ===================================================================
 
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
-// SimpleHaptic
+// RegionList
 
 // repeated uint32 regions = 1;
-inline int SimpleHaptic::regions_size() const {
+inline int RegionList::regions_size() const {
   return regions_.size();
 }
-inline void SimpleHaptic::clear_regions() {
+inline void RegionList::clear_regions() {
   regions_.Clear();
 }
-inline ::google::protobuf::uint32 SimpleHaptic::regions(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.regions)
+inline ::google::protobuf::uint32 RegionList::regions(int index) const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.RegionList.regions)
   return regions_.Get(index);
 }
-inline void SimpleHaptic::set_regions(int index, ::google::protobuf::uint32 value) {
+inline void RegionList::set_regions(int index, ::google::protobuf::uint32 value) {
   regions_.Set(index, value);
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.regions)
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.RegionList.regions)
 }
-inline void SimpleHaptic::add_regions(::google::protobuf::uint32 value) {
+inline void RegionList::add_regions(::google::protobuf::uint32 value) {
   regions_.Add(value);
-  // @@protoc_insertion_point(field_add:NullSpaceIPC.SimpleHaptic.regions)
+  // @@protoc_insertion_point(field_add:NullSpaceIPC.RegionList.regions)
 }
 inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-SimpleHaptic::regions() const {
-  // @@protoc_insertion_point(field_list:NullSpaceIPC.SimpleHaptic.regions)
+RegionList::regions() const {
+  // @@protoc_insertion_point(field_list:NullSpaceIPC.RegionList.regions)
   return regions_;
 }
 inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-SimpleHaptic::mutable_regions() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.SimpleHaptic.regions)
+RegionList::mutable_regions() {
+  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.RegionList.regions)
   return &regions_;
 }
 
-// optional uint32 effect = 2;
+// -------------------------------------------------------------------
+
+// NodeList
+
+// repeated uint64 nodes = 1;
+inline int NodeList::nodes_size() const {
+  return nodes_.size();
+}
+inline void NodeList::clear_nodes() {
+  nodes_.Clear();
+}
+inline ::google::protobuf::uint64 NodeList::nodes(int index) const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.NodeList.nodes)
+  return nodes_.Get(index);
+}
+inline void NodeList::set_nodes(int index, ::google::protobuf::uint64 value) {
+  nodes_.Set(index, value);
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.NodeList.nodes)
+}
+inline void NodeList::add_nodes(::google::protobuf::uint64 value) {
+  nodes_.Add(value);
+  // @@protoc_insertion_point(field_add:NullSpaceIPC.NodeList.nodes)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >&
+NodeList::nodes() const {
+  // @@protoc_insertion_point(field_list:NullSpaceIPC.NodeList.nodes)
+  return nodes_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint64 >*
+NodeList::mutable_nodes() {
+  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.NodeList.nodes)
+  return &nodes_;
+}
+
+// -------------------------------------------------------------------
+
+// SimpleHaptic
+
+// optional .NullSpaceIPC.RegionList regions = 1;
+inline bool SimpleHaptic::has_regions() const {
+  return where_case() == kRegions;
+}
+inline void SimpleHaptic::set_has_regions() {
+  _oneof_case_[0] = kRegions;
+}
+inline void SimpleHaptic::clear_regions() {
+  if (has_regions()) {
+    delete where_.regions_;
+    clear_has_where();
+  }
+}
+inline  const ::NullSpaceIPC::RegionList& SimpleHaptic::regions() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.regions)
+  return has_regions()
+      ? *where_.regions_
+      : ::NullSpaceIPC::RegionList::default_instance();
+}
+inline ::NullSpaceIPC::RegionList* SimpleHaptic::mutable_regions() {
+  if (!has_regions()) {
+    clear_where();
+    set_has_regions();
+    where_.regions_ = new ::NullSpaceIPC::RegionList;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.SimpleHaptic.regions)
+  return where_.regions_;
+}
+inline ::NullSpaceIPC::RegionList* SimpleHaptic::release_regions() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.SimpleHaptic.regions)
+  if (has_regions()) {
+    clear_has_where();
+    ::NullSpaceIPC::RegionList* temp = where_.regions_;
+    where_.regions_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void SimpleHaptic::set_allocated_regions(::NullSpaceIPC::RegionList* regions) {
+  clear_where();
+  if (regions) {
+    set_has_regions();
+    where_.regions_ = regions;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.SimpleHaptic.regions)
+}
+
+// optional .NullSpaceIPC.NodeList nodes = 2;
+inline bool SimpleHaptic::has_nodes() const {
+  return where_case() == kNodes;
+}
+inline void SimpleHaptic::set_has_nodes() {
+  _oneof_case_[0] = kNodes;
+}
+inline void SimpleHaptic::clear_nodes() {
+  if (has_nodes()) {
+    delete where_.nodes_;
+    clear_has_where();
+  }
+}
+inline  const ::NullSpaceIPC::NodeList& SimpleHaptic::nodes() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.nodes)
+  return has_nodes()
+      ? *where_.nodes_
+      : ::NullSpaceIPC::NodeList::default_instance();
+}
+inline ::NullSpaceIPC::NodeList* SimpleHaptic::mutable_nodes() {
+  if (!has_nodes()) {
+    clear_where();
+    set_has_nodes();
+    where_.nodes_ = new ::NullSpaceIPC::NodeList;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.SimpleHaptic.nodes)
+  return where_.nodes_;
+}
+inline ::NullSpaceIPC::NodeList* SimpleHaptic::release_nodes() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.SimpleHaptic.nodes)
+  if (has_nodes()) {
+    clear_has_where();
+    ::NullSpaceIPC::NodeList* temp = where_.nodes_;
+    where_.nodes_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void SimpleHaptic::set_allocated_nodes(::NullSpaceIPC::NodeList* nodes) {
+  clear_where();
+  if (nodes) {
+    set_has_nodes();
+    where_.nodes_ = nodes;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.SimpleHaptic.nodes)
+}
+
+// optional uint32 effect = 3;
 inline void SimpleHaptic::clear_effect() {
   effect_ = 0u;
 }
@@ -858,7 +1196,7 @@ inline void SimpleHaptic::set_effect(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.effect)
 }
 
-// optional float strength = 3;
+// optional float strength = 4;
 inline void SimpleHaptic::clear_strength() {
   strength_ = 0;
 }
@@ -872,7 +1210,7 @@ inline void SimpleHaptic::set_strength(float value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.strength)
 }
 
-// optional float duration = 4;
+// optional float duration = 5;
 inline void SimpleHaptic::clear_duration() {
   duration_ = 0;
 }
@@ -886,6 +1224,15 @@ inline void SimpleHaptic::set_duration(float value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.duration)
 }
 
+inline bool SimpleHaptic::has_where() const {
+  return where_case() != WHERE_NOT_SET;
+}
+inline void SimpleHaptic::clear_has_where() {
+  _oneof_case_[0] = WHERE_NOT_SET;
+}
+inline SimpleHaptic::WhereCase SimpleHaptic::where_case() const {
+  return SimpleHaptic::WhereCase(_oneof_case_[0]);
+}
 // -------------------------------------------------------------------
 
 // CurveHaptic_Sample
@@ -1286,6 +1633,10 @@ inline HighLevelEvent::EventsCase HighLevelEvent::events_case() const {
   return HighLevelEvent::EventsCase(_oneof_case_[0]);
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
