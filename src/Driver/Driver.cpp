@@ -35,8 +35,9 @@
 
 Driver::Driver() :
 	m_ioService(new IoService()),
+	m_idService(),
 	m_io(m_ioService->GetIOService()),
-	m_devices(),
+	m_devices(m_idService),
 	m_messenger(m_io),
 	m_statusPush(m_io, boost::posix_time::millisec(250)),
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),

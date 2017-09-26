@@ -10,6 +10,18 @@
 
 //todo: we need a translation table from device -> user facing device
 
+DeviceContainer::DeviceContainer(IdentificationService & idService)
+	: m_idService(idService)
+	, m_onDeviceAdded()
+	, m_onDeviceRemoved()
+	, m_devices()
+	, m_simulations()
+	, m_deviceAddedSubs()
+	, m_deviceRemovedSubs()
+	, m_deviceLock()
+{
+}
+
 void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
 	if (auto api = apis.GetApi<device_api>()) {
@@ -27,14 +39,14 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 			desc.displayName = std::string(info.name);
 			desc.id = info.id;
 			desc.concept = info.concept;
-			addDevice(desc, apis, std::move(bodyGraphDescriptor), originatingPlugin);
+			addDevice(desc, apis, std::move(bodyGraphDescriptor), originatingPlugin, m_idService);
 		}
 	}
 
 }
 
 
-void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
+void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin, IdentificationService& idService)
 {
 	
 	auto playback = std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>());
@@ -48,7 +60,7 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 	m_deviceLock.lock();
 
-	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, bodygraph, std::move(nodes), std::move(playback), std::move(haptics)));
+	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, bodygraph, std::move(nodes), std::move(playback), std::move(haptics), idService));
 	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, apis, bodygraph));
 
 	m_deviceLock.unlock();

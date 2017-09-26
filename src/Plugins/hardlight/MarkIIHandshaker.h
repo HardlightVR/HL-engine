@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Handshaker.h"
-class MarkIIHandshaker : public Handshaker {
+class MarkIIIHandshaker : public Handshaker {
 public:
-	MarkIIHandshaker();
+	MarkIIIHandshaker(std::string name, boost::asio::io_service& io);
 private:
 	void setup_port_options(boost::asio::serial_port& port);
 	const uint8_t* ping_data() const;

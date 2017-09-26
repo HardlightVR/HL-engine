@@ -7,6 +7,7 @@ class DriverMessenger;
 #include "ScheduledEvent.h"
 #include "PluginAPI.h"
 #include <boost/signals2/signal.hpp>
+#include "IdentificationService.h"
 class HardwareCoordinator
 {
 public:
@@ -17,12 +18,13 @@ public:
 	~HardwareCoordinator() = default;
 	void SetupSubscriptions(EventDispatcher& dispatcher);
 private:
+	IdentificationService m_idService;
+
 	DriverMessenger& m_messenger;
 	DeviceContainer& m_devices;
 
 
 	void writeTracking(nsvr_node_id region, nsvr_quaternion* quat);
-
 	ScheduledEvent m_writeBodyRepresentation;
 
 	void writeBodyRepresentation();

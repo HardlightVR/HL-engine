@@ -18,6 +18,9 @@ public:
 	};
 	void start_handshake();
 	Handshaker(std::string name, boost::asio::io_service& io);
+	void set_finish_callback(std::function<void()> onFinish);
+	Status status() const;
+	std::unique_ptr<boost::asio::serial_port> release();
 private:
 	virtual void setup_port_options(boost::asio::serial_port& port) = 0;
 	virtual const uint8_t* ping_data() const = 0;
@@ -46,8 +49,10 @@ private:
 	void check_write_deadline(const boost::system::error_code& ec);
 	void check_read_deadline(const boost::system::error_code& ec);
 
+	void finish();
 	const static unsigned int INCOMING_DATA_BUFFER_SIZE = 128;
 
+	std::function<void()> m_callback;
 	//our incoming data buffer 
 	uint8_t m_data[INCOMING_DATA_BUFFER_SIZE];
 

@@ -18,6 +18,21 @@ Handshaker::Handshaker(std::string name, boost::asio::io_service & io)
 {
 }
 
+void Handshaker::set_finish_callback(std::function<void()> onFinish)
+{
+	m_callback = onFinish;
+}
+
+
+Handshaker::Status Handshaker::status() const
+{
+	return m_status;
+}
+
+std::unique_ptr<boost::asio::serial_port> Handshaker::release()
+{
+	return std::move(m_port);
+}
 
 void Handshaker::stop()
 {
@@ -44,7 +59,7 @@ void Handshaker::async_open_port()
 		core_log(nsvr_severity_error, "Handshaker", ec.message());
 		m_protocolFinished = true;
 		stop();
-		//check_if_all_ports_finished();
+		finish();
 	}
 	else {
 		m_status = Status::Open;
@@ -80,14 +95,14 @@ void Handshaker::write_handler(const boost::system::error_code & ec, std::size_t
 		m_status = Status::TimedOutWriting;
 		m_protocolFinished = true;
 		stop();
-		//check_if_all_ports_finished();
+		finish();
 	}
 	else if (ec) {
 		//there was an actual error writing to the port
 		m_status = Status::Unwritable;
 		m_protocolFinished = true;
 		stop();
-		//check_if_all_ports_finished();
+		finish();
 	}
 	else {
 		start_read();
@@ -119,12 +134,12 @@ void Handshaker::read_handler(const boost::system::error_code & ec, std::size_t 
 		m_status = is_good_response(m_data, bytes_transferred) ? Status::Connected : Status::BadReturnPing;
 		core_log("Handshaker", std::string(m_name + ": " + (m_status == Status::Connected ? std::string("connected") : std::string("bad ping response."))));
 
-		//check_if_all_ports_finished();
+		finish();
 	}
 	else {
 		m_protocolFinished = true;
 		stop();
-		//check_if_all_ports_finished();
+		finish();
 	}
 }
 
@@ -160,4 +175,10 @@ void Handshaker::check_read_deadline(const boost::system::error_code& ec)
 		m_readTimer.expires_at(boost::posix_time::pos_infin);
 	}
 
+}
+
+void Handshaker::finish()
+{
+	
+	m_callback();
 }

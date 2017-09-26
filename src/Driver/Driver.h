@@ -7,6 +7,7 @@
 
 #include "DeviceContainer.h"
 #include "CurveEngine.h"
+#include "IdentificationService.h"
 class IoService;
 
 class Driver {
@@ -18,7 +19,7 @@ public:
 	bool StartThread();
 	bool Shutdown();
 private:
-
+	IdentificationService m_idService;
 	DeviceContainer m_devices;
 	EventDispatcher m_eventDispatcher;
 

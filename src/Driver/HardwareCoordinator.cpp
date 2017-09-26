@@ -9,25 +9,26 @@
 #include "SharedTypes.h"
 #include <boost/variant.hpp>
 HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, DeviceContainer& devices )
-	: m_devices(devices)
+	: m_devices(devices, m_idService)
 	, m_messenger(messenger)
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 {
 	m_devices.OnDeviceAdded([this](Device* device) {
 	
 		NullSpace::SharedMemory::DeviceInfo info = {0};
-		info.Id = device->id();
+		info.Id = m_idService.FromLocal(device->parentPlugin(), device->id());
 
 		std::string strName = device->name();
 		std::copy(strName.begin(), strName.end(), info.DeviceName);
 		info.Status = Connected;
 		info.Concept = static_cast<uint32_t>(device->concept());
 		m_messenger.WriteDevice(info);
-
+		
 		device->ForEachNode([this, device](Node* node) {
 			
 			NullSpace::SharedMemory::NodeInfo info = { 0 };
-			info.Id = ((uint64_t)(device->id()) << 32) | node->id();
+			info.Id = m_idService.FromLocal(device->parentPlugin(), node->id());
+
 			std::string nodeName = node->name();
 			std::copy(nodeName.begin(), nodeName.end(), info.NodeName);
 			info.Type = node->type();
@@ -104,15 +105,30 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 		m_devices.EachDevice([&](Device* device) {
 			device->DispatchEvent(event);
 		});
+
+	
 	});
 
-	/*sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		BOOST_LOG_TRIVIAL(info) << "Got haptic";
-		m_devices.EachDevice([&](Device* device) {
-			device->DispatchEvent(event);
-		});
-	});
+	
+	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
+		if (event.simple_haptic().where_case() == NullSpaceIPC::SimpleHaptic::WhereCase::kRegions) {
+			m_devices.EachDevice([&](Device* device) {
+				device->DispatchEvent(event);
+			});
+		}
+		else {
+			const auto& nodeList = event.simple_haptic().nodes();
+			std::unordered_map<std::string, std::unordered_map<nsvr_device_id, std::vector<nsvr_node_id>>> testMap;
+			for (const auto& node : nodeList.nodes()) {
+				if (auto possibleNode = m_idService.FromGlobalNode(node)) {
+					testMap[possibleNode->plugin][possibleNode->device_id].push_back(possibleNode->id);
 
+				}
+			}
+		}
+		
+	});
+	/*
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		m_devices.EachDevice([&](Device* device) {
 			device->DispatchEvent(event);

@@ -6,8 +6,14 @@
 #include <boost/dll.hpp>
 #include <functional>
 #include "PluginInstance.h"
+#include "IdentificationService.h"
 int main()
 {
+
+
+
+
+
 	using driver_create_t = std::function<NSVR_Driver_Context_t*(void)>;
 	using driver_start_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_stop_t = std::function<void(NSVR_Driver_Context_t*)>;

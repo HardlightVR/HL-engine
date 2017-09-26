@@ -309,6 +309,7 @@
     <ClInclude Include="..\src\Driver\HardwareNodeEnumerator.h" />
     <ClInclude Include="..\src\Driver\HardwarePlaybackController.h" />
     <ClInclude Include="..\src\Driver\HexUtils.h" />
+    <ClInclude Include="..\src\Driver\IdentificationService.h" />
     <ClInclude Include="..\src\Driver\ILogger.h" />
     <ClInclude Include="..\src\Driver\IoService.h" />
     <ClInclude Include="..\src\Driver\Json\JsonKeyValueConfig.h" />
@@ -393,6 +394,7 @@
     <ClCompile Include="..\src\Driver\HardwareNodeEnumerator.cpp" />
     <ClCompile Include="..\src\Driver\HardwarePlaybackController.cpp" />
     <ClCompile Include="..\src\Driver\HexUtils.cpp" />
+    <ClCompile Include="..\src\Driver\IdentificationService.cpp" />
     <ClCompile Include="..\src\Driver\IoService.cpp" />
     <ClCompile Include="..\src\Driver\Json\jsoncpp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

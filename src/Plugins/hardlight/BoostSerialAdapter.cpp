@@ -9,6 +9,7 @@
 #include <boost/optional.hpp>
 #include "logger.h"
 #include <atomic>
+#include <MarkIIHandshaker.h>
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
@@ -18,7 +19,8 @@ BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 	m_io(io),
 	m_suitReconnectionTimeout(boost::posix_time::milliseconds(50)),
 	m_initialConnectTimeout(boost::posix_time::milliseconds(3000)),
-	m_suitReconnectionTimer(io)
+	m_suitReconnectionTimer(io),
+	m_candidatePorts()
 {
 	std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
 }
@@ -63,9 +65,24 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 
 	assert(m_candidatePorts.empty());
 
+	std::shared_ptr<std::size_t> numPorts = std::make_shared<std::size_t>(0);
+
 	for (std::size_t i = 0; i < ports.size(); ++i) {
 		std::string portName = "COM" + std::to_string(ports[i]);
-		m_candidatePorts.push_back(std::make_unique<SerialPort>(portName, m_io, [this]() { findBestPort(); }));
+		m_candidatePorts.push_back(std::make_unique<MarkIIIHandshaker>(portName, m_io));
+		m_candidatePorts.back()->set_finish_callback([totalPorts = ports.size(), numPorts, this]() {
+			(*numPorts)++;
+			if (*numPorts == totalPorts) {
+				findBestPort();
+			}
+			else {
+				core_log("SerialAdapter", "Finished a protocol");
+
+			}
+			
+
+
+		});
 	}
 
 	//The way this works is that the slowest connecting port is the gatekeeper to actually connecting. The upper bound here is
@@ -73,10 +90,10 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	//A better design would probably instantiate a new suit immediately upon connecting, and then instantiate more as they are recognized.
 	//This is easier for now, because I can manage the lifetime of the ports by keeping them all around until the last succeeds or fails.
 
-	auto numPortsToTest = std::make_shared<std::atomic<std::size_t>>(0);
-	std::size_t total = m_candidatePorts.size();
+	//auto numPortsToTest = std::make_shared<std::atomic<std::size_t>>(0);
+	//std::size_t total = m_candidatePorts.size();
 	for (auto& port : m_candidatePorts) {
-		port->start_connect(numPortsToTest, total);
+		port->start_handshake();
 	}
 }
 
@@ -116,11 +133,8 @@ void BoostSerialAdapter::findBestPort()
 
 	std::unique_ptr<boost::asio::serial_port> possiblePort;
 	for (auto& candidate : m_candidatePorts) {
-		if (candidate->status() == SerialPort::Status::Connected) {
+		if (candidate->status() == Handshaker::Status::Connected) {
 			possiblePort = candidate->release();
-		}
-		else {
-			candidate->stop();
 		}
 	}
 
