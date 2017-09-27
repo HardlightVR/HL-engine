@@ -19,9 +19,9 @@ Node::Node()
 }
 
 
-nsvr_node_id Node::id() const
+NodeId<local> Node::id() const
 {
-	return m_id;
+	return NodeId<local>{m_id};
 }
 
 std::string Node::name() const

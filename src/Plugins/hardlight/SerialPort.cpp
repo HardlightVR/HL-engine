@@ -25,7 +25,7 @@ SerialPort::~SerialPort()
 
 void SerialPort::stop()
 {
-	core_log("SerialPort", std::string("Shutting down " + m_name));
+	//core_log("SerialPort", std::string("Shutting down " + m_name));
 	m_writeTimer.cancel();
 	boost::system::error_code ec;
 

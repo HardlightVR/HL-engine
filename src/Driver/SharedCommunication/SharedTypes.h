@@ -24,14 +24,13 @@ namespace NullSpace {
 
 		enum DeviceStatus { Unknown, Connected, Disconnected };
 		
-		typedef uint32_t SystemId;
-		typedef uint32_t DeviceId;
+		
 		constexpr int MAX_DEVICES_PER_SYSTEM = 16;
 
 	
 		
 		struct DeviceInfo {
-			DeviceId Id; //0
+			uint32_t Id; //0
 			uint32_t Concept;
 			char DeviceName[128]; //Hardlight Mk III Suit
 			DeviceStatus Status;
@@ -39,7 +38,8 @@ namespace NullSpace {
 		};
 
 		struct NodeInfo {
-			uint64_t Id;
+			uint32_t Id;
+			uint32_t DeviceId;
 			char NodeName[128];
 			uint32_t Region;
 			uint32_t Type;
@@ -84,8 +84,7 @@ namespace NullSpace {
 			Intensity = 2
 		};
 		struct RegionPair {
-			using RegionType = uint32_t;
-			RegionType Region;
+			uint32_t Region;
 			uint32_t Type;
 			uint32_t Id;
 			Data Value;

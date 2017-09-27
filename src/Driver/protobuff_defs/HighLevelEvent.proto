@@ -11,6 +11,13 @@ message NodeList {
 	repeated uint64 nodes = 1;
 }
 
+message Location {
+	oneof where {
+		RegionList regions = 1;
+		NodeList nodes = 2;
+	}
+}
+
 message SimpleHaptic {
 	oneof where {
 		RegionList regions = 1;
@@ -56,13 +63,16 @@ message PlaybackEvent {
 	
 }
 
-
+message LocationalEvent {
+	Location location = 1;
+	oneof events {
+		SimpleHaptic simple_haptic = 2;
+	}
+}
 message HighLevelEvent {
 	uint64 parent_id = 1;
 	oneof events {
 		PlaybackEvent playback_event = 2;
-		SimpleHaptic simple_haptic = 3;
-		RealtimeHaptic realtime_haptic = 4;
-		CurveHaptic curve_haptic = 5;
+		LocationalEvent locational_event = 3;
 	}
 }

@@ -6,7 +6,7 @@
 #include "PlaybackController.h"
 #include "DeviceDescriptor.h"
 #include "HapticInterface.h"
-
+#include "DeviceIds.h"
 //theory:
 //NodeDiscoverer can be mocked out. So we can provide a bunch of fake nodes
 //I think PlaybackController can be a concrete class and can get rid of the interface.
@@ -35,7 +35,7 @@ public:
 		std::unique_ptr<HapticInterface>
 	);
 	void DispatchEvent(const NullSpaceIPC::HighLevelEvent& event);
-	nsvr_device_id id() const;
+	DeviceId<local> id() const;
 	std::string name() const;
 	nsvr_device_concept concept() const;
 	std::string parentPlugin() const;

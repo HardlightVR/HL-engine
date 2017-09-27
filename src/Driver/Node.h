@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "PluginAPI.h"
-
+#include "DeviceIds.h"
 struct NodeDescriptor {
 	nsvr_node_type type;
 	std::string displayName;
@@ -12,7 +12,7 @@ class Node {
 public:
 	Node(const NodeDescriptor&);
 	Node();
-	nsvr_node_id id() const;
+	NodeId<local> id() const;
 	std::string name() const;
 	nsvr_node_type type() const;
 private:

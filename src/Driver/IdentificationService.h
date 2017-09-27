@@ -1,17 +1,19 @@
+#pragma once
 #include "PluginAPI.h"
 #include <string>
 #include <unordered_map>
 #include <boost/optional.hpp>
 #include <boost/bimap.hpp>
+#include "DeviceIds.h"
 
 struct LocalDevice {
-	uint32_t id;
+	nsvr_device_id id;
 	std::string plugin;
 };
 struct LocalNode {
-	uint32_t id;
+	nsvr_node_id id;
 	std::string plugin;
-	uint32_t device_id;
+	nsvr_device_id device_id;
 };
 
 
@@ -37,6 +39,8 @@ namespace std {
 			return seed;
 		}
 	};
+
+	
 }
 
 class IdentificationService {
@@ -45,30 +49,28 @@ public:
 	
 	IdentificationService();
 	using PluginId = std::string;
-	using LocalDeviceId = nsvr_device_id;
-	using GlobalDeviceId = uint32_t;
-	using LocalNodeId = nsvr_node_id;
-	using GlobalNodeId = uint32_t;
-	GlobalDeviceId FromLocal(PluginId, LocalDeviceId);
+
+
+	DeviceId<global> FromLocal(PluginId pluginName, DeviceId<local>);
 	
-	boost::optional<LocalDevice> FromGlobalDevice(GlobalDeviceId) const;
+	boost::optional<LocalDevice> FromGlobalDevice(DeviceId<global>) const;
 
 
-	GlobalNodeId FromLocal(PluginId, LocalDeviceId, LocalNodeId);
+	NodeId<global> FromLocal(PluginId pluginName, DeviceId<local>, NodeId<local>);
 
-	boost::optional<LocalNode> FromGlobalNode(GlobalNodeId) const;
+	boost::optional<LocalNode> FromGlobalNode(NodeId<global>) const;
 
 private:
 
-	std::unordered_map<GlobalDeviceId, LocalDevice> deviceGlobalToLocal;
-	std::unordered_map<LocalDevice, GlobalDeviceId> deviceLocalToGlobal;
+	std::unordered_map<DeviceId<global>, LocalDevice> deviceGlobalToLocal;
+	std::unordered_map<LocalDevice, DeviceId<global>> deviceLocalToGlobal;
 
-	std::unordered_map<GlobalNodeId, LocalNode> nodeGlobalToLocal;
-	std::unordered_map<LocalNode, GlobalNodeId> nodeLocalToGlobal;
+	std::unordered_map<NodeId<global>, LocalNode> nodeGlobalToLocal;
+	std::unordered_map<LocalNode, NodeId<global>> nodeLocalToGlobal;
 
 	uint32_t currentGlobalDeviceId;
 	uint32_t currentGlobalNodeId;
 
-	uint32_t nextGlobalDeviceId();
-	uint32_t nextGlobalNodeId();
+	DeviceId<global> nextGlobalDeviceId();
+	NodeId<global> nextGlobalNodeId();
 };

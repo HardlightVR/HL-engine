@@ -8,15 +8,17 @@
 #include "DriverMessenger.h"
 #include "SharedTypes.h"
 #include <boost/variant.hpp>
+#include "DeviceIds.h"
 HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, DeviceContainer& devices )
-	: m_devices(devices, m_idService)
+	: m_devices(devices)
 	, m_messenger(messenger)
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
+	, m_idService()
 {
 	m_devices.OnDeviceAdded([this](Device* device) {
 	
 		NullSpace::SharedMemory::DeviceInfo info = {0};
-		info.Id = m_idService.FromLocal(device->parentPlugin(), device->id());
+		info.Id = m_idService.FromLocal(device->parentPlugin(), device->id()).value;
 
 		std::string strName = device->name();
 		std::copy(strName.begin(), strName.end(), info.DeviceName);
@@ -24,11 +26,11 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 		info.Concept = static_cast<uint32_t>(device->concept());
 		m_messenger.WriteDevice(info);
 		
-		device->ForEachNode([this, device](Node* node) {
+		device->ForEachNode([this, device, deviceId = info.Id](Node* node) {
 			
 			NullSpace::SharedMemory::NodeInfo info = { 0 };
-			info.Id = m_idService.FromLocal(device->parentPlugin(), node->id());
-
+			info.Id = m_idService.FromLocal(device->parentPlugin(), device->id(), node->id()).value;
+			info.DeviceId = deviceId;
 			std::string nodeName = node->name();
 			std::copy(nodeName.begin(), nodeName.end(), info.NodeName);
 			info.Type = node->type();
@@ -38,11 +40,10 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	});
 
 	m_devices.OnDeviceRemoved([this](Device* device) {
-		m_messenger.UpdateDeviceStatus(device->id(), DeviceStatus::Disconnected);
+		m_messenger.UpdateDeviceStatus(m_idService.FromLocal(device->parentPlugin(), device->id()).value, DeviceStatus::Disconnected);
 		device->ForEachNode([this, device](Node* node) {
-			uint64_t externalId  = ((uint64_t)(device->id()) << 32) | node->id();
 
-			m_messenger.RemoveNode(externalId);
+			m_messenger.RemoveNode(m_idService.FromLocal(device->parentPlugin(), device->id(), node->id()).value);
 		});
 	});
 
@@ -63,7 +64,7 @@ void HardwareCoordinator::writeTracking(nsvr_node_id node_id, nsvr_quaternion * 
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
-	m_devices.EachSimulation([&messenger = m_messenger](SimulatedDevice* device) {
+	m_devices.EachSimulation([&messenger = m_messenger, this](SimulatedDevice* device) {
 		device->simulate(.008);
 
 		auto nodeView = device->render();
@@ -73,7 +74,9 @@ void HardwareCoordinator::writeBodyRepresentation()
 				NullSpace::SharedMemory::RegionPair pair;
 				pair.Type = static_cast<uint32_t>(single.Type);
 				pair.Region = node.region;
-				pair.Id = single.Id;
+				//pair.Id = m_idService.FromLocal(device->parentPlugin(), device->id(),  single.Id).value;
+				//todo: fix the id. Main problem is the sim tries to mirror the real device interface wise, so I have to keep them in sync..
+				//either make them inherit from same interface, or have a way of getting at the real device 
 
 				pair.Value = NullSpace::SharedMemory::Data{
 					single.DisplayData.data_0,
@@ -117,14 +120,14 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 			});
 		}
 		else {
-			const auto& nodeList = event.simple_haptic().nodes();
+			/*const auto& nodeList = event.simple_haptic().nodes();
 			std::unordered_map<std::string, std::unordered_map<nsvr_device_id, std::vector<nsvr_node_id>>> testMap;
 			for (const auto& node : nodeList.nodes()) {
 				if (auto possibleNode = m_idService.FromGlobalNode(node)) {
 					testMap[possibleNode->plugin][possibleNode->device_id].push_back(possibleNode->id);
 
 				}
-			}
+			}*/
 		}
 		
 	});

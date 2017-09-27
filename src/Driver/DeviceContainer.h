@@ -11,7 +11,7 @@
 #include "DriverConfigParser.h"
 #include <boost/signals2.hpp>
 
-class IdentificationService;
+
 class DriverMessenger;
 class DeviceContainer {
 public:
@@ -19,14 +19,14 @@ public:
 	using DeviceFn = std::function<void(Device*)>;
 	using SimFn = std::function<void(SimulatedDevice*)>;
 
-	DeviceContainer(IdentificationService& idService);
+	DeviceContainer();
 	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 	
-	void RemoveDevice(nsvr_device_id id);
+	void RemoveDevice(DeviceId<local> id, std::string pluginName);
 	void EachDevice(DeviceFn action);
 	void EachSimulation(SimFn action);
 
-	Device* Get(nsvr_device_id id);
+	Device* Get(std::string pluginName, DeviceId<local> id);
 
 	//these functions should be very short as a lock is held during them
 	void OnDeviceAdded(DeviceEvent::slot_type slot);
@@ -34,7 +34,6 @@ public:
 
 private:
 	void addDevice(const DeviceDescriptor&, PluginApis&,  Parsing::BodyGraphDescriptor, std::string originatingPlugin);
-	IdentificationService& m_idService;
 	DeviceEvent m_onDeviceAdded;
 	DeviceEvent m_onDeviceRemoved;
 

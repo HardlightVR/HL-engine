@@ -1,15 +1,14 @@
 #include "StdAfx.h"
 #include "BoostSerialAdapter.h"
 #include <iostream>
-#include <future>
-#include <boost/asio/use_future.hpp>
 #include "enumser.h"
 #include "Locator.h"
 #include "AsyncTimeout.h"
 #include <boost/optional.hpp>
 #include "logger.h"
 #include <atomic>
-#include <MarkIIHandshaker.h>
+#include "Mark2Handshaker.h"
+#include "Mark3Handshaker.h"
 
 uint8_t BoostSerialAdapter::m_pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
 
@@ -17,10 +16,10 @@ BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 	m_outputSuitData(std::make_shared<Buffer>(4096)), 
 	m_port(nullptr),
 	m_io(io),
-	m_suitReconnectionTimeout(boost::posix_time::milliseconds(50)),
+	m_suitReconnectionTimeout(boost::posix_time::milliseconds(1000)),
 	m_initialConnectTimeout(boost::posix_time::milliseconds(3000)),
 	m_suitReconnectionTimer(io),
-	m_candidatePorts()
+	m_handshakers()
 {
 	std::fill(m_data, m_data + INCOMING_DATA_BUFFER_SIZE, 0);
 }
@@ -63,26 +62,59 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 		core_log(nsvr_severity_info, "SerialAdapter", "No ports available on the system");
 	}
 
-	assert(m_candidatePorts.empty());
+	assert(m_handshakers.empty());
 
 	std::shared_ptr<std::size_t> numPorts = std::make_shared<std::size_t>(0);
+	auto finished_handshakers = std::make_shared<std::size_t>(0);
 
 	for (std::size_t i = 0; i < ports.size(); ++i) {
 		std::string portName = "COM" + std::to_string(ports[i]);
-		m_candidatePorts.push_back(std::make_unique<MarkIIIHandshaker>(portName, m_io));
-		m_candidatePorts.back()->set_finish_callback([totalPorts = ports.size(), numPorts, this]() {
-			(*numPorts)++;
-			if (*numPorts == totalPorts) {
-				findBestPort();
+
+		auto handshaker = std::make_unique<SequentialHandshaker>(m_io, portName);
+		//should probably be a factory, so add_handshaker("mark-3")
+
+		handshaker->add_handshaker(std::make_unique<Mark3Handshaker>(portName, m_io));
+		handshaker->add_handshaker(std::make_unique<Mark2Handshaker>(portName, m_io));
+
+		handshaker->set_fail_handler([sentinel = finished_handshakers, total = ports.size(), this]() {
+			(*sentinel)++;
+			if (*sentinel == total) {
+				core_log("SerialAdapter", "The entire run of sequential handshakers is done");
+				m_io.post([this]() {
+					m_handshakers.clear();
+					scheduleDelayedSuitReconnect();
+
+				});
+
 			}
 			else {
-				core_log("SerialAdapter", "Finished a protocol");
+				core_log("SerialAdapter", "A handshaker has finished but failed to find anything");
 
 			}
-			
-
-
 		});
+		handshaker->set_success_handler([this](std::unique_ptr<boost::asio::serial_port> p) {
+			core_log("SerialAdapter", "A handshaker has finished successfully");
+			m_port = std::move(p);
+			assert(m_port->is_open());
+
+			for (auto& hs : m_handshakers) {
+				hs->async_cancel();
+			}
+			assert(m_port->is_open());
+
+			m_io.post([this]() {
+				assert(m_port->is_open());
+				m_handshakers.clear();
+				assert(m_port->is_open());
+
+				endReconnectionProcess();
+
+			});
+		});
+
+		m_handshakers.push_back(std::move(handshaker));
+	
+		
 	}
 
 	//The way this works is that the slowest connecting port is the gatekeeper to actually connecting. The upper bound here is
@@ -91,9 +123,9 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	//This is easier for now, because I can manage the lifetime of the ports by keeping them all around until the last succeeds or fails.
 
 	//auto numPortsToTest = std::make_shared<std::atomic<std::size_t>>(0);
-	//std::size_t total = m_candidatePorts.size();
-	for (auto& port : m_candidatePorts) {
-		port->start_handshake();
+	//std::size_t total = m_handshakers.size();
+	for (auto& shaker : m_handshakers) {
+		shaker->async_begin_handshake();
 	}
 }
 
@@ -131,14 +163,21 @@ void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t leng
 void BoostSerialAdapter::findBestPort()
 {
 
-	std::unique_ptr<boost::asio::serial_port> possiblePort;
-	for (auto& candidate : m_candidatePorts) {
+	/*std::unique_ptr<boost::asio::serial_port> possiblePort;
+	for (auto& candidate : m_handshakers) {
 		if (candidate->status() == Handshaker::Status::Connected) {
 			possiblePort = candidate->release();
 		}
+		else {
+			candidate->stop();
+		}
 	}
 
-	m_candidatePorts.clear();
+	for (auto& candidate : m_handshakers) {
+		assert(candidate->is_finished());
+	}
+
+	m_handshakers.clear();
 
 	if (possiblePort) {
 		m_port = std::move(possiblePort);
@@ -147,7 +186,7 @@ void BoostSerialAdapter::findBestPort()
 	else {
 		scheduleDelayedSuitReconnect();
 	}
-
+*/
 }
 
 void BoostSerialAdapter::scheduleDelayedSuitReconnect()
@@ -173,6 +212,12 @@ void BoostSerialAdapter::endReconnectionProcess()
 
 void BoostSerialAdapter::kickoffSuitReading()
 {
+	if (!m_port) {
+		int a = 2;
+	}
+	if (!m_port->is_open()) {
+		int b = 3;
+	}
 	if (!m_port || !m_port->is_open()) {
 		return;
 	}

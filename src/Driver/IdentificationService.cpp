@@ -20,22 +20,22 @@ IdentificationService::IdentificationService()
 {
 }
 
-IdentificationService::GlobalDeviceId IdentificationService::FromLocal(PluginId plugin, LocalDeviceId id)
+DeviceId<global> IdentificationService::FromLocal(PluginId plugin, DeviceId<local> id)
 {
-	LocalDevice local{ id, plugin };
+	LocalDevice local{ id.value, plugin };
 	auto it = deviceLocalToGlobal.find(local);
 	if (it != deviceLocalToGlobal.end()) {
 		return it->second;
 	}
 	else {
-		uint32_t globalId = nextGlobalDeviceId();
-		deviceLocalToGlobal[local] = globalId;
-		deviceGlobalToLocal[globalId] = local;
-		return globalId;
+		auto global = nextGlobalDeviceId();
+		deviceLocalToGlobal[local] = global;
+		deviceGlobalToLocal[global] = local;
+		return global;
 	}
 }
 
-boost::optional<LocalDevice> IdentificationService::FromGlobalDevice(GlobalDeviceId id) const
+boost::optional<LocalDevice> IdentificationService::FromGlobalDevice(DeviceId<global> id) const
 {
 	auto it = deviceGlobalToLocal.find(id);
 	if (it != deviceGlobalToLocal.end()) {
@@ -46,22 +46,22 @@ boost::optional<LocalDevice> IdentificationService::FromGlobalDevice(GlobalDevic
 	}
 }
 
-IdentificationService::GlobalNodeId IdentificationService::FromLocal(PluginId pluginId, LocalDeviceId deviceId, LocalNodeId nodeId)
+NodeId<global> IdentificationService::FromLocal(PluginId pluginId, DeviceId<local> deviceId, NodeId<local> nodeId)
 {
-	LocalNode local{ nodeId, pluginId, deviceId };
+	LocalNode local{ nodeId.value, pluginId, deviceId.value };
 	auto it = nodeLocalToGlobal.find(local);
 	if (it != nodeLocalToGlobal.end()) {
 		return it->second;
 	}
 	else {
-		uint32_t globalId = nextGlobalNodeId();
+		auto globalId = nextGlobalNodeId();
 		nodeLocalToGlobal[local] = globalId;
 		nodeGlobalToLocal[globalId] = local;
 		return globalId;
 	}
 }
 
-boost::optional<LocalNode> IdentificationService::FromGlobalNode(GlobalNodeId id) const
+boost::optional<LocalNode> IdentificationService::FromGlobalNode(NodeId<global> id) const
 {
 	auto it = nodeGlobalToLocal.find(id);
 	if (it != nodeGlobalToLocal.end()) {
@@ -74,12 +74,12 @@ boost::optional<LocalNode> IdentificationService::FromGlobalNode(GlobalNodeId id
 
 
 
-uint32_t IdentificationService::nextGlobalDeviceId()
+DeviceId<global> IdentificationService::nextGlobalDeviceId()
 {
-	return ++currentGlobalDeviceId;
+	return DeviceId<global>{ ++currentGlobalDeviceId };
 }
 
-uint32_t IdentificationService::nextGlobalNodeId()
+NodeId<global> IdentificationService::nextGlobalNodeId()
 {
-	return ++currentGlobalNodeId;
+	return NodeId<global>{ ++currentGlobalNodeId };
 }

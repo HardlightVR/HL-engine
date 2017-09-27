@@ -16,10 +16,13 @@ public:
 		TimedOutWriting,
 		BadReturnPing,
 	};
+	using FinishHandler = std::function<void()>;
 	void start_handshake();
 	Handshaker(std::string name, boost::asio::io_service& io);
-	void set_finish_callback(std::function<void()> onFinish);
+	void set_finish_callback(FinishHandler onFinish);
 	Status status() const;
+	void cancel_timers_close_port();
+	bool is_finished() const;
 	std::unique_ptr<boost::asio::serial_port> release();
 private:
 	virtual void setup_port_options(boost::asio::serial_port& port) = 0;
@@ -39,7 +42,6 @@ private:
 	boost::asio::deadline_timer m_writeTimer;
 	boost::asio::deadline_timer m_readTimer;
 
-	void stop();
 
 	void async_open_port();
 	void async_ping_port();
@@ -49,10 +51,10 @@ private:
 	void check_write_deadline(const boost::system::error_code& ec);
 	void check_read_deadline(const boost::system::error_code& ec);
 
-	void finish();
+	void callback();
 	const static unsigned int INCOMING_DATA_BUFFER_SIZE = 128;
 
-	std::function<void()> m_callback;
+	FinishHandler m_callback;
 	//our incoming data buffer 
 	uint8_t m_data[INCOMING_DATA_BUFFER_SIZE];
 

@@ -18,7 +18,7 @@ Handshaker::Handshaker(std::string name, boost::asio::io_service & io)
 {
 }
 
-void Handshaker::set_finish_callback(std::function<void()> onFinish)
+void Handshaker::set_finish_callback(FinishHandler onFinish)
 {
 	m_callback = onFinish;
 }
@@ -34,13 +34,16 @@ std::unique_ptr<boost::asio::serial_port> Handshaker::release()
 	return std::move(m_port);
 }
 
-void Handshaker::stop()
+void Handshaker::cancel_timers_close_port()
 {
-	core_log("Handshaker", std::string("Shutting down " + m_name));
+	m_protocolFinished = true;
 	m_writeTimer.cancel();
+	m_readTimer.cancel();
 	boost::system::error_code ec;
 
 	if (m_port && m_port->is_open()) {
+		core_log("Handshaker", std::string("Shutting down " + m_name));
+
 		m_port->close(ec);
 		if (m_port->is_open()) {
 			core_log(nsvr_severity_fatal, "Handshaker", "Really bad state: the port is open after it closed. Remember what you were doing to the suit when this happened. casey@hardlightvr.com");
@@ -48,18 +51,22 @@ void Handshaker::stop()
 	}
 }
 
+bool Handshaker::is_finished() const
+{
+	return m_protocolFinished;
+}
+
 void Handshaker::async_open_port()
 {
 	core_log("SerialPort", std::string("Attempting to open " + m_name));
-
+	assert(!m_port->is_open());
 	boost::system::error_code ec;
 	m_port->open(m_name, ec);
 
 	if (ec) {
 		core_log(nsvr_severity_error, "Handshaker", ec.message());
-		m_protocolFinished = true;
-		stop();
-		finish();
+		cancel_timers_close_port();
+		callback();
 	}
 	else {
 		m_status = Status::Open;
@@ -76,7 +83,7 @@ void Handshaker::async_open_port()
 
 void Handshaker::async_ping_port()
 {
-	core_log("Handshaker", std::string("Handshake " + m_name));
+	core_log("Handshaker", std::string("Waiting on sending data to   " + m_name));
 	m_writeTimer.expires_from_now(write_timeout());
 	m_writeTimer.async_wait([this](const auto& ec) {check_write_deadline(ec); });
 	m_port->async_write_some(boost::asio::buffer(ping_data(), ping_data_length()), [this](const auto& ec, auto bytes_transferred) { write_handler(ec, bytes_transferred); });
@@ -87,22 +94,25 @@ void Handshaker::async_ping_port()
 
 void Handshaker::write_handler(const boost::system::error_code & ec, std::size_t bytes_transferred)
 {
+	
+
 	if (m_protocolFinished) {
 		return;
 	}
+	m_writeTimer.cancel();
 
 	if (!m_port->is_open()) {
 		m_status = Status::TimedOutWriting;
 		m_protocolFinished = true;
-		stop();
-		finish();
+		cancel_timers_close_port();
+		callback();
 	}
 	else if (ec) {
 		//there was an actual error writing to the port
 		m_status = Status::Unwritable;
 		m_protocolFinished = true;
-		stop();
-		finish();
+		cancel_timers_close_port();
+		callback();
 	}
 	else {
 		start_read();
@@ -127,19 +137,23 @@ void Handshaker::read_handler(const boost::system::error_code & ec, std::size_t 
 		return;
 	}
 
+	m_readTimer.cancel();
+
 	if (!ec) {
-		m_protocolFinished = true;
-		m_writeTimer.cancel();
 		
+		assert(m_port->is_open());
 		m_status = is_good_response(m_data, bytes_transferred) ? Status::Connected : Status::BadReturnPing;
 		core_log("Handshaker", std::string(m_name + ": " + (m_status == Status::Connected ? std::string("connected") : std::string("bad ping response."))));
 
-		finish();
+
+		callback();
+
 	}
 	else {
-		m_protocolFinished = true;
-		stop();
-		finish();
+		core_log("Handshaker", std::string(m_name + ": error reading: " + ec.message()));
+
+		cancel_timers_close_port();
+		callback();
 	}
 }
 
@@ -177,7 +191,7 @@ void Handshaker::check_read_deadline(const boost::system::error_code& ec)
 
 }
 
-void Handshaker::finish()
+void Handshaker::callback()
 {
 	
 	m_callback();

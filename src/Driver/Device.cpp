@@ -42,9 +42,9 @@ void Device::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
 	}
 }
 
-nsvr_device_id Device::id() const
+DeviceId<local> Device::id() const
 {
-	return m_description.id;
+	return DeviceId<local>{m_description.id};
 }
 
 std::string Device::name() const

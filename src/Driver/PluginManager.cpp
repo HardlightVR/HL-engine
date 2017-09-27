@@ -132,9 +132,9 @@ bool PluginManager::TickOnce(uint64_t dt)
 
 bool PluginManager::Reload(const std::string & name)
 {
-	//Todo: This is completely untested
+	//Todo: this must be rewritten if we want this functionality
 
-	std::vector<nsvr_device_id> toBeRemoved;
+	/*std::vector<DeviceId<local>> toBeRemoved;
 	m_deviceContainer.EachDevice([&name, &toBeRemoved](Device* device) {
 		if (device->parentPlugin() == name) {
 			toBeRemoved.push_back(device->id());
@@ -147,7 +147,7 @@ bool PluginManager::Reload(const std::string & name)
 
 	if (m_plugins[name]->Unload()) {
 		return m_plugins[name]->Instantiate();
-	}
+	}*/
 
 	return false;
 
@@ -211,8 +211,8 @@ bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::st
 		dispatcher->OnDeviceConnected([this, dll = dllName](nsvr_device_id id, PluginApis& apis) {
 			m_deviceContainer.AddDevice(id, apis, m_pluginInfo.at(dll).Descriptor.bodygraph, dll);
 		});
-		dispatcher->OnDeviceDisconnected([this](nsvr_device_id id) {
-			m_deviceContainer.RemoveDevice(id);
+		dispatcher->OnDeviceDisconnected([this, dll = dllName](nsvr_device_id id) {
+			m_deviceContainer.RemoveDevice(DeviceId<local>{id}, dll);
 		}); 
 
 		m_plugins[dllName]->setDispatcher(std::move(dispatcher));

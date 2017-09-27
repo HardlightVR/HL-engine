@@ -57,6 +57,9 @@
     <ClInclude Include="..\src\plugins\hardlight\FirmwareInterface.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Handshaker.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -117,6 +120,9 @@
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\SequentialHandshaker.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\SerialPort.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -162,8 +168,10 @@
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Plugins\hardlight\Handshaker.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\MarkIIHandshaker.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Mark3Handshaker.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Plugins\hardlight\Mark2Handshaker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -179,6 +187,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\FirmwareInterface.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Handshaker.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp">
@@ -232,6 +243,9 @@
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\SequentialHandshaker.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
@@ -268,7 +282,9 @@
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Plugins\hardlight\Handshaker.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\MarkIIHandshaker.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Mark3Handshaker.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Plugins\hardlight\Mark2Handshaker.cpp" />
   </ItemGroup>
 </Project>

@@ -7,12 +7,12 @@
 #include "HardwarePlaybackController.h"
 #include "HapticInterface.h"
 #include "DriverMessenger.h"
-
+#include "DeviceIds.h"
 //todo: we need a translation table from device -> user facing device
 
-DeviceContainer::DeviceContainer(IdentificationService & idService)
-	: m_idService(idService)
-	, m_onDeviceAdded()
+DeviceContainer::DeviceContainer()
+
+	: m_onDeviceAdded()
 	, m_onDeviceRemoved()
 	, m_devices()
 	, m_simulations()
@@ -39,14 +39,14 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 			desc.displayName = std::string(info.name);
 			desc.id = info.id;
 			desc.concept = info.concept;
-			addDevice(desc, apis, std::move(bodyGraphDescriptor), originatingPlugin, m_idService);
+			addDevice(desc, apis, std::move(bodyGraphDescriptor), originatingPlugin);
 		}
 	}
 
 }
 
 
-void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin, IdentificationService& idService)
+void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
 	
 	auto playback = std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>());
@@ -60,8 +60,8 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 	m_deviceLock.lock();
 
-	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, bodygraph, std::move(nodes), std::move(playback), std::move(haptics), idService));
-	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, apis, bodygraph));
+	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, bodygraph, std::move(nodes), std::move(playback), std::move(haptics)));
+	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, desc.displayName, originatingPlugin,  apis, bodygraph));
 
 	m_deviceLock.unlock();
 
@@ -71,15 +71,15 @@ void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, 
 
 
 
-void DeviceContainer::RemoveDevice(nsvr_device_id id)
+void DeviceContainer::RemoveDevice(DeviceId<local> id, std::string pluginName)
 {
 	m_deviceLock.lock();
 
-	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id](const auto& device) { return device->id() == id; });
+	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id, pluginName](const auto& device) { return device->id() == id && device->parentPlugin() == pluginName; });
 	if (it != m_devices.end()) {
 		m_onDeviceRemoved(it->get());
 		m_devices.erase(it);
-		auto sim = std::find_if(m_simulations.begin(), m_simulations.end(), [id](const auto& device) { return device->id() == id; });
+		auto sim = std::find_if(m_simulations.begin(), m_simulations.end(), [id, pluginName](const auto& device) { return device->id() == id && device->originatingPlugin() == pluginName; });
 		m_simulations.erase(sim);
 	}
 
@@ -105,11 +105,11 @@ void DeviceContainer::EachSimulation(SimFn action) {
 }
 
 
-Device* DeviceContainer::Get(nsvr_device_id id)
+Device* DeviceContainer::Get(std::string plugin, DeviceId<local> id)
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 
-	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id](const auto& device) { return device->id() == id; });
+	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id, plugin](const auto& device) { return device->id() == id && device->parentPlugin() == plugin; });
 	if (it != m_devices.end()) {
 		return (*it).get();
 	}

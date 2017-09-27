@@ -5,7 +5,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "Synchronizer.h"
 #include "SerialPort.h"
-#include "Handshaker.h"
+#include "SequentialHandshaker.h"
 class BoostSerialAdapter : public std::enable_shared_from_this<BoostSerialAdapter>
 {
 public:
@@ -95,7 +95,7 @@ private:
 	boost::posix_time::milliseconds m_suitReconnectionTimeout;
 
 
-	std::vector<std::unique_ptr<Handshaker>> m_candidatePorts;
+	std::vector<std::unique_ptr<SequentialHandshaker>> m_handshakers;
 
 	void findBestPort();
 };

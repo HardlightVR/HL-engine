@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "SimulatedDevice.h"
 #include "nsvr_preset.h"
-SimulatedDevice::SimulatedDevice(nsvr_device_id id, PluginApis & apis, std::shared_ptr<BodyGraphCreator> bodygraph)
+SimulatedDevice::SimulatedDevice(nsvr_device_id id, std::string name, std::string pluginName, PluginApis & apis, std::shared_ptr<BodyGraphCreator> bodygraph)
 	: m_nodes()
 	, m_body(bodygraph)
 	, m_id(id)
+	, m_name(name)
+	, m_pluginName(pluginName)
 {
 	instrumentApis(apis);
 }
@@ -16,9 +18,9 @@ void SimulatedDevice::simulate(double dt)
 	}
 }
 
-nsvr_device_id SimulatedDevice::id() const
+DeviceId<local> SimulatedDevice::id() const
 {
-	return m_id;
+	return DeviceId<local>{m_id};
 }
 
 std::vector<NodeView> SimulatedDevice::render()
@@ -45,6 +47,16 @@ std::vector<NodeView> SimulatedDevice::render()
 
 
 	return entireDevice;
+}
+
+std::string SimulatedDevice::name() const
+{
+	return m_name;
+}
+
+std::string SimulatedDevice::originatingPlugin() const
+{
+	return m_pluginName;
 }
 
 void SimulatedDevice::instrumentApis(PluginApis& apis)
