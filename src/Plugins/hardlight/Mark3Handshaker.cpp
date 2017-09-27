@@ -42,12 +42,12 @@ bool Mark3Handshaker::is_good_response(const uint8_t * data, unsigned int length
 
 const boost::posix_time::time_duration & Mark3Handshaker::read_timeout() const
 {
-	static auto timeout = boost::posix_time::millisec(1050);
+	static auto timeout = boost::posix_time::millisec(250);
 	return timeout;
 }
 
 const boost::posix_time::time_duration & Mark3Handshaker::write_timeout() const
 {
-	static auto timeout = boost::posix_time::millisec(1050);
+	static auto timeout = boost::posix_time::millisec(250);
 	return timeout;
 }

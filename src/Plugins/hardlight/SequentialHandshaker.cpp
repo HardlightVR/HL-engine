@@ -69,7 +69,7 @@ void SequentialHandshaker::handshaker_finished_handler()
 
 void SequentialHandshaker::do_handshake()
 {
-	m_timeout.expires_from_now(boost::posix_time::millisec(500));
+	m_timeout.expires_from_now(boost::posix_time::millisec(200));
 	m_timeout.async_wait([this](const auto& ec) {
 		if (ec == boost::asio::error::operation_aborted) {
 			return;
