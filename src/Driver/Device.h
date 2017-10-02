@@ -23,6 +23,7 @@ namespace NullSpaceIPC {
 	class HighLevelEvent;
 	class SimpleHaptic;
 	class PlaybackEvent;
+	class LocationalEvent;
 }
 class Device {
 public:
@@ -35,6 +36,9 @@ public:
 		std::unique_ptr<HapticInterface>
 	);
 	void DispatchEvent(const NullSpaceIPC::HighLevelEvent& event);
+	void DispatchEvent(const NullSpaceIPC::PlaybackEvent& playback_event);
+	void DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& haptic_event, const std::vector<NodeId<local>>& nodes);
+	void DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& haptic_event, const std::vector<nsvr_region>& regions);
 	DeviceId<local> id() const;
 	std::string name() const;
 	nsvr_device_concept concept() const;
@@ -48,6 +52,7 @@ private:
 	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::unique_ptr<PlaybackController> m_playback;
 	std::unique_ptr<HapticInterface> m_haptics;
+	void handleLocationalEvent(uint64_t event_id, const NullSpaceIPC::LocationalEvent& locational);
 	void handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(uint64_t event_id, const NullSpaceIPC::PlaybackEvent& playbackEvent);
 };

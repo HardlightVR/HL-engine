@@ -7,7 +7,7 @@ HardwarePlaybackController::HardwarePlaybackController(playback_api * api)
 {
 }
 
-void HardwarePlaybackController::CreateEventRecord(uint64_t request_id, std::vector<nsvr_node_id> nodes)
+void HardwarePlaybackController::CreateEventRecord(uint64_t request_id, std::vector<NodeId<local>> nodes)
 {
 
 	auto& currentNodes = m_cache[request_id];
@@ -25,8 +25,8 @@ void HardwarePlaybackController::Cancel(uint64_t request_id)
 	if (it != m_cache.end()) {
 		const auto& nodes = (*it).second;
 
-		for (nsvr_node_id node : nodes) {
-			m_api->submit_cancel(request_id, node);
+		for (NodeId<local> node : nodes) {
+			m_api->submit_cancel(request_id, node.value);
 		}
 	}
 }
@@ -37,8 +37,8 @@ void HardwarePlaybackController::Pause(uint64_t request_id)
 	if (it != m_cache.end()) {
 		const auto& nodes = (*it).second;
 
-		for (nsvr_node_id node : nodes) {
-			m_api->submit_pause(request_id, node);
+		for (NodeId<local> node : nodes) {
+			m_api->submit_pause(request_id, node.value);
 		}
 	}
 }
@@ -49,8 +49,8 @@ void HardwarePlaybackController::Resume(uint64_t request_id)
 	if (it != m_cache.end()) {
 		const auto& nodes = (*it).second;
 
-		for (nsvr_node_id node : nodes) {
-			m_api->submit_unpause(request_id, node);
+		for (NodeId<local> node : nodes) {
+			m_api->submit_unpause(request_id, node.value);
 		}
 	}
 }

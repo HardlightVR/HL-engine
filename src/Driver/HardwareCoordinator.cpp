@@ -96,7 +96,7 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 {
 	// For now, I'm simply forwarding the relevant events to all the devices
 	// More complex behavior later
-	
+	/*
 	sdkEvents.Subscribe(
 	{ 
 		NullSpaceIPC::HighLevelEvent::kSimpleHaptic,
@@ -111,46 +111,44 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 
 	
 	});
-
-	
-	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kSimpleHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		if (event.simple_haptic().where_case() == NullSpaceIPC::SimpleHaptic::WhereCase::kRegions) {
-			m_devices.EachDevice([&](Device* device) {
-				device->DispatchEvent(event);
-			});
-		}
-		else {
-			/*const auto& nodeList = event.simple_haptic().nodes();
-			std::unordered_map<std::string, std::unordered_map<nsvr_device_id, std::vector<nsvr_node_id>>> testMap;
-			for (const auto& node : nodeList.nodes()) {
-				if (auto possibleNode = m_idService.FromGlobalNode(node)) {
-					testMap[possibleNode->plugin][possibleNode->device_id].push_back(possibleNode->id);
-
-				}
-			}*/
-		}
-		
-	});
-	/*
-	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.EachDevice([&](Device* device) {
-			device->DispatchEvent(event);
-		});
-	});
-
-	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kRealtimeHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.EachDevice([&](Device* device) {
-			device->DispatchEvent(event);
-		});
-	});
-
-	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kCurveHaptic, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.EachDevice([&](Device* device) {
-			device->DispatchEvent(event);
-		});
-	});
 */
 	
+	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
+		m_devices.EachDevice([&](Device* device) { device->DispatchEvent(event.playback_event()); });
+	});
+
+	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kLocationalEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
+		const auto& loc = event.locational_event().location();
+		if (loc.where_case() == NullSpaceIPC::Location::kNodes) {
+		
+			std::unordered_map<LocalDevice, std::vector<NodeId<local>>> all_nodes;
+			for (const auto& node : loc.nodes().nodes()) {
+				
+				if (auto possibleNode = m_idService.FromGlobalNode(NodeId<global>{node})) {
+					all_nodes[LocalDevice{ possibleNode->device_id, possibleNode->plugin }].push_back(NodeId<local>{possibleNode->id});
+				}
+			}
+			
+			for (const auto& kvp : all_nodes) {
+				Device* d = m_devices.Get(kvp.first.plugin, DeviceId<local>{kvp.first.id});
+				if (d) {
+					d->DispatchEvent(event.parent_id(), event.locational_event().simple_haptic(), kvp.second);
+				}
+			}
+		}
+		else {
+			std::vector<nsvr_region> regions;
+			for (const auto& region : loc.regions().regions()) {
+				regions.push_back(region);
+			}
+
+			m_devices.EachDevice([&](Device* device) {
+				device->DispatchEvent(event.parent_id(), event.locational_event().simple_haptic(), regions);
+			});
+		}
+	
+	});
+		
 	
 }
 

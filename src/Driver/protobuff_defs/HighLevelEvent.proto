@@ -8,7 +8,7 @@ message RegionList {
 }
 
 message NodeList {
-	repeated uint64 nodes = 1;
+	repeated uint32 nodes = 1;
 }
 
 message Location {
@@ -19,10 +19,6 @@ message Location {
 }
 
 message SimpleHaptic {
-	oneof where {
-		RegionList regions = 1;
-		NodeList nodes = 2;
-	}
 	uint32 effect = 3;
 	float strength = 4;
 	float duration = 5;

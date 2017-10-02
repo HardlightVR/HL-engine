@@ -226,10 +226,22 @@ void BodyGraph::ClearAssociations(nsvr_node_id node_id)
 }
 
 
-// Retrieve any nodes that are associated with a particular named region
 std::vector<nsvr_node_id> BodyGraph::getNodesForNamedRegion(subregion::shared_region region) const
 {
 	std::vector<nsvr_node_id> nodes;
+
+	//Special case for whole body - must refactor, and test these methods better
+	if (region._value == subregion::shared_region::identifier_body) {
+		const auto& all = getAllNodes();
+		for (const auto& kvp : all) {
+			nodes.insert(nodes.end(), kvp.second.begin(), kvp.second.end());
+		}
+		std::sort(nodes.begin(), nodes.end());
+		nodes.erase(std::unique(nodes.begin(), nodes.end()), nodes.end());
+		return nodes;
+
+	}
+
 
 	for (auto& bp : m_bodyparts) {
 		subregion* ptr = bp.second.region->find(region);

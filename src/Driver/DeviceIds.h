@@ -21,6 +21,10 @@ struct global {};
 struct local {};
 
 
+template<typename T>
+bool operator<(const NodeId<T>& lhs, const NodeId<T>&rhs) noexcept {
+	return lhs.value < rhs.value;
+}
 
 template<typename T>
 bool operator==(const NodeId<T>& lhs, const NodeId<T>& rhs) noexcept {

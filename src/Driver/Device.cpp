@@ -24,22 +24,42 @@ Device::Device(
 void Device::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
 {
 	switch (event.events_case()) {
-	case NullSpaceIPC::HighLevelEvent::kSimpleHaptic:
-		handleSimpleHaptic(event.parent_id(), event.simple_haptic());
-		break;
 	case NullSpaceIPC::HighLevelEvent::kPlaybackEvent:
 		handlePlaybackEvent(event.parent_id(), event.playback_event());
 		break;
-	case NullSpaceIPC::HighLevelEvent::kRealtimeHaptic:
-		//handleRealtimeEvent(event.parent_id(), event.realtime_haptic());
-		//break;
-	case NullSpaceIPC::HighLevelEvent::kCurveHaptic:
-		//handleCurveHaptic(event.parent_id(), event.curve_haptic());
-		//break;
+	case NullSpaceIPC::HighLevelEvent::kLocationalEvent:
+		handleLocationalEvent(event.parent_id(), event.locational_event());
 	default:
 		BOOST_LOG_TRIVIAL(info) << "[Device] Unrecognized request: " << event.events_case();
 		break;
 	}
+}
+
+void Device::DispatchEvent(const NullSpaceIPC::PlaybackEvent & playback_event)
+{
+}
+
+void Device::DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic & simple, const std::vector<nsvr_region>& regions)
+{
+	auto nodes = m_bodygraph->GetNodesAtRegions(regions);
+	for (const auto& node : nodes) {
+		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
+	}
+	std::vector<NodeId<local>> temp;
+	for (const auto& n : nodes) { temp.emplace_back(n); }
+	m_playback->CreateEventRecord(event_id, temp);
+}
+
+void Device::DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple, const std::vector<NodeId<local>>& nodes)
+{
+	//assumption: these nodes are haptic nodes.
+	//This may not hold, so we should filter first. Need to add that method to the discoverer.
+
+	for (const auto& node : nodes) {
+		m_haptics->SubmitSimpleHaptic(event_id, node.value, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
+	}
+
+	m_playback->CreateEventRecord(event_id, nodes); 
 }
 
 DeviceId<local> Device::id() const
@@ -78,9 +98,21 @@ std::vector<T> protoBufToVec(const google::protobuf::RepeatedField<E>& inArray) 
 	return result;
 }
 
+void Device::handleLocationalEvent(uint64_t event_id, const NullSpaceIPC::LocationalEvent & locational)
+{
+	switch (locational.events_case()) {
+	case NullSpaceIPC::LocationalEvent::EventsCase::kSimpleHaptic:
+		handleSimpleHaptic(event_id, locational.simple_haptic());
+		break;
+	default:
+		break;
+	}
+
+}
+
 void Device::handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple)
 {
-	std::vector<nsvr_node_id> nodes;
+	/*std::vector<nsvr_node_id> nodes;
 	if (simple.where_case() == NullSpaceIPC::SimpleHaptic::kNodes) {
 		nodes = protoBufToVec<nsvr_node_id>(simple.nodes().nodes());
 	}
@@ -96,7 +128,7 @@ void Device::handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHap
 		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
 	}
 
-	m_playback->CreateEventRecord(event_id, hapticNodes);
+	m_playback->CreateEventRecord(event_id, hapticNodes);*/
 
 }
 
