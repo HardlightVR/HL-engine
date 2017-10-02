@@ -25,7 +25,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 {
 	
 
-	m_adapter->SetMonitor(m_monitor);
+	m_adapter->SetConnectionMonitor(m_monitor);
 
 	m_monitor->OnReconnect([&]() {
 		nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, 0);

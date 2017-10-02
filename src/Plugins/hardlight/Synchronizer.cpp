@@ -14,7 +14,7 @@ Synchronizer::State Synchronizer::SyncState()
 
 void Synchronizer::TryReadPacket()
 {
-	if (_dataStream->read_available() < PACKET_LENGTH){
+	if (_dataStream.read_available() < PACKET_LENGTH){
 		return;
 	}
 	
@@ -57,12 +57,12 @@ void Synchronizer::handleReadPacket(const boost::system::error_code& ec) {
 
 std::size_t Synchronizer::PossiblePacketsAvailable()
 {
-	return _dataStream->read_available() / PACKET_LENGTH;
+	return _dataStream.read_available() / PACKET_LENGTH;
 }
 
 
 
-Synchronizer::Synchronizer(std::shared_ptr<Buffer> dataStream, PacketDispatcher& dispatcher, boost::asio::io_service& io) :
+Synchronizer::Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service& io) :
 	_dispatcher(dispatcher),
 	_dataStream(dataStream),
 	packetDelimiter('$'),
@@ -82,7 +82,7 @@ Synchronizer::~Synchronizer()
 void Synchronizer::searchForSync()
 {
 	//this->dataStream.Length < this->packetLength * 2
-	if (this->_dataStream->read_available() < PACKET_LENGTH * 2) {
+	if (_dataStream.read_available() < PACKET_LENGTH * 2) {
 		return;
 	}
 
@@ -98,7 +98,7 @@ void Synchronizer::searchForSync()
 			std::size_t howMuchLeft = offset;
 			for (std::size_t i = 0; i < howMuchLeft; ++i)
 			{
-				_dataStream->pop();
+				_dataStream.pop();
 			}
 			this->syncState = State::ConfirmingSync;
 			return;
@@ -159,7 +159,7 @@ packet Synchronizer::dequeuePacket() const
 
 	try
 	{
-		int numPopped = _dataStream->pop(p.raw, PACKET_LENGTH);
+		int numPopped = _dataStream.pop(p.raw, PACKET_LENGTH);
 		assert(numPopped == PACKET_LENGTH);
 	
 	}

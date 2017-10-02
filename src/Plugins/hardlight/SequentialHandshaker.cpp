@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "SequentialHandshaker.h"
 #include "logger.h"
-SequentialHandshaker::SequentialHandshaker(boost::asio::io_service & io, std::string portName)
+SequentialHandshaker::SequentialHandshaker(boost::asio::io_service & io)
 	: m_io(io)
-	, m_portName(portName)
 	, m_handshakers()
 	, m_onSuccess([](std::unique_ptr<boost::asio::serial_port> p ) { 
 			boost::system::error_code ignored;

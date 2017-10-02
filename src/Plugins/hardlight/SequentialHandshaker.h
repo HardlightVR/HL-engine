@@ -7,7 +7,7 @@ class SequentialHandshaker {
 public:
 	using SuccessHandler = std::function<void(std::unique_ptr<boost::asio::serial_port>)>;
 	using FailHandler = std::function<void()>;
-	SequentialHandshaker(boost::asio::io_service& io, std::string portName);
+	SequentialHandshaker(boost::asio::io_service& io);
 	void async_begin_handshake();
 	void set_success_handler(SuccessHandler handler);
 	void set_fail_handler(FailHandler handler);
@@ -17,7 +17,6 @@ public:
 	void async_cancel();
 private:
 	boost::asio::io_service& m_io;
-	std::string m_portName;
 	std::vector<std::unique_ptr<Handshaker>> m_handshakers;
 	decltype(m_handshakers)::iterator m_currentHandshaker;
 	SuccessHandler m_onSuccess;

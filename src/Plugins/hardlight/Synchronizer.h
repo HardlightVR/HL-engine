@@ -20,7 +20,7 @@ public:
 	void TryReadPacket();
 	void BeginSync();
 	std::size_t PossiblePacketsAvailable();
-	Synchronizer(std::shared_ptr<Buffer> dataStream, PacketDispatcher& dispatcher, boost::asio::io_service&);
+	Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service&);
 	~Synchronizer();
 private:
 	State syncState;
@@ -30,7 +30,7 @@ private:
 	int badSyncCounter;
 	const int BAD_SYNC_LIMIT = 2;
 	PacketDispatcher& _dispatcher;
-	std::shared_ptr<Buffer> _dataStream;
+	Buffer& _dataStream;
 	void searchForSync();
 	void confirmSync();
 	void monitorSync();
