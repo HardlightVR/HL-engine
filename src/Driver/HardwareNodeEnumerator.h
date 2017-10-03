@@ -11,7 +11,7 @@ public:
 	HardwareNodeEnumerator(nsvr_device_id device_id, device_api* api);
 	void Discover() override;
 	void ForEachNode(NodeDiscoverer::NodeAction action) override;
-	std::vector<Node*> GetNodesOfType(nsvr_node_type type) override;
+	std::vector<nsvr_node_id> GetNodesOfType(nsvr_node_type type) override;
 	Node* Get(nsvr_node_id id) override;
 	std::vector<nsvr_node_id> FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_type type) override;
 private:

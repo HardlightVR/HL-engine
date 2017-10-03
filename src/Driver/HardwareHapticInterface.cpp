@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "HapticInterface.h"
+#include "HardwareHapticInterface.h"
 #include "WaveformGenerators.h"
 #include "nsvr_preset.h"
-HapticInterface::HapticInterface(buffered_api * bufferedApi, waveform_api * waveformApi)
+HardwareHapticInterface::HardwareHapticInterface(buffered_api * bufferedApi, waveform_api * waveformApi)
 	: m_buffered(bufferedApi)
 	, m_waveform(waveformApi)
 {
 
 }
 
-void HapticInterface::SubmitSimpleHaptic(uint64_t request_id, nsvr_node_id node_id, SimpleHaptic data)
+void HardwareHapticInterface::SubmitSimpleHaptic(uint64_t request_id, nsvr_node_id node_id, SimpleHaptic data)
 {
 	//eventually we will need to branch on whether this specific node can handle buffered or waveform, because it might be 
 	//that some nodes can only do buffered playback. Perhaps one layer up could check and then call the correct method here,
@@ -28,9 +28,3 @@ void HapticInterface::SubmitSimpleHaptic(uint64_t request_id, nsvr_node_id node_
 	}
 }
 
-SimpleHaptic::SimpleHaptic(uint32_t effect_preset, float duration, float strength)
-	: duration(duration)
-	, strength(strength)
-	, effect_preset(effect_preset)
-{
-}

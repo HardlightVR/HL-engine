@@ -329,7 +329,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\KeepaliveMonitor.h" />
     <ClInclude Include="..\src\plugins\hardlight\Locator.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\Mark2Handshaker.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Mark2Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\Mark3Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\Packet.h" />
@@ -371,7 +371,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\KeepaliveMonitor.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\Mark2Handshaker.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Mark2Handshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Mark3Handshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\NullLogger.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Packet.cpp" />

@@ -287,7 +287,7 @@ public:
 
 
 	std::vector<nsvr_node_id> getNodesForNamedRegion(subregion::shared_region region) const;
-
+	std::vector<subregion::shared_region::_enumerated> getRegionsForNode(nsvr_node_id node) const;
 
 	std::unordered_map<subregion::shared_region::_enumerated, std::vector<nsvr_node_id>> getAllNodes() const;
 private:

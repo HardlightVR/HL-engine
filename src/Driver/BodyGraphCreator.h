@@ -8,7 +8,7 @@
 class BodyGraphCreator {
 public:
 	using NodeAction = std::function<void(nsvr_node_id)>;
-	virtual ~BodyGraphCreator() {};
+	virtual ~BodyGraphCreator() = default;
 	
 	virtual void ForEachNodeAtRegion(nsvr_region region, NodeAction action) = 0;
 
@@ -19,4 +19,6 @@ public:
 	virtual std::vector<nsvr_node_id> GetNodesAtRegions(const std::vector<nsvr_region>& region) const = 0;
 
 	virtual void ForEachRegionPresent(std::function<void(nsvr_region, const std::vector<nsvr_node_id>&)> action) = 0;
+
+	virtual std::vector<nsvr_region> GetRegionsForNode(nsvr_node_id node) const = 0;
 };

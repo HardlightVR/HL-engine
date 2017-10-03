@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "HardwareNodeEnumerator.h"
-#include "DriverMessenger.h"
 HardwareNodeEnumerator::HardwareNodeEnumerator(nsvr_device_id id, device_api * api)
 	: m_api(api)
 	, m_nodes()
@@ -29,12 +28,12 @@ void HardwareNodeEnumerator::ForEachNode(NodeDiscoverer::NodeAction action)
 	}
 }
 
-std::vector<Node*> HardwareNodeEnumerator::GetNodesOfType(nsvr_node_type type)
+std::vector<nsvr_node_id> HardwareNodeEnumerator::GetNodesOfType(nsvr_node_type type)
 {
-	std::vector<Node*> filteredNodes;
+	std::vector<nsvr_node_id> filteredNodes;
 	for (auto& kvp : m_nodes) {
 		if (kvp.second.type() == type) {
-			filteredNodes.push_back(&m_nodes.at(kvp.first));
+			filteredNodes.push_back(kvp.first);
 		}
 	}
 

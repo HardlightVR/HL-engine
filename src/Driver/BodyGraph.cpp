@@ -274,6 +274,21 @@ std::vector<nsvr_node_id> BodyGraph::getNodesForNamedRegion(subregion::shared_re
 }
 
 
+std::vector<subregion::shared_region::_enumerated> BodyGraph::getRegionsForNode(nsvr_node_id node) const
+{
+	std::vector<subregion::shared_region::_enumerated> regions;
+	BGL_FORALL_VERTICES_T(v, m_nodes, LabeledGraph) {
+		subregion::shared_region region = m_nodes.graph()[v].computed_region;
+		auto& nodeList = m_nodes.graph()[v].nodes;
+		if (std::find(nodeList.begin(), nodeList.end(), node) != nodeList.end()) {
+			regions.push_back(region);
+		}
+
+	}
+	return regions;
+}
+
+
 std::unordered_map<subregion::shared_region::_enumerated, std::vector<nsvr_node_id>> BodyGraph::getAllNodes() const
 {
 

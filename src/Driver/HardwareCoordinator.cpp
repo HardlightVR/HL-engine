@@ -37,6 +37,11 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 			m_messenger.WriteNode(info);
 		});
 
+		device->OnReceiveTrackingUpdate([this](nsvr_region region, nsvr_quaternion* quat) {
+			NullSpace::SharedMemory::Quaternion q{ quat->x, quat->y, quat->z, quat->w };
+			m_messenger.WriteTracking(region, q);
+		});
+
 	});
 
 	m_devices.OnDeviceRemoved([this](Device* device) {

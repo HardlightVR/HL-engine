@@ -6,6 +6,7 @@
 #include "PlaybackController.h"
 #include "DeviceDescriptor.h"
 #include "HapticInterface.h"
+#include "TrackingProvider.h"
 #include "DeviceIds.h"
 //theory:
 //NodeDiscoverer can be mocked out. So we can provide a bunch of fake nodes
@@ -33,8 +34,11 @@ public:
 		std::shared_ptr<BodyGraphCreator>,
 		std::unique_ptr<NodeDiscoverer>, 
 		std::unique_ptr<PlaybackController>, 
-		std::unique_ptr<HapticInterface>
+		std::unique_ptr<HapticInterface>,
+		std::unique_ptr<TrackingProvider>
 	);
+	using TrackingHandler = std::function<void(nsvr_region, nsvr_quaternion*)>;
+
 	void DispatchEvent(const NullSpaceIPC::HighLevelEvent& event);
 	void DispatchEvent(const NullSpaceIPC::PlaybackEvent& playback_event);
 	void DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& haptic_event, const std::vector<NodeId<local>>& nodes);
@@ -43,7 +47,7 @@ public:
 	std::string name() const;
 	nsvr_device_concept concept() const;
 	std::string parentPlugin() const;
-
+	void OnReceiveTrackingUpdate(TrackingHandler handler);
 	void ForEachNode(std::function<void(Node*)> action);
 private:
 	std::string m_originator;
@@ -52,6 +56,7 @@ private:
 	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::unique_ptr<PlaybackController> m_playback;
 	std::unique_ptr<HapticInterface> m_haptics;
+	std::unique_ptr<TrackingProvider> m_trackingProvider;
 	void handleLocationalEvent(uint64_t event_id, const NullSpaceIPC::LocationalEvent& locational);
 	void handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(uint64_t event_id, const NullSpaceIPC::PlaybackEvent& playbackEvent);

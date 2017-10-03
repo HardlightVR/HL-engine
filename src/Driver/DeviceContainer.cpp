@@ -5,10 +5,13 @@
 #include "HardwareBodygraphCreator.h"
 #include "HardwareNodeEnumerator.h"
 #include "HardwarePlaybackController.h"
+#include "HardwareHapticInterface.h"
+#include "HardwareTracking.h"
 #include "HapticInterface.h"
 #include "DriverMessenger.h"
 #include "DeviceIds.h"
-//todo: we need a translation table from device -> user facing device
+
+#include "DeviceBuilder.h"
 
 DeviceContainer::DeviceContainer()
 
@@ -46,25 +49,35 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 }
 
 
+
 void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
+	//Need to have a good way of saying "Is this API available? Okay, here's this component. Else, here's some kind of stub, or fail to create the device,
+	//or create a "simpler" version of the device. We can simply check if the GetApi call returns nullptr, but there's no machinery right now
+	//to deal with that.
 	
+
+
 	auto playback = std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>());
 
 	auto bodygraph = std::make_shared<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>());
 
 	auto nodes = std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>());
 	
+	auto tracking = std::make_unique<HardwareTracking>(apis.GetApi<tracking_api>());
 
-	auto haptics = std::make_unique<HapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>());
+	auto haptics = std::make_unique<HardwareHapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>());
 
 	m_deviceLock.lock();
 
-	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, bodygraph, std::move(nodes), std::move(playback), std::move(haptics)));
+	m_devices.push_back(std::make_unique<Device>(originatingPlugin, desc, bodygraph, std::move(nodes), std::move(playback), std::move(haptics), std::move(tracking)));
 	m_simulations.push_back(std::make_unique<SimulatedDevice>(desc.id, desc.displayName, originatingPlugin,  apis, bodygraph));
 
 	m_deviceLock.unlock();
 
+	//this actually won't work as intended
+	//it should grab the pointer inside the locked regionx
+	//todo(fix)
 	m_onDeviceAdded(m_devices.back().get());
 }
 

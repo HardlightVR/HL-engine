@@ -9,7 +9,8 @@ Device::Device(
 	std::shared_ptr<BodyGraphCreator> bodygraph,
 	std::unique_ptr<NodeDiscoverer> discoverer, 
 	std::unique_ptr<PlaybackController> playback,
-	std::unique_ptr<HapticInterface> haptics
+	std::unique_ptr<HapticInterface> haptics,
+	std::unique_ptr<TrackingProvider> tracking
 )
 	: m_description(descriptor)
 	, m_bodygraph(bodygraph)
@@ -17,8 +18,12 @@ Device::Device(
 	, m_playback(std::move(playback))
 	, m_haptics(std::move(haptics))
 	, m_originator(parentPlugin)
+	, m_trackingProvider(std::move(tracking))
 {
-	
+	const auto& trackingNodes = m_discoverer->GetNodesOfType(nsvr_node_type_inertial_tracker);
+	for (nsvr_node_id node : trackingNodes) {
+		m_trackingProvider->BeginStreaming(NodeId<local>{node});
+	}
 }
 
 void Device::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
@@ -81,6 +86,16 @@ nsvr_device_concept Device::concept() const
 std::string Device::parentPlugin() const
 {
 	return m_originator;
+}
+
+void Device::OnReceiveTrackingUpdate(TrackingHandler handler)
+{
+	m_trackingProvider->OnUpdate([this, callback = handler](NodeId<local> node, nsvr_quaternion* quat) {
+		const auto& regions = m_bodygraph->GetRegionsForNode(node.value);
+		for (const auto& region : regions) {
+			callback(region, quat);
+		}
+	});
 }
 
 void Device::ForEachNode(std::function<void(Node*)> action)

@@ -12,7 +12,7 @@
 #include "nsvr_core_errors.h"
 #include "BodyRegion.h"
 #include "ExceptionGuard.h"
-#include "TrackingStream.h"
+#include "HardwareTracking.h"
 #define NULL_ARGUMENT_CHECKS
 
 
@@ -124,8 +124,7 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_tracking_stream_push(nsvr_tracking_stream * s
 	RETURN_IF_NULL(quaternion);
 
 	return ExceptionGuard([stream, quaternion]() {
-		//todo: reimplement
-		AS_TYPE(TrackingStream, stream)->deliver(quaternion);
+		AS_TYPE(HardwareTracking::stream, stream)->deliver(quaternion);
 		return nsvr_success;
 	});
 }

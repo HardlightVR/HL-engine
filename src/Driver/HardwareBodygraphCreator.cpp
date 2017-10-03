@@ -88,6 +88,19 @@ void HardwareBodygraphCreator::ForEachRegionPresent(std::function<void(nsvr_regi
 	for (auto& kvp : allNodes) {
 		action(static_cast<nsvr_region>(kvp.first), kvp.second);
 	}
+
+	
+}
+
+std::vector<nsvr_region> HardwareBodygraphCreator::GetRegionsForNode(nsvr_node_id node) const
+{
+	std::vector<nsvr_region> test;
+	for (const auto& x : m_graph.getRegionsForNode(node)) {
+		test.push_back(x);
+	}
+	//why does the following line not work?!
+	//return m_graph.getRegionsForNode(node);
+	return test;
 }
 
 
