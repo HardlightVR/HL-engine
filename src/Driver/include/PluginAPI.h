@@ -37,21 +37,6 @@ extern "C" {
 	typedef uint32_t nsvr_node_id;
 	typedef uint32_t nsvr_device_id;
 
-	// As a plugin author, you may implement three levels of functionality.
-	 
-	// If you implement the Basic Requirements, we will command your hardware with the simplest primitives
-	// available. This is appropriate for devices like controllers, or if your API only supports buffered or 
-	// "preset" haptic capabilities.
-	
-	// If you implement the Standard Requirements, we will pass more complex events to your plugin for processing 
-	// that we cannot perform. For example, the haptic transition from a long-lived effect to a short, abrupt effect
-	// requires hardware and firmware-specific knowledge. 
-
-	// If you implement the Extended Requirements, your plugin will deliver complex playback capabilities, 
-	// such as starting, stopping, and canceling effects. Additionally, this will allow the core to perform ducking, 
-	// layering, and compositing operations.
-
-
 
 	/////////////////////////
 	// Plugin Registration //
@@ -91,6 +76,13 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_device_event_raise(nsvr_core* core, nsvr_device_event_type type, nsvr_device_id id);
 	
+	
+	/////////////
+	// Logging //
+	/////////////
+
+	// To log a message to the core, call nsvr_log with a given severity level and component name.
+	// The message will be formatted generally as [Timestamp][Severity][PluginName][PluginComponent] Message
 
 	typedef enum nsvr_severity {
 		nsvr_severity_trace,
@@ -100,33 +92,28 @@ extern "C" {
 		nsvr_severity_fatal
 	} nsvr_severity;
 
-
 	NSVR_CORE_RETURN(int) nsvr_log(nsvr_core* core, nsvr_severity level, const char* component, const char* message);
 
+
+	////////////////
+	// Filesystem //
+	////////////////
+
+	// If your plugin needs to access files that were distributed with the plugin, then the following call will retrieve that directory.
 	typedef struct nsvr_directory {
 		char path[1024];
 	} nsvr_directory;
 	NSVR_CORE_RETURN(int) nsvr_filesystem_getdatadirectory(nsvr_core* core, nsvr_directory* outDir);
 
-	typedef struct nsvr_quaternion {
-		float w;
-		float x;
-		float y;
-		float z;
-	} nsvr_quaternion;
 
-	
+	////////////////////////
+	// Device Enumeration //
+	////////////////////////
 
 	typedef struct nsvr_node_ids {
 		nsvr_node_id ids[128];
 		unsigned int node_count;
 	} nsvr_node_ids;
-
-	typedef struct nsvr_device_ids {
-		nsvr_device_id ids[128];
-		unsigned int device_count;
-	} nsvr_device_ids;
-	
 
 	typedef enum nsvr_node_type {
 		nsvr_node_type_unknown = 0,
@@ -142,6 +129,12 @@ extern "C" {
 		char name[512];
 	} nsvr_node_info;
 
+
+	typedef struct nsvr_device_ids {
+		nsvr_device_id ids[128];
+		unsigned int device_count;
+	} nsvr_device_ids;
+	
 	typedef enum nsvr_device_concept {
 		nsvr_device_concept_unknown,
 		nsvr_device_concept_suit,
@@ -158,12 +151,8 @@ extern "C" {
 		nsvr_device_concept concept;
 	} nsvr_device_info;
 
-	typedef struct nsvr_device_request nsvr_device_request;
 
-	//question: should node IDs be unique per system?
 	typedef struct nsvr_plugin_device_api {
-		//todo: I think that commands must be sent with node, device id pair. As in, I think nodes shouldn't need unique ids between
-		//devices. Maybe?
 		typedef void(*nsvr_device_enumeratedevices)(nsvr_device_ids*, void*);
 		typedef void(*nsvr_device_enumeratenodes)(nsvr_device_id device_id, nsvr_node_ids*, void*);
 		typedef void(*nsvr_device_getnodeinfo)(nsvr_node_id node_id, nsvr_node_info* info, void*);
@@ -178,12 +167,12 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_register_device_api(nsvr_core* core, nsvr_plugin_device_api* api);
 	
+	////////////////
+	// Updateloop //
+	////////////////
 
-	typedef struct nsvr_plugin_prototype_api {
-
-	} nsvr_plugin_prototype_api;
-
-
+	// If your plugin does not require advanced threading, you may hook into an update loop instead of spawning a background thread.
+	// The delta time between updates will be provided in the callback.
 
 	typedef struct nsvr_plugin_updateloop_api {
 		typedef void(*nsvr_updateloop)(uint64_t delta_time_ms, void* cd);
@@ -192,16 +181,13 @@ extern "C" {
 	} nsvr_plugin_updateloop_api;
 
 	NSVR_CORE_RETURN(int) nsvr_register_updateloop_api(nsvr_core* core, nsvr_plugin_updateloop_api* api);
-	
-	//////////////////////////
-	// Basic Implementation //
-	//////////////////////////
 
 	
+	//////////////////////
+	// Buffered Haptics //
+	//////////////////////
 
-	// If you have a buffered-style API with calls similar to SubmitHapticData(void* amplitudes, int length),
-	// implement the buffer_api interface
-
+	// If you have a buffered-style API with calls similar to SubmitHapticData(void* amplitudes, int length), register this interface
 
 	typedef struct nsvr_plugin_buffered_api {
 		typedef void(*nsvr_buffered_submit)(uint64_t request_id, nsvr_node_id node_id, double* amplitudes, uint32_t count, void*);
@@ -216,9 +202,11 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_register_buffered_api(nsvr_core* core, nsvr_plugin_buffered_api* api);
 
 
-	
+	//////////////////////
+	// Waveform Haptics //
+	//////////////////////
 
-	// A preset family specifies a certain feeling which your haptic device produces. 
+	// If your device has preset or canned effects, register this interface. 
 	typedef enum nsvr_default_waveform {
 		nsvr_preset_family_unknown = 0,
 		nsvr_preset_family_bump = 1,
@@ -235,7 +223,6 @@ extern "C" {
 
 	typedef struct nsvr_waveform nsvr_waveform;
 
-
 	NSVR_CORE_RETURN(int) nsvr_waveform_getname(nsvr_waveform* req, nsvr_default_waveform* outWaveform);
 	
 	NSVR_CORE_RETURN(int) nsvr_waveform_getstrength(nsvr_waveform* req, float* outStrength);
@@ -243,9 +230,6 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_waveform_getrepetitions(nsvr_waveform* req, uint32_t* outRepetitions);
 
 	
-	
-
-
 	typedef struct nsvr_plugin_waveform_api {
 		typedef void(*nsvr_waveform_activate_handler)(uint64_t request_id, nsvr_node_id node_id, nsvr_waveform* waveform, void* cd);
 		nsvr_waveform_activate_handler activate_handler;
@@ -255,22 +239,12 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_register_waveform_api(nsvr_core* core, nsvr_plugin_waveform_api* api);
 
 
-	/////////////////////////////
-	// Standard Implementation //
-	/////////////////////////////
+	//////////////////////////////
+	// Haptic Playback Controls //
+	//////////////////////////////
 
+	// In order to combine haptic effects, it must be possible to pause, unpause, and cancel effects that are already in flight.
 
-
-
-	
-	
-
-	/////////////////////////////
-	// Extended Implementation //
-	/////////////////////////////
-
-
-	
 	typedef struct nsvr_plugin_playback_api {
 		typedef void(*nsvr_playback_pause)(uint64_t request_id, nsvr_node_id node_id, void* client_data);
 		typedef void(*nsvr_playback_unpause)(uint64_t request_id, nsvr_node_id node_id, void* client_data);
@@ -284,20 +258,17 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_register_playback_api(nsvr_core* core, nsvr_plugin_playback_api* api);
 
-
-
-	
-	typedef struct nsvr_plugin_rawcommand_api {
-		typedef void(*nsvr_rawcommand_send)(uint8_t* bytes, unsigned int length, void* client_data);
-		nsvr_rawcommand_send send_handler;
-		void* client_data;
-	} nsvr_plugin_rawcommand_api;
-
-	NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core* core, nsvr_plugin_rawcommand_api* api);
-
-
+	//////////////
+	// Tracking //
+	//////////////
 	typedef struct nsvr_tracking_stream nsvr_tracking_stream;
 
+	typedef struct nsvr_quaternion {
+		float w;
+		float x;
+		float y;
+		float z;
+	} nsvr_quaternion;
 
 	typedef struct nsvr_plugin_tracking_api {
 		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_node_id node_id, void* client_data);
@@ -307,12 +278,15 @@ extern "C" {
 		nsvr_tracking_endstreaming endstreaming_handler;
 		void* client_data;
 	} nsvr_plugin_tracking_api;
-	
+
 	NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core* core, nsvr_plugin_tracking_api* api);
 	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
 
 
 
+	/////////////////////////
+	// Bodygraph / Spatial //
+	/////////////////////////
 
 	typedef enum nsvr_bodypart {
 		nsvr_bodypart_unknown = 0,
@@ -332,7 +306,6 @@ extern "C" {
 		nsvr_bodypart_torso,
 		nsvr_bodypart_neck,
 		nsvr_bodypart_head
-
 
 	} nsvr_bodypart;
 
@@ -364,6 +337,20 @@ extern "C" {
 	} nsvr_plugin_bodygraph_api;
 
 	NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core* core, nsvr_plugin_bodygraph_api* api);
+
+	/////////////////////////
+	// Rawcommand / Debug  //
+	/////////////////////////
+
+	// This is temporary. Do not rely upon this. 
+
+	typedef struct nsvr_plugin_rawcommand_api {
+		typedef void(*nsvr_rawcommand_send)(uint8_t* bytes, unsigned int length, void* client_data);
+		nsvr_rawcommand_send send_handler;
+		void* client_data;
+	} nsvr_plugin_rawcommand_api;
+
+	NSVR_CORE_RETURN(int) nsvr_register_rawcommand_api(nsvr_core* core, nsvr_plugin_rawcommand_api* api);
 
 
 
