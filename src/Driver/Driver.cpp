@@ -141,8 +141,12 @@ bool Driver::Shutdown()
 
 void Driver::DrawDiagnostics()
 {
+
+
 	m_renderingApi.keyval("Test", "Hello!");
-	m_renderingApi.button("Self Destruct");
+	if (m_renderingApi.button("Self Destruct")) {
+		m_renderingApi.keyval("Yolo!");
+	}
 }
 
 void Driver::handleHaptics()

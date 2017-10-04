@@ -10,53 +10,51 @@
 
 
 
-NS_DRIVER_API NSVR_Driver_Context_t* __cdecl NSVR_Driver_Create()
+HVR_RETURN(int) hvr_platform_create(hvr_platform** platform)
 {
 	Locator::initialize();
 	Locator::provide(new EnumTranslator());
 	
 	initialize_logging();
 
-	return AS_TYPE(NSVR_Driver_Context_t, new Driver());
+	*platform = AS_TYPE(hvr_platform, new Driver());
+	return 1;
 }
 
-NS_DRIVER_API void __cdecl NSVR_Driver_Destroy(NSVR_Driver_Context_t* ptr)
+HVR_RETURN(void) hvr_platform_destroy(hvr_platform** ptr)
 {
-	if (!ptr) {
-		return;
-	}
-
-	delete AS_TYPE(Driver, ptr);
+	delete AS_TYPE(Driver, *ptr);
+	*ptr = nullptr;
 }
 
-NS_DRIVER_API bool __cdecl NSVR_Driver_Shutdown(NSVR_Driver_Context_t * ptr)
+HVR_RETURN(int) hvr_platform_shutdown(hvr_platform * ptr)
 {
 	return AS_TYPE(Driver, ptr)->Shutdown();
 }
 
-NS_DRIVER_API void __cdecl NSVR_Driver_StartThread(NSVR_Driver_Context_t * ptr)
+HVR_RETURN(int) hvr_platform_startup(hvr_platform * ptr)
 {
 	AS_TYPE(Driver, ptr)->StartThread();
 }
 
-NS_DRIVER_API unsigned int __cdecl NSVR_Driver_GetVersion(void)
+HVR_RETURN(unsigned int) hvr_platform_getversion(void)
 {
-	return NS_DRIVER_API_VERSION;
+	return HVR_PLATFORM_API_VERSION;
 }
 
-NS_DRIVER_API int __cdecl NSVR_Driver_IsCompatibleDLL(void)
+HVR_RETURN(bool) hvr_platform_isdllcompatible(void)
 {
-	unsigned int major = NSVR_Driver_GetVersion() >> 16;
-	return major == NS_DRIVER_API_VERSION_MAJOR;
+	unsigned int major = hvr_platform_getversion() >> 16;
+	return major == HVR_PLATFORM_API_VERSION_MAJOR;
 }
 
-NS_DRIVER_API int __cdecl NSVR_Driver_SetupDiagnostics(NSVR_Driver_Context_t* ptr, NSVR_Diagnostics_Menu * api)
+HVR_RETURN(int) hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui * api)
 {
 	AS_TYPE(Driver, ptr)->ProvideRenderingApi(api);
 	return 1;
 }
 
-NS_DRIVER_API int __cdecl NSVR_Driver_DrawDiagnostics(NSVR_Driver_Context_t* ptr)
+HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr)
 {
 	AS_TYPE(Driver, ptr)->DrawDiagnostics();
 	return 1;

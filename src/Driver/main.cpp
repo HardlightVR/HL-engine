@@ -14,7 +14,7 @@ int main()
 
 
 
-	using driver_create_t = std::function<NSVR_Driver_Context_t*(void)>;
+	using driver_create_t = std::function<hvr_platform*(void)>;
 	using driver_start_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_stop_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_destroy_t = std::function<void(NSVR_Driver_Context_t*)>;
@@ -70,7 +70,7 @@ int main()
 
 	unsigned int version = driver_getversion();
 	std::cout << "========= NSVREngine Version " << (version >> 16) << "." << ((version << 16) >> 16) << " =========\n";
-	NSVR_Driver_Context_t* context = driver_create();
+	hvr_platform* context = driver_create();
 	driver_start(context);
 
 

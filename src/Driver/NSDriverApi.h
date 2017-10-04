@@ -2,31 +2,31 @@
 
 
 #ifdef NS_DRIVER_EXPORTS  
-#define NS_DRIVER_API __declspec(dllexport)
+#define HVR_PLATFORM_API __declspec(dllexport)
 #else  
-#define NS_DRIVER_API __declspec(dllimport)   
+#define HVR_PLATFORM_API __declspec(dllimport)   
 #endif  
 
 
-#define NS_DRIVER_API_VERSION_MAJOR 0
-#define NS_DRIVER_API_VERSION_MINOR 3
-#define NS_DRIVER_API_VERSION ((NS_DRIVER_API_VERSION_MAJOR << 16) | NS_DRIVER_API_VERSION_MINOR)
+#define HVR_PLATFORM_API_VERSION_MAJOR 0
+#define HVR_PLATFORM_API_VERSION_MINOR 4
+#define HVR_PLATFORM_API_VERSION ((HVR_PLATFORM_API_VERSION_MAJOR << 16) | HVR_PLATFORM_API_VERSION_MINOR)
+#define HVR_RETURN(ReturnType) HVR_PLATFORM_API ReturnType __cdecl
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-	struct NSVR_Driver_Context;
-	typedef struct NSVR_Driver_Context NSVR_Driver_Context_t;
+	typedef struct hvr_platform hlvr_platform;
 
-	NS_DRIVER_API NSVR_Driver_Context_t* __cdecl NSVR_Driver_Create();
-	NS_DRIVER_API void __cdecl NSVR_Driver_Destroy(NSVR_Driver_Context_t* ptr);
-	NS_DRIVER_API bool __cdecl NSVR_Driver_Shutdown(NSVR_Driver_Context_t* ptr);
-	NS_DRIVER_API void __cdecl NSVR_Driver_StartThread(NSVR_Driver_Context_t* ptr);
-	NS_DRIVER_API unsigned int __cdecl NSVR_Driver_GetVersion(void);
-	NS_DRIVER_API  int __cdecl NSVR_Driver_IsCompatibleDLL(void);
+	HVR_RETURN(int) hvr_platform_create(hvr_platform** platform);
+	HVR_RETURN(void) hvr_platform_destroy(hvr_platform** ptr);
+	HVR_RETURN(int) hvr_platform_shutdown(hvr_platform* ptr);
+	HVR_RETURN(int) hvr_platform_startup(hvr_platform* ptr);
+	HVR_RETURN(unsigned) hvr_platform_getversion(void);
+	HVR_RETURN(bool) hvr_platform_isdllcompatible(void);
 
-	struct NSVR_Diagnostics_Menu {
+	struct hvr_diagnostics_ui {
 		typedef void(*make_keyval)(const char* key, const char* val);
 		typedef bool(*make_button)(const char* label);
 
@@ -35,8 +35,10 @@ extern "C" {
 
 	};
 
-	NS_DRIVER_API int  __cdecl NSVR_Driver_SetupDiagnostics(NSVR_Driver_Context_t* ptr, NSVR_Diagnostics_Menu* api);
-	NS_DRIVER_API int __cdecl NSVR_Driver_DrawDiagnostics(NSVR_Driver_Context_t* ptr);
+
+
+	HVR_PLATFORM_API int  __cdecl hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui* api);
+	HVR_PLATFORM_API int __cdecl hvr_platform_updatediagnostics(hvr_platform* ptr);
 
 #ifdef __cplusplus
 }
