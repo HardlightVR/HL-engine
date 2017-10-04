@@ -139,6 +139,12 @@ bool Driver::Shutdown()
 	return true;
 }
 
+void Driver::DrawDiagnostics()
+{
+	m_renderingApi.keyval("Test", "Hello!");
+	m_renderingApi.button("Self Destruct");
+}
+
 void Driver::handleHaptics()
 {
 	//note: changed to ReadEvents instead of ReadHaptics
@@ -229,5 +235,10 @@ void Driver::handleTracking()
 	//m_cachedTracking = update;
 
 	//m_messenger.WriteTracking(update);
+}
+
+void Driver::ProvideRenderingApi(NSVR_Diagnostics_Menu * api)
+{
+	m_renderingApi = *api;
 }
 

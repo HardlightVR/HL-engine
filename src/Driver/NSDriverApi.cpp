@@ -49,3 +49,15 @@ NS_DRIVER_API int __cdecl NSVR_Driver_IsCompatibleDLL(void)
 	unsigned int major = NSVR_Driver_GetVersion() >> 16;
 	return major == NS_DRIVER_API_VERSION_MAJOR;
 }
+
+NS_DRIVER_API int __cdecl NSVR_Driver_SetupDiagnostics(NSVR_Driver_Context_t* ptr, NSVR_Diagnostics_Menu * api)
+{
+	AS_TYPE(Driver, ptr)->ProvideRenderingApi(api);
+	return 1;
+}
+
+NS_DRIVER_API int __cdecl NSVR_Driver_DrawDiagnostics(NSVR_Driver_Context_t* ptr)
+{
+	AS_TYPE(Driver, ptr)->DrawDiagnostics();
+	return 1;
+}

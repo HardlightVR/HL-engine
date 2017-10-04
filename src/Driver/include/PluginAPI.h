@@ -338,6 +338,42 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_register_bodygraph_api(nsvr_core* core, nsvr_plugin_bodygraph_api* api);
 
+	//////////////////
+	// Diagnostics  //
+	//////////////////
+
+
+	typedef struct nsvr_diagnostics_menu nsvr_diagnostics_menu;
+
+	typedef struct nsvr_plugin_diagnostics_api {
+		typedef void(*nsvr_diagnostics_updatemenu)(nsvr_diagnostics_menu* menu, void* cd);
+		void* client_data;
+	} nsvr_plugin_diagnostics_api;
+
+	NSVR_CORE_RETURN(int) nsvr_diagnostics_menu_keyval(nsvr_diagnostics_menu* menu, const char* key, const char* value);
+	NSVR_CORE_RETURN(int) nsvr_diagnostics_menu_button(nsvr_diagnostics_menu* menu, const char* label);
+	NSVR_CORE_RETURN(int) nsvr_diagnostics_dialog(const char* label, const char* affirmative, const char* negative);
+
+
+	/*
+	
+		void updateMenu() {
+			
+			menu_keyval("Plugin version", "3.0.0")
+			for (int i = 0; i <= 16; i++) {
+				menu_keyval("DRVX Status", "Nominal")
+			}
+
+			menu_button("Check DRV status")
+			menu_button("Test motors 1")
+			menu_button("Test motors 2")
+			menu_button("Test motors 3")
+
+			//and then the plugin-specific log window
+		}
+	
+	
+	*/
 	/////////////////////////
 	// Rawcommand / Debug  //
 	/////////////////////////

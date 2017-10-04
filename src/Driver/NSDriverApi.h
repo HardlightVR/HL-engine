@@ -26,6 +26,17 @@ extern "C" {
 	NS_DRIVER_API unsigned int __cdecl NSVR_Driver_GetVersion(void);
 	NS_DRIVER_API  int __cdecl NSVR_Driver_IsCompatibleDLL(void);
 
+	struct NSVR_Diagnostics_Menu {
+		typedef void(*make_keyval)(const char* key, const char* val);
+		typedef bool(*make_button)(const char* label);
+
+		make_keyval keyval;
+		make_button button;
+
+	};
+
+	NS_DRIVER_API int  __cdecl NSVR_Driver_SetupDiagnostics(NSVR_Driver_Context_t* ptr, NSVR_Diagnostics_Menu* api);
+	NS_DRIVER_API int __cdecl NSVR_Driver_DrawDiagnostics(NSVR_Driver_Context_t* ptr);
 
 #ifdef __cplusplus
 }

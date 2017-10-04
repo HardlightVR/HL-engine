@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-
+#include <conio.h>
 #include "NSDriverApi.h"
 #include <memory>
 #include <boost/dll.hpp>
@@ -19,6 +19,11 @@ int main()
 	using driver_stop_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_destroy_t = std::function<void(NSVR_Driver_Context_t*)>;
 	using driver_version_t = std::function<unsigned int(void)>;
+
+	
+	using driver_setupdiag_t = std::function<int(NSVR_Driver_Context_t*, NSVR_Diagnostics_Menu*)>;
+	using driver_drawdiag_t = std::function<int(NSVR_Driver_Context_t*)>;
+
 	boost::system::error_code loadFailure;
 	auto driver = std::make_unique<boost::dll::shared_library>("HardlightPlatform", boost::dll::load_mode::append_decorations, loadFailure);
 	if (loadFailure) {
@@ -52,10 +57,27 @@ int main()
 		std::cout << "Couldn't find NSVR_Driver_GetVersion()\n";
 	}
 
+
+	driver_setupdiag_t driver_setupdiag;
+	if (!tryLoad(driver, "NSVR_Driver_SetupDiagnostics", driver_setupdiag)) {
+		std::cout << "Couldn't find NSVR_Driver_SetupDiagnostics()\n";
+	}
+
+	driver_drawdiag_t driver_drawdiag;
+	if (!tryLoad(driver, "NSVR_Driver_DrawDiagnostics", driver_drawdiag)) {
+		std::cout << "Couldn't find NSVR_Driver_DrawDiagnostics()\n";
+	}
+
 	unsigned int version = driver_getversion();
 	std::cout << "========= NSVREngine Version " << (version >> 16) << "." << ((version << 16) >> 16) << " =========\n";
 	NSVR_Driver_Context_t* context = driver_create();
 	driver_start(context);
+
+
+
+
+
+
 	std::cin.get();
 	driver_stop(context);
 	driver_destroy(context);

@@ -296,6 +296,7 @@
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
     <ClInclude Include="..\src\Driver\DeviceDescriptor.h" />
     <ClInclude Include="..\src\Driver\DeviceIds.h" />
+    <ClInclude Include="..\src\Driver\DiagnosticsMenu.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />

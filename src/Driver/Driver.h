@@ -1,4 +1,6 @@
 #pragma once
+
+#include "NSDriverApi.h"
 #include "DriverMessenger.h"
 #include "EventDispatcher.h"
 #include "SharedCommunication/ScheduledEvent.h"
@@ -17,6 +19,7 @@ public:
 	~Driver();
 	bool StartThread();
 	bool Shutdown();
+	void DrawDiagnostics();
 private:
 	DeviceContainer m_devices;
 	EventDispatcher m_eventDispatcher;
@@ -44,7 +47,8 @@ private:
 	PluginManager m_pluginManager;   
 	void handleTracking();
 
-	//CurveEngine m_curveEngine;
+	NSVR_Diagnostics_Menu m_renderingApi;
 
-
+public:
+	void ProvideRenderingApi(NSVR_Diagnostics_Menu * api);
 };
