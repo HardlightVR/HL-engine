@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "DriverMessenger.h"
-#include "Version.h"
+#include "NSDriverApi.h"
 
 
 
@@ -68,7 +68,7 @@ void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 	if (!ec) {
 		m_sentinel->Write(
 			NullSpace::SharedMemory::SentinelObject{ 
-				NullSpace::SharedMemory::ServiceInfo {SERVICE_VERSION_MAJOR, SERVICE_VERSION_MINOR}, 
+				NullSpace::SharedMemory::ServiceInfo {HVR_PLATFORM_API_VERSION_MAJOR, HVR_PLATFORM_API_VERSION_MINOR}, 
 				std::time(nullptr) 
 			}
 		);

@@ -161,6 +161,43 @@ void PluginManager::OnFatalError(std::function<void()> handler)
 
 
 
+std::vector<uint32_t> PluginManager::GetPluginIds() const
+{
+	std::vector<uint32_t> pluginIds;
+	for (const auto& kvp : m_plugins) {
+		pluginIds.push_back(kvp.second->GetId());
+	}
+	return pluginIds;
+}
+
+void PluginManager::DrawDiagnostics(uint32_t id, nsvr_diagnostics_ui* ui)
+{
+	for (auto& kvp : m_plugins) {
+		if (kvp.second->GetId() == id) {
+			diagnostics_api* api = kvp.second->apis().GetApi<diagnostics_api>();
+			if (api) {
+				api->submit_updatemenu(ui);
+			}
+		}
+	}
+}
+
+boost::optional<std::pair<std::string, PluginManager::PluginInfo>> PluginManager::GetPluginInfo(uint32_t id)
+{
+	boost::optional<std::string> foundPlugin;
+	for (auto& kvp : m_plugins) {
+		if (kvp.second->GetId() == id) {
+			foundPlugin = kvp.first;
+		}
+	}
+
+	if (foundPlugin) {
+		return std::make_pair(*foundPlugin, m_pluginInfo[*foundPlugin]);
+	}
+
+	return boost::none;
+}
+
 std::unique_ptr<PluginInstance> PluginManager::linkPlugin(const std::string& filename) {
 
 
@@ -173,7 +210,7 @@ std::unique_ptr<PluginInstance> PluginManager::linkPlugin(const std::string& fil
 	//	m_deviceContainer.RemoveDevice(id);
 	//}); 
 
-	auto instance = std::make_unique<PluginInstance>(m_io, filename);
+	auto instance = std::make_unique<PluginInstance>(m_io, filename, m_plugins.size());
 	
 	if (instance->Link()) {
 		return instance;

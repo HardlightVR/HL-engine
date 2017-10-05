@@ -13,7 +13,8 @@ static const std::unordered_map<Apis, const char*> PrintableApiNames = {
 	{Apis::Tracking, "Tracking"},
 	{Apis::BodyGraph, "BodyGraph"},
 	{Apis::Waveform, "Waveform"},
-	{Apis::Updateloop, "UpdateLoop"}
+	{Apis::Updateloop, "UpdateLoop"},
+	{Apis::Diagnostics, "Diagnostics"}
 };
 
 

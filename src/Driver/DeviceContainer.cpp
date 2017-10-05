@@ -50,13 +50,19 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 
 
 
+void DeviceContainer::AddDevice(nsvr_device_id, std::unique_ptr<Device> device)
+{
+	m_devices.push_back(std::move(device));
+	m_onDeviceAdded(m_devices.back().get());
+}
+
 void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
 	//Need to have a good way of saying "Is this API available? Okay, here's this component. Else, here's some kind of stub, or fail to create the device,
 	//or create a "simpler" version of the device. We can simply check if the GetApi call returns nullptr, but there's no machinery right now
 	//to deal with that.
 	
-
+	
 
 	auto playback = std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>());
 

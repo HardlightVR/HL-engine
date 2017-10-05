@@ -1,5 +1,5 @@
 #pragma once
-
+#include <stdint.h>
 
 #ifdef NS_DRIVER_EXPORTS  
 #define HVR_PLATFORM_API __declspec(dllexport)
@@ -35,10 +35,29 @@ extern "C" {
 
 	};
 
+	//Core platform abstractions:
+
+	//Devices - Nodes - Plugins
+
+	typedef uint32_t hvr_plugin_id;
+
+	struct hvr_plugin_list {
+		hvr_plugin_id ids[128];
+		uint32_t count;
+	};
+
+	struct hvr_plugin_info {
+		char name[512];
+
+	};
+	HVR_RETURN(int) hvr_platform_enumerateplugins(hvr_platform* platform, hvr_plugin_list* outPlugins);
+
+	HVR_RETURN(int) hvr_platform_getplugininfo(hvr_platform* platform, hvr_plugin_id id, hvr_plugin_info* outInfo);
+	HVR_RETURN(int) hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui* api);
+	HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id pluginId);
 
 
-	HVR_PLATFORM_API int  __cdecl hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui* api);
-	HVR_PLATFORM_API int __cdecl hvr_platform_updatediagnostics(hvr_platform* ptr);
+	HVR_RETURN(int) hvr_platform_createdevice(hvr_platform* ptr, uint32_t device_id);
 
 #ifdef __cplusplus
 }

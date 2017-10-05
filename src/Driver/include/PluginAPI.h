@@ -343,16 +343,23 @@ extern "C" {
 	//////////////////
 
 
-	typedef struct nsvr_diagnostics_menu nsvr_diagnostics_menu;
+	typedef struct nsvr_diagnostics_ui {
+		typedef void(*make_keyval)(const char* key, const char* val);
+		typedef bool(*make_button)(const char* label);
 
+		make_keyval keyval;
+		make_button button;
+
+	} nsvr_diagnostics_ui;
 	typedef struct nsvr_plugin_diagnostics_api {
-		typedef void(*nsvr_diagnostics_updatemenu)(nsvr_diagnostics_menu* menu, void* cd);
+		typedef void(*nsvr_diagnostics_updatemenu)(nsvr_diagnostics_ui* menu, void* cd);
+		nsvr_diagnostics_updatemenu updatemenu_handler;
 		void* client_data;
 	} nsvr_plugin_diagnostics_api;
 
-	NSVR_CORE_RETURN(int) nsvr_diagnostics_menu_keyval(nsvr_diagnostics_menu* menu, const char* key, const char* value);
-	NSVR_CORE_RETURN(int) nsvr_diagnostics_menu_button(nsvr_diagnostics_menu* menu, const char* label);
-	NSVR_CORE_RETURN(int) nsvr_diagnostics_dialog(const char* label, const char* affirmative, const char* negative);
+	NSVR_CORE_RETURN(int) nsvr_register_diagnostics_api(nsvr_core* core, nsvr_plugin_diagnostics_api* api);
+
+;
 
 
 	/*

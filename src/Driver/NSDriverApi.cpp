@@ -34,7 +34,7 @@ HVR_RETURN(int) hvr_platform_shutdown(hvr_platform * ptr)
 
 HVR_RETURN(int) hvr_platform_startup(hvr_platform * ptr)
 {
-	AS_TYPE(Driver, ptr)->StartThread();
+	return AS_TYPE(Driver, ptr)->StartThread();
 }
 
 HVR_RETURN(unsigned int) hvr_platform_getversion(void)
@@ -48,14 +48,32 @@ HVR_RETURN(bool) hvr_platform_isdllcompatible(void)
 	return major == HVR_PLATFORM_API_VERSION_MAJOR;
 }
 
+HVR_RETURN(int) hvr_platform_enumerateplugins(hvr_platform* platform, hvr_plugin_list * outPlugins)
+{
+	return AS_TYPE(Driver, platform)->EnumeratePlugins(outPlugins);
+}
+
+HVR_RETURN(int) hvr_platform_getplugininfo(hvr_platform* platform, hvr_plugin_id id, hvr_plugin_info* outInfo)
+{
+	return AS_TYPE(Driver, platform)->GetPluginInfo(id, outInfo);
+
+}
+
 HVR_RETURN(int) hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui * api)
 {
 	AS_TYPE(Driver, ptr)->ProvideRenderingApi(api);
 	return 1;
 }
 
-HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr)
+HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id id)
 {
-	AS_TYPE(Driver, ptr)->DrawDiagnostics();
+	AS_TYPE(Driver, ptr)->DrawDiagnostics(id);
 	return 1;
+}
+
+HVR_RETURN(int) hvr_platform_createdevice(hvr_platform* ptr, uint32_t device_id)
+{
+	return AS_TYPE(Driver, ptr)->CreateDevice(device_id);
+	
+
 }

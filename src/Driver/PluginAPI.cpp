@@ -232,5 +232,6 @@ REGISTER_API(waveform_api)
 
 REGISTER_API(updateloop_api)
 
+REGISTER_API(diagnostics_api)
 
 

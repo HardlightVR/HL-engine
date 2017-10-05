@@ -7,7 +7,7 @@
 #include "DeviceContainer.h"
 
 
-PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName) :
+PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName, uint32_t id) :
 	m_fileName(fileName), 
 	m_loaded{ false },
 	m_pluginFunctions{},
@@ -15,6 +15,7 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 	m_apis(),
 	m_eventHandler(),
 	m_io(io),
+	m_id(id),
 	m_logger(boost::log::keywords::channel = "plugin")
 	
 {
@@ -144,6 +145,11 @@ std::string PluginInstance::GetDisplayName() const
 	return m_displayName;
 }
 
+
+uint32_t PluginInstance::GetId() const
+{
+	return m_id;
+}
 
 PluginApis & PluginInstance::apis()
 {

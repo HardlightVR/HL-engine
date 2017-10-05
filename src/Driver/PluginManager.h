@@ -39,6 +39,17 @@ public:
 
 	void OnFatalError(std::function<void()> handler);
 
+	std::vector<uint32_t> GetPluginIds() const;
+	void DrawDiagnostics(uint32_t id, nsvr_diagnostics_ui* ui);
+
+	struct PluginInfo;
+	boost::optional<std::pair<std::string, PluginInfo>> GetPluginInfo(uint32_t id);
+
+	struct PluginInfo {
+		using PluginName = std::string;
+		Parsing::ManifestDescriptor Descriptor;
+		std::string DllPath;
+	};
 private:
 
 	std::function<void()> m_fatalErrorHandler;
@@ -48,11 +59,7 @@ private:
 
 	bool LoadPlugin(const std::string& searchDirectory, const std::string& dllName);
 
-	struct PluginInfo {
-		using PluginName = std::string;
-		Parsing::ManifestDescriptor Descriptor;
-		std::string DllPath;
-	};
+	
 	std::unordered_map<PluginInfo::PluginName, PluginInfo> m_pluginInfo;
 
 	void destroyAll();

@@ -9,8 +9,8 @@
 #include "Driver.h"
 #include "Enums.h"
 #include "IoService.h"
-
-
+#include "DeviceBuilder.h"
+#include "FakeDiscoverer.h"
 
 //Belongs in the hardlight plugin now
 //void extractDrvData(const packet& packet) {
@@ -139,14 +139,53 @@ bool Driver::Shutdown()
 	return true;
 }
 
-void Driver::DrawDiagnostics()
+void Driver::DrawDiagnostics(uint32_t id)
 {
+	nsvr_diagnostics_ui ui;
+	ui.button = m_renderingApi.button;
+	ui.keyval = m_renderingApi.keyval;
 
+	m_pluginManager.DrawDiagnostics(id, &ui);
 
-	m_renderingApi.keyval("Test", "Hello!");
-	if (m_renderingApi.button("Self Destruct")) {
-		m_renderingApi.keyval("Yolo!");
+}
+
+int Driver::EnumeratePlugins(hvr_plugin_list * outPlugins)
+{
+	auto ids = m_pluginManager.GetPluginIds();
+	std::copy(ids.begin(), ids.end(), outPlugins->ids);
+	outPlugins->count = ids.size();
+	return 1;
+}
+
+int Driver::GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo) {
+	if (auto optionalInfo = m_pluginManager.GetPluginInfo(id)) {
+		std::copy(std::begin(optionalInfo->first), std::end(optionalInfo->first), outInfo->name);
+		return 1;
 	}
+	else {
+		return 0;
+	}
+}
+
+int Driver::CreateDevice(uint32_t device_id)
+{
+	using namespace std::literals;
+
+	std::vector<Node> nodes = {
+		Node(NodeDescriptor{ nsvr_node_type_haptic, "Left Shoulder"s, 0 }),
+		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Shoulder"s, 1 }),
+		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 2 }),
+	};
+	auto f = std::make_unique<FakeDiscoverer>(std::move(nodes));
+
+	m_devices.AddDevice(device_id, 
+		DeviceBuilder()
+		.WithDescriptor(DeviceDescriptor{ std::string("Hardlight MkIII " + std::to_string(device_id)), device_id, nsvr_device_concept_suit })
+		.WithNodeDiscoverer(std::move(f))
+		.Build()
+	);
+
+	return 1;
 }
 
 void Driver::handleHaptics()
@@ -241,7 +280,7 @@ void Driver::handleTracking()
 	//m_messenger.WriteTracking(update);
 }
 
-void Driver::ProvideRenderingApi(NSVR_Diagnostics_Menu * api)
+void Driver::ProvideRenderingApi(hvr_diagnostics_ui * api)
 {
 	m_renderingApi = *api;
 }

@@ -29,8 +29,8 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_plugin_waveform_api waveform_api;
 	waveform_api.client_data = this;
-	waveform_api.activate_handler = [](uint64_t request_id, nsvr_node_id device_id, nsvr_waveform* waveform, void* cd) {
-		AS_TYPE(HardlightDevice, cd)->handle(request_id, device_id, waveform);
+	waveform_api.activate_handler = [](uint64_t request_id, nsvr_node_id node_id, nsvr_waveform* waveform, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->handle_waveform(request_id, node_id, waveform);
 	};
 
 	nsvr_register_waveform_api(ctx, &waveform_api);
@@ -150,25 +150,52 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 
 }
 
-void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave) {
-	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id](const auto& driver) { return driver.second->GetId() == device_id; });
-	if (it != m_drivers.end()) {
-		BasicHapticEventData data = {};
-		nsvr_default_waveform stuff;
-		nsvr_waveform_getname(wave, &stuff);
-		data.effect = stuff;
-		nsvr_waveform_getstrength(wave, &data.strength);
+//void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave) {
+//	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id](const auto& driver) { return driver.second->GetId() == device_id; });
+//	if (it != m_drivers.end()) {
+//		BasicHapticEventData data = {};
+//		nsvr_default_waveform stuff;
+//		nsvr_waveform_getname(wave, &stuff);
+//		data.effect = stuff;
+//		nsvr_waveform_getstrength(wave, &data.strength);
+//
+//		float duration = 0;
+//		uint32_t repetitions = 0;
+//		nsvr_waveform_getrepetitions(wave, &repetitions);
+//		if (repetitions > 0) {
+//			duration = 0.25f * repetitions;
+//		}
+//		data.duration = duration;
+//		(*it).second->consumeLasting(std::move(data), request_id);
+//	}
+//}
+void HardlightDevice::handle_waveform(uint64_t request_id, nsvr_node_id device_id, nsvr_waveform * wave)
+{
+	BasicHapticEventData data = { 0 };
+	nsvr_default_waveform stuff;
+	nsvr_waveform_getname(wave, &stuff);
+	data.effect = stuff;
+	nsvr_waveform_getstrength(wave, &data.strength);
 
-		float duration = 0;
-		uint32_t repetitions = 0;
-		nsvr_waveform_getrepetitions(wave, &repetitions);
-		if (repetitions > 0) {
-			duration = 0.25f * repetitions;
-		}
-		data.duration = duration;
+	float duration = 0;
+	uint32_t repetitions = 0;
+	nsvr_waveform_getrepetitions(wave, &repetitions);
+	if (repetitions > 0) {
+		duration = 0.25f * repetitions;
+	}
+	data.duration = duration;
+	handle_waveform(request_id, device_id, std::move(data));
+}
+
+void HardlightDevice::handle_waveform(uint64_t request_id, nsvr_node_id node_id, BasicHapticEventData data)
+{
+	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [node_id](const auto& driver) { return driver.second->GetId() == node_id; });
+	if (it != m_drivers.end()) {
 		(*it).second->consumeLasting(std::move(data), request_id);
 	}
 }
+
+
 void HardlightDevice::Buffered(uint64_t request_id, nsvr_node_id node_id, double * amps, uint32_t length)
 {
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id = node_id](const auto& driver) { return driver.second->GetId() == device_id; });

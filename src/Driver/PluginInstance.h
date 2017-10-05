@@ -18,7 +18,7 @@ class PluginInstance
 public:
 
 
-	PluginInstance(boost::asio::io_service& io, std::string fileName);
+	PluginInstance(boost::asio::io_service& io, std::string fileName, uint32_t id);
 	~PluginInstance();
 	
 	bool Link();
@@ -32,8 +32,7 @@ public:
 	bool IsLoaded() const;
 	std::string GetFileName() const;
 	std::string GetDisplayName() const;
-
-
+	uint32_t GetId() const;
 	PluginInstance(const PluginInstance&) = delete;
 	const PluginInstance& operator=(const PluginInstance&) = delete;
 	PluginInstance(PluginInstance&&) = delete;
@@ -66,6 +65,7 @@ private:
 	PluginApis m_apis;
 	std::unique_ptr<PluginEventSource> m_eventHandler;
 
+	uint32_t m_id;
 
 public:
 	int GetWorkingDirectory(nsvr_directory* outDir);

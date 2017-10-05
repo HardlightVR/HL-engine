@@ -5,7 +5,6 @@
 #include <typeinfo>
 #include "PluginAPIWrapper.h"
 
-
 nsvr_core* global_core = nullptr;
 
 HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
@@ -173,6 +172,16 @@ int HardlightPlugin::Configure(nsvr_core* core)
 
 	nsvr_directory dir = { 0 };
 	nsvr_filesystem_getdatadirectory(core, &dir);
+
+
+	nsvr_plugin_diagnostics_api diagnostics_api;
+	diagnostics_api.client_data = this;
+	diagnostics_api.updatemenu_handler = [](nsvr_diagnostics_ui* ui, void* cd) {
+		AS_TYPE(HardlightPlugin,cd)->Render(ui);
+	};
+
+	nsvr_register_diagnostics_api(core, &diagnostics_api);
+	
 	return 1;
 }
 
@@ -224,6 +233,45 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 {
 
 	m_device.SetupDeviceAssociations(g);
+	
+}
+
+void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
+{
+	static const std::vector<std::string> syncStates = {
+		"Synchronized",
+		"SearchingForSync",
+		"ConfirmingSync",
+		"ConfirmingSyncLoss"
+	};
+	ui->keyval("Serial port open", m_adapter->IsConnected() ? "true" : "false");
+	ui->keyval("Confirmed connection to device", m_monitor->IsConnected()? "true" : "false");
+
+	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->SyncState()].c_str());
+	
+	
+	if (ui->button("Send TRACKING_ENABLE")) {
+		m_firmware.EnableTracking();
+	}
+	if (ui->button("Send TRACKING_DISABLE")) {
+		m_firmware.DisableTracking();
+	}
+
+	ui->keyval("Total bytes sent to suit", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
+
+	if (ui->button("Tell suit to hum")) {
+		
+		//this is why boundaries are important. I can't drive the suit from software here, because waveform is handed down from above and
+		//since its opaque, I can't build it. Think about this.
+
+//		should have the function accept exactly what it needs, and then have an adapter that transforms the waveform into that and passes it in.
+		BasicHapticEventData data = { 0 };
+		data.duration = 0.6;
+		data.effect = 6;
+		data.strength = 1.0;
+		
+		m_device.handle_waveform(0, 0, std::move(data));
+	}
 	
 }
 

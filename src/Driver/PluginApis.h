@@ -62,7 +62,8 @@ enum class Apis {
 	Tracking,
 	BodyGraph,
 	Waveform,
-	Updateloop
+	Updateloop,
+	Diagnostics
 };
 
 // This is used if we want to print out the name of the enum. Could switch to using better_enums to do this instead.
@@ -232,6 +233,16 @@ struct updateloop_api : public plugin_api {
 	> submit_update;
 
 	static Apis getApiType() { return Apis::Updateloop; }
+};
+
+struct diagnostics_api : public plugin_api {
+	diagnostics_api(nsvr_plugin_diagnostics_api* api)
+		: submit_updatemenu{ api->updatemenu_handler, api->client_data } {}
+	callback<nsvr_plugin_diagnostics_api::nsvr_diagnostics_updatemenu,
+		nsvr_diagnostics_ui*
+	> submit_updatemenu;
+
+	static Apis getApiType() { return Apis::Diagnostics; }
 };
 
 // Represents the capabilities of a particular plugin, e.g. a plugin supports

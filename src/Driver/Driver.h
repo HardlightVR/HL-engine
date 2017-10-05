@@ -19,7 +19,11 @@ public:
 	~Driver();
 	bool StartThread();
 	bool Shutdown();
-	void DrawDiagnostics();
+	void DrawDiagnostics(uint32_t id);
+	int EnumeratePlugins(hvr_plugin_list * outPlugins);
+
+	int GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo);
+	int CreateDevice(uint32_t device_id);
 private:
 	DeviceContainer m_devices;
 	EventDispatcher m_eventDispatcher;
@@ -47,8 +51,8 @@ private:
 	PluginManager m_pluginManager;   
 	void handleTracking();
 
-	NSVR_Diagnostics_Menu m_renderingApi;
+	hvr_diagnostics_ui m_renderingApi;
 
 public:
-	void ProvideRenderingApi(NSVR_Diagnostics_Menu * api);
+	void ProvideRenderingApi(hvr_diagnostics_ui * api);
 };

@@ -14,7 +14,8 @@ _writeInterval(20),
 _batchingTimeout(20),
 BATCH_SIZE(192),
 _lfQueue(10240),
-_isBatching(false)
+_isBatching(false),
+m_totalBytesSent(0)
 
 {
 
@@ -55,9 +56,12 @@ void FirmwareInterface::writeBuffer() {
 				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 				const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
 
-				this->_adapter->Write(a, actualLen, [&](const boost::system::error_code& e, std::size_t bytes_t) {
+				this->_adapter->Write(a, actualLen, [this](const boost::system::error_code& e, std::size_t bytes_t) {
 					if (e) {
 						core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while batching");
+					}
+					else {
+						m_totalBytesSent += bytes_t;
 					}
 				}
 				);
@@ -73,11 +77,14 @@ void FirmwareInterface::writeBuffer() {
 		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 		const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
 
-		_adapter->Write(a, actualLen, [&](const boost::system::error_code& ec, std::size_t bytes_t) {
+		_adapter->Write(a, actualLen, [this](const boost::system::error_code& ec, std::size_t bytes_t) {
 
 			if (ec) {
 				core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");
 
+			}
+			else {
+				m_totalBytesSent += bytes_t;
 			}
 		}
 		);
@@ -177,6 +184,13 @@ void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
 {
 	_lfQueue.push(bytes, length);
 
+}
+
+
+
+std::size_t FirmwareInterface::GetTotalBytesSent() const
+{
+	return m_totalBytesSent;
 }
 
 void FirmwareInterface::Execute(const CommandBuffer & buffer)

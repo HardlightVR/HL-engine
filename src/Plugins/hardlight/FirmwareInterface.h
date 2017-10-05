@@ -36,6 +36,8 @@ public:
 	void PlayRtp(Location location, int strength);
 	void Ping();
 	void RawCommand(const uint8_t* bytes, std::size_t length);
+
+	std::size_t GetTotalBytesSent() const;
 private:
 	inline void VerifyThenExecute(InstructionBuilder& builder);
 	std::shared_ptr<InstructionSet> m_instructionSet;
@@ -51,6 +53,7 @@ private:
 	const unsigned int BATCH_SIZE;
 	bool _isBatching;
 
+	std::size_t m_totalBytesSent;
 	
 };
 
