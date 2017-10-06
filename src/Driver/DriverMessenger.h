@@ -19,9 +19,8 @@ using namespace NullSpace::SharedMemory;
 class DriverMessenger
 {
 public:
-	typedef std::function<void(void const* data, std::size_t length)> DataCallback;
+	using DataCallback = std::function<void(void const* data, std::size_t length)>;
 	DriverMessenger(boost::asio::io_service& io);
-	~DriverMessenger();
 	void WriteTracking(uint32_t, NullSpace::SharedMemory::Quaternion quat);
 	void WriteDevice(const DeviceInfo& s);
 	void WriteNode(const NodeInfo& node);

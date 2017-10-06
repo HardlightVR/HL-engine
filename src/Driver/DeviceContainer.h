@@ -5,7 +5,6 @@
 #include <vector>
 #include <mutex>
 #include "Device.h"
-#include "SimulatedDevice.h"
 #include "PluginAPI.h"
 #include "PluginApis.h"
 #include "DriverConfigParser.h"
@@ -17,14 +16,12 @@ class DeviceContainer {
 public:
 	using DeviceEvent = boost::signals2::signal<void(Device*)>;
 	using DeviceFn = std::function<void(Device*)>;
-	using SimFn = std::function<void(SimulatedDevice*)>;
 
 	DeviceContainer();
 	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 	void AddDevice(nsvr_device_id, std::unique_ptr<Device>);
 	void RemoveDevice(DeviceId<local> id, std::string pluginName);
 	void EachDevice(DeviceFn action);
-	void EachSimulation(SimFn action);
 
 	Device* Get(std::string pluginName, DeviceId<local> id);
 
@@ -38,7 +35,6 @@ private:
 	DeviceEvent m_onDeviceRemoved;
 
 	std::vector<std::unique_ptr<Device>> m_devices;
-	std::vector<std::unique_ptr<SimulatedDevice>> m_simulations;
 	std::vector<DeviceFn> m_deviceAddedSubs;
 	std::vector<DeviceFn> m_deviceRemovedSubs;
 

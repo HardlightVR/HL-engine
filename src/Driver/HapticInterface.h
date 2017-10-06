@@ -16,5 +16,4 @@ struct SimpleHaptic {
 class HapticInterface {
 public:
 	virtual void SubmitSimpleHaptic(uint64_t request_id, nsvr_node_id id, SimpleHaptic data) = 0;
-
 };

@@ -7,6 +7,8 @@
 #include "TrackingProvider.h"
 #include "Device.h"
 #include "DeviceDescriptor.h"
+#include "DeviceVisualizer.h"
+
 class DeviceBuilder {
 public:
 	DeviceBuilder();
@@ -18,6 +20,7 @@ public:
 	DeviceBuilder& WithDefaultPlaybackControl();
 	DeviceBuilder& WithDefaultDescription();
 	DeviceBuilder& WithDefaultOriginatingPlugin();
+	DeviceBuilder& WithDefaultVisualizer();
 
 	DeviceBuilder& WithBodygraph(std::unique_ptr<BodyGraphCreator> bodygraph);
 	DeviceBuilder& WithNodeDiscoverer(std::unique_ptr<NodeDiscoverer> discoverer);
@@ -26,16 +29,18 @@ public:
 	DeviceBuilder& WithHapticInterface(std::unique_ptr<HapticInterface> haptics);
 	DeviceBuilder& WithDescriptor(DeviceDescriptor deviceDescription);
 	DeviceBuilder& WithOriginatingPlugin(std::string pluginName);
-
+	DeviceBuilder& WithVisualizer(std::unique_ptr<DeviceVisualizer> visualizer);
 
 
 	std::unique_ptr<Device> Build();
 private:
-	std::shared_ptr<BodyGraphCreator> m_bodygraph;
+	std::unique_ptr<BodyGraphCreator> m_bodygraph;
 	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::unique_ptr<TrackingProvider> m_tracking;
 	std::unique_ptr<PlaybackController> m_playback;
 	std::unique_ptr<HapticInterface> m_haptics;
+	std::unique_ptr<DeviceVisualizer> m_visualizer;
+
 	boost::optional<DeviceDescriptor> m_description;
 	boost::optional<std::string> m_originatingPlugin;
 

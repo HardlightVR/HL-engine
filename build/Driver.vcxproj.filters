@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -32,6 +32,8 @@
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
     <ClInclude Include="..\src\Driver\DeviceDescriptor.h" />
     <ClInclude Include="..\src\Driver\DeviceIds.h" />
+    <ClInclude Include="..\src\Driver\DeviceVisualizer.h" />
+    <ClInclude Include="..\src\Driver\DiagnosticsMenu.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
@@ -73,7 +75,6 @@
     <ClInclude Include="..\src\Driver\Node.h" />
     <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\NodeIds.h" />
-    <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PlaybackController.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
@@ -83,6 +84,7 @@
     <ClInclude Include="..\src\Driver\PluginManager.h" />
     <ClInclude Include="..\src\Driver\PresetWaveform.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
+    <ClInclude Include="..\src\Driver\RenderedRegion.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
@@ -134,7 +136,6 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\SimulatedDevice.h" />
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\TrackingProvider.h" />
@@ -180,7 +181,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\DiagnosticsMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -189,6 +189,7 @@
     <ClCompile Include="..\src\Driver\Device.cpp" />
     <ClCompile Include="..\src\Driver\DeviceBuilder.cpp" />
     <ClCompile Include="..\src\Driver\DeviceContainer.cpp" />
+    <ClCompile Include="..\src\Driver\DeviceVisualizer.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
@@ -224,7 +225,6 @@
     <ClCompile Include="..\src\Driver\SharedCommunication\ScheduledEvent.cpp">
       <Filter>SharedCommunication</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Driver\SimulatedDevice.cpp" />
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
     <ClCompile Include="..\src\Driver\TrackingStream.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />

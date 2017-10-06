@@ -6,14 +6,16 @@
 Device::Device(
 	std::string parentPlugin,
 	DeviceDescriptor descriptor, 
-	std::shared_ptr<BodyGraphCreator> bodygraph,
+	std::unique_ptr<DeviceVisualizer> visualizer,
+	std::unique_ptr<BodyGraphCreator> bodygraph,
 	std::unique_ptr<NodeDiscoverer> discoverer, 
 	std::unique_ptr<PlaybackController> playback,
 	std::unique_ptr<HapticInterface> haptics,
 	std::unique_ptr<TrackingProvider> tracking
 )
 	: m_description(descriptor)
-	, m_bodygraph(bodygraph)
+	, m_visualizer(std::move(visualizer))
+	, m_bodygraph(std::move(bodygraph))
 	, m_discoverer(std::move(discoverer))
 	, m_playback(std::move(playback))
 	, m_haptics(std::move(haptics))
@@ -24,6 +26,7 @@ Device::Device(
 	for (nsvr_node_id node : trackingNodes) {
 		m_trackingProvider->BeginStreaming(NodeId<local>{node});
 	}
+
 }
 
 void Device::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
@@ -101,6 +104,24 @@ void Device::OnReceiveTrackingUpdate(TrackingHandler handler)
 void Device::ForEachNode(std::function<void(Node*)> action)
 {
 	m_discoverer->ForEachNode(action);
+}
+
+void Device::update_visualizer(double dt)
+{
+	m_visualizer->simulate(dt);
+}
+
+std::vector<std::pair<nsvr_region, RenderedNode>> Device::render_visualizer()
+{
+	std::vector<std::pair<nsvr_region, RenderedNode>> taggedNodes;
+	std::vector<RenderedNode> nodes = m_visualizer->render();
+	for (const auto& node : nodes) {
+		const auto& regions = m_bodygraph->GetRegionsForNode(node.Id.value);
+		for (nsvr_region region : regions) {
+			taggedNodes.emplace_back(region, node);
+		}
+	}
+	return taggedNodes;
 }
 
 template<typename T, typename E>

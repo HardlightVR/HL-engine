@@ -2,7 +2,7 @@
 #include <vector>
 #include <stdint.h>
 #include "PluginAPI.h"
-
+#include "RenderedRegion.h"
 const double MIN_CANCELLABLE_RESOLUTION = 0.25f;
 class Waveform {
 public:
@@ -43,8 +43,10 @@ public:
 
 	void submitHaptic(Waveform waveform);
 	void update(double dt);
-	double sample() const;
+	RenderedNode::GenericData render() const;
+	
 private:
+	float sample() const;
 	std::vector<Waveform> m_activeEffects;
 
 };

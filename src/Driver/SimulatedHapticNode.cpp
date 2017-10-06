@@ -6,7 +6,7 @@
 //Right now, nothing specific for click, hum, etc. Just a quarter second sample at the given strength
 Waveform::Waveform(SimulatedHapticNode::Id id, nsvr_default_waveform waveform, double strength, double duration)
 	: m_sampleDuration(0.01)
-	, m_samples(nsvr::waveforms::generateWaveform(strength, waveform))
+	, m_samples(nsvr::waveforms::generateWaveform(static_cast<float>(strength), waveform))
 	, m_elapsed(0)
 	, m_id(id)
 	, m_playbackState(PlaybackState::Playing)
@@ -71,7 +71,7 @@ double Waveform::computeAmplitude() const
 	//1.0 second elapsed, with sampleDuration == 0.25 => 4
 	//0.5 second elapsed, with sampleDuration == 0.25 => 2
 	//0.5 second elapsed, with sampleDuration == 0.125 => 4
-	int roughIndex = static_cast<int>(std::floor(m_elapsed / m_sampleDuration));
+	std::size_t roughIndex = static_cast<std::size_t>(std::floor(m_elapsed / m_sampleDuration));
 	assert(roughIndex < m_samples.size());
 	return m_samples[roughIndex];
 
@@ -123,12 +123,12 @@ void SimulatedHapticNode::update(double dt)
 
 }
 
-double SimulatedHapticNode::sample() const
+RenderedNode::GenericData SimulatedHapticNode::render() const
 {
-	if (m_activeEffects.empty()) {
-		return 0.0;
-	}
-	else {
-		return m_activeEffects.back().sample();
-	}
+	return RenderedNode::GenericData{ sample(), 0.0, 0.0, 0.0 };
+}
+
+float SimulatedHapticNode::sample() const
+{
+	return m_activeEffects.empty() ? 0.0f : (float) m_activeEffects.back().sample();
 }

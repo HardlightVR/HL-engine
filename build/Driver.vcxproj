@@ -296,6 +296,7 @@
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
     <ClInclude Include="..\src\Driver\DeviceDescriptor.h" />
     <ClInclude Include="..\src\Driver\DeviceIds.h" />
+    <ClInclude Include="..\src\Driver\DeviceVisualizer.h" />
     <ClInclude Include="..\src\Driver\DiagnosticsMenu.h" />
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
@@ -332,7 +333,6 @@
     <ClInclude Include="..\src\Driver\Node.h" />
     <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\NodeIds.h" />
-    <ClInclude Include="..\src\Driver\NodeView.h" />
     <ClInclude Include="..\src\Driver\NullLogger.h" />
     <ClInclude Include="..\src\Driver\PlaybackController.h" />
     <ClInclude Include="..\src\Driver\PluginApis.h" />
@@ -342,6 +342,7 @@
     <ClInclude Include="..\src\Driver\PluginManager.h" />
     <ClInclude Include="..\src\Driver\PresetWaveform.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
+    <ClInclude Include="..\src\Driver\RenderedRegion.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedMap.h" />
@@ -359,7 +360,6 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\better_enum.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\readablesharedvector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
-    <ClInclude Include="..\src\Driver\SimulatedDevice.h" />
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
     <ClInclude Include="..\src\Driver\TrackingProvider.h" />
@@ -393,6 +393,7 @@
     <ClCompile Include="..\src\Driver\Device.cpp" />
     <ClCompile Include="..\src\Driver\DeviceBuilder.cpp" />
     <ClCompile Include="..\src\Driver\DeviceContainer.cpp" />
+    <ClCompile Include="..\src\Driver\DeviceVisualizer.cpp" />
     <ClCompile Include="..\src\Driver\Driver.cpp" />
     <ClCompile Include="..\src\Driver\DriverConfigParser.cpp" />
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
@@ -438,7 +439,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\src\Driver\SimulatedDevice.cpp" />
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
     <ClCompile Include="..\src\Driver\TrackingStream.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />

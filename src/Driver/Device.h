@@ -8,6 +8,7 @@
 #include "HapticInterface.h"
 #include "TrackingProvider.h"
 #include "DeviceIds.h"
+#include "DeviceVisualizer.h"
 //theory:
 //NodeDiscoverer can be mocked out. So we can provide a bunch of fake nodes
 //I think PlaybackController can be a concrete class and can get rid of the interface.
@@ -31,7 +32,8 @@ public:
 	Device(
 		std::string parentPlugin,
 		DeviceDescriptor descriptor, 
-		std::shared_ptr<BodyGraphCreator>,
+		std::unique_ptr<DeviceVisualizer> visualizer,
+		std::unique_ptr<BodyGraphCreator>,
 		std::unique_ptr<NodeDiscoverer>, 
 		std::unique_ptr<PlaybackController>, 
 		std::unique_ptr<HapticInterface>,
@@ -49,10 +51,13 @@ public:
 	std::string parentPlugin() const;
 	void OnReceiveTrackingUpdate(TrackingHandler handler);
 	void ForEachNode(std::function<void(Node*)> action);
+	void update_visualizer(double dt);
+	std::vector<std::pair<nsvr_region, RenderedNode>> render_visualizer();
 private:
 	std::string m_originator;
 	DeviceDescriptor m_description;
-	std::shared_ptr<BodyGraphCreator> m_bodygraph;
+	std::unique_ptr<DeviceVisualizer> m_visualizer;
+	std::unique_ptr<BodyGraphCreator> m_bodygraph;
 	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::unique_ptr<PlaybackController> m_playback;
 	std::unique_ptr<HapticInterface> m_haptics;

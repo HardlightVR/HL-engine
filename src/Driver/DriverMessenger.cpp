@@ -76,13 +76,7 @@ void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 	}
 }
 
-DriverMessenger::~DriverMessenger()
-{
 
-
-
-
-}
 
 //Precondition: The keys were initialized already using Insert on m_tracking
 void DriverMessenger::WriteTracking(uint32_t region, NullSpace::SharedMemory::Quaternion quat)

@@ -6,6 +6,7 @@
 #include <memory>
 #include <boost/optional.hpp>
 #include <boost/log/trivial.hpp>
+#include "better_enum.h"
 ///
 /// The purpose of this file is to wrap C callbacks with ones that we can more easily call from
 /// C++. Basically, we wrap each function pointer with some syntactic sugar so that we can call it just like a normal 
@@ -50,7 +51,7 @@ public:
 };
 
 // Each time you add a new API, add a new entry to the enum
-enum class Apis {
+BETTER_ENUM(Apis, uint32_t, 
 	Unknown = 0,
 	Buffered,
 	Preset,
@@ -64,11 +65,8 @@ enum class Apis {
 	Waveform,
 	Updateloop,
 	Diagnostics
-};
+);
 
-// This is used if we want to print out the name of the enum. Could switch to using better_enums to do this instead.
-// Probably a good todo.
-extern const std::unordered_map<Apis, const char*> PrintableApiNames;
 
 
 struct buffered_api : public plugin_api {
@@ -262,8 +260,10 @@ public:
 
 	template<typename T>
 	bool Supports() const;
+
+	void Each(std::function<void(Apis, plugin_api*)>);
 private:
-	std::unordered_map<Apis, std::unique_ptr<plugin_api>> m_apis;
+	std::unordered_map<Apis::_enumerated, std::unique_ptr<plugin_api>> m_apis;
 };
 
 

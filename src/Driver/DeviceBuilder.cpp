@@ -27,7 +27,7 @@ DeviceBuilder::DeviceBuilder()
 
 DeviceBuilder & DeviceBuilder::WithDefaultBodygraph()
 {
-	m_bodygraph = std::shared_ptr<FakeBodygraph>(FakeBodygraphBuilder().Build());
+	m_bodygraph = FakeBodygraphBuilder().Build();
 	return *this;
 }
 
@@ -68,6 +68,12 @@ DeviceBuilder & DeviceBuilder::WithDefaultDescription()
 DeviceBuilder & DeviceBuilder::WithDefaultOriginatingPlugin()
 {
 	m_originatingPlugin = "Fake Plugin";
+	return *this;
+}
+
+DeviceBuilder & DeviceBuilder::WithDefaultVisualizer()
+{
+	m_visualizer = std::make_unique<DeviceVisualizer>();
 	return *this;
 }
 
@@ -113,6 +119,12 @@ DeviceBuilder & DeviceBuilder::WithOriginatingPlugin(std::string pluginName)
 	return *this;
 }
 
+DeviceBuilder & DeviceBuilder::WithVisualizer(std::unique_ptr<DeviceVisualizer> visualizer)
+{
+	m_visualizer = std::move(visualizer);
+	return *this;
+}
+
 std::unique_ptr<Device> DeviceBuilder::Build()
 {
 	if (!m_bodygraph) {
@@ -138,10 +150,18 @@ std::unique_ptr<Device> DeviceBuilder::Build()
 	if (!m_originatingPlugin) {
 		WithDefaultOriginatingPlugin();
 	}
+
+	if (!m_visualizer) {
+		WithDefaultVisualizer();
+	}
+
+
+
 	return std::make_unique<Device>(
 		*m_originatingPlugin,
 		*m_description,
-		m_bodygraph,
+		std::move(m_visualizer),
+		std::move(m_bodygraph),
 		std::move(m_discoverer),
 		std::move(m_playback),
 		std::move(m_haptics),

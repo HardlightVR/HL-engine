@@ -69,31 +69,33 @@ void HardwareCoordinator::writeTracking(nsvr_node_id node_id, nsvr_quaternion * 
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
-	m_devices.EachSimulation([&messenger = m_messenger, this](SimulatedDevice* device) {
-		device->simulate(.008);
 
-		auto nodeView = device->render();
+	std::unordered_map<nsvr_region, std::vector<std::pair<NodeId<global>, RenderedNode>>> groupedByRegion;
 
-		for (const auto& node : nodeView) {
-			for (const auto& single : node.nodes) {
-				NullSpace::SharedMemory::RegionPair pair;
-				pair.Type = static_cast<uint32_t>(single.Type);
-				pair.Region = node.region;
-				//pair.Id = m_idService.FromLocal(device->parentPlugin(), device->id(),  single.Id).value;
-				//todo: fix the id. Main problem is the sim tries to mirror the real device interface wise, so I have to keep them in sync..
-				//either make them inherit from same interface, or have a way of getting at the real device 
+	m_devices.EachDevice([&](Device* device) {
+		device->update_visualizer(.008);
+		auto nodes = device->render_visualizer();
 
-				pair.Value = NullSpace::SharedMemory::Data{
-					single.DisplayData.data_0,
-					single.DisplayData.data_1,
-					single.DisplayData.data_2,
-					single.DisplayData.intensity };
-				messenger.WriteBodyView(std::move(pair));
-			}
+		for (auto& node : nodes) {
+
+			auto globalId = m_idService.FromLocal(device->parentPlugin(), device->id(), node.second.Id);
+
+			groupedByRegion[node.first].push_back(std::make_pair(globalId, node.second));
 		}
+
 	});
-	
-	
+
+	for (const auto& kvp : groupedByRegion) {
+		for (const auto& idNodePair : kvp.second) {
+			auto id = idNodePair.first;
+			auto node = idNodePair.second;
+
+			NullSpace::SharedMemory::RegionPair regionPair{ kvp.first, node.type, id.value};
+			regionPair.Value = { node.data.data_0, node.data.data_1, node.data.data_2, node.data.data_3 };
+			m_messenger.WriteBodyView(regionPair);
+
+		}
+	}
 }
 
 
