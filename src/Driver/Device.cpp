@@ -22,10 +22,10 @@ Device::Device(
 	, m_originator(parentPlugin)
 	, m_trackingProvider(std::move(tracking))
 {
-	const auto& trackingNodes = m_discoverer->GetNodesOfType(nsvr_node_type_inertial_tracker);
-	for (nsvr_node_id node : trackingNodes) {
-		m_trackingProvider->BeginStreaming(NodeId<local>{node});
-	}
+	//const auto& trackingNodes = m_discoverer->GetNodesOfType(nsvr_node_type_inertial_tracker);
+	//for (nsvr_node_id node : trackingNodes) {
+	//	m_trackingProvider->BeginStreaming(NodeId<local>{node});
+	//}
 
 }
 

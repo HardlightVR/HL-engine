@@ -8,6 +8,8 @@
 #include "DriverMessenger.h"
 #include "SharedTypes.h"
 #include <boost/variant.hpp>
+#include "logger.h"
+
 #include "DeviceIds.h"
 HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, DeviceContainer& devices )
 	: m_devices(devices)
@@ -26,6 +28,8 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 		info.Concept = static_cast<uint32_t>(device->concept());
 		m_messenger.WriteDevice(info);
 		
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_info) << "Device " << strName << " added";
+
 		device->ForEachNode([this, device, deviceId = info.Id](Node* node) {
 			
 			NullSpace::SharedMemory::NodeInfo info = { 0 };
@@ -101,24 +105,7 @@ void HardwareCoordinator::writeBodyRepresentation()
 
 void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 {
-	// For now, I'm simply forwarding the relevant events to all the devices
-	// More complex behavior later
-	/*
-	sdkEvents.Subscribe(
-	{ 
-		NullSpaceIPC::HighLevelEvent::kSimpleHaptic,
-		NullSpaceIPC::HighLevelEvent::kPlaybackEvent,
-		NullSpaceIPC::HighLevelEvent::kRealtimeHaptic,
-		NullSpaceIPC::HighLevelEvent::kCurveHaptic
-	}, 
-	[&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.EachDevice([&](Device* device) {
-			device->DispatchEvent(event);
-		});
 
-	
-	});
-*/
 	
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		m_devices.EachDevice([&](Device* device) { device->DispatchEvent(event.playback_event()); });

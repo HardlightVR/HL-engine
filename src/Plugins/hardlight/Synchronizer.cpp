@@ -75,9 +75,6 @@ Synchronizer::Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boo
 }
 
 
-Synchronizer::~Synchronizer()
-{
-}
 
 void Synchronizer::searchForSync()
 {

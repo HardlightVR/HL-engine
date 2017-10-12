@@ -87,7 +87,6 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	
 	});
 
-	m_mockTracking.Start();
 
 }
 
@@ -250,11 +249,19 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->SyncState()].c_str());
 	
 	
-	if (ui->button("Send TRACKING_ENABLE")) {
+	if (ui->button("TRACKING_ENABLE")) {
 		m_firmware.EnableTracking();
 	}
-	if (ui->button("Send TRACKING_DISABLE")) {
+	if (ui->button("TRACKING_DISABLE")) {
 		m_firmware.DisableTracking();
+	}
+	if (ui->button("FAKE TRACKING START")) {
+		m_mockTracking.Start();
+
+	}
+	if (ui->button("FAKE TRACKING START")) {
+		m_mockTracking.Stop();
+
 	}
 
 	ui->keyval("Total bytes sent to suit", std::to_string(m_firmware.GetTotalBytesSent()).c_str());

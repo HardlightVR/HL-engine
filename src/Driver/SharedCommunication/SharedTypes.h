@@ -48,8 +48,8 @@ namespace NullSpace {
 		
 	
 		struct ServiceInfo {
-			int ServiceMajor;
-			int ServiceMinor;
+			int MajorVersion;
+			int MinorVersion;
 
 		};
 

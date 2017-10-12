@@ -21,7 +21,6 @@ public:
 	void BeginSync();
 	std::size_t PossiblePacketsAvailable();
 	Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service&);
-	~Synchronizer();
 private:
 	State syncState;
 	const int MAX_PACKET_READ = 500;

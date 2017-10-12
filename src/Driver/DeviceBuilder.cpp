@@ -74,6 +74,7 @@ DeviceBuilder & DeviceBuilder::WithDefaultOriginatingPlugin()
 DeviceBuilder & DeviceBuilder::WithDefaultVisualizer()
 {
 	m_visualizer = std::make_unique<DeviceVisualizer>();
+
 	return *this;
 }
 
@@ -155,6 +156,9 @@ std::unique_ptr<Device> DeviceBuilder::Build()
 		WithDefaultVisualizer();
 	}
 
+	if (!m_haptics) {
+		WithDefaultHaptics();
+	}
 
 
 	return std::make_unique<Device>(
