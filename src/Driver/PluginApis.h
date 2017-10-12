@@ -18,6 +18,7 @@ struct callback {
 	FnPtr handler;
 	void* user_data;
 	
+	callback() = default;
 	std::function<void(Arguments...)> instrumentation;
 
 	callback(FnPtr handler, void* ud);
@@ -137,6 +138,8 @@ struct device_api : public plugin_api {
 		, submit_getdeviceinfo{ api->getdeviceinfo_handler, api->client_data }
 		, submit_getnodeinfo{ api->getnodeinfo_handler, api->client_data }
 	{}
+
+	device_api() = default;
 
 	callback<
 		nsvr_plugin_device_api::nsvr_device_enumeratenodes,
@@ -262,6 +265,9 @@ public:
 	bool Supports() const;
 
 	void Each(std::function<void(Apis, plugin_api*)>);
+
+	template<typename InternalApi>
+	void ConstructDefault();
 private:
 	std::unordered_map<Apis::_enumerated, std::unique_ptr<plugin_api>> m_apis;
 };
@@ -295,4 +301,11 @@ template<typename T>
 inline bool PluginApis::Supports() const
 {
 	return m_apis.find(T::getApiType()) != m_apis.end();
+}
+
+template<typename InternalApi>
+inline void PluginApis::ConstructDefault()
+{
+	auto x = std::make_unique<InternalApi>();
+	m_apis.emplace(std::make_pair(InternalApi::getApiType(), std::move(x)));
 }

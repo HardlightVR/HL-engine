@@ -23,6 +23,9 @@ public:
 DeviceBuilder::DeviceBuilder()
 	: m_description()
 {
+	PluginApis p;
+	p.ConstructDefault<device_api>();
+
 }
 
 DeviceBuilder & DeviceBuilder::WithDefaultBodygraph()
