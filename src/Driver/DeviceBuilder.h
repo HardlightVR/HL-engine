@@ -11,6 +11,7 @@
 
 class DeviceBuilder {
 public:
+	DeviceBuilder(PluginApis* apis);
 	DeviceBuilder();
 
 	DeviceBuilder& WithDefaultBodygraph();
@@ -21,6 +22,8 @@ public:
 	DeviceBuilder& WithDefaultDescription();
 	DeviceBuilder& WithDefaultOriginatingPlugin();
 	DeviceBuilder& WithDefaultVisualizer();
+
+
 
 	DeviceBuilder& WithBodygraph(std::unique_ptr<BodyGraphCreator> bodygraph);
 	DeviceBuilder& WithNodeDiscoverer(std::unique_ptr<NodeDiscoverer> discoverer);
@@ -34,6 +37,7 @@ public:
 
 	std::unique_ptr<Device> Build();
 private:
+	PluginApis m_apis;
 	std::unique_ptr<BodyGraphCreator> m_bodygraph;
 	std::unique_ptr<NodeDiscoverer> m_discoverer;
 	std::unique_ptr<TrackingProvider> m_tracking;

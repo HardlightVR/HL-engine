@@ -10,6 +10,12 @@ FakeTrackingProvider::FakeTrackingProvider()
 {
 }
 
+void FakeTrackingProvider::Augment(tracking_api * api)
+{
+	api->submit_beginstreaming.handler = [](auto a, auto b, auto c) {};
+	api->submit_endstreaming.handler = [](auto a, auto b) {};
+}
+
 void FakeTrackingProvider::BeginStreaming(NodeId<local> whichNode)
 {
 }

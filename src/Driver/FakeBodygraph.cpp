@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "FakeBodygraph.h"
 
+void FakeBodygraph::Augment(bodygraph_api* api) {
+	api->submit_setup.handler = [](auto a, auto b) {};
+}
 //precondition: no duplicate nodes
-FakeBodygraph::FakeBodygraph(std::vector<std::pair<nsvr_node_id, nsvr_region>> nodes)
+FakeBodygraph::FakeBodygraph(std::vector<std::pair<nsvr_node_id, nsvr_region>> nodes )
 {
 	for (auto& pair : nodes) {
 		m_nodeToRegion[pair.first].push_back(pair.second);

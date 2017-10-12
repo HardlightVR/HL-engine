@@ -1,11 +1,13 @@
 #pragma once
 #include "BodyGraphCreator.h"
+#include "PluginApis.h"
 #include <vector>
 
 
 class FakeBodygraph : public BodyGraphCreator {
 public:
-	FakeBodygraph(std::vector<std::pair<nsvr_node_id, nsvr_region>>);
+	void Augment(bodygraph_api* api);
+	FakeBodygraph(std::vector<std::pair<nsvr_node_id, nsvr_region>> = {});
 	void ForEachNodeAtRegion(nsvr_region region, NodeAction action) override;
 
 	std::vector<nsvr_node_id> GetNodesAtRegion(nsvr_region region) const override;

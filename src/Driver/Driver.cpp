@@ -176,15 +176,15 @@ int Driver::CreateDevice(uint32_t device_id)
 		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Shoulder"s, 1 }),
 		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 2 }),
 	};
-	auto f = std::make_unique<FakeDiscoverer>(std::move(nodes));
+	//auto f =FakeDiscoverer(std::move(nodes)).Augment()
 
-	m_devices.AddDevice(device_id, 
+	/*m_devices.AddDevice(device_id, 
 		DeviceBuilder()
 		.WithDescriptor(DeviceDescriptor{ std::string("Hardlight MkIII " + std::to_string(device_id)), device_id, nsvr_device_concept_suit })
 		.WithNodeDiscoverer(std::move(f))
 		.Build()
 	);
-
+*/
 	return 1;
 }
 

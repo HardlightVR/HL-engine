@@ -26,47 +26,36 @@ FakeDiscoverer::FakeDiscoverer(std::vector<Node> nodes)
 	}
 }
 
-void FakeDiscoverer::Discover()
+void FakeDiscoverer::Augment(device_api * device_api)
 {
-	//no-op, because of our constructor
+	device_api->submit_enumeratenodes.handler = [](nsvr_device_id ignored, nsvr_node_ids* devices, void* ud) {
+		static_cast<FakeDiscoverer*>(ud)->enumerate(devices);
+	};
+	device_api->submit_enumeratenodes.user_data = this;
+
+	device_api->submit_getnodeinfo.handler = [](nsvr_node_id id, nsvr_node_info* info, void* ud) {
+		static_cast<FakeDiscoverer*>(ud)->get_info(id, info);
+	};
+	device_api->submit_getnodeinfo.user_data = this;
 }
 
-Node * FakeDiscoverer::Get(nsvr_node_id id)
+void FakeDiscoverer::get_info(nsvr_node_id id, nsvr_node_info * info)
 {
-	auto iter = m_nodes.find(NodeId<local>{id});
-	if (iter != m_nodes.end()) {
-		return &m_nodes.at(iter->first);
-	}
-	return nullptr;
+	info->id = id;
+	info->type = m_nodes.at(NodeId<local>{id}).type();
+
+	const std::string& name = m_nodes.at(NodeId<local>{id}).name();
+	std::copy(name.begin(), name.end(), info->name);
+
 }
 
-void FakeDiscoverer::ForEachNode(NodeAction action)
+void FakeDiscoverer::enumerate(nsvr_node_ids* nodes)
 {
-	for (auto& kvp : m_nodes) {
-		action(&kvp.second);
-	}
-}
-
-std::vector<nsvr_node_id> FakeDiscoverer::GetNodesOfType(nsvr_node_type type)
-{
-	std::vector<nsvr_node_id> filtered;
+	std::size_t index = 0;
 	for (const auto& kvp : m_nodes) {
-		if (kvp.second.type() == type) {
-			filtered.push_back(kvp.first.value);
-		}
+		nodes->ids[index] = kvp.first.value;
+		index++;
 	}
-	return filtered;
-}
 
-std::vector<nsvr_node_id> FakeDiscoverer::FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_type type)
-{
-	std::vector<nsvr_node_id> filtered;
-	for (nsvr_node_id id: items) {
-		if (auto ptr = Get(id)) {
-			if (ptr->type() == type) {
-				filtered.push_back(id);
-			}
-		}
-	}
-	return filtered;
+	nodes->node_count = m_nodes.size();
 }
