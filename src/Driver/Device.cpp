@@ -29,6 +29,13 @@ Device::Device(
 	m_discoverer->Discover();
 	m_bodygraph->fetchDynamically();
 
+	
+	auto imus = m_discoverer->GetNodesOfType(nsvr_node_type_inertial_tracker);
+
+	for (auto imu : imus) {
+		m_trackingProvider->BeginStreaming(NodeId<local>{imu});
+	}
+
 }
 
 void Device::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)

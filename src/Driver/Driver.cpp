@@ -171,17 +171,25 @@ int Driver::CreateDevice(uint32_t device_id)
 {
 	using namespace std::literals;
 
-	std::vector<Node> nodes = {
+	std::vector<Node> hardlight_nodes = {
 		Node(NodeDescriptor{ nsvr_node_type_haptic, "Left Shoulder"s, 0 }),
 		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Shoulder"s, 1 }),
-		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 2 }),
+		Node(NodeDescriptor{ nsvr_node_type_haptic, "Left Upper Arm"s, 2 }),
+		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Upper Arm"s, 3 }),
+
+
+		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 4 })
+		//Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Left Arm IMU"s, 5 }),
+		//Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Right Arm IMU"s, 6 }),
 	};
 
 
 
 	auto resources = std::make_unique<PluginInstance::DeviceResources>();
-	resources->discoverer = std::make_unique<NullNodeDiscoverer>(nodes);
-	resources->descriptor = DeviceDescriptor{"Virtual Controller", 0, nsvr_device_concept_controller};
+	resources->discoverer = std::make_unique<DefaultNodeDiscoverer>(hardlight_nodes);
+	resources->tracking = std::make_unique<DefaultTracking>(m_io, std::vector<nsvr_node_id>{4});
+
+	resources->descriptor = DeviceDescriptor{"Virtual Hardlight MkII", 0, nsvr_device_concept_suit};
 	
 	PluginInstance* plugin = m_pluginManager.MakeVirtualPlugin();
 	plugin->addDeviceResources(std::move(resources));

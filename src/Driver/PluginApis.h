@@ -21,12 +21,9 @@ struct callback {
 	callback() : user_data(nullptr) {
 	
 		handler = [](auto...) {
-			int x = 3;
-			std::cout << x;
 		};
 
 		instrumentation = [](auto...) {
-
 		};
 	}
 	std::function<void(Arguments...)> instrumentation;
