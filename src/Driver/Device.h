@@ -1,14 +1,17 @@
 #pragma once
 #include <memory>
 #include <string>
-#include "NodeDiscoverer.h"
-#include "BodyGraphCreator.h"
-#include "PlaybackController.h"
+
 #include "DeviceDescriptor.h"
-#include "HapticInterface.h"
-#include "TrackingProvider.h"
+
 #include "DeviceIds.h"
 #include "DeviceVisualizer.h"
+
+#include "HardwareBodygraphCreator.h"
+#include "HardwareNodeEnumerator.h"
+#include "HardwarePlaybackController.h"
+#include "HardwareHapticInterface.h"
+#include "HardwareTracking.h"
 //theory:
 //NodeDiscoverer can be mocked out. So we can provide a bunch of fake nodes
 //I think PlaybackController can be a concrete class and can get rid of the interface.
@@ -33,11 +36,11 @@ public:
 		std::string parentPlugin,
 		DeviceDescriptor descriptor, 
 		std::unique_ptr<DeviceVisualizer> visualizer,
-		std::unique_ptr<BodyGraphCreator>,
-		std::unique_ptr<NodeDiscoverer>, 
-		std::unique_ptr<PlaybackController>, 
-		std::unique_ptr<HapticInterface>,
-		std::unique_ptr<TrackingProvider>
+		std::unique_ptr<HardwareBodygraphCreator>,
+		std::unique_ptr<HardwareNodeEnumerator>, 
+		std::unique_ptr<HardwarePlaybackController>, 
+		std::unique_ptr<HardwareWaveform>,
+		std::unique_ptr<HardwareTracking>
 	);
 	using TrackingHandler = std::function<void(nsvr_region, nsvr_quaternion*)>;
 
@@ -57,11 +60,11 @@ private:
 	std::string m_originator;
 	DeviceDescriptor m_description;
 	std::unique_ptr<DeviceVisualizer> m_visualizer;
-	std::unique_ptr<BodyGraphCreator> m_bodygraph;
-	std::unique_ptr<NodeDiscoverer> m_discoverer;
-	std::unique_ptr<PlaybackController> m_playback;
-	std::unique_ptr<HapticInterface> m_haptics;
-	std::unique_ptr<TrackingProvider> m_trackingProvider;
+	std::unique_ptr<HardwareBodygraphCreator> m_bodygraph;
+	std::unique_ptr<HardwareNodeEnumerator> m_discoverer;
+	std::unique_ptr<HardwarePlaybackController> m_playback;
+	std::unique_ptr<HardwareWaveform> m_haptics;
+	std::unique_ptr<HardwareTracking> m_trackingProvider;
 	void handleLocationalEvent(uint64_t event_id, const NullSpaceIPC::LocationalEvent& locational);
 	void handleSimpleHaptic(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple);
 	void handlePlaybackEvent(uint64_t event_id, const NullSpaceIPC::PlaybackEvent& playbackEvent);

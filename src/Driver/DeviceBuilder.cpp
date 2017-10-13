@@ -6,203 +6,102 @@
 #include "HardwareTracking.h"
 #include "FakeTrackingProvider.h"
 #include "SharedTypes.h"
+#include "HardwareHapticInterface.h"
 
 
-//Temporarily sticking this in here until I know how the fake will work
-class FakePlayback  {
-public:
-	void Augment(playback_api* api);
-	
-};
 
-class FakeHaptics : public HapticInterface {
-public: 
-	void Augment(waveform_api* api);
-	void Augment(buffered_api* api);
-	void SubmitSimpleHaptic(uint64_t request_id, nsvr_node_id id, SimpleHaptic data) override {}
+
+struct DefaultFakeWaveformHaptics : public FakeWaveformHaptics {
+	void Augment(waveform_api* api) override {}
 };
 
 
-//template<typename Api, typename Initializer>
-//void default_initialize(PluginApis* apis) {
-//	if (!apis->GetApi<Api>()) {
-//		apis->RegisterDefault<Api>();
-//		Initializer().Augment(apis->GetApi<Api>());
-//	}
-//}
+struct DefaultFakeBufferedHaptics : public FakeBufferedHaptics {
+	void Augment(buffered_api* api) override {}
+};
+
 
 
 //Either we are provided a set of apis from the plugin (which we copy)
-DeviceBuilder::DeviceBuilder(PluginApis* apis) : m_apis(*apis)
+DeviceBuilder::DeviceBuilder(PluginApis* apis) : m_apis(apis)
 {
-	PluginApis p;
-	p.ConstructDefault<device_api>();
+	//PluginApis p;
+	//p.ConstructDefault<device_api>();
 
 }
 
 //Or we are on our own to build it
-DeviceBuilder::DeviceBuilder() : m_apis()
+DeviceBuilder::DeviceBuilder() 
 {
-	//Need to be careful because the default *_apis will just crash because they have null callbacks. Perhaps we should
-	//assign them to do nothing?
 
-//	m_apis.RegisterInternal(Apis::Device, std::make_unique<device_api>());
+	m_resources->apis = PluginApis();
+	m_apis = &m_resources->apis;
+
 }
 
-DeviceBuilder & DeviceBuilder::WithDefaultBodygraph()
+
+
+std::pair<std::unique_ptr<Device>, std::unique_ptr<DeviceLifetimeResources>> DeviceBuilder::Build()
 {
-	//m_bodygraph = FakeBodygraphBuilder().Build();
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithDefaultNodeDiscovery()
-{
-	//if (!m_description) {
-	//	WithDefaultDescription();
-	//}
-
-	//assert(m_apis.GetApi<device_api>());
-
-	//m_discoverer = std::make_unique<HardwareNodeEnumerator>(m_description->id, m_apis.GetApi<device_api>());
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithDefaultTracking()
-{
-	//m_tracking = std::make_unique<HardwareTracking>(m_apis.GetApi<tracking_api>());
-	return *this;
-}
-
-DeviceBuilder& DeviceBuilder::WithDefaultHaptics()
-{
-	//m_haptics = std::make_unique<FakeHaptics>();
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithDefaultPlaybackControl()
-{
-	//m_playback = std::make_unique<FakePlayback>();
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithDefaultDescription()
-{
-	DeviceDescriptor desc;
-	desc.concept = nsvr_device_concept_controller;
-	desc.displayName = "Generic Controller Device";
-	desc.id = 0;
-	m_description = desc;
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithDefaultOriginatingPlugin()
-{
-	m_originatingPlugin = "Fake Plugin";
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithDefaultVisualizer()
-{
-	//m_visualizer = std::make_unique<DeviceVisualizer>();
-
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithBodygraph(std::unique_ptr<BodyGraphCreator> bodygraph)
-{
-//	m_bodygraph = std::move(bodygraph);
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithNodeDiscoverer(std::unique_ptr<NodeDiscoverer> discoverer)
-{
-	//m_discoverer = std::move(discoverer);
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithTracking(std::unique_ptr<TrackingProvider> tracking)
-{
-//	m_tracking = std::move(tracking);
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithPlayback(std::unique_ptr<PlaybackController> playback)
-{
-	//m_playback = std::move(playback);
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithHapticInterface(std::unique_ptr<HapticInterface> haptics)
-{
-	//m_haptics = std::move(haptics);
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithDescriptor(DeviceDescriptor deviceDescription)
-{
-	m_description = deviceDescription;
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithOriginatingPlugin(std::string pluginName)
-{
-	m_originatingPlugin = pluginName;
-	return *this;
-}
-
-DeviceBuilder & DeviceBuilder::WithVisualizer(std::unique_ptr<DeviceVisualizer> visualizer)
-{
-//	m_visualizer = std::move(visualizer);
-	return *this;
-}
-
-std::unique_ptr<Device> DeviceBuilder::Build()
-{
-	if (!m_description) {
-		WithDefaultDescription();
-	}
 
 	if (!m_originatingPlugin) {
-		WithDefaultOriginatingPlugin();
+		m_originatingPlugin = "Fake Plugin";
 	}
 
-	if (!m_bodygraph) {
-		WithDefaultBodygraph();
+	if (!m_description) {
+		DeviceDescriptor desc;
+		desc.concept = nsvr_device_concept_controller;
+		desc.displayName = "Generic Controller Device";
+		desc.id = 0;
+		m_description = desc;
 	}
 
-	if (!m_discoverer) {
-		WithDefaultNodeDiscovery();
+	if (!m_resources->waveformHaptics) {
+		m_resources->waveformHaptics = std::make_unique<DefaultFakeWaveformHaptics>();
 	}
-
-	if (!m_tracking) {
-		WithDefaultTracking();
-	}
-
-	if (!m_playback) {
-		WithDefaultPlaybackControl();
-	}
-
 	
-
-	if (!m_visualizer) {
-		WithDefaultVisualizer();
+	if (!m_resources->bufferedHaptics) {
+		m_resources->bufferedHaptics = std::make_unique<DefaultFakeBufferedHaptics>();
 	}
+	
+	auto waveformApi = bind_api<waveform_api, HardwareWaveform>(m_resources->waveformHaptics);
 
-	if (!m_haptics) {
-		WithDefaultHaptics();
-	}
+	auto playback = bind_api<playback_api, HardwarePlaybackController>(m_resources->playback);
+
+	auto tracking = bind_api<tracking_api, HardwareTracking>(m_resources->tracking);
+
+	auto discovery = bind_api<device_api, HardwareNodeEnumerator>(m_resources->discoverer);
+	discovery->setId(m_description->id);
+
+	auto bodygraph = bind_api<bodygraph_api, HardwareBodygraphCreator>(m_resources->bodygraph);
 
 
-	return std::make_unique<Device>(
+	m_visualizer = std::make_unique<DeviceVisualizer>();
+	m_visualizer->provideApi(m_apis->GetApi<playback_api>());
+	//need to provide buffered api
+
+
+	//note that this will break as soon as the device builder is destroyed, because m_waveformhaptics will be destroyed, which is the fake.
+	//need a way to prolong its life.
+	//It works for a real plugin because the plugin stays alive in the manager and outlives any of the Device objects. Here, the builder may only be used 
+	//momentarily. 
+
+
+	auto device = std::make_unique<Device>(
 		*m_originatingPlugin,
 		*m_description,
 		std::move(m_visualizer),
-		std::move(m_bodygraph),
-		std::move(m_discoverer),
-		std::move(m_playback),
-		std::move(m_haptics),
-		std::move(m_tracking)
+		std::move(bodygraph),
+		std::move(discovery),
+		std::move(playback),
+		std::move(waveformApi),
+		std::move(tracking)
 	);
+
+
+	auto pair = std::make_pair(std::move(device), std::move(m_resources));
+	return std::move(pair);
+
 	
 }
 
@@ -213,14 +112,26 @@ void FakePlayback::Augment(playback_api * api)
 	api->submit_unpause.handler = [](auto a, auto b, auto c) {};
 }
 
-void FakeHaptics::Augment(waveform_api * api)
+void FakeWaveformHaptics::Augment(waveform_api * api)
 {
 	api->submit_activate.handler = [](auto a, auto b, auto d, auto e) {};
 }
 
-void FakeHaptics::Augment(buffered_api * api)
+//void FakeWaveformHaptics::Augment(buffered_api * api)
+//{
+//	api->submit_buffer.handler = [](auto a, auto b, auto c, auto d, auto e) {};
+//	api->submit_getmaxsamples.handler = [](auto a, auto b) {};
+//	api->submit_getsampleduration.handler = [](auto a, auto b) {};
+//}
+
+DeviceBuilder & DeviceBuilder::WithBodygraph(std::unique_ptr<FakeBodygraph> bodygraph)
 {
-	api->submit_buffer.handler = [](auto a, auto b, auto c, auto d, auto e) {};
-	api->submit_getmaxsamples.handler = [](auto a, auto b) {};
-	api->submit_getsampleduration.handler = [](auto a, auto b) {};
+	m_resources->bodygraph = std::move(bodygraph);
+	return *this;
+}
+
+DeviceBuilder & DeviceBuilder::WithNodeDiscoverer(std::unique_ptr<FakeNodeDiscoverer> discoverer)
+{
+	m_resources->discoverer = std::move(discoverer);
+	return *this;
 }

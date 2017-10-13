@@ -76,7 +76,7 @@ struct buffered_api : public plugin_api {
 		, submit_getmaxsamples {api->getmaxsamples_handler, api->client_data}
 		, submit_getsampleduration {api->getsampleduration_handler, api->client_data}
 	{}
-	
+	buffered_api() = default;
 	callback<
 		nsvr_plugin_buffered_api::nsvr_buffered_submit,
 		uint64_t,
@@ -106,7 +106,7 @@ struct playback_api : public plugin_api {
 		: submit_pause{ api->pause_handler, api->client_data }
 		, submit_cancel{ api->cancel_handler, api->client_data }
 		, submit_unpause{ api->unpause_handler, api->client_data } {}
-
+	playback_api() = default;
 	callback<
 		nsvr_plugin_playback_api::nsvr_playback_cancel, 
 		uint64_t,
@@ -172,6 +172,8 @@ struct device_api : public plugin_api {
 struct waveform_api : public plugin_api {
 	waveform_api(nsvr_plugin_waveform_api* api)
 		: submit_activate{ api->activate_handler, api->client_data } {}
+
+	waveform_api() = default;
 	callback<
 		nsvr_plugin_waveform_api::nsvr_waveform_activate_handler,
 		uint64_t,
@@ -195,7 +197,7 @@ struct rawcommand_api : public plugin_api {
 };
 
 struct bodygraph_api : public plugin_api {
-
+	bodygraph_api() = default;
 	bodygraph_api(nsvr_plugin_bodygraph_api* api)
 		: submit_setup{ api->setup_handler, api->client_data } {}
 	callback<
@@ -210,6 +212,7 @@ struct tracking_api : public plugin_api {
 		: submit_beginstreaming{ api->beginstreaming_handler, api->client_data }
 		, submit_endstreaming{ api->endstreaming_handler, api->client_data } {}
 
+	tracking_api() = default;
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_beginstreaming,
 		nsvr_tracking_stream*,
@@ -267,7 +270,7 @@ public:
 	void Each(std::function<void(Apis, plugin_api*)>);
 
 	template<typename InternalApi>
-	void ConstructDefault();
+	InternalApi* ConstructDefault();
 private:
 	std::unordered_map<Apis::_enumerated, std::unique_ptr<plugin_api>> m_apis;
 };
@@ -304,8 +307,9 @@ inline bool PluginApis::Supports() const
 }
 
 template<typename InternalApi>
-inline void PluginApis::ConstructDefault()
+inline InternalApi* PluginApis::ConstructDefault()
 {
 	auto x = std::make_unique<InternalApi>();
 	m_apis.emplace(std::make_pair(InternalApi::getApiType(), std::move(x)));
+	return GetApi<InternalApi>();
 }

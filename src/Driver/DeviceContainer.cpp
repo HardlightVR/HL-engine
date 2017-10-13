@@ -51,7 +51,7 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 
 
 
-void DeviceContainer::AddDevice(nsvr_device_id, std::unique_ptr<Device> device)
+void DeviceContainer::AddDevice(nsvr_device_id,std::pair<std::unique_ptr<Device>, std::unique_ptr<DeviceLifetimeResources>>&&)
 {
 	m_devices.push_back(std::move(device));
 	m_onDeviceAdded(m_devices.back().get());
@@ -62,62 +62,68 @@ void DeviceContainer::AddDevice(nsvr_device_id, std::unique_ptr<Device> device)
 void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
 {
 
-	std::vector<Apis> required_apis = { Apis::Device };
 
-	for (Apis required : required_apis) {
-		if (!apis.Supports(required)) {
-			BOOST_LOG_SEV(clogger::get(), nsvr_severity_error) << originatingPlugin << " tried to create a device, but does not support required api: " << required._to_string();
-			return;
-		}
-	}
-
-
-	auto visualizer = std::make_unique<DeviceVisualizer>();
-
-	if (apis.Supports<playback_api>()) {
-		visualizer->provideApi(apis.GetApi<playback_api>());
-	} 
-	if (apis.Supports<waveform_api>()) {
-		visualizer->provideApi(apis.GetApi<waveform_api>());
-	}
-	if (apis.Supports<buffered_api>()) {
-		//todo
-	}
-
-
-	DeviceBuilder builder;
-	
-	builder
-		.WithDescriptor(desc)
+	auto result = DeviceBuilder(&apis).WithDescriptor(desc)
 		.WithOriginatingPlugin(originatingPlugin)
-		.WithNodeDiscoverer(std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>()))
-		.WithVisualizer(std::move(visualizer));
+		.Build();
 
-
-	//The following are optional apis.
-	if (apis.Supports<playback_api>()) {
-		builder.WithPlayback(std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>()));
-	}
-
-	if (apis.Supports<bodygraph_api>()) {
-		builder.WithBodygraph(std::make_unique<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>()));
-	}
-
-	if (apis.Supports<tracking_api>()) {
-		builder.WithTracking(std::make_unique<HardwareTracking>(apis.GetApi<tracking_api>()));
-	}
-
-	if (apis.Supports<buffered_api>() || apis.Supports<waveform_api>()){
-		builder.WithHapticInterface(std::make_unique<HardwareHapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>()));
-	}
 	
+	//std::vector<Apis> required_apis = { Apis::Device };
 
-	m_deviceLock.lock();
-	m_devices.push_back(builder.Build());
-	Device* newlyAdded = m_devices.back().get();
-	m_deviceLock.unlock();
+	//for (Apis required : required_apis) {
+	//	if (!apis.Supports(required)) {
+	//		BOOST_LOG_SEV(clogger::get(), nsvr_severity_error) << originatingPlugin << " tried to create a device, but does not support required api: " << required._to_string();
+	//		return;
+	//	}
+	//}
 
-	m_onDeviceAdded(newlyAdded);
+
+	//auto visualizer = std::make_unique<DeviceVisualizer>();
+
+	//if (apis.Supports<playback_api>()) {
+	//	visualizer->provideApi(apis.GetApi<playback_api>());
+	//} 
+	//if (apis.Supports<waveform_api>()) {
+	//	visualizer->provideApi(apis.GetApi<waveform_api>());
+	//}
+	//if (apis.Supports<buffered_api>()) {
+	//	//todo
+	//}
+
+
+	//DeviceBuilder builder;
+	//
+	//builder
+	//	.WithDescriptor(desc)
+	//	.WithOriginatingPlugin(originatingPlugin)
+	//	.WithNodeDiscoverer(std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>()))
+	//	.WithVisualizer(std::move(visualizer));
+
+
+	////The following are optional apis.
+	//if (apis.Supports<playback_api>()) {
+	//	builder.WithPlayback(std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>()));
+	//}
+
+	//if (apis.Supports<bodygraph_api>()) {
+	//	builder.WithBodygraph(std::make_unique<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>()));
+	//}
+
+	//if (apis.Supports<tracking_api>()) {
+	//	builder.WithTracking(std::make_unique<HardwareTracking>(apis.GetApi<tracking_api>()));
+	//}
+
+	//if (apis.Supports<buffered_api>() || apis.Supports<waveform_api>()){
+	//	builder.WithHapticInterface(std::make_unique<HardwareHapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>()));
+	//}
+	//
+
+	//m_deviceLock.lock();
+	//m_devices.push_back(builder.Build());
+	//Device* newlyAdded = m_devices.back().get();
+	//m_deviceLock.unlock();
+
+	//m_onDeviceAdded(newlyAdded);
 }
 
 

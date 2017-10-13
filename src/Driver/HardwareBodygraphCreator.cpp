@@ -32,12 +32,18 @@ public:
 };
 
 
-HardwareBodygraphCreator::HardwareBodygraphCreator(const Parsing::BodyGraphDescriptor& descriptor, bodygraph_api* api)
+HardwareBodygraphCreator::HardwareBodygraphCreator( bodygraph_api* api)
 	: m_api(api)
 	, m_graph()
 {
+	//fetchFromDescription(descriptor);
+	//fetchDynamically();
+	throw std::logic_error("FIX THIS");
+}
+
+void HardwareBodygraphCreator::provideDescription(const Parsing::BodyGraphDescriptor & descriptor)
+{
 	fetchFromDescription(descriptor);
-	fetchDynamically();
 }
 
 std::vector<nsvr_node_id> HardwareBodygraphCreator::GetNodesAtRegion(nsvr_region region) const

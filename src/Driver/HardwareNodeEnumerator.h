@@ -8,7 +8,8 @@ class DriverMessenger;
 class HardwareNodeEnumerator : public NodeDiscoverer {
 
 public:
-	HardwareNodeEnumerator(nsvr_device_id device_id, device_api* api);
+	HardwareNodeEnumerator(device_api* api);
+	void setId(nsvr_node_id id);
 	void Discover() override;
 	void ForEachNode(NodeDiscoverer::NodeAction action) override;
 	std::vector<nsvr_node_id> GetNodesOfType(nsvr_node_type type) override;

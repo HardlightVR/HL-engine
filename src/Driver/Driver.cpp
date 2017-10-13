@@ -176,6 +176,8 @@ int Driver::CreateDevice(uint32_t device_id)
 		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Shoulder"s, 1 }),
 		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 2 }),
 	};
+
+	auto r = DeviceBuilder().Build();
 	//auto f =FakeDiscoverer(std::move(nodes)).Augment()
 
 	/*m_devices.AddDevice(device_id, 
