@@ -26,6 +26,8 @@ Device::Device(
 	//for (nsvr_node_id node : trackingNodes) {
 	//	m_trackingProvider->BeginStreaming(NodeId<local>{node});
 	//}
+	m_discoverer->Discover();
+	m_bodygraph->fetchDynamically();
 
 }
 

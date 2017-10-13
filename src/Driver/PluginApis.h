@@ -18,7 +18,17 @@ struct callback {
 	FnPtr handler;
 	void* user_data;
 	
-	callback() = default;
+	callback() : user_data(nullptr) {
+	
+		handler = [](auto...) {
+			int x = 3;
+			std::cout << x;
+		};
+
+		instrumentation = [](auto...) {
+
+		};
+	}
 	std::function<void(Arguments...)> instrumentation;
 
 	callback(FnPtr handler, void* ud);
@@ -26,6 +36,8 @@ struct callback {
 	// Invoke the callback
 	void operator()(Arguments... arguments);
 };
+
+
 
 // Constructor takes the function pointer and a user_data void pointer.
 template<typename FnPtr, typename ...Arguments>
@@ -106,7 +118,11 @@ struct playback_api : public plugin_api {
 		: submit_pause{ api->pause_handler, api->client_data }
 		, submit_cancel{ api->cancel_handler, api->client_data }
 		, submit_unpause{ api->unpause_handler, api->client_data } {}
-	playback_api() = default;
+	playback_api()
+		: submit_pause()
+		, submit_cancel()
+		, submit_unpause()
+	{}
 	callback<
 		nsvr_plugin_playback_api::nsvr_playback_cancel, 
 		uint64_t,
@@ -139,7 +155,13 @@ struct device_api : public plugin_api {
 		, submit_getnodeinfo{ api->getnodeinfo_handler, api->client_data }
 	{}
 
-	device_api() = default;
+	device_api() :
+		submit_enumeratedevices(),
+		submit_enumeratenodes(),
+		submit_getdeviceinfo(),
+		submit_getnodeinfo()
+	{
+	}
 
 	callback<
 		nsvr_plugin_device_api::nsvr_device_enumeratenodes,
@@ -310,6 +332,7 @@ template<typename InternalApi>
 inline InternalApi* PluginApis::ConstructDefault()
 {
 	auto x = std::make_unique<InternalApi>();
+	auto ptr = x.get();
 	m_apis.emplace(std::make_pair(InternalApi::getApiType(), std::move(x)));
-	return GetApi<InternalApi>();
+	return ptr;
 }

@@ -177,16 +177,16 @@ int Driver::CreateDevice(uint32_t device_id)
 		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 2 }),
 	};
 
-	auto r = DeviceBuilder().Build();
-	//auto f =FakeDiscoverer(std::move(nodes)).Augment()
 
-	/*m_devices.AddDevice(device_id, 
-		DeviceBuilder()
-		.WithDescriptor(DeviceDescriptor{ std::string("Hardlight MkIII " + std::to_string(device_id)), device_id, nsvr_device_concept_suit })
-		.WithNodeDiscoverer(std::move(f))
-		.Build()
-	);
-*/
+
+	auto resources = std::make_unique<PluginInstance::DeviceResources>();
+	resources->discoverer = std::make_unique<NullNodeDiscoverer>(nodes);
+	resources->descriptor = DeviceDescriptor{"Virtual Controller", 0, nsvr_device_concept_controller};
+	
+	PluginInstance* plugin = m_pluginManager.MakeVirtualPlugin();
+	plugin->addDeviceResources(std::move(resources));
+
+
 	return 1;
 }
 

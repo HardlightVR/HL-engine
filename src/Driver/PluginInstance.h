@@ -11,12 +11,37 @@
 #include <boost/log/sources/basic_logger.hpp>
 #include <boost/log/sources/severity_channel_logger.hpp>
 #include "logger.h"
+#include "DeviceIds.h"
+#include "FakeResources.h"
+#include "DeviceDescriptor.h"
+
 class DeviceContainer;
 
 class PluginInstance
 {
 public:
+	struct DeviceResources {
+	/*	DeviceResources()
+			: id(0)
+			, descriptor()
+			, bodygraph(std::make_unique<FakeBodygraph>())
+			, discoverer(std::make_unique<FakeNodeDiscoverer>())
+			, tracking(std::make_unique<FakeTracking>())
+			, playback(std::make_unique<FakePlayback>())
+			, waveformHaptics(std::make_unique<FakeWaveformHaptics>())
+			, bufferedHaptics(std::make_unique<FakeBufferedHaptics>())
+		{}*/
+		DeviceId<local> id; //why using this??
+		boost::optional<DeviceDescriptor> descriptor;
+		std::unique_ptr<FakeBodygraph> bodygraph;
+		std::unique_ptr<FakeNodeDiscoverer> discoverer;
+		std::unique_ptr<FakeTracking> tracking;
+		std::unique_ptr<FakePlayback> playback;
+		std::unique_ptr<FakeWaveformHaptics> waveformHaptics;
+		std::unique_ptr<FakeBufferedHaptics> bufferedHaptics;
+	};
 
+	using DeviceResourceBundle = std::unique_ptr<DeviceResources>;
 
 	PluginInstance(boost::asio::io_service& io, std::string fileName, uint32_t id);
 	~PluginInstance();
@@ -46,8 +71,12 @@ public:
 	void Log(nsvr_severity level, const char * component, const char * message);
 
 	void setDispatcher(std::unique_ptr<PluginEventSource> dispatcher);
+	void addDeviceResources(DeviceResourceBundle resources);
 
+	DeviceResourceBundle& resources();
 private:
+	DeviceResourceBundle m_resources;
+
 	std::unique_ptr<boost::dll::shared_library> m_dll;
 	boost::asio::io_service& m_io;
 	typedef std::function<int(nsvr_plugin_api*)> plugin_registration_t;

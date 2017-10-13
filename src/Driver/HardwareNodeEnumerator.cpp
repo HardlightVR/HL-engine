@@ -6,7 +6,7 @@ HardwareNodeEnumerator::HardwareNodeEnumerator(device_api * api)
 {
 }
 
-void HardwareNodeEnumerator::setId(nsvr_node_id id)
+void HardwareNodeEnumerator::setId(nsvr_device_id id)
 {
 	m_id = id;
 }

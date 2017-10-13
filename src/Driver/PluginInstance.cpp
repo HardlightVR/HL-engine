@@ -23,6 +23,18 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 	
 
 	m_logger.add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
+
+	m_resources = std::make_unique<DeviceResources>();
+	/*auto il = {
+		0,
+	std::make_unique<FakeBodygraph>(),
+	std::make_unique<FakeNodeDiscoverer>(),
+	std::make_unique<FakeTracking>()
+	std::make_unique<FakePlayback>()
+	std::make_unique<FakeWaveformHaptics>()
+	std::make_unique<FakeBufferedHaptics> bufferedHaptics;
+	}*/
+
 }
 
 
@@ -158,7 +170,7 @@ PluginApis & PluginInstance::apis()
 
 void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
 {
-	m_eventHandler->Raise(type, id, *this);
+	m_eventHandler->Raise(type, id, this);
 }
 
 void PluginInstance::Log(nsvr_severity level, const char * component, const char * message)
@@ -174,6 +186,20 @@ void PluginInstance::Log(nsvr_severity level, const char * component, const char
 void PluginInstance::setDispatcher(std::unique_ptr<PluginEventSource> dispatcher)
 {
 	m_eventHandler = std::move(dispatcher);
+}
+
+void PluginInstance::addDeviceResources(DeviceResourceBundle resources)
+{
+	assert(resources->descriptor);
+	nsvr_device_id id = resources->id.value;
+	m_resources = std::move(resources);
+	RaiseEvent(nsvr_device_event_device_connected, id);
+}
+
+//see if this can be const ref
+PluginInstance::DeviceResourceBundle & PluginInstance::resources()
+{
+	return m_resources;
 }
 
 int PluginInstance::GetWorkingDirectory(nsvr_directory* outDir)

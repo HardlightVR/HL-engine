@@ -9,75 +9,58 @@
 #include "DeviceDescriptor.h"
 #include "DeviceVisualizer.h"
 #include "PluginApis.h"
+#include "PluginInstance.h"
 
-
-
-#define DECLARE_FAKE_INTERFACE(name, api) \
-struct name { \
-virtual ~##name##() = default; \
-virtual void Augment(##api##*) = 0;\
-}; 
-
-
-DECLARE_FAKE_INTERFACE(FakeWaveformHaptics, waveform_api)
-DECLARE_FAKE_INTERFACE(FakeBufferedHaptics, buffered_api)
-DECLARE_FAKE_INTERFACE(FakeNodeDiscoverer, device_api)
-DECLARE_FAKE_INTERFACE(FakeBodygraph, bodygraph_api)
-DECLARE_FAKE_INTERFACE(FakePlayback, playback_api)
-DECLARE_FAKE_INTERFACE(FakeTracking, tracking_api)
-
-
-
-struct DeviceLifetimeResources {
-	std::unique_ptr<FakeBodygraph> bodygraph;
-	std::unique_ptr<FakeNodeDiscoverer> discoverer;
-	std::unique_ptr<FakeTracking> tracking;
-	std::unique_ptr<FakePlayback> playback;
-	std::unique_ptr<FakeWaveformHaptics> waveformHaptics;
-	std::unique_ptr<FakeBufferedHaptics> bufferedHaptics;
-	PluginApis apis;
-};
+#include "logger.h"
 
 
 class DeviceBuilder {
 public:
-	DeviceBuilder(PluginApis* apis);
-	DeviceBuilder();
+	DeviceBuilder(PluginApis* apis, PluginInstance::DeviceResourceBundle& resources, nsvr_device_id id);
 
-	DeviceBuilder& WithBodygraph(std::unique_ptr<FakeBodygraph> bodygraph);
-	DeviceBuilder& WithNodeDiscoverer(std::unique_ptr<FakeNodeDiscoverer> discoverer);
-	DeviceBuilder& WithTracking(std::unique_ptr<FakeTracking> tracking);
-	DeviceBuilder& WithPlayback(std::unique_ptr<FakePlayback> playback);
-	DeviceBuilder& WithWaveform(std::unique_ptr<FakeWaveformHaptics> haptics);
-	DeviceBuilder& WithBuffered(std::unique_ptr<FakeBufferedHaptics> haptics);
+	
 	DeviceBuilder& WithDescriptor(DeviceDescriptor deviceDescription);
 	DeviceBuilder& WithOriginatingPlugin(std::string pluginName);
 	//DeviceBuilder& WithVisualizer(std::unique_ptr<DeviceVisualizer> visualizer);
+	DeviceBuilder& WithBodygraphDescriptor(Parsing::BodyGraphDescriptor descriptor);
 
-
-	std::pair<std::unique_ptr<Device>, std::unique_ptr<DeviceLifetimeResources>> Build();
+	std::unique_ptr<Device> Build();
 private:
-
+	nsvr_device_id m_id;
 	template<typename Api, typename HardwareBinding, typename FakeApi>
-	std::unique_ptr<HardwareBinding> bind_api(std::unique_ptr<FakeApi>& fake);
+	std::unique_ptr<HardwareBinding> bind_component(std::unique_ptr<FakeApi>& fake);
 	PluginApis* m_apis;
 	
-	std::unique_ptr<DeviceLifetimeResources> m_resources;
+	PluginInstance::DeviceResourceBundle& m_resources;
 
 	std::unique_ptr<DeviceVisualizer> m_visualizer;
-
+	boost::optional<Parsing::BodyGraphDescriptor> m_bgDescriptor;
 	boost::optional<DeviceDescriptor> m_description;
 	boost::optional<std::string> m_originatingPlugin;
 
 };
 
+//The point here is to check if we should augment the apis with additional functionality
+//Aka, is this a virtual device
+// So if this device doesn't specify a certain api, we will default construct it, and then
+//augment it with the fake.
+
+//The fake may or may not do anything. The default fake is just void Augment(whatever) { //no-op }
+
 template<typename Api, typename HardwareBinding, typename FakeApi>
-inline std::unique_ptr<HardwareBinding> DeviceBuilder::bind_api(std::unique_ptr<FakeApi>& fake)
+inline std::unique_ptr<HardwareBinding> DeviceBuilder::bind_component(std::unique_ptr<FakeApi>& fake)
 {
+
+
 	auto api = m_apis->GetApi<Api>();
 	if (!api) {
 		api = m_apis->ConstructDefault<Api>();
-		fake->Augment(api);
+		if (!fake) {
+			BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "The device is missing api [" << Api::getApiType() << "] but there was no fake to take its place";
+		}
+		else {
+			fake->Augment(api);
+		}
 	}
 
 	return std::make_unique<HardwareBinding>(api);

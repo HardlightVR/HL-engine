@@ -9,7 +9,7 @@
 #include "PluginApis.h"
 #include "DriverConfigParser.h"
 #include <boost/signals2.hpp>
-
+#include "PluginInstance.h"
 
 class DriverMessenger;
 class DeviceContainer {
@@ -18,8 +18,7 @@ public:
 	using DeviceFn = std::function<void(Device*)>;
 
 	DeviceContainer();
-	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin);
-	void AddDevice(nsvr_device_id, std::unique_ptr<Device>);
+	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources);
 	void RemoveDevice(DeviceId<local> id, std::string pluginName);
 	void EachDevice(DeviceFn action);
 
@@ -30,7 +29,6 @@ public:
 	void OnDeviceRemoved(DeviceEvent::slot_type slot);
 
 private:
-	void addDevice(const DeviceDescriptor&, PluginApis&,  Parsing::BodyGraphDescriptor, std::string originatingPlugin);
 	DeviceEvent m_onDeviceAdded;
 	DeviceEvent m_onDeviceRemoved;
 
