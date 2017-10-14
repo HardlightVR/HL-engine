@@ -31,7 +31,7 @@ Device::Device(
 
 	
 	auto imus = m_discoverer->GetNodesOfType(nsvr_node_type_inertial_tracker);
-
+	assert(imus.size() > 0);
 	for (auto imu : imus) {
 		m_trackingProvider->BeginStreaming(NodeId<local>{imu});
 	}
