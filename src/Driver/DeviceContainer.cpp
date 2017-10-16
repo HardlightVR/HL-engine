@@ -26,29 +26,12 @@ DeviceContainer::DeviceContainer()
 {
 }
 
-void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources)
+void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources)
 {
-	/*if (auto api = apis.GetApi<device_api>()) {
 
-		nsvr_device_ids ids = { 0 };
-
-		api->submit_enumeratedevices(&ids);
-
-		for (std::size_t i = 0; i < ids.device_count; i++) {
-
-			nsvr_device_info info = { 0 };
-			api->submit_getdeviceinfo(ids.ids[i], &info);
-
-			DeviceDescriptor desc;
-			desc.displayName = std::string(info.name);
-			desc.id = info.id;
-			desc.concept = info.concept;
-			addDevice(desc, apis, std::move(bodyGraphDescriptor), originatingPlugin, resources);
-		}
-	}*/
 	DeviceDescriptor descriptor;
-	if (resources->descriptor) {
-		descriptor = *resources->descriptor;
+	if (resources->deviceDescriptor) {
+		descriptor = *resources->deviceDescriptor;
 
 	}
 	else {
@@ -62,16 +45,14 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::B
 		descriptor = desc;
 	}
 
-	auto builder = DeviceBuilder(&apis, resources, id)
+	auto device = DeviceBuilder(&apis, resources, id)
 		.WithDescriptor(descriptor)
-.WithBodygraphDescriptor(bodyGraphDescriptor)
-			.WithOriginatingPlugin(originatingPlugin)
-		
+		.WithOriginatingPlugin(originatingPlugin)
 		.Build();
 
 
 			m_deviceLock.lock();
-			m_devices.push_back(std::move(builder));
+			m_devices.push_back(std::move(device));
 			Device* newlyAdded = m_devices.back().get();
 			m_deviceLock.unlock();
 

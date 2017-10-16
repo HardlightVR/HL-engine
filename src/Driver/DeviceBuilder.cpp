@@ -33,7 +33,7 @@ DeviceBuilder & DeviceBuilder::WithOriginatingPlugin(std::string pluginName)
 
 DeviceBuilder & DeviceBuilder::WithBodygraphDescriptor(Parsing::BodyGraphDescriptor descriptor)
 {
-	m_bgDescriptor = descriptor;
+	m_resources->bodygraphDescriptor = descriptor;
 	return *this;
 }
 
@@ -55,8 +55,8 @@ std::unique_ptr<Device> DeviceBuilder::Build()
 
 	auto bodygraph = bind_component<bodygraph_api, HardwareBodygraphCreator>(m_resources->bodygraph);
 
-	if (m_bgDescriptor) {
-		bodygraph->provideDescription(*m_bgDescriptor);
+	if (m_resources->bodygraphDescriptor) {
+		bodygraph->provideDescription(*m_resources->bodygraphDescriptor);
 	}
 
 

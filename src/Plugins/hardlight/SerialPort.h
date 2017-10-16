@@ -26,7 +26,6 @@ public:
 		TimedOutWriting,
 		BadReturnPing,
 	};
-	~SerialPort();
 	SerialPort(std::string name, boost::asio::io_service& io, std::function<void()>);
 	void start_connect(std::shared_ptr<std::atomic<std::size_t>> num_tested_so_far, std::size_t total_amount);
 	Status status() const;

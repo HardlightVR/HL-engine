@@ -34,7 +34,6 @@ private:
 	PluginInstance::DeviceResourceBundle& m_resources;
 
 	std::unique_ptr<DeviceVisualizer> m_visualizer;
-	boost::optional<Parsing::BodyGraphDescriptor> m_bgDescriptor;
 	boost::optional<DeviceDescriptor> m_description;
 	boost::optional<std::string> m_originatingPlugin;
 

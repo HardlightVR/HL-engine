@@ -18,10 +18,6 @@ bool IsPingPacket(uint8_t* data, std::size_t length)
 		);
 }
 
-SerialPort::~SerialPort()
-{
-
-}
 
 void SerialPort::stop()
 {

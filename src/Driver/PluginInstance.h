@@ -32,7 +32,8 @@ public:
 			, bufferedHaptics(std::make_unique<FakeBufferedHaptics>())
 		{}*/
 		DeviceId<local> id; //why using this??
-		boost::optional<DeviceDescriptor> descriptor;
+		boost::optional<DeviceDescriptor> deviceDescriptor;
+		boost::optional<Parsing::BodyGraphDescriptor> bodygraphDescriptor;
 		std::unique_ptr<FakeBodygraph> bodygraph;
 		std::unique_ptr<FakeNodeDiscoverer> discoverer;
 		std::unique_ptr<FakeTracking> tracking;

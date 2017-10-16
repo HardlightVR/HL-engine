@@ -20,6 +20,29 @@ DECLARE_FAKE_INTERFACE(FakePlayback, playback_api)
 DECLARE_FAKE_INTERFACE(FakeTracking, tracking_api)
 
 
+struct DefaultBodygraph : public FakeBodygraph {
+
+	struct association {
+		std::string node;
+		nsvr_node_id id;
+	};
+	DefaultBodygraph(std::vector<association> assocs = {}) : m_assocs(assocs) {}
+	void Augment(bodygraph_api* api) override {
+		api->submit_setup.user_data = this;
+		api->submit_setup.handler = [](nsvr_bodygraph* bg, void* ud) {
+			static_cast<DefaultBodygraph*>(ud)->setup(bg);
+		};
+	}
+
+	void setup(nsvr_bodygraph* bg) {
+		for (const auto& assoc : m_assocs) {
+			nsvr_bodygraph_associate(bg, assoc.node.c_str(), assoc.id);
+		}
+	}
+
+	std::vector<association> m_assocs;
+
+};
 struct DefaultTracking : public FakeTracking {
 	DefaultTracking() : m_timers() {}
 	DefaultTracking(boost::asio::io_service& io, std::vector<nsvr_node_id> tracked_nodes = {}) : m_timers(), m_streams() {

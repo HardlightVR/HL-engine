@@ -109,7 +109,7 @@ PluginInstance * PluginManager::MakeVirtualPlugin()
 	auto plugin = std::make_unique<PluginInstance>(m_io, pluginName, size);
 	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
 	dispatcher->OnDeviceConnected([name = pluginName, this](nsvr_device_id id, PluginInstance* plugin) {
-		m_deviceContainer.AddDevice(id, plugin->apis(), Parsing::BodyGraphDescriptor(), name, plugin->resources());
+		m_deviceContainer.AddDevice(id, plugin->apis(),  name, plugin->resources());
 	});
 	plugin->setDispatcher(std::move(dispatcher));
 
@@ -262,8 +262,11 @@ bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::st
 
 
 		auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
+		
 		dispatcher->OnDeviceConnected([this, dll = dllName](nsvr_device_id id, PluginInstance* plugin) {
-			m_deviceContainer.AddDevice(id, plugin->apis(), m_pluginInfo.at(dll).Descriptor.bodygraph, dll, plugin->resources());
+			plugin->resources()->bodygraphDescriptor = m_pluginInfo.at(dll).Descriptor.bodygraph;
+
+			m_deviceContainer.AddDevice(id, plugin->apis(), dll, plugin->resources());
 		});
 		dispatcher->OnDeviceDisconnected([this, dll = dllName](nsvr_device_id id) {
 			m_deviceContainer.RemoveDevice(DeviceId<local>{id}, dll);

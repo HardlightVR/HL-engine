@@ -18,7 +18,7 @@ public:
 	using DeviceFn = std::function<void(Device*)>;
 
 	DeviceContainer();
-	void AddDevice(nsvr_device_id id, PluginApis& apis, Parsing::BodyGraphDescriptor, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources);
+	void AddDevice(nsvr_device_id id, PluginApis& apis, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources);
 	void RemoveDevice(DeviceId<local> id, std::string pluginName);
 	void EachDevice(DeviceFn action);
 

@@ -190,7 +190,7 @@ void PluginInstance::setDispatcher(std::unique_ptr<PluginEventSource> dispatcher
 
 void PluginInstance::addDeviceResources(DeviceResourceBundle resources)
 {
-	assert(resources->descriptor);
+	assert(resources->deviceDescriptor);
 	nsvr_device_id id = resources->id.value;
 	m_resources = std::move(resources);
 	RaiseEvent(nsvr_device_event_device_connected, id);
