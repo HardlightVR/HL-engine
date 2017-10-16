@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "Node.h"
 #include <unordered_map>
+#include <chrono>
 #include "ScheduledEvent.h"
 #define DECLARE_FAKE_INTERFACE(name, api) \
 struct name { \
@@ -69,11 +70,14 @@ struct DefaultTracking : public FakeTracking {
 
 	void write_tracking(nsvr_node_id id) {
 		nsvr_quaternion quat = { 0 };
+		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - m_beginningOfTime);
+		quat.x = static_cast<float>(sin(elapsed.count()));
 		nsvr_tracking_stream_push(m_streams[id], &quat);
 	}
 	
 	void begin(nsvr_tracking_stream* stream, nsvr_node_id id) {
 		m_streams[id] = stream;
+		m_beginningOfTime = std::chrono::high_resolution_clock::now();
 		m_timers[id]->Start();
 	}
 	void end(nsvr_node_id id) {
@@ -81,7 +85,7 @@ struct DefaultTracking : public FakeTracking {
 	}
 	std::unordered_map<nsvr_node_id, nsvr_tracking_stream*> m_streams;
 	std::unordered_map<nsvr_node_id, std::unique_ptr<ScheduledEvent>> m_timers;
-	
+	std::chrono::high_resolution_clock::time_point m_beginningOfTime;
 };
 
 struct DefaultNodeDiscoverer : public FakeNodeDiscoverer {
