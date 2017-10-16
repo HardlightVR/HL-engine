@@ -350,6 +350,7 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedTracking.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedVector.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedMap.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedObject.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedTracking.h" />

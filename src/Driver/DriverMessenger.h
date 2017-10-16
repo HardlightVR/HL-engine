@@ -4,6 +4,7 @@
 #include "SharedCommunication\OwnedReadableSharedQueue.h"
 #include "SharedCommunication\OwnedWritableSharedQueue.h"
 #include "SharedCommunication\OwnedWritableSharedMap.h"
+#include "SharedCommunication\OwnedWritableSharedVector.h"
 #include "SharedCommunication\SharedTypes.h"
 #include "protobuff_defs/EffectCommand.pb.h"
 #include "protobuff_defs/DriverCommand.pb.h"

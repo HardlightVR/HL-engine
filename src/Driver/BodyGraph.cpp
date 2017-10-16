@@ -33,6 +33,7 @@ BodyGraph::BodyGraph()
 		subregion(region::identifier_torso, segment_range::full, angle_range::full, {
 			subregion(region::identifier_torso_front, segment_range::full, angle_range::front_half,{
 				subregion(region::identifier_chest_left,  segment_range{ 0.8, 1.0 }, angle_range{ 340, 360 }),
+				subregion(region::identifier_middle_sternum, segment_range{0.45, 0.55}, angle_range{355, 5}),
 				subregion(region::identifier_upper_ab_left,  segment_range{ 0.6, 0.8 }, angle_range{ 340, 360 }),
 				subregion(region::identifier_middle_ab_left, segment_range{ 0.4, 0.6 }, angle_range{ 340, 360 }),
 				subregion(region::identifier_lower_ab_left,  segment_range{ 0.0, 0.4 }, angle_range{ 340, 360 }),

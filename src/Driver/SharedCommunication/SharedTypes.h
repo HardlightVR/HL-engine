@@ -105,6 +105,8 @@ namespace NullSpace {
 			identifier_body = 1 * SUBREGION_BLOCK,
 			identifier_torso = 2 * SUBREGION_BLOCK,
 			identifier_torso_front = 3 * SUBREGION_BLOCK,
+			identifier_middle_sternum = 3 * SUBREGION_BLOCK + 1,
+
 			identifier_chest_left = 4 * SUBREGION_BLOCK,
 			identifier_chest_right = 5 * SUBREGION_BLOCK,
 			identifier_upper_ab_left = 6 * SUBREGION_BLOCK,

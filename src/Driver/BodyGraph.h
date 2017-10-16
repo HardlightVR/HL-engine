@@ -142,10 +142,14 @@ struct subregion {
 
 
 	static double average(double min, double max) {
-		return (min + max) / 2.0;
+		//return (min + max) / 2.0;
+		return fmod(min + (angular_distance(min, max) / 2.0), 360.0);
 	}
 
 	static double angular_distance(double min, double max) {
+		if (max < min) {
+			max += 360;
+		}
 		return max - min;
 	}
 

@@ -3,49 +3,38 @@
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
 #include <boost/interprocess/containers/map.hpp>
-
-
+#include <boost/interprocess/shared_memory_object.hpp>
 template<typename KeyType, typename MappedType>
-class OwnedWritableSharedMap
+class ReadableSharedMap
 {
 
 public:
 
-	OwnedWritableSharedMap(const std::string& name) :
+	ReadableSharedMap(const std::string& name) :
 		m_dataMemName(name),
-		m_segment(boost::interprocess::create_only, (name + "-data").c_str(), 65536, 0, []() {
-			boost::interprocess::permissions perm;
-			perm.set_unrestricted();
-			return perm;
-		}()),
+		m_segment(boost::interprocess::open_only, (name + "-data").c_str()),
 		m_allocInst(m_segment.get_segment_manager())
 	{
-	
-		m_map = m_segment.construct<Map>(m_dataMemName.c_str())(std::less<KeyType>(), m_allocInst);
 
+		m_map = m_segment.find<Map>(name.c_str()).first;
+		if (m_map == 0) {
+			throw boost::interprocess::interprocess_exception("Failed to construct ReadableSharedMap memory");
+		}
+	
 	}
 
+	std::size_t Size() const {
+		return m_map->size();
+	}
 	bool Contains(KeyType key) {
 		return m_map->find(key) != m_map->end();
 	}
 
-	
-
-	void Update(KeyType key, MappedType data) {
-		m_map->operator[](key) = data;
-		
-	}
-
-	~OwnedWritableSharedMap() {
-		m_segment.destroy<Map>(m_dataMemName.c_str());
-
-	}
-	static bool remove(const char* name) {
-		return boost::interprocess::shared_memory_object::remove((name + std::string("-data")).c_str());
+	MappedType Get(KeyType key) {
+		return m_map->at(key);
 	}
 
 private:
-
 	using ptr_t = boost::interprocess::offset_ptr<void, boost::int32_t, boost::uint64_t>;
 	using my_managed_shared_memory = boost::interprocess::basic_managed_shared_memory<
 		char,
@@ -60,8 +49,7 @@ private:
 	using Map = boost::interprocess::map<KeyType, MappedType, std::less<KeyType>, ShmemAllocator>;
 	my_managed_shared_memory m_segment;
 	ShmemAllocator m_allocInst;
-	Map* m_map;
+	boost::interprocess::offset_ptr<Map> m_map;
 };
 
 
-#pragma once

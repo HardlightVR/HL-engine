@@ -182,6 +182,9 @@
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
     <ClInclude Include="..\src\Driver\FakeResources.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedMap.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
