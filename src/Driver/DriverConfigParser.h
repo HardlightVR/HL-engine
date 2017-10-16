@@ -27,6 +27,7 @@ namespace Parsing {
 		double rotation;
 
 		LocationDescriptor();
+		LocationDescriptor(double height, double rot) : height(height), rotation(rot) {}
 	};
 	struct SingleRegionDescriptor {
 		std::string name;
@@ -34,6 +35,8 @@ namespace Parsing {
 		LocationDescriptor location;
 
 		SingleRegionDescriptor();
+		SingleRegionDescriptor(std::string name, nsvr_bodypart bp, LocationDescriptor loc) :
+			name(name), bodypart(bp), location(loc) {}
 	};
 
 	struct MultiRegionDescriptor {

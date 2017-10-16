@@ -24,10 +24,10 @@ public:
 
 
 
-	void Raise(nsvr_device_event_type type, nsvr_device_id id, PluginInstance& instance) override;
+	void Raise(nsvr_device_event_type type, nsvr_device_id id, PluginInstance* instance) override;
 
 
-	using DeviceConnected = boost::signals2::signal<void(nsvr_device_id, PluginApis& apis)>;
+	using DeviceConnected = boost::signals2::signal<void(nsvr_device_id, PluginInstance* whichPlugin)>;
 	using DeviceDisconnected = boost::signals2::signal<void(nsvr_device_id)>;
 
 	void OnDeviceConnected(DeviceConnected::slot_type);

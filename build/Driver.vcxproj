@@ -308,6 +308,7 @@
     <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
     <ClInclude Include="..\src\Driver\FakeBodygraph.h" />
     <ClInclude Include="..\src\Driver\FakeDiscoverer.h" />
+    <ClInclude Include="..\src\Driver\FakeResources.h" />
     <ClInclude Include="..\src\Driver\FakeTrackingProvider.h" />
     <ClInclude Include="..\src\Driver\HapticInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />

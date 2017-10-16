@@ -32,6 +32,8 @@ public:
 	//Unloads the plugins that are currently present
 	void UnloadAll();
 
+	PluginInstance* MakeVirtualPlugin();
+
 	//Runs each plugin's event loop once with a given ms delta time
 	//It is a fatal error if this method returns false. The program should be terminated as gracefully as possible. 
 	bool TickOnce(uint64_t dt);

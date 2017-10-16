@@ -26,99 +26,44 @@ DeviceContainer::DeviceContainer()
 {
 }
 
-void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
-{
-	if (auto api = apis.GetApi<device_api>()) {
-
-		nsvr_device_ids ids = { 0 };
-
-		api->submit_enumeratedevices(&ids);
-
-		for (std::size_t i = 0; i < ids.device_count; i++) {
-
-			nsvr_device_info info = { 0 };
-			api->submit_getdeviceinfo(ids.ids[i], &info);
-
-			DeviceDescriptor desc;
-			desc.displayName = std::string(info.name);
-			desc.id = info.id;
-			desc.concept = info.concept;
-			addDevice(desc, apis, std::move(bodyGraphDescriptor), originatingPlugin);
-		}
-	}
-
-}
-
-
-
-void DeviceContainer::AddDevice(nsvr_device_id, std::unique_ptr<Device> device)
-{
-	m_devices.push_back(std::move(device));
-	m_onDeviceAdded(m_devices.back().get());
-}
-
-
-
-void DeviceContainer::addDevice(const DeviceDescriptor& desc, PluginApis& apis, Parsing::BodyGraphDescriptor bodyGraphDescriptor, std::string originatingPlugin)
+void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources)
 {
 
-	std::vector<Apis> required_apis = { Apis::Device };
+	DeviceDescriptor descriptor;
+	if (resources->deviceDescriptor) {
+		descriptor = *resources->deviceDescriptor;
 
-	for (Apis required : required_apis) {
-		if (!apis.Supports(required)) {
-			BOOST_LOG_SEV(clogger::get(), nsvr_severity_error) << originatingPlugin << " tried to create a device, but does not support required api: " << required._to_string();
-			return;
-		}
+	}
+	else {
+		nsvr_device_info info = { 0 };
+		apis.GetApi<device_api>()->submit_getdeviceinfo(id, &info);
+
+		DeviceDescriptor desc;
+		desc.displayName = std::string(info.name);
+		desc.id = info.id;
+		desc.concept = info.concept;
+		descriptor = desc;
 	}
 
-
-	auto visualizer = std::make_unique<DeviceVisualizer>();
-
-	if (apis.Supports<playback_api>()) {
-		visualizer->provideApi(apis.GetApi<playback_api>());
-	} 
-	if (apis.Supports<waveform_api>()) {
-		visualizer->provideApi(apis.GetApi<waveform_api>());
-	}
-	if (apis.Supports<buffered_api>()) {
-		//todo
-	}
-
-
-	DeviceBuilder builder;
-	
-	builder
-		.WithDescriptor(desc)
+	auto device = DeviceBuilder(&apis, resources, id)
+		.WithDescriptor(descriptor)
 		.WithOriginatingPlugin(originatingPlugin)
-		.WithNodeDiscoverer(std::make_unique<HardwareNodeEnumerator>(desc.id, apis.GetApi<device_api>()))
-		.WithVisualizer(std::move(visualizer));
+		.Build();
 
 
-	//The following are optional apis.
-	if (apis.Supports<playback_api>()) {
-		builder.WithPlayback(std::make_unique<HardwarePlaybackController>(apis.GetApi<playback_api>()));
-	}
+			m_deviceLock.lock();
+			m_devices.push_back(std::move(device));
+			Device* newlyAdded = m_devices.back().get();
+			m_deviceLock.unlock();
 
-	if (apis.Supports<bodygraph_api>()) {
-		builder.WithBodygraph(std::make_unique<HardwareBodygraphCreator>(bodyGraphDescriptor, apis.GetApi<bodygraph_api>()));
-	}
-
-	if (apis.Supports<tracking_api>()) {
-		builder.WithTracking(std::make_unique<HardwareTracking>(apis.GetApi<tracking_api>()));
-	}
-
-	if (apis.Supports<buffered_api>() || apis.Supports<waveform_api>()){
-		builder.WithHapticInterface(std::make_unique<HardwareHapticInterface>(apis.GetApi<buffered_api>(), apis.GetApi<waveform_api>()));
-	}
-	
-
-	m_deviceLock.lock();
-	m_devices.push_back(builder.Build());
-	Device* newlyAdded = m_devices.back().get();
-	m_deviceLock.unlock();
-
-	m_onDeviceAdded(newlyAdded);
+			m_onDeviceAdded(newlyAdded);
 }
+
+
+
+
+
+
 
 
 

@@ -2,16 +2,17 @@
 #include "NodeDiscoverer.h"
 #include <vector>
 #include <memory>
+#include "PluginApis.h"
 
-class FakeDiscoverer : public NodeDiscoverer {
+
+class FakeDiscoverer {
 public:
-	FakeDiscoverer(std::vector<Node> nodes);
-	void Discover() override;
-	Node* Get(nsvr_node_id id) override;
-	void ForEachNode(NodeAction action) override;
-	std::vector<nsvr_node_id> GetNodesOfType(nsvr_node_type type) override;
-	std::vector<nsvr_node_id> FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_type type) override;
+	FakeDiscoverer(std::vector<Node> nodes = {});
+	
+	void Augment(device_api* device_api);
 private:
+	void get_info(nsvr_node_id id, nsvr_node_info* info);
+	void enumerate(nsvr_node_ids* nodes);
 	std::unordered_map<NodeId<local>, Node> m_nodes;
 };
 

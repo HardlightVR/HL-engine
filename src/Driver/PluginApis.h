@@ -18,6 +18,14 @@ struct callback {
 	FnPtr handler;
 	void* user_data;
 	
+	callback() : user_data(nullptr) {
+	
+		handler = [](auto...) {
+		};
+
+		instrumentation = [](auto...) {
+		};
+	}
 	std::function<void(Arguments...)> instrumentation;
 
 	callback(FnPtr handler, void* ud);
@@ -25,6 +33,8 @@ struct callback {
 	// Invoke the callback
 	void operator()(Arguments... arguments);
 };
+
+
 
 // Constructor takes the function pointer and a user_data void pointer.
 template<typename FnPtr, typename ...Arguments>
@@ -75,7 +85,7 @@ struct buffered_api : public plugin_api {
 		, submit_getmaxsamples {api->getmaxsamples_handler, api->client_data}
 		, submit_getsampleduration {api->getsampleduration_handler, api->client_data}
 	{}
-	
+	buffered_api() = default;
 	callback<
 		nsvr_plugin_buffered_api::nsvr_buffered_submit,
 		uint64_t,
@@ -105,7 +115,11 @@ struct playback_api : public plugin_api {
 		: submit_pause{ api->pause_handler, api->client_data }
 		, submit_cancel{ api->cancel_handler, api->client_data }
 		, submit_unpause{ api->unpause_handler, api->client_data } {}
-
+	playback_api()
+		: submit_pause()
+		, submit_cancel()
+		, submit_unpause()
+	{}
 	callback<
 		nsvr_plugin_playback_api::nsvr_playback_cancel, 
 		uint64_t,
@@ -138,6 +152,14 @@ struct device_api : public plugin_api {
 		, submit_getnodeinfo{ api->getnodeinfo_handler, api->client_data }
 	{}
 
+	device_api() :
+		submit_enumeratedevices(),
+		submit_enumeratenodes(),
+		submit_getdeviceinfo(),
+		submit_getnodeinfo()
+	{
+	}
+
 	callback<
 		nsvr_plugin_device_api::nsvr_device_enumeratenodes,
 		nsvr_device_id,
@@ -169,6 +191,8 @@ struct device_api : public plugin_api {
 struct waveform_api : public plugin_api {
 	waveform_api(nsvr_plugin_waveform_api* api)
 		: submit_activate{ api->activate_handler, api->client_data } {}
+
+	waveform_api() = default;
 	callback<
 		nsvr_plugin_waveform_api::nsvr_waveform_activate_handler,
 		uint64_t,
@@ -192,7 +216,7 @@ struct rawcommand_api : public plugin_api {
 };
 
 struct bodygraph_api : public plugin_api {
-
+	bodygraph_api() = default;
 	bodygraph_api(nsvr_plugin_bodygraph_api* api)
 		: submit_setup{ api->setup_handler, api->client_data } {}
 	callback<
@@ -207,6 +231,7 @@ struct tracking_api : public plugin_api {
 		: submit_beginstreaming{ api->beginstreaming_handler, api->client_data }
 		, submit_endstreaming{ api->endstreaming_handler, api->client_data } {}
 
+	tracking_api() = default;
 	callback<
 		nsvr_plugin_tracking_api::nsvr_tracking_beginstreaming,
 		nsvr_tracking_stream*,
@@ -262,6 +287,9 @@ public:
 	bool Supports() const;
 
 	void Each(std::function<void(Apis, plugin_api*)>);
+
+	template<typename InternalApi>
+	InternalApi* ConstructDefault();
 private:
 	std::unordered_map<Apis::_enumerated, std::unique_ptr<plugin_api>> m_apis;
 };
@@ -295,4 +323,13 @@ template<typename T>
 inline bool PluginApis::Supports() const
 {
 	return m_apis.find(T::getApiType()) != m_apis.end();
+}
+
+template<typename InternalApi>
+inline InternalApi* PluginApis::ConstructDefault()
+{
+	auto x = std::make_unique<InternalApi>();
+	auto ptr = x.get();
+	m_apis.emplace(std::make_pair(InternalApi::getApiType(), std::move(x)));
+	return ptr;
 }

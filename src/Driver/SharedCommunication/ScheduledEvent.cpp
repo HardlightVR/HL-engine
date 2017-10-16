@@ -28,9 +28,6 @@ void ScheduledEvent::Stop()
 	m_timer.cancel();
 }
 
-ScheduledEvent::~ScheduledEvent()
-{
-}
 
 void ScheduledEvent::handleEvent(const boost::system::error_code& ec)
 {

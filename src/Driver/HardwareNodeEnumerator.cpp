@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "HardwareNodeEnumerator.h"
-HardwareNodeEnumerator::HardwareNodeEnumerator(nsvr_device_id id, device_api * api)
+HardwareNodeEnumerator::HardwareNodeEnumerator(device_api * api)
 	: m_api(api)
 	, m_nodes()
-	, m_id(id)
 {
-	Discover();
+}
+
+void HardwareNodeEnumerator::setId(nsvr_device_id id)
+{
+	m_id = id;
 }
 
 void HardwareNodeEnumerator::Discover()

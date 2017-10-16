@@ -7,12 +7,11 @@
 //but in fact only some devices/nodes support that specific api.
 //So who makes sure than an invalid request isn't sent?
 
-class HardwareHapticInterface : public HapticInterface{
+class HardwareWaveform {
 public:
-	HardwareHapticInterface(buffered_api* bufferedApi, waveform_api* waveformApi);
-	void SubmitSimpleHaptic(uint64_t request_id, nsvr_node_id id, SimpleHaptic data) override;
+	HardwareWaveform(waveform_api* waveformApi);
+	void SubmitSimpleHaptic(uint64_t request_id, nsvr_node_id id, SimpleHaptic data);
 private:
-	buffered_api* m_buffered;
 	waveform_api* m_waveform;
 };
 
