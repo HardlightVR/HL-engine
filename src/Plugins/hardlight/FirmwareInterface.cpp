@@ -25,10 +25,6 @@ m_totalBytesSent(0)
 }
 
 
-FirmwareInterface::~FirmwareInterface()
-{
-}
-
 
 
 
@@ -126,7 +122,7 @@ void FirmwareInterface::ResetDrivers()
 
 void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
 	if (builder.Verify()) {
-		chooseExecutionStrategy(builder.Build());
+		queue_packet(builder.Build());
 	}
 	else {
 		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
@@ -173,7 +169,7 @@ void FirmwareInterface::PlayRtp(Location location, int strength)
 
 void FirmwareInterface::Ping()
 {
-	chooseExecutionStrategy({ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+	queue_packet({ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
 }
 
 void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
@@ -198,8 +194,7 @@ void FirmwareInterface::Execute(const CommandBuffer & buffer)
 }
 
 void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float strength) {
-	//Todo: In the future, we should translate all the values from the configs at first so we don't have to do it all the time
-	//at runtime. Or make the translator smarter and cache it.
+
 
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
@@ -216,7 +211,6 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 
 }
 
-//TODO: STUFF BROKEN. LOCATION IS WRONG. EITYHER BEING PASSED BY API WRONG OR SOMETHING ELSE
 void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
 	std::string effectString = Locator::Translator().ToString(effect);
@@ -232,7 +226,7 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 		.WithParam("zone", Locator::Translator().ToString(location)));
 }
 
-void FirmwareInterface::chooseExecutionStrategy(const std::vector<uint8_t>& packet)
+void FirmwareInterface::queue_packet(const std::vector<uint8_t>& packet)
 {
 	_lfQueue.push(packet.data(), packet.size());
 

@@ -16,7 +16,6 @@ public:
 		int Filter;
 	};
 	FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io);
-	~FirmwareInterface();
 
 	void Execute(const CommandBuffer& buffer);
 	void PlayEffect(Location location, uint32_t effect, float strength);
@@ -41,7 +40,7 @@ public:
 private:
 	inline void VerifyThenExecute(InstructionBuilder& builder);
 	std::shared_ptr<InstructionSet> m_instructionSet;
-	void chooseExecutionStrategy(const std::vector<uint8_t>& packet);
+	void queue_packet(const std::vector<uint8_t>& packet);
 	std::unique_ptr<BoostSerialAdapter>& _adapter;
 	InstructionBuilder _builder;
 	boost::asio::deadline_timer _writeTimer;
