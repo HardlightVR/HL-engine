@@ -64,8 +64,8 @@ project "Driver"
 	protobuf_win64_dir = "D:/protobuf-3.0.0/cmake/build/solution64"
 	
 
---	pchheader "stdafx.h"
---	pchsource "../src/Driver/stdafx.cpp"
+	pchheader "stdafx.h"
+	pchsource "../src/Driver/stdafx.cpp"
 
 
 	defines {"NS_DRIVER_EXPORTS", "NSVR_BUILDING_CORE", "BOOST_THREAD_USE_LIB"}

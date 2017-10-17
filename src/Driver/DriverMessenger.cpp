@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <boost/optional.hpp>
 #include "DriverMessenger.h"
 #include "NSDriverApi.h"
