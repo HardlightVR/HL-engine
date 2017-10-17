@@ -2,6 +2,7 @@
 #include "DeviceVisualizer.h"
 #include "nsvr_preset.h"
 #include "DeviceIds.h"
+
 void DeviceVisualizer::provideApi(waveform_api* waveform)
 {
 	waveform->submit_activate.instrumentation = [this](uint64_t request_id, nsvr_node_id id, nsvr_waveform* waveform) {

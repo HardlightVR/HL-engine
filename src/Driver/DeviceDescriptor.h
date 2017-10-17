@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "PluginAPI.h"
+
 struct DeviceDescriptor {
 	std::string displayName;
 	nsvr_device_id id;

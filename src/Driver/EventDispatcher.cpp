@@ -1,13 +1,5 @@
 #include "stdafx.h"
 #include "EventDispatcher.h"
-#include "IoService.h"
-#include "PluginManager.h"
-#include "Locator.h"
-
-#include "nsvr_playback_handle.h"
-
-
-
 #include <boost/log/trivial.hpp>
 
 

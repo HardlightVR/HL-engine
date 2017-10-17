@@ -1,11 +1,9 @@
 #pragma once
-
-#include <memory>
-
-
+#include <unordered_map>
+#include "PluginAPI.h"
+#include "PluginApis.h"
 #include "RenderedRegion.h"
 #include "SimulatedHapticNode.h"
-#include "PluginApis.h"
 
 class DeviceVisualizer {
 public:
@@ -14,7 +12,5 @@ public:
 	void simulate(double dt);
 	std::vector<RenderedNode> render();
 private:
-
 	std::unordered_map<nsvr_node_id, SimulatedHapticNode> m_nodes;
-
 };
