@@ -320,6 +320,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\ImuConsumer.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\Instructions.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h" />
     <ClInclude Include="..\src\plugins\hardlight\IoService.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\JsonKeyValueConfig.h" />
@@ -327,6 +328,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Json\json.h" />
     <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\KeepaliveMonitor.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\KeyValConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\Locator.h" />
     <ClInclude Include="..\src\plugins\hardlight\Mark2Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\Mark3Handshaker.h" />
@@ -365,6 +367,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\ImuConsumer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\Instructions.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\IoService.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp" />

@@ -8,9 +8,8 @@ using namespace std;
 class PacketDispatcher
 {
 public:
-	typedef std::function<void(packet)> OnReceivePacketFunc;
+	using OnReceivePacketFunc = std::function<void(packet)>;
 	PacketDispatcher();
-	~PacketDispatcher();
 	void Dispatch(packet packet);
 	void AddConsumer(SuitPacket::PacketType ptype, OnReceivePacketFunc packetFunc);
 private:

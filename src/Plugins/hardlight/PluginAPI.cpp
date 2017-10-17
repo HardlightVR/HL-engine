@@ -7,9 +7,11 @@
 #include "PluginDummy.h"
 #include <iostream>
 
-
+#include "Instructions.h"
 NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api * api)
 {
+	
+
 	api->init = [](nsvr_plugin** plugin) {
 	
 		Locator::initialize();

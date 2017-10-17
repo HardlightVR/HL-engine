@@ -21,10 +21,6 @@ void ImuConsumer::OnTracking(TrackingCallback cb)
 	m_callback = cb;
 }
 
-ImuConsumer::~ImuConsumer()
-{
-}
-
 void ImuConsumer::AssignMapping(uint32_t key, Imu id, const std::string& readable_id)
 {
 	m_mapping[key] = std::make_pair(id, readable_id);

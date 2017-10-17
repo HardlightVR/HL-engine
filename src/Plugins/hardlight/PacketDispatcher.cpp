@@ -5,12 +5,6 @@
 PacketDispatcher::PacketDispatcher() : _dispatchLimit(32), _consumers()
 {
 }
-
-
-PacketDispatcher::~PacketDispatcher()
-{
-}
-
 void PacketDispatcher::Dispatch(packet packet)
 {
 	SuitPacket::PacketType packetType = SuitPacket::Type(packet);

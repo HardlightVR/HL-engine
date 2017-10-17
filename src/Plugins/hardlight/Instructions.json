@@ -1,127 +1,136 @@
-[
-	{
-		"id" : "0x01",
-		"name" : "GET_VERSION",
-		"purpose" : "Retrieves the version of the suit",
-		"parameters" : []
-		
+[{
+		"id": "0x01",
+		"name": "GET_VERSION",
+		"purpose": "Retrieves the version of the suit",
+		"parameters": []
+
 	},
 	{
-		"id" : "0x02",
-		"name" : "STATUS_PING",
-		"purpose" : "Pings the suit",
-		"parameters" : []
-		
+		"id": "0x02",
+		"name": "STATUS_PING",
+		"purpose": "Pings the suit",
+		"parameters": []
+
 	},
 	{
-		"id" : "0x11",
-		"name" : "RESET_DRIVERS",
-		"purpose" : "Resets the suit",
-		"parameters" : []
-		
+		"id": "0x03",
+		"name": "GET_UUID",
+		"purpose": "Retrieve the UUID of the suit",
+		"parameters": []
 	},
 	{
-		"id" : "0x12",
-		"name" : "INITIALIZE_ALL",
-		"purpose" : "Initializes the suit",
-		"parameters" : []
-		
+		"id": "0x05",
+		"name": "SET_LEDS",
+		"purpose": "Set chest LEDs",
+		"parameters": ["red_0", "red_1", "green_0", "green_1",
+			"blue_0", "blue_1"
+		]
 	},
 	{
-		"id" : "0x13",
-		"name" : "PLAY_EFFECT",
-		"purpose" : "Plays a single effect",
-		"parameters" : [
+		"id": "0x12",
+		"name": "INITIALIZE_ALL",
+		"purpose": "Initializes the suit",
+		"parameters": []
+
+	},
+	{
+		"id": "0x13",
+		"name": "PLAY_EFFECT",
+		"purpose": "Plays a single effect",
+		"parameters": [
 			"zone", "effect"
 		]
 	},
 	{
-		"id" : "0x14",
-		"name" : "WRITE_DATA",
-		"purpose" : "Writes to a driver",
-		"parameters" : [
+		"id": "0x14",
+		"name": "WRITE_DATA",
+		"purpose": "Writes to a driver",
+		"parameters": [
 			"zone", "register", "data"
 		]
 	},
 	{
-		"id" : "0x15",
-		"name" : "READ_DATA",
-		"purpose" : "Reads from a driver",
-		"parameters" : [
+		"id": "0x15",
+		"name": "READ_DATA",
+		"purpose": "Reads from a driver",
+		"parameters": [
 			"zone", "register"
 		]
 	},
 	{
-		"id" : "0x16",
-		"name" : "WRITE_ALL",
-		"purpose" : "Write to a register on every driver",
-		"parameters" : [
+		"id": "0x16",
+		"name": "WRITE_ALL",
+		"purpose": "Write to a register on every driver",
+		"parameters": [
 			"register", "data"
 		]
 	},
 	{
-		"id" : "0x17",
-		"name" : "HALT_SINGLE",
-		"purpose" : "Stop a single motor",
-		"parameters" : [
+		"id": "0x17",
+		"name": "HALT_SINGLE",
+		"purpose": "Stop a single motor",
+		"parameters": [
 			"zone"
 		]
 	},
 	{
-		"id" : "0x18",
-		"name" : "STREAM_CONT",
-		"purpose" : "Streams continous data",
-		"parameters" : []
+		"id": "0x18",
+		"name": "STREAM_CONT",
+		"purpose": "Streams continous data",
+		"parameters": []
 	},
 	{
-		"id" : "0x19",
-		"name" : "PLAY_CONTINUOUS",
-		"purpose" : "Play a motor continuously",
-		"parameters" : ["zone", "effect"]
+		"id": "0x19",
+		"name": "PLAY_CONTINUOUS",
+		"purpose": "Play a motor continuously",
+		"parameters": ["zone", "effect"]
 	},
 	{
-		"id" : "0x1A",
-		"name" : "AUDIO_MODE_ENABLE",
-		"purpose" : "Enables audio mode on pad",
-		"parameters" : ["zone", "audio_max", "audio_min", "peak_time", "filter"]
+		"id": "0x1A",
+		"name": "AUDIO_MODE_ENABLE",
+		"purpose": "Enables audio mode on pad",
+		"parameters": ["zone", "audio_max", "audio_min", "peak_time", "filter"]
 	},
 	{
-		"id" : "0x1B",
-		"name" : "INTRIG_MODE_ENABLE",
-		"purpose" : "Enables trigger mode on pad",
-		"parameters" : ["zone"]
+		"id": "0x1B",
+		"name": "INTRIG_MODE_ENABLE",
+		"purpose": "Enables trigger mode on pad",
+		"parameters": ["zone"]
 	},
 	{
-		"id" : "0x1C",
-		"name" : "RTP_MODE_ENABLE",
-		"purpose" : "Enables rtp mode on pad",
-		"parameters" : ["zone"]
+		"id": "0x1C",
+		"name": "RTP_MODE_ENABLE",
+		"purpose": "Enables rtp mode on pad",
+		"parameters": ["zone"]
 	},
 	{
-		"id" : "0x1D",
-		"name" : "PLAY_RTP",
-		"purpose" : "Loads a volume using rtp",
-		"parameters" : ["zone", "volume"]
+		"id": "0x1D",
+		"name": "PLAY_RTP",
+		"purpose": "Loads a volume using rtp",
+		"parameters": ["zone", "volume"]
 	},
 	{
-		"id" : "0x32",
-		"name" : "INIT_TRACKING",
-		"purpose" : "Initialize tracking network",
-		"parameters" : []
+		"id": "0x32",
+		"name": "INIT_TRACKING",
+		"purpose": "Initialize tracking network",
+		"parameters": []
 	},
 	{
-		"id" : "0x34",
-		"name" : "IMU_ENABLE",
-		"purpose" : "Enable the IMUs",
-		"parameters" : []
+		"id": "0x34",
+		"name": "IMU_ENABLE",
+		"purpose": "Enable the IMUs",
+		"parameters": []
 	},
 	{
-		"id" : "0x35",
-		"name" : "IMU_DISABLE",
-		"purpose" : "Disable the IMUs",
-		"parameters" : []
+		"id": "0x35",
+		"name": "IMU_DISABLE",
+		"purpose": "Disable the IMUs",
+		"parameters": []
+	},
+	{
+		"id": "0x39",
+		"name": "GET_TRACK_STATUS",
+		"purpose": "Get the status of one sensor",
+		"parameters": ["sensor"]
 	}
 ]
-
-
-

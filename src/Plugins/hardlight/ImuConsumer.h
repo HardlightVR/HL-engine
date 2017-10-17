@@ -17,7 +17,6 @@ public:
 	using TrackingCallback = std::function<void(const std::string&, nsvr_quaternion)>;
 	ImuConsumer(PacketDispatcher&);
 	void OnTracking(TrackingCallback);
-	~ImuConsumer();
 	void AssignMapping(uint32_t key, Imu id, const std::string& readable_id);
 private:
 	boost::optional<TrackingCallback> m_callback;
