@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Device.h"
 #include "nsvr_region.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
@@ -22,10 +22,6 @@ Device::Device(
 	, m_originator(parentPlugin)
 	, m_trackingProvider(std::move(tracking))
 {
-	//const auto& trackingNodes = m_discoverer->GetNodesOfType(nsvr_node_type_inertial_tracker);
-	//for (nsvr_node_id node : trackingNodes) {
-	//	m_trackingProvider->BeginStreaming(NodeId<local>{node});
-	//}
 	m_discoverer->Discover();
 	m_bodygraph->fetchDynamically();
 

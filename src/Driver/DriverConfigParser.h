@@ -3,7 +3,10 @@
 #include <string>
 #include <vector>
 #include <boost/variant.hpp>
+#include <boost/optional.hpp>
 #include "PluginAPI.h"
+#include "json/json-forwards.h"
+
 namespace Parsing {
 	enum class Concept {
 		Unknown = 0,

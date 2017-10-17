@@ -3,6 +3,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include "Locator.h"
+#include "json/json.h"
 namespace Parsing {
 
 
