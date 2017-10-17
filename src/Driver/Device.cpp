@@ -2,6 +2,7 @@
 #include "Device.h"
 #include "nsvr_region.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
+#include "logger.h"
 
 Device::Device(
 	std::string parentPlugin,
@@ -43,7 +44,7 @@ void Device::DispatchEvent(const NullSpaceIPC::HighLevelEvent & event)
 	case NullSpaceIPC::HighLevelEvent::kLocationalEvent:
 		handleLocationalEvent(event.parent_id(), event.locational_event());
 	default:
-		BOOST_LOG_TRIVIAL(info) << "[Device] Unrecognized request: " << event.events_case();
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "[Device] Unrecognized request: " << event.events_case();
 		break;
 	}
 }
@@ -187,7 +188,6 @@ void Device::handlePlaybackEvent(uint64_t id, const NullSpaceIPC::PlaybackEvent&
 		m_playback->Cancel(id);
 		break;
 	default:
-		BOOST_LOG_TRIVIAL(warning) << "[Device] Unknown playback event: " << playbackEvent.command();
 		break;
 	}
 }

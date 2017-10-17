@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "HardwareEventDispatcher.h"
 #include "DeviceContainer.h"
-
 #include "PluginInstance.h"
+#include "logger.h"
+
 HardwareEventDispatcher::HardwareEventDispatcher(boost::asio::io_service & io)
 	: m_io(io)
 {
@@ -26,7 +27,7 @@ void HardwareEventDispatcher::Raise(nsvr_device_event_type type, nsvr_device_id 
 			m_onDeviceDisconnected(id);
 			break;
 		default:
-			BOOST_LOG_TRIVIAL(warning) << "[HardwareEventDispatcher] No event handlers for event type " << type;
+			BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "[HardwareEventDispatcher] No event handlers for event type " << type;
 			break;
 		}
 	});

@@ -3,8 +3,6 @@
 
 
 
-
-
 bool PluginApis::Supports(Apis api) const
 {
 	return m_apis.find(api) != m_apis.end();

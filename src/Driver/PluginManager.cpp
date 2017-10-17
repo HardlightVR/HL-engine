@@ -48,7 +48,7 @@ std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path
 		}
 	}
 	catch (const boost::filesystem::filesystem_error& ec) {
-		BOOST_LOG_TRIVIAL(error) << "[PluginDiscovery] " << ec.what();
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_error) << "[PluginDiscovery] " << ec.what();
 	}
 
 

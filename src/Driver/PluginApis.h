@@ -1,11 +1,10 @@
 #pragma once
 #include "PluginAPI.h"
 
-#include <boost/optional.hpp>
 #include <unordered_map>
 #include <memory>
-#include <boost/optional.hpp>
-#include <boost/log/trivial.hpp>
+#include <functional>
+
 #include "better_enum.h"
 ///
 /// The purpose of this file is to wrap C callbacks with ones that we can more easily call from
