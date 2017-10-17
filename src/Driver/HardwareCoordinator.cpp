@@ -1,16 +1,13 @@
 #include "stdafx.h"
 #include "HardwareCoordinator.h"
-#include <iostream>
 #include "EventDispatcher.h"
 #include "DeviceContainer.h"
-#include "PluginAPI.h"
 #include "Device.h"
 #include "DriverMessenger.h"
 #include "SharedTypes.h"
-#include <boost/variant.hpp>
 #include "logger.h"
-
 #include "DeviceIds.h"
+
 HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, DeviceContainer& devices )
 	: m_devices(devices)
 	, m_messenger(messenger)

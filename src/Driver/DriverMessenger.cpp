@@ -1,4 +1,5 @@
-#include "stdafx.h"
+//#include "stdafx.h"
+#include <boost/optional.hpp>
 #include "DriverMessenger.h"
 #include "NSDriverApi.h"
 #include "logger.h"
@@ -133,14 +134,6 @@ void DriverMessenger::WriteBodyView(NullSpace::SharedMemory::RegionPair data)
 	
 }
 
-void DriverMessenger::WriteLog(std::string s)
-{
-	//assumes null termination
-	if (!m_loggingStream->Push(s.data(), s.length() + 1)) {
-		std::cout << "[DriverMessenger] Failed to write to gameplay log\n";
-		
-	}
-}
 
 boost::optional<std::vector<NullSpaceIPC::EffectCommand>> DriverMessenger::ReadHaptics()
 {

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <atomic>
+
 #include "SharedCommunication\WritableSharedObject.h"
 #include "SharedCommunication\OwnedReadableSharedQueue.h"
 #include "SharedCommunication\OwnedWritableSharedQueue.h"
@@ -11,9 +14,8 @@
 #include "protobuff_defs/HighLevelEvent.pb.h"
 #include "protobuff_defs/DeviceEvent.pb.h"
 
-#include <memory>
 
-
+#include <boost/asio/deadline_timer.hpp>
 
 using namespace NullSpace::SharedMemory;
 
@@ -28,7 +30,6 @@ public:
 	void RemoveNode(uint64_t id);
 	void RemoveDevice(uint32_t id);
 	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
-	void WriteLog(std::string s);
 	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
 	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();

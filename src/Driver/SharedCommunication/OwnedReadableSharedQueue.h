@@ -1,9 +1,11 @@
 #pragma once
 
+#include <vector>
+#include <string>
+#include <iostream>
 
 #include <boost\interprocess\ipc\message_queue.hpp>
 #include "shared_data.h"
-
  
 
 class OwnedReadableSharedQueue
@@ -37,8 +39,7 @@ public:
 		
 	}
 
-	~OwnedReadableSharedQueue() {
-	}
+	
 	
 	std::size_t GetNumMessageAvailable() {
 		return m_queue.get_num_msg();
