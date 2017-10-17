@@ -326,7 +326,6 @@
     <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\Driver\Locator.h" />
     <ClInclude Include="..\src\Driver\LoggingUtils.h" />
-    <ClInclude Include="..\src\Driver\NSDriverApi.h" />
     <ClInclude Include="..\src\Driver\Node.h" />
     <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\NodeIds.h" />
@@ -378,6 +377,7 @@
     <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\HapticEffect.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.h" />
+    <ClInclude Include="..\src\Driver\runtime_include\NSDriverApi.h" />
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\subregion.h" />
     <ClInclude Include="..\src\Driver\subregion_utils.h" />

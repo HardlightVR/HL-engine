@@ -2,7 +2,7 @@
 #include <functional>
 #include "protobuff_defs/DriverCommand.pb.h"
 #include "SuitVersionInfo.h"
-#include "NSDriverApi.h"
+#include "runtime_include/NSDriverApi.h"
 #include "logger.h"
 
 

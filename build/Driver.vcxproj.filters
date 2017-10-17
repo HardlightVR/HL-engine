@@ -13,6 +13,9 @@
     <Filter Include="protobuff_defs">
       <UniqueIdentifier>{BD9239EB-A960-2DF1-92F4-9D177E610956}</UniqueIdentifier>
     </Filter>
+    <Filter Include="runtime_include">
+      <UniqueIdentifier>{0C98EE53-7823-5C18-8134-DF0CED3EB818}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
@@ -62,7 +65,6 @@
     <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\Driver\Locator.h" />
     <ClInclude Include="..\src\Driver\LoggingUtils.h" />
-    <ClInclude Include="..\src\Driver\NSDriverApi.h" />
     <ClInclude Include="..\src\Driver\Node.h" />
     <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\NodeIds.h" />
@@ -165,6 +167,9 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.h">
       <Filter>protobuff_defs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\runtime_include\NSDriverApi.h">
+      <Filter>runtime_include</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\subregion.h" />
