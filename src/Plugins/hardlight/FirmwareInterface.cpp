@@ -92,6 +92,7 @@ void FirmwareInterface::writeBuffer() {
 
 void FirmwareInterface::EnableTracking()
 {
+
 	VerifyThenExecute(_builder.UseInstruction("IMU_ENABLE"));
 }
 
@@ -129,7 +130,24 @@ void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
 	}
 }
 
+void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder, const nsvr::config::Instruction& alternateInst) {
+	bool normalVerify = builder.Verify();
+	bool alternateVerify = nsvr::config::Verify(alternateInst, m_instructionSet.get());
 
+	assert(normalVerify == alternateVerify);
+
+	auto normalPacket = builder.Build();
+	auto alternatePacket = nsvr::config::Build(alternateInst);
+
+	assert(normalPacket == alternatePacket);
+
+	if (normalVerify) {
+		queue_packet(normalPacket);
+	}
+	else {
+		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
+	}
+}
 void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& opts)
 {
 	VerifyThenExecute(
@@ -213,6 +231,11 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 
 void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
+
+	//nsvr::config::Instruction inst(nsvr::config::InstructionId::PLAY_CONTINUOUS, { {"zone", static_cast<uint8_t>(location)},  {"effect", effect} });
+
+	//queue_packet(nsvr::config::Build(inst))
+
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
 		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));

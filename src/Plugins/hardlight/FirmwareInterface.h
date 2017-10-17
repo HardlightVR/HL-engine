@@ -4,6 +4,9 @@
 #include "Enums.h"
 #include <boost/asio/io_service.hpp>
 #include "zone_logic/HardwareCommands.h"
+
+#include "Instructions.h"
+
 class FirmwareInterface
 {
 	
@@ -38,7 +41,8 @@ public:
 
 	std::size_t GetTotalBytesSent() const;
 private:
-	inline void VerifyThenExecute(InstructionBuilder& builder);
+	void VerifyThenExecute(InstructionBuilder& builder);
+	void VerifyThenExecute(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
 	std::shared_ptr<InstructionSet> m_instructionSet;
 	void queue_packet(const std::vector<uint8_t>& packet);
 	std::unique_ptr<BoostSerialAdapter>& _adapter;
