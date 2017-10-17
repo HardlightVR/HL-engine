@@ -1,20 +1,15 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "BodyGraph.h"
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/log/trivial.hpp>
-#include <memory>
+
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <cmath>
+#undef _USE_MATH_DEFINES
+
 #include "nsvr_core_errors.h"
 
-double to_radians(double degrees) {
-	return (degrees * M_PI) / 180.0;
-}
-double to_degrees(double radians)
-{
-	return (radians * 180.0) / M_PI;
-}
+
 const segment_range segment_range::full = { 0, 1 };
 const segment_range segment_range::lower_half = { 0, 0.5 };
 const segment_range segment_range::upper_half = { 0.5, 1.0 };
@@ -327,10 +322,5 @@ void BodyGraph::NodeData::removeNode(nsvr_node_id id)
 {
 	auto it = std::remove(nodes.begin(), nodes.end(), id);
 	nodes.erase(it, nodes.end());
-}
-
-
-double distance(double x, double y, double z, double x2, double y2, double z2) {
-	return sqrt(pow((x - x2), 2) + pow((y - y2), 2) + pow((z - z2), 2));
 }
 

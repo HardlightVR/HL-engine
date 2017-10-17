@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Json">
@@ -44,6 +44,7 @@
     <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
     <ClInclude Include="..\src\Driver\FakeBodygraph.h" />
     <ClInclude Include="..\src\Driver\FakeDiscoverer.h" />
+    <ClInclude Include="..\src\Driver\FakeResources.h" />
     <ClInclude Include="..\src\Driver\FakeTrackingProvider.h" />
     <ClInclude Include="..\src\Driver\HapticInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
@@ -69,8 +70,6 @@
     <ClInclude Include="..\src\Driver\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\Driver\Locator.h" />
     <ClInclude Include="..\src\Driver\LoggingUtils.h" />
-    <ClInclude Include="..\src\Driver\MessengerLogger.h" />
-    <ClInclude Include="..\src\Driver\MyTestLog.h" />
     <ClInclude Include="..\src\Driver\NSDriverApi.h" />
     <ClInclude Include="..\src\Driver\Node.h" />
     <ClInclude Include="..\src\Driver\NodeDiscoverer.h" />
@@ -101,6 +100,9 @@
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedVector.h">
+      <Filter>SharedCommunication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedMap.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedObject.h">
@@ -180,11 +182,9 @@
       <Filter>protobuff_defs</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\stdafx.h" />
+    <ClInclude Include="..\src\Driver\subregion.h" />
+    <ClInclude Include="..\src\Driver\subregion_utils.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\FakeResources.h" />
-    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedMap.h">
-      <Filter>SharedCommunication</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -217,8 +217,6 @@
     </ClCompile>
     <ClCompile Include="..\src\Driver\Locator.cpp" />
     <ClCompile Include="..\src\Driver\LoggingUtils.cpp" />
-    <ClCompile Include="..\src\Driver\MessengerLogger.cpp" />
-    <ClCompile Include="..\src\Driver\MyTestLog.cpp" />
     <ClCompile Include="..\src\Driver\NSDriverApi.cpp" />
     <ClCompile Include="..\src\Driver\Node.cpp" />
     <ClCompile Include="..\src\Driver\NullLogger.cpp" />
@@ -255,9 +253,8 @@
       <Filter>protobuff_defs</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
+    <ClCompile Include="..\src\Driver\subregion.cpp" />
+    <ClCompile Include="..\src\Driver\subregion_utils.cpp" />
     <ClCompile Include="..\src\Driver\test_main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>
