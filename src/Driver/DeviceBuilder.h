@@ -1,17 +1,15 @@
 #pragma once
+#include <string>
 #include <memory>
-#include "BodyGraphCreator.h"
-#include "NodeDiscoverer.h"
-#include "PlaybackController.h"
-#include "HapticInterface.h"
-#include "TrackingProvider.h"
-#include "Device.h"
-#include "DeviceDescriptor.h"
-#include "DeviceVisualizer.h"
-#include "PluginApis.h"
-#include "PluginInstance.h"
 
+#include "Device.h"
+#include "DeviceDescriptor.h" 
+#include "PluginAPI.h" //needed for nsvr_device_id
+#include "DeviceVisualizer.h"
+#include "PluginInstance.h"
 #include "logger.h"
+
+class PluginApis;
 
 
 class DeviceBuilder {
@@ -39,18 +37,10 @@ private:
 
 };
 
-//The point here is to check if we should augment the apis with additional functionality
-//Aka, is this a virtual device
-// So if this device doesn't specify a certain api, we will default construct it, and then
-//augment it with the fake.
-
-//The fake may or may not do anything. The default fake is just void Augment(whatever) { //no-op }
 
 template<typename Api, typename HardwareBinding, typename FakeApi>
 inline std::unique_ptr<HardwareBinding> DeviceBuilder::bind_component(std::unique_ptr<FakeApi>& fake)
 {
-
-
 	auto api = m_apis->GetApi<Api>();
 	if (!api) {
 		api = m_apis->ConstructDefault<Api>();
@@ -63,8 +53,4 @@ inline std::unique_ptr<HardwareBinding> DeviceBuilder::bind_component(std::uniqu
 	}
 
 	return std::make_unique<HardwareBinding>(api);
-	
-
-
-	
 }

@@ -1,13 +1,6 @@
 #include "stdafx.h"
 #include "DeviceBuilder.h"
-#include "FakeBodygraph.h"
-#include "HardwareNodeEnumerator.h"
-#include "FakeDiscoverer.h"
-#include "HardwareTracking.h"
-#include "FakeTrackingProvider.h"
-#include "SharedTypes.h"
-#include "HardwareHapticInterface.h"
-#include "FakeResources.h"
+#include "PluginApis.h"
 
 
 
@@ -82,16 +75,3 @@ std::unique_ptr<Device> DeviceBuilder::Build()
 
 	
 }
-//
-//void FakePlayback::Augment(playback_api * api)
-//{
-//	api->submit_cancel.handler = [](auto a, auto b, auto c) {};
-//	api->submit_pause.handler = [](auto a, auto b, auto c) {};
-//	api->submit_unpause.handler = [](auto a, auto b, auto c) {};
-//}
-//
-//void FakeWaveformHaptics::Augment(waveform_api * api)
-//{
-//	api->submit_activate.handler = [](auto a, auto b, auto d, auto e) {};
-//}
-//

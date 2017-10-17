@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "Device.h"
 #include "nsvr_region.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
