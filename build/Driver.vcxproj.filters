@@ -160,7 +160,6 @@
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\nsvr_region.h" />
-    <ClInclude Include="..\src\Driver\pevent.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.h">
       <Filter>protobuff_defs</Filter>
     </ClInclude>
@@ -230,7 +229,6 @@
     <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\logging_initialization.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
-    <ClCompile Include="..\src\Driver\pevent.cpp" />
     <ClCompile Include="..\src\Driver\protobuff_defs\DeviceEvent.pb.cc">
       <Filter>protobuff_defs</Filter>
     </ClCompile>

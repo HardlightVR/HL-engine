@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PluginAPI.h"
 #include "PluginInstance.h"
-#include "pevent.h"
 #include "HardwareCoordinator.h"
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid.hpp>
