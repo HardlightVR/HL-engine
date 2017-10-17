@@ -364,7 +364,6 @@
     <ClInclude Include="..\src\Driver\TrackingStream.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
-    <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\Driver\logger.h" />

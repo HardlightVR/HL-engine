@@ -7,9 +7,6 @@
     <Filter Include="SharedCommunication">
       <UniqueIdentifier>{529512AA-BEF6-EFB7-4764-366AB3C42677}</UniqueIdentifier>
     </Filter>
-    <Filter Include="events_impl">
-      <UniqueIdentifier>{CB8FD5D3-3745-4EC9-C039-48A02CEE44CD}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
     </Filter>
@@ -139,9 +136,6 @@
     <ClInclude Include="..\src\Driver\TrackingStream.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
-    <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h">
-      <Filter>events_impl</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
       <Filter>include</Filter>
     </ClInclude>
