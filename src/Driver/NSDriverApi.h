@@ -56,8 +56,17 @@ extern "C" {
 	HVR_RETURN(int) hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui* api);
 	HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id pluginId);
 
+	typedef struct hvr_quaternion {
+		float w;
+		float x;
+		float y;
+		float z;
+	} hvr_quaternion;
 
+	typedef void(*hvr_device_tracking_datasource)(uint32_t, hvr_quaternion* quat);
 	HVR_RETURN(int) hvr_platform_createdevice(hvr_platform* ptr, uint32_t device_id);
+	HVR_RETURN(int) hvr_platform_createdevice_with_tracking(hvr_platform* ptr, uint32_t device_id, hvr_device_tracking_datasource cb);
+
 
 #ifdef __cplusplus
 }

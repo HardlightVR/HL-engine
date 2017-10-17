@@ -2,7 +2,7 @@
 #include <functional>
 #include "protobuff_defs/DriverCommand.pb.h"
 #include "SuitVersionInfo.h"
-
+#include "NSDriverApi.h"
 #include "logger.h"
 
 
@@ -167,7 +167,7 @@ int Driver::GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo) {
 	}
 }
 
-int Driver::CreateDevice(uint32_t device_id)
+int Driver::CreateDevice(uint32_t device_id, hvr_device_tracking_datasource cb)
 {
 	using namespace std::literals;
 
@@ -189,8 +189,13 @@ int Driver::CreateDevice(uint32_t device_id)
 
 	auto resources = std::make_unique<PluginInstance::DeviceResources>();
 	resources->discoverer = std::make_unique<DefaultNodeDiscoverer>(hardlight_nodes);
-	resources->tracking = std::make_unique<DefaultTracking>(m_io, std::vector<nsvr_node_id>{4});
-
+	auto default_tracking = std::make_unique<DefaultTracking>(m_io, std::vector<nsvr_node_id>{4});
+	if (cb != nullptr) {
+		default_tracking->SetCallback(cb);
+	}
+	
+	resources->tracking = std::move(default_tracking);
+	
 	std::vector<DefaultBodygraph::association> assocs = {
 		DefaultBodygraph::association{"Left Shoulder", 0},
 		DefaultBodygraph::association{"Right Shoulder", 1},
@@ -202,6 +207,7 @@ int Driver::CreateDevice(uint32_t device_id)
 	resources->bodygraph = std::make_unique<DefaultBodygraph>(assocs);
 	resources->deviceDescriptor = DeviceDescriptor{"Virtual Hardlight MkII", 0, nsvr_device_concept_suit};
 	resources->bodygraphDescriptor = graph;
+
 
 	PluginInstance* plugin = m_pluginManager.MakeVirtualPlugin();
 	plugin->addDeviceResources(std::move(resources));

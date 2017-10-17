@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <chrono>
 #include "ScheduledEvent.h"
+#include "NSDriverApi.h"
 #define DECLARE_FAKE_INTERFACE(name, api) \
 struct name { \
 virtual ~##name##() {}; \
@@ -55,6 +56,10 @@ struct DefaultTracking : public FakeTracking {
 			m_timers.emplace(std::make_pair(id, std::move(e)));
 		}
 	}
+	std::function<void(nsvr_node_id, hvr_quaternion*)> m_dataProvider;
+	void SetCallback(std::function<void(nsvr_node_id, hvr_quaternion*)> cb) {
+		m_dataProvider = cb;
+	}
 	void Augment(tracking_api* api) override {
 		api->submit_beginstreaming.user_data = this;
 		api->submit_beginstreaming.handler = [](nsvr_tracking_stream* stream, nsvr_node_id id, void* ud) {
@@ -69,10 +74,12 @@ struct DefaultTracking : public FakeTracking {
 	}
 
 	void write_tracking(nsvr_node_id id) {
-		nsvr_quaternion quat = { 0 };
-		auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - m_beginningOfTime);
-		quat.x = static_cast<float>(sin(elapsed.count()));
-		nsvr_tracking_stream_push(m_streams[id], &quat);
+		if (m_dataProvider) {
+			hvr_quaternion quat = { 0 };
+			m_dataProvider(id, &quat);
+			nsvr_quaternion dupe{ quat.w, quat.x, quat.y, quat.z };
+			nsvr_tracking_stream_push(m_streams[id], &dupe);
+		}
 	}
 	
 	void begin(nsvr_tracking_stream* stream, nsvr_node_id id) {
