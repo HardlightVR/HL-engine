@@ -94,7 +94,7 @@ void HardwareCoordinator::writeBodyRepresentation()
 			auto id = idNodePair.first;
 			auto node = idNodePair.second;
 
-			NullSpace::SharedMemory::RegionPair regionPair{ kvp.first, node.type, id.value};
+			NullSpace::SharedMemory::RegionPair regionPair{ kvp.first, static_cast<uint32_t>(node.type), id.value};
 			regionPair.Value = { node.data.data_0, node.data.data_1, node.data.data_2, node.data.data_3 };
 			m_messenger.WriteBodyView(regionPair);
 

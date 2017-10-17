@@ -273,7 +273,7 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 
 //		should have the function accept exactly what it needs, and then have an adapter that transforms the waveform into that and passes it in.
 		BasicHapticEventData data = { 0 };
-		data.duration = 0.6;
+		data.duration = 0.6f;
 		data.effect = 6;
 		data.strength = 1.0;
 		

@@ -257,4 +257,7 @@
     <ClCompile Include="..\src\Driver\stdafx.cpp" />
     <ClCompile Include="..\src\Driver\test_main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

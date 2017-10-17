@@ -8,7 +8,7 @@ namespace waveforms {
 void sinsample(std::vector<double>& samples, float maxStrength, std::size_t numSamples) {
 	float clampedStrength = std::max(0.0f, std::min(1.0f, maxStrength));
 
-	float total = (M_PI / numSamples);
+	float total = static_cast<float>(M_PI / numSamples);
 	for (std::size_t i = 0; i < numSamples; i++) {
 
 		float s = std::sin((float)i*total)*clampedStrength;

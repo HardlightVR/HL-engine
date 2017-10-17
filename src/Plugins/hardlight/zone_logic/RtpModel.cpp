@@ -47,7 +47,9 @@ CommandBuffer RtpModel::Update(float dt)
 	if (!m_samples.empty()) {
 		double vol = m_samples.front();
 		m_samples.pop();
-		commands.push_back(PlayVol(location, vol * 255));
+		double val = vol * 255;
+		assert(val <= 255);
+		commands.push_back(PlayVol(location, static_cast<uint16_t>(val)));
 	}
 
 /*

@@ -182,7 +182,7 @@ void OpenVRWrapper::feedBufferedHaptics()
 		
 		if ((std::chrono::high_resolution_clock::now() - lastSampleSent) > std::chrono::milliseconds(7)) {
 			//std::cout << "Triggering on " << sampleQueue.first << " str: " << sampleQueue.second.front() << '\n';
-			triggerHapticPulse(sampleQueue.first, sampleQueue.second.front());
+			triggerHapticPulse(static_cast<vr::TrackedDeviceIndex_t>(sampleQueue.first), sampleQueue.second.front());
 			sampleQueue.second.pop();
 			sampleTimestamps[sampleQueue.first] = std::chrono::high_resolution_clock::now();
 		}
@@ -376,7 +376,7 @@ void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_waveform* req)
 	auto wave = generateWaveform(strength, waveform);
 	auto copy = wave;
 	if (repetitions > 0) {
-		for (auto i = 0; i < repetitions; i++) {
+		for (std::size_t i = 0; i < repetitions; i++) {
 			wave.insert(wave.end(), copy.begin(), copy.end());
 		}
 	}
