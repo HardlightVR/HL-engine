@@ -14,7 +14,7 @@ public:
 	InstructionBuilder& UseInstruction(string name);
 	InstructionBuilder& WithParam(std::string key, Param val);
 	bool Verify();
-	Packet Build();
+	std::vector<uint8_t> Build() const;
 	std::string GetDebugString();
 
 private:
@@ -44,7 +44,7 @@ private:
 class param_value_visitor : public boost::static_visitor<uint8_t>
 {
 public :
-	param_value_visitor(std::shared_ptr<InstructionSet>& iset, std::string key):m_instructions(iset), m_key(key) {
+	param_value_visitor(const InstructionSet* iset, std::string key):m_instructions(iset), m_key(key) {
 	}
 	uint8_t operator()(int param) const {
 		//warning: truncates to 0-255
@@ -59,7 +59,7 @@ public :
 
 
 private:
-	std::shared_ptr<InstructionSet>& m_instructions;
+	const InstructionSet* m_instructions;
 	std::string m_key;
 };
 

@@ -173,11 +173,7 @@ void FirmwareInterface::PlayRtp(Location location, int strength)
 
 void FirmwareInterface::Ping()
 {
-	uint8_t data[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
-	Packet packet(data, 7);
-	chooseExecutionStrategy(packet);
-		//Schedule a read - even if the write fails, it could be temporary and we may not need
-		//to perform the reset dance
+	chooseExecutionStrategy({ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
 }
 
 void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
@@ -236,9 +232,9 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 		.WithParam("zone", Locator::Translator().ToString(location)));
 }
 
-void FirmwareInterface::chooseExecutionStrategy(const Packet & packet)
+void FirmwareInterface::chooseExecutionStrategy(const std::vector<uint8_t>& packet)
 {
-	_lfQueue.push(packet.Data, packet.Data + packet.Length);
+	_lfQueue.push(packet.data(), packet.size());
 
 }
 

@@ -41,7 +41,7 @@ public:
 private:
 	inline void VerifyThenExecute(InstructionBuilder& builder);
 	std::shared_ptr<InstructionSet> m_instructionSet;
-	void chooseExecutionStrategy(const Packet&  packet);
+	void chooseExecutionStrategy(const std::vector<uint8_t>& packet);
 	std::unique_ptr<BoostSerialAdapter>& _adapter;
 	InstructionBuilder _builder;
 	boost::asio::deadline_timer _writeTimer;

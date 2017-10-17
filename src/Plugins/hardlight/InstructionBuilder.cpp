@@ -75,13 +75,12 @@ std::string InstructionBuilder::GetDebugString() {
 	}
 	return description;
 }
-//Todo: stop using heap
-Packet InstructionBuilder::Build() {
+std::vector<uint8_t> InstructionBuilder::Build() const {
 	const Instruction& desired = _iset->Instructions().at(_instruction);
 	const int packetLength = 7 + _parameters.size();
-	uint8_t* packet = new uint8_t[packetLength];
 	
-	std::fill(packet, packet + packetLength, 0);
+	std::vector<uint8_t> packet(packetLength, 0);
+
 	packet[0] = 0x24;
 	packet[1] = 0x02;
 	//assert(desired.ByteId <= 255);
@@ -92,16 +91,15 @@ Packet InstructionBuilder::Build() {
 	const size_t numParams = _parameters.size();
 	for (std::size_t i = 0; i < numParams; i++) {
 		string paramKey = desired.Parameters[i];
-		uint8_t val = boost::apply_visitor(param_value_visitor(_iset, paramKey), _parameters[paramKey]);
+		uint8_t val = boost::apply_visitor(param_value_visitor(_iset.get(), paramKey), _parameters.at(paramKey));
 		packet[i + 4] = val;
 	}
 
 	packet[packetLength - 3] = 0xFF;
 	packet[packetLength - 2] = 0xFF;
 	packet[packetLength - 1] = 0x0A;
-	Packet retPacket(packet, packetLength);
-	delete[] packet;
-	return retPacket;
+	
+	return packet;
 }
 
 
