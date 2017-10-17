@@ -4,14 +4,16 @@
 #include <memory>
 #include <vector>
 #include <mutex>
-#include "Device.h"
-#include "PluginAPI.h"
-#include "PluginApis.h"
-#include "DriverConfigParser.h"
-#include <boost/signals2.hpp>
-#include "PluginInstance.h"
 
-class DriverMessenger;
+#include <boost/signals2.hpp>
+
+#include "PluginInstance.h"
+#include "PluginAPI.h"
+#include "DeviceIds.h"
+
+class Device;
+class PluginApis;
+
 class DeviceContainer {
 public:
 	using DeviceEvent = boost::signals2::signal<void(Device*)>;

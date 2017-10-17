@@ -1,20 +1,9 @@
 #include "stdafx.h"
 #include "DeviceContainer.h"
-
-#include <experimental/vector>
-#include "HardwareBodygraphCreator.h"
-#include "HardwareNodeEnumerator.h"
-#include "HardwarePlaybackController.h"
-#include "HardwareHapticInterface.h"
-#include "HardwareTracking.h"
-#include "HapticInterface.h"
-#include "DriverMessenger.h"
-#include "DeviceIds.h"
-#include "DeviceVisualizer.h"
-
+#include "Device.h"
+#include "PluginApis.h"
 #include "DeviceBuilder.h"
 
-#include "logger.h"
 DeviceContainer::DeviceContainer()
 
 	: m_onDeviceAdded()
