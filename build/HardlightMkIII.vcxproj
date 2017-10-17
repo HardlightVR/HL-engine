@@ -304,7 +304,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
-    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h" />
     <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h" />
     <ClInclude Include="..\src\plugins\hardlight\Atom.h" />

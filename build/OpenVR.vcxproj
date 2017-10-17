@@ -310,7 +310,6 @@ IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\
   <ItemGroup>
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
-    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
     <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h" />
     <ClInclude Include="..\src\plugins\openvr\stdafx.h" />
   </ItemGroup>

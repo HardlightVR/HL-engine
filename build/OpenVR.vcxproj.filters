@@ -7,9 +7,6 @@
     <Filter Include="Driver\include">
       <UniqueIdentifier>{A4187720-90E6-6A26-797A-DB4C65E7468B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Driver\include\events">
-      <UniqueIdentifier>{2838D3B0-94A4-8EAB-5D98-2609C9C3B013}</UniqueIdentifier>
-    </Filter>
     <Filter Include="plugins">
       <UniqueIdentifier>{07D1A6B5-73B0-2551-7CC8-B027E8268CB2}</UniqueIdentifier>
     </Filter>
@@ -23,9 +20,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h">
       <Filter>Driver\include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h">
-      <Filter>Driver\include\events</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h">
       <Filter>plugins\openvr</Filter>

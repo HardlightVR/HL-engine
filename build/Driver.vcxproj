@@ -367,7 +367,6 @@
     <ClInclude Include="..\src\Driver\events_impl\BriefHapticPrimitive.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
-    <ClInclude Include="..\src\Driver\include\events\BasicHapticEvent.h" />
     <ClInclude Include="..\src\Driver\logger.h" />
     <ClInclude Include="..\src\Driver\logging_initialization.h" />
     <ClInclude Include="..\src\Driver\nsvr_core_errors.h" />
