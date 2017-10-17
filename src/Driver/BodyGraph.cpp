@@ -1,4 +1,4 @@
-//#include "stdafx.h"
+#include "stdafx.h"
 #include "BodyGraph.h"
 #include <boost/graph/iteration_macros.hpp>
 #include <boost/log/trivial.hpp>
@@ -88,35 +88,35 @@ BodyGraph::BodyGraph()
 auto right_palm = std::shared_ptr<subregion>(new
 	subregion(region::identifier_palm_right, segment_range::full, angle_range::full));
 
-m_bodyparts.emplace(nsvr_bodypart_head, Bodypart(nsvr_bodypart_head, 19.03, head));
+	m_bodyparts.emplace(nsvr_bodypart_head, Bodypart(nsvr_bodypart_head, 19.03, head));
 
-m_bodyparts.emplace(nsvr_bodypart_torso, Bodypart(nsvr_bodypart_torso, 51.9, entire_torso));
+	m_bodyparts.emplace(nsvr_bodypart_torso, Bodypart(nsvr_bodypart_torso, 51.9, entire_torso));
 
-m_bodyparts.emplace(nsvr_bodypart_upperarm_left, Bodypart(nsvr_bodypart_upperarm_left, 29.41, upper_arm_left));
+	m_bodyparts.emplace(nsvr_bodypart_upperarm_left, Bodypart(nsvr_bodypart_upperarm_left, 29.41, upper_arm_left));
 
-m_bodyparts.emplace(nsvr_bodypart_lowerarm_left, Bodypart(nsvr_bodypart_lowerarm_left, 27.68, lower_arm_left));
+	m_bodyparts.emplace(nsvr_bodypart_lowerarm_left, Bodypart(nsvr_bodypart_lowerarm_left, 27.68, lower_arm_left));
 
-m_bodyparts.emplace(nsvr_bodypart_upperarm_right, Bodypart(nsvr_bodypart_upperarm_right, 29.41, upper_arm_right));
+	m_bodyparts.emplace(nsvr_bodypart_upperarm_right, Bodypart(nsvr_bodypart_upperarm_right, 29.41, upper_arm_right));
 
-m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
+	m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
 
-m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
+	m_bodyparts.emplace(nsvr_bodypart_lowerarm_right, Bodypart(nsvr_bodypart_lowerarm_right, 27.68, lower_arm_right));
 
-m_bodyparts.emplace(nsvr_bodypart_lowerleg_left, Bodypart(nsvr_bodypart_lowerleg_left, 43.25, lower_leg_left));
+	m_bodyparts.emplace(nsvr_bodypart_lowerleg_left, Bodypart(nsvr_bodypart_lowerleg_left, 43.25, lower_leg_left));
 
-m_bodyparts.emplace(nsvr_bodypart_upperleg_left, Bodypart(nsvr_bodypart_upperleg_left, 43.25, upper_leg_left));
+	m_bodyparts.emplace(nsvr_bodypart_upperleg_left, Bodypart(nsvr_bodypart_upperleg_left, 43.25, upper_leg_left));
 
-m_bodyparts.emplace(nsvr_bodypart_lowerleg_right, Bodypart(nsvr_bodypart_lowerleg_right, 43.25, lower_leg_right));
+	m_bodyparts.emplace(nsvr_bodypart_lowerleg_right, Bodypart(nsvr_bodypart_lowerleg_right, 43.25, lower_leg_right));
 
-m_bodyparts.emplace(nsvr_bodypart_upperleg_right, Bodypart(nsvr_bodypart_upperleg_right, 43.25, upper_leg_right));
+	m_bodyparts.emplace(nsvr_bodypart_upperleg_right, Bodypart(nsvr_bodypart_upperleg_right, 43.25, upper_leg_right));
 
 
-m_bodyparts.emplace(nsvr_bodypart_palm_left, Bodypart(nsvr_bodypart_palm_left, 10.0, left_palm));
-m_bodyparts.emplace(nsvr_bodypart_palm_right, Bodypart(nsvr_bodypart_palm_right, 10.0, right_palm));
+	m_bodyparts.emplace(nsvr_bodypart_palm_left, Bodypart(nsvr_bodypart_palm_left, 10.0, left_palm));
+	m_bodyparts.emplace(nsvr_bodypart_palm_right, Bodypart(nsvr_bodypart_palm_right, 10.0, right_palm));
 
-for (auto& bp : m_bodyparts) {
-	bp.second.region->init_backlinks();
-}
+	for (auto& bp : m_bodyparts) {
+		bp.second.region->init_backlinks();
+	}
 
 }
 
@@ -168,7 +168,7 @@ int BodyGraph::CreateNode(const char * name, nsvr_bodygraph_region * pose)
 	m_nodes[name] = NodeData(name, *pose, region);
 
 	//Update the bodypart's subregion that corresponded with the match to have a reference to this graph node.
-	bodypart.region->find(region)->hardware_defined_regions.push_back(name);
+	bodypart.region->find(region)->hardware_defined_regions.emplace_back(name);
 
 
 

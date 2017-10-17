@@ -8,7 +8,6 @@
 #include "PluginManager.h"
 
 #include "DeviceContainer.h"
-#include "CurveEngine.h"
 class IoService;
 
 class Driver {

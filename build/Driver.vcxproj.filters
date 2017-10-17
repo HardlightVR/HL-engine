@@ -26,7 +26,6 @@
     <ClInclude Include="..\src\Driver\BodyGraph.h" />
     <ClInclude Include="..\src\Driver\BodyGraphCreator.h" />
     <ClInclude Include="..\src\Driver\BodyRegion.h" />
-    <ClInclude Include="..\src\Driver\CurveEngine.h" />
     <ClInclude Include="..\src\Driver\Device.h" />
     <ClInclude Include="..\src\Driver\DeviceBuilder.h" />
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
@@ -189,7 +188,6 @@
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\BodyGraph.cpp" />
-    <ClCompile Include="..\src\Driver\CurveEngine.cpp" />
     <ClCompile Include="..\src\Driver\Device.cpp" />
     <ClCompile Include="..\src\Driver\DeviceBuilder.cpp" />
     <ClCompile Include="..\src\Driver\DeviceContainer.cpp" />
