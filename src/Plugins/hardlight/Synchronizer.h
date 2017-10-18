@@ -39,10 +39,10 @@ private:
 	void confirmSync();
 	void monitorSync();
 	void confirmSyncLoss();
-	bool packetIsWellFormed(const boost::optional<packet>& possiblePacket) const;
+	bool packetIsWellFormed(const boost::optional<Packet>& possiblePacket) const;
 	void tryReadPacket();
 
-	boost::optional<packet> dequeuePacket();
+	boost::optional<Packet> dequeuePacket();
 
 };
 

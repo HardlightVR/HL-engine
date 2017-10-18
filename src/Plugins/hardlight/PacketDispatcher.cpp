@@ -5,14 +5,14 @@
 PacketDispatcher::PacketDispatcher() : m_consumers()
 {
 }
-void PacketDispatcher::Dispatch(packet packet)
+void PacketDispatcher::Dispatch(Packet Packet)
 {
-	PacketType packetType = GetType(packet);
+	PacketType packetType = GetType(Packet);
 	if (m_consumers.find(packetType) != m_consumers.end())
 	{
 		for (const auto& consumer : m_consumers.at(packetType))
 		{
-			consumer(packet);
+			consumer(Packet);
 		}
 	}
 }

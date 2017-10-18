@@ -20,8 +20,8 @@ public:
 	void AssignMapping(uint32_t key, Imu id, const std::string& readable_id);
 private:
 	boost::optional<TrackingCallback> m_callback;
-	void consumePacket(packet packet);
-	void consumePacketDummy(packet packet);
+	void consumePacket(Packet Packet);
+	void consumePacketDummy(Packet Packet);
 
 	std::unordered_map<Imu, nsvr_quaternion> m_quaternions;
 	nsvr_quaternion parseQuaternion(const uint8_t* rec) const;

@@ -94,11 +94,11 @@ void Synchronizer::searchForSync()
 }
 
 
-boost::optional<packet> Synchronizer::dequeuePacket()
+boost::optional<Packet> Synchronizer::dequeuePacket()
 {
 	try
 	{
-		packet p;
+		Packet p;
 		int numPopped = m_incomingData.pop(p.data(), PACKET_LENGTH);
 		assert(numPopped == PACKET_LENGTH);
 		m_estimatedBytesRead += numPopped;
@@ -170,7 +170,7 @@ std::size_t Synchronizer::GetTotalBytesRead() const
 }
 
 
-bool Synchronizer::packetIsWellFormed(const boost::optional<packet>& possiblePacket) const
+bool Synchronizer::packetIsWellFormed(const boost::optional<Packet>& possiblePacket) const
 {
 	if (!possiblePacket) {
 		return false;

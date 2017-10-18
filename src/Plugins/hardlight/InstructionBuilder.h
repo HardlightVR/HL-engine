@@ -1,7 +1,6 @@
 #pragma once
 #include <unordered_map>
 #include "Instruction.h"
-#include "Packet.h"
 #include "InstructionSet.h"
 #include <boost/variant.hpp>
 

@@ -12,7 +12,7 @@ enum class PacketType {
 	Undefined
 };
 
-inline PacketType GetType(const packet& packet) {
+inline PacketType GetType(const Packet& packet) {
 	return static_cast<PacketType>(packet[2]);
 }
 
