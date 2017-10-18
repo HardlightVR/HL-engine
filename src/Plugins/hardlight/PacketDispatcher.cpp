@@ -2,23 +2,23 @@
 #include "PacketDispatcher.h"
 
 
-PacketDispatcher::PacketDispatcher() : _dispatchLimit(32), _consumers()
+PacketDispatcher::PacketDispatcher() : m_consumers()
 {
 }
 void PacketDispatcher::Dispatch(packet packet)
 {
 	PacketType packetType = GetType(packet);
-	if (_consumers.find(packetType) != _consumers.end())
+	if (m_consumers.find(packetType) != m_consumers.end())
 	{
-		for (auto monitor : _consumers.at(packetType))
+		for (const auto& consumer : m_consumers.at(packetType))
 		{
-			monitor(packet);
+			consumer(packet);
 		}
 	}
 }
 
 void PacketDispatcher::AddConsumer(PacketType ptype, OnReceivePacketFunc packetFunc)
 {
-	_consumers[ptype].push_back(packetFunc);
+	m_consumers[ptype].push_back(packetFunc);
 }
 

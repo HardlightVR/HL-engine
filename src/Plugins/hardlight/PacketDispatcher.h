@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <functional>
 
-using namespace std;
 
 class PacketDispatcher
 {
@@ -13,7 +12,6 @@ public:
 	void Dispatch(packet packet);
 	void AddConsumer(PacketType ptype, OnReceivePacketFunc packetFunc);
 private:
-	unsigned int _dispatchLimit;
-	std::unordered_map<PacketType, std::vector<OnReceivePacketFunc>> _consumers;
+	std::unordered_map<PacketType, std::vector<OnReceivePacketFunc>> m_consumers;
 };
 
