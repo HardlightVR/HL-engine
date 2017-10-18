@@ -22,7 +22,6 @@ public:
 	int EnumeratePlugins(hvr_plugin_list * outPlugins);
 
 	int GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo);
-	int CreateDevice(uint32_t device_id, hvr_device_tracking_datasource fn);
 private:
 	DeviceContainer m_devices;
 	EventDispatcher m_eventDispatcher;

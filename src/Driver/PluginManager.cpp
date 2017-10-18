@@ -195,6 +195,14 @@ void PluginManager::DrawDiagnostics(uint32_t id, nsvr_diagnostics_ui* ui)
 			if (api) {
 				api->submit_updatemenu(ui);
 			}
+
+			const auto& vdevices = m_pluginInfo.at(kvp.first).Descriptor.vdevices.devices;
+			ui->keyval("Virtual devices available", std::to_string(vdevices.size()).c_str());
+			for (const auto& device : vdevices) {
+				if (ui->button(device.name.c_str())) {
+					instantiateVirtualDevice(kvp.first, device);
+				}
+			}
 		}
 	}
 }
@@ -298,6 +306,37 @@ void PluginManager::destroyAll()
 			BOOST_LOG_SEV(clogger::get(), nsvr_severity_error) << "[PluginManager] Warning: unable to destroy " << plugin.first;
 		}
 	}
+
+}
+
+void PluginManager::instantiateVirtualDevice(const std::string& plugin, const Parsing::VirtualDeviceDescriptor& device)
+{
+	const auto& originPlugin = m_pluginInfo.at(plugin);
+
+	auto resources = std::make_unique<PluginInstance::DeviceResources>();
+	resources->bodygraphDescriptor = originPlugin.Descriptor.bodygraph;
+	//for now we use device ID 0. Probably want to pass in a specific ID.
+	resources->deviceDescriptor = DeviceDescriptor{ device.name, 0, device.concept };
+
+	std::vector<DefaultBodygraph::association> assocs;
+
+	std::vector<Node> nodes;
+	for (const auto& node : device.nodes) {
+		nodes.emplace_back(NodeDescriptor{ node.concept, node.name, node.id });
+		for (const auto& region : node.regions) {
+			assocs.push_back(DefaultBodygraph::association{ region, node.id });
+		}
+	}
+	resources->discoverer = std::make_unique<DefaultNodeDiscoverer>(nodes);
+	resources->id = DeviceId<local>(0);
+
+	
+
+
+	resources->bodygraph = std::make_unique<DefaultBodygraph>(assocs);
+
+	PluginInstance* virtualHost = this->MakeVirtualPlugin();
+	virtualHost->addDeviceResources(std::move(resources));
 
 }
 

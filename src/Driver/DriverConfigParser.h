@@ -80,12 +80,7 @@ namespace Parsing {
 	};
 	bool IsProbablyManifest(const std::string& path_string);
 	LocationDescriptor lerp(const Parsing::LocationDescriptor& a, const Parsing::LocationDescriptor& b, float percentage);
-	bool deserialize(LocationDescriptor& location, const Json::Value& json, std::string& error);
-	bool deserialize(SingleRegionDescriptor& descriptor, const Json::Value& json, std::string& error);
-	bool deserialize(MultiRegionDescriptor& descriptor, const Json::Value& json, std::string& error);
-	bool deserialize(BodyGraphDescriptor& descriptor, const Json::Value& json, std::string& error);
-	bool deserialize(ManifestDescriptor& descriptor, const Json::Value& json, std::string& error);
-
+	
 	boost::optional<Parsing::ManifestDescriptor> ParseConfig(const std::string & path);
 }
 

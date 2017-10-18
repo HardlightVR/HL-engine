@@ -71,15 +71,3 @@ HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id 
 	return 1;
 }
 
-HVR_RETURN(int) hvr_platform_createdevice(hvr_platform* ptr, uint32_t device_id)
-{
-	return AS_TYPE(Driver, ptr)->CreateDevice(device_id, nullptr);
-	
-
-}
-
-HVR_RETURN(int) hvr_platform_createdevice_with_tracking(hvr_platform * ptr, uint32_t device_id, hvr_device_tracking_datasource cb)
-{
-	return AS_TYPE(Driver, ptr)->CreateDevice(device_id, cb);
-
-}

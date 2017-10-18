@@ -167,54 +167,7 @@ int Driver::GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo) {
 	}
 }
 
-int Driver::CreateDevice(uint32_t device_id, hvr_device_tracking_datasource cb)
-{
-	using namespace std::literals;
 
-	std::vector<Node> hardlight_nodes = {
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Left Shoulder"s, 0 }),
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Shoulder"s, 1 }),
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Left Upper Arm"s, 2 }),
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Upper Arm"s, 3 }),
-		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 4 })
-	};
-
-	Parsing::BodyGraphDescriptor graph;
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Left Shoulder", nsvr_bodypart_upperarm_left, Parsing::LocationDescriptor(1.0, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Right Shoulder", nsvr_bodypart_upperarm_right, Parsing::LocationDescriptor(1.0, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Left Upper Arm", nsvr_bodypart_upperarm_left, Parsing::LocationDescriptor(0.5, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Right Upper Arm", nsvr_bodypart_upperarm_right, Parsing::LocationDescriptor(0.5, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Chest Center", nsvr_bodypart_torso, Parsing::LocationDescriptor(0.5, 0.0)));
-
-
-	auto resources = std::make_unique<PluginInstance::DeviceResources>();
-	resources->discoverer = std::make_unique<DefaultNodeDiscoverer>(hardlight_nodes);
-	auto default_tracking = std::make_unique<DefaultTracking>(m_io, std::vector<nsvr_node_id>{4});
-	if (cb != nullptr) {
-		default_tracking->SetCallback(cb);
-	}
-	
-	resources->tracking = std::move(default_tracking);
-	
-	std::vector<DefaultBodygraph::association> assocs = {
-		DefaultBodygraph::association{"Left Shoulder", 0},
-		DefaultBodygraph::association{"Right Shoulder", 1},
-		DefaultBodygraph::association{"Left Upper Arm", 2},
-		DefaultBodygraph::association{"Right Upper Arm", 3},
-		DefaultBodygraph::association{"Chest Center", 4}
-	};
-
-	resources->bodygraph = std::make_unique<DefaultBodygraph>(assocs);
-	resources->deviceDescriptor = DeviceDescriptor{"Virtual Hardlight MkII", 0, nsvr_device_concept_suit};
-	resources->bodygraphDescriptor = graph;
-
-
-	PluginInstance* plugin = m_pluginManager.MakeVirtualPlugin();
-	plugin->addDeviceResources(std::move(resources));
-
-
-	return 1;
-}
 
 void Driver::handleHaptics()
 {

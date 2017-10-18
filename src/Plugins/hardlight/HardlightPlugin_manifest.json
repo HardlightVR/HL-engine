@@ -1,7 +1,6 @@
 {
    "name": "Hardlight Haptic Products",
    "manifest-version": 1,
-   "concept": "suit",
    "bodygraph" : {
       "regions": [
       	{
@@ -105,5 +104,20 @@
       		}
       	}
       ]
-   }
+   },
+   "virtual_devices" : [
+      {
+            "name" : "Virtual Hardlight MKII & MKIII",
+            "concept" : "suit",
+            "nodes" : [
+                  {
+                        "id" : 0,
+                        "name" : "Left Shoulder",
+                        "concept" : "haptic",
+                        "regions" : ["leftShoulderActuator"]
+                  }
+            ]
+      }
+
+   ]
 }

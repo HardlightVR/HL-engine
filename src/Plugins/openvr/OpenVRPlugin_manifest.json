@@ -21,5 +21,33 @@
    			}
    		}
    	]
-   }
+   },
+   
+   "virtual_devices" : [
+      {
+            "name" : "Virtual Left Hand Controller",
+            "concept" : "controller",
+            "nodes" : [
+                  {
+                        "id" : 0,
+                        "name" : "Left Thumbpad",
+                        "concept" : "haptic",
+                        "regions" : ["PalmLeftZone"]
+                  }
+            ]
+      },
+      {
+            "name" : "Virtual Right Hand Controller",
+            "concept" : "controller",
+            "nodes" : [
+                  {
+                        "id" : 1,
+                        "name" : "Right Thumbpad",
+                        "concept" : "haptic",
+                        "regions" : ["PalmRightZone"]
+                  }
+            ]
+      }
+
+   ]
 }

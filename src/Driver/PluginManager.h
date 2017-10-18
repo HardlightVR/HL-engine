@@ -72,5 +72,6 @@ private:
 	boost::asio::io_service& m_io;
 	ScheduledEvent m_pluginEventLoop;
 
+	void instantiateVirtualDevice(const std::string& plugin, const Parsing::VirtualDeviceDescriptor& device);
 };
 
