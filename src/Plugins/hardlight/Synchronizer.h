@@ -1,62 +1,50 @@
 #pragma once
+#include <cstdint>
 #include <boost\lockfree\spsc_queue.hpp>
 #include <boost\asio\deadline_timer.hpp>
+#include <boost\optional.hpp>
 #include "PacketDispatcher.h"
 
 #include "suit_packet.h"
-//todo: CodeClean
-typedef boost::lockfree::spsc_queue<uint8_t> Buffer;
+
+using Buffer = boost::lockfree::spsc_queue<uint8_t>;
+
+
 class Synchronizer
 {
 public:
+	Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service&);
 	enum class State {
 		Synchronized,
 		SearchingForSync,
 		ConfirmingSync,
 		ConfirmingSyncLoss
 	};
-	bool Synchronized();
-	State SyncState();
-	void TryReadPacket();
+	State SyncState() const;
 	void BeginSync();
-	std::size_t PossiblePacketsAvailable();
-	Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service&);
 	std::size_t	GetTotalBytesRead() const;
 private:
-	std::size_t _totalBytesRead;
-	State syncState;
-	const int MAX_PACKET_READ = 500;
-	uint8_t packetDelimiter;
-	uint8_t packetFooter[2];
-	int badSyncCounter;
-	const int BAD_SYNC_LIMIT = 2;
-	PacketDispatcher& _dispatcher;
-	Buffer& _dataStream;
+	std::size_t m_estimatedBytesRead;
+	State m_syncState;
+	uint8_t m_delimeter;
+	uint8_t m_footer[2];
+	std::size_t m_badSyncCounter;
+	PacketDispatcher& m_dispatcher;
+	Buffer& m_incomingData;
+	boost::asio::deadline_timer m_syncTimer;
+	boost::posix_time::milliseconds m_syncInterval;
+
+	void scheduleSync();
 	void searchForSync();
 	void confirmSync();
 	void monitorSync();
 	void confirmSyncLoss();
-	packet dequeuePacket();
-	bool packetIsWellFormed(const packet& p) const;
-	boost::asio::deadline_timer _syncTimer;
-	boost::posix_time::milliseconds _syncInterval;
+	bool packetIsWellFormed(const boost::optional<packet>& possiblePacket) const;
+	void tryReadPacket();
 
-	void scheduleSync();
-	void handleReadPacket(const boost::system::error_code& ec);
+	boost::optional<packet> dequeuePacket();
 
 };
 
-/*
-Synchronizers job:
-1. Check if packets are available
-2. If the amount of packets is < N, read them and dispatch. Go to step 1.
-3. Else, read N packets, and leave for a few ms
-4. Go to step 2
+bool IsSynchronized(const Synchronizer& s);
 
-Serials job:
-1. Attempt to read from the port.
-2. If the read times out, increment the bad read counter and check value. If < 3, go to 4. Else, go to 3.
-3. If the bad read counter >= 3, try to reconnect
-4. Copy the data to the internal buffer, schedule another read (1)
-
-*/

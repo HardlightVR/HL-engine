@@ -17,7 +17,6 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	m_device(),
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
 	m_imus(m_dispatcher),
-	m_mockTracking(m_io->GetIOService(), boost::posix_time::millisec(16)),
 	m_core{nullptr},
 	m_trackingStream{nullptr}
 
@@ -68,24 +67,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	m_imus.AssignMapping(0x12, Imu::Chest, "chest");
 
 	
-	m_mockTracking.SetEvent([&]() {
-		static float begin = 0;
-		
-		packet fakeTrackingData;
-		memset(&fakeTrackingData.raw, 0, 16);
 
-		float ms = begin;
-
-		fakeTrackingData.raw[2] = 0x99;
-		fakeTrackingData.raw[11] = 0x12;
-
-		memcpy(&fakeTrackingData.raw[3], &ms, sizeof(ms));
-	//	fakeTrackingData.raw[7] = s.count() & 0x0F;
-		m_dispatcher.Dispatch(fakeTrackingData);
-		begin += 0.05f;
-		if (begin >= 1.0) { begin = -1.0f; }
-	
-	});
 
 
 }
@@ -93,7 +75,6 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 HardlightPlugin::~HardlightPlugin()
 {
 	m_eventPull.Stop();
-	m_mockTracking.Stop();
 	m_io->Shutdown();
 
 }

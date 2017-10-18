@@ -7,7 +7,7 @@ PacketDispatcher::PacketDispatcher() : _dispatchLimit(32), _consumers()
 }
 void PacketDispatcher::Dispatch(packet packet)
 {
-	SuitPacket::PacketType packetType = SuitPacket::Type(packet);
+	PacketType packetType = GetType(packet);
 	if (_consumers.find(packetType) != _consumers.end())
 	{
 		for (auto monitor : _consumers.at(packetType))
@@ -17,7 +17,7 @@ void PacketDispatcher::Dispatch(packet packet)
 	}
 }
 
-void PacketDispatcher::AddConsumer(SuitPacket::PacketType ptype, OnReceivePacketFunc packetFunc)
+void PacketDispatcher::AddConsumer(PacketType ptype, OnReceivePacketFunc packetFunc)
 {
 	_consumers[ptype].push_back(packetFunc);
 }

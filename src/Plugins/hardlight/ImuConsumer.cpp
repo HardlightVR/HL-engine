@@ -7,11 +7,11 @@ ImuConsumer::ImuConsumer(PacketDispatcher &dispatcher):
 	m_quaternions(),
 	m_mapping()
 {
-	dispatcher.AddConsumer(SuitPacket::PacketType::ImuData, [&](packet p) {
+	dispatcher.AddConsumer(PacketType::ImuData, [&](packet p) {
 		this->consumePacket(p);
 	});
 
-	dispatcher.AddConsumer(SuitPacket::PacketType::DummyTracking, [&](packet p) {
+	dispatcher.AddConsumer(PacketType::DummyTracking, [&](packet p) {
 		this->consumePacketDummy(p);
 	});
 }
@@ -28,10 +28,10 @@ void ImuConsumer::AssignMapping(uint32_t key, Imu id, const std::string& readabl
 void ImuConsumer::consumePacket(packet packet)
 {
 
-	const auto& mapping = m_mapping[packet.raw[11]];
+	const auto& mapping = m_mapping[packet[11]];
 	Imu id = mapping.first;
 	if (id != Imu::Unknown) {
-		m_quaternions[id] = parseQuaternion(packet.raw);
+		m_quaternions[id] = parseQuaternion(packet.data());
 		if (m_callback) {
 			(*m_callback)(mapping.second, m_quaternions.at(id));
 		}
@@ -40,11 +40,11 @@ void ImuConsumer::consumePacket(packet packet)
 
 void ImuConsumer::consumePacketDummy(packet packet)
 {
-	const auto& mapping = m_mapping[packet.raw[11]];
+	const auto& mapping = m_mapping[packet[11]];
 	Imu id = mapping.first;
 	if (id != Imu::Unknown) {
 		float x;
-		memcpy(&x, &packet.raw[3], sizeof(x));
+		memcpy(&x, &packet[3], sizeof(x));
 		nsvr_quaternion q = { 0 };
 		q.x = x;
 		q.w = 1.0f;

@@ -11,9 +11,9 @@ public:
 	using OnReceivePacketFunc = std::function<void(packet)>;
 	PacketDispatcher();
 	void Dispatch(packet packet);
-	void AddConsumer(SuitPacket::PacketType ptype, OnReceivePacketFunc packetFunc);
+	void AddConsumer(PacketType ptype, OnReceivePacketFunc packetFunc);
 private:
 	unsigned int _dispatchLimit;
-	std::unordered_map<SuitPacket::PacketType, std::vector<OnReceivePacketFunc>> _consumers;
+	std::unordered_map<PacketType, std::vector<OnReceivePacketFunc>> _consumers;
 };
 
