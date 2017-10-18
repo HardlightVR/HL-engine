@@ -182,6 +182,10 @@ std::vector<uint32_t> PluginManager::GetPluginIds() const
 {
 	std::vector<uint32_t> pluginIds;
 	for (const auto& kvp : m_plugins) {
+		//Don't bother returning virtual device hosts
+		if (kvp.first.find("VirtualDeviceHost") != std::string::npos) {
+			continue;
+		}
 		pluginIds.push_back(kvp.second->GetId());
 	}
 	return pluginIds;
