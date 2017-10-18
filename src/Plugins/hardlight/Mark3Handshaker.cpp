@@ -10,7 +10,7 @@ Mark3Handshaker::Mark3Handshaker(std::string name, boost::asio::io_service& io)
 
 void Mark3Handshaker::setup_port_options(boost::asio::serial_port & port)
 {
-	port.set_option(boost::asio::serial_port::baud_rate(9600));
+	port.set_option(boost::asio::serial_port::baud_rate(115200));
 	port.set_option(boost::asio::serial_port::stop_bits(boost::asio::serial_port::stop_bits::one));
 	port.set_option(boost::asio::serial_port::flow_control(boost::asio::serial_port::flow_control::hardware));
 	port.set_option(boost::asio::serial_port::parity(boost::asio::serial_port::parity::none));
