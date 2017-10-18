@@ -4,7 +4,7 @@
 #include "PacketDispatcher.h"
 
 #include "suit_packet.h"
-
+//todo: CodeClean
 typedef boost::lockfree::spsc_queue<uint8_t> Buffer;
 class Synchronizer
 {
@@ -21,7 +21,9 @@ public:
 	void BeginSync();
 	std::size_t PossiblePacketsAvailable();
 	Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service&);
+	std::size_t	GetTotalBytesRead() const;
 private:
+	std::size_t _totalBytesRead;
 	State syncState;
 	const int MAX_PACKET_READ = 500;
 	uint8_t packetDelimiter;
@@ -34,7 +36,7 @@ private:
 	void confirmSync();
 	void monitorSync();
 	void confirmSyncLoss();
-	packet dequeuePacket() const;
+	packet dequeuePacket();
 	bool packetIsWellFormed(const packet& p) const;
 	boost::asio::deadline_timer _syncTimer;
 	boost::posix_time::milliseconds _syncInterval;

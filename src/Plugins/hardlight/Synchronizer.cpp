@@ -70,8 +70,14 @@ Synchronizer::Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boo
 	badSyncCounter(0),
 	packetFooter{ 0x0D, 0x0A, },
 	_syncInterval(10),
-	_syncTimer(io)
+	_syncTimer(io),
+	_totalBytesRead(0)
 {
+}
+
+std::size_t Synchronizer::GetTotalBytesRead() const
+{
+	return _totalBytesRead;
 }
 
 
@@ -149,7 +155,7 @@ void Synchronizer::confirmSyncLoss()
 	}
 }
 
-packet Synchronizer::dequeuePacket() const
+packet Synchronizer::dequeuePacket() 
 {
 	packet p;
 
@@ -158,6 +164,7 @@ packet Synchronizer::dequeuePacket() const
 	{
 		int numPopped = _dataStream.pop(p.raw, PACKET_LENGTH);
 		assert(numPopped == PACKET_LENGTH);
+		_totalBytesRead += numPopped;
 	
 	}
 	catch (const std::exception& e) {

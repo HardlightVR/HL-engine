@@ -255,30 +255,11 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	if (ui->button("TRACKING_DISABLE")) {
 		m_firmware.DisableTracking();
 	}
-	if (ui->button("FAKE TRACKING START")) {
-		m_mockTracking.Start();
 
-	}
-	if (ui->button("FAKE TRACKING START")) {
-		m_mockTracking.Stop();
 
-	}
 
-	ui->keyval("Total bytes sent to suit", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
-
-	if (ui->button("Tell suit to hum")) {
-		
-		//this is why boundaries are important. I can't drive the suit from software here, because waveform is handed down from above and
-		//since its opaque, I can't build it. Think about this.
-
-//		should have the function accept exactly what it needs, and then have an adapter that transforms the waveform into that and passes it in.
-		BasicHapticEventData data = { 0 };
-		data.duration = 0.6f;
-		data.effect = 6;
-		data.strength = 1.0;
-		
-		m_device.handle_waveform(0, 0, std::move(data));
-	}
+	ui->keyval("Total bytes sent", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
+	ui->keyval("Total bytes rec'd", std::to_string(m_synchronizer->GetTotalBytesRead()).c_str());
 	
 }
 

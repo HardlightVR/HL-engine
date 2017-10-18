@@ -346,9 +346,10 @@ extern "C" {
 	typedef struct nsvr_diagnostics_ui {
 		typedef void(*make_keyval)(const char* key, const char* val);
 		typedef bool(*make_button)(const char* label);
-
+		typedef void(*push_log)(const char* msg);
 		make_keyval keyval;
 		make_button button;
+		push_log log;
 
 	} nsvr_diagnostics_ui;
 	typedef struct nsvr_plugin_diagnostics_api {

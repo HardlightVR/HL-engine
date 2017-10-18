@@ -222,7 +222,7 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 
 	auto actualEffect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 
-
+	
 	VerifyThenExecute(_builder.UseInstruction("PLAY_EFFECT")
 		.WithParam("zone", Locator::Translator().ToString(location))
 		.WithParam("effect", Locator::Translator().ToString(actualEffect)));
@@ -232,9 +232,7 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
 
-	//nsvr::config::Instruction inst(nsvr::config::InstructionId::PLAY_CONTINUOUS, { {"zone", static_cast<uint8_t>(location)},  {"effect", effect} });
 
-	//queue_packet(nsvr::config::Build(inst))
 
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
@@ -258,6 +256,8 @@ void FirmwareInterface::queue_packet(const std::vector<uint8_t>& packet)
 
 void FirmwareInterface::HaltEffect(Location location)
 {
+	
+
 	VerifyThenExecute(_builder.UseInstruction("HALT_SINGLE")
 		.WithParam("zone", Locator::Translator().ToString(location)));
 }
