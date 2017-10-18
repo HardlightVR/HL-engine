@@ -8,7 +8,7 @@
 using std::string;
 class InstructionBuilder
 {
-	typedef boost::variant<std::string, int> Param;
+	using Param = boost::variant<std::string, int>;
 public:
 	explicit InstructionBuilder(std::shared_ptr<InstructionSet> iset);
 	~InstructionBuilder();

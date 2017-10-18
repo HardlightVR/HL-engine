@@ -56,24 +56,30 @@ void Device::DispatchEvent(const NullSpaceIPC::PlaybackEvent & playback_event)
 void Device::DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic & simple, const std::vector<nsvr_region>& regions)
 {
 	auto nodes = m_bodygraph->GetNodesAtRegions(regions);
-	for (const auto& node : nodes) {
+	auto haptic_only = m_discoverer->FilterByType(nodes, nsvr_node_type_haptic);
+
+	for (const auto& node : haptic_only) {
 		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
 	}
-	std::vector<NodeId<local>> temp;
-	for (const auto& n : nodes) { temp.emplace_back(n); }
-	m_playback->CreateEventRecord(event_id, temp);
+
+	m_playback->CreateEventRecord(event_id, haptic_only);
 }
 
 void Device::DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& simple, const std::vector<NodeId<local>>& nodes)
 {
-	//assumption: these nodes are haptic nodes.
-	//This may not hold, so we should filter first. Need to add that method to the discoverer.
-
-	for (const auto& node : nodes) {
-		m_haptics->SubmitSimpleHaptic(event_id, node.value, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
+	//todo: wholesale switch to using NodeId<local> internall as well
+	std::vector<nsvr_node_id> temp;
+	for (NodeId<local> n : nodes) {
+		temp.emplace_back(n.value);
 	}
 
-	m_playback->CreateEventRecord(event_id, nodes); 
+	auto haptic_only = m_discoverer->FilterByType(temp, nsvr_node_type_haptic);
+
+	for (const auto& node : haptic_only) {
+		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
+	}
+
+	m_playback->CreateEventRecord(event_id, haptic_only); 
 }
 
 DeviceId<local> Device::id() const

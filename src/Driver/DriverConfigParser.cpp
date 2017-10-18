@@ -3,6 +3,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include "Locator.h"
+#include "PluginAPI.h"
 #include "json/json.h"
 namespace Parsing {
 
@@ -16,10 +17,10 @@ namespace Parsing {
 
 		return stem.find("_manifest") != std::string::npos;
 	}
-	static std::unordered_map<std::string, Concept> concept_map = {
-		{ "suit", Concept::Suit },
-		{ "controller", Concept::Controller },
-		{ "gun", Concept::Gun }
+	static std::unordered_map<std::string, nsvr_device_concept> concept_map = {
+		{ "suit", nsvr_device_concept_suit },
+		{ "controller", nsvr_device_concept_controller },
+		{ "gun", nsvr_device_concept_gun}
 	};
 
 	double angle_distance(double angle_a, double angle_b) {
@@ -215,19 +216,7 @@ namespace Parsing {
 		//optional
 		descriptor.version = json.get("manifest-version", 1).asUInt();
 
-		std::string rawConcept = json.get("concept", "unknown").asString();
-		if (rawConcept == "unknown") {
-			errors.push_back("Must contain key 'concept'");
-			return false;
-		}
-
-		if (concept_map.find(rawConcept) != concept_map.end()) {
-			descriptor.concept = concept_map[rawConcept];
-		}
-		else {
-			errors.push_back("Unknown concept: '" + rawConcept + "'");
-			return false;
-		}
+	
 
 		descriptor.pluginName = json.get("name", "unknown").asString();
 		if (descriptor.pluginName == "unknown") {
@@ -246,7 +235,6 @@ namespace Parsing {
 	ManifestDescriptor::ManifestDescriptor()
 		: pluginName()
 		, version(1)
-		, concept(Parsing::Concept::Unknown)
 		, bodygraph()
 	{
 
@@ -322,6 +310,8 @@ namespace Parsing {
 		}
 
 	}
+
+	
 
 }
 

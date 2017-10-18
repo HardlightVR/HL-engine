@@ -59,7 +59,9 @@ std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector
 	for (nsvr_node_id id : items) {
 		auto it = m_nodes.find(id);
 		if (it != m_nodes.end()) {
-			output.push_back(it->first);
+			if (it->second.type() == type) {
+				output.push_back(it->first);
+			}
 		}
 	}
 	return output;

@@ -36,10 +36,7 @@ HardwareBodygraphCreator::HardwareBodygraphCreator( bodygraph_api* api)
 	: m_api(api)
 	, m_graph()
 {
-	//fetchFromDescription(descriptor);
-	//fetchDynamically();
-	//throw std::logic_error("FIX THIS");
-	//todo(FIX THIS)
+
 }
 
 void HardwareBodygraphCreator::provideDescription(Parsing::BodyGraphDescriptor  descriptor)
