@@ -1,9 +1,8 @@
 #pragma once
-#include "NodeDiscoverer.h"
 #include <vector>
 #include <memory>
 #include "PluginApis.h"
-
+#include "Node.h"
 
 class FakeDiscoverer {
 public:

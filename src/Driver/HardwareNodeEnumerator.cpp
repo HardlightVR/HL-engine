@@ -24,7 +24,7 @@ void HardwareNodeEnumerator::Discover()
 	}
 }
 
-void HardwareNodeEnumerator::ForEachNode(NodeDiscoverer::NodeAction action)
+void HardwareNodeEnumerator::ForEachNode(HardwareNodeEnumerator::NodeAction action)
 {
 	for (auto& kvp : m_nodes) {
 		action(&kvp.second);
