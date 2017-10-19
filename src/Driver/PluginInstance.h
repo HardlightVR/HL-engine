@@ -21,16 +21,6 @@ class PluginInstance
 {
 public:
 	struct DeviceResources {
-	/*	DeviceResources()
-			: id(0)
-			, descriptor()
-			, bodygraph(std::make_unique<FakeBodygraph>())
-			, discoverer(std::make_unique<FakeNodeDiscoverer>())
-			, tracking(std::make_unique<FakeTracking>())
-			, playback(std::make_unique<FakePlayback>())
-			, waveformHaptics(std::make_unique<FakeWaveformHaptics>())
-			, bufferedHaptics(std::make_unique<FakeBufferedHaptics>())
-		{}*/
 		DeviceId<local> id; //why using this??
 		boost::optional<DeviceDescriptor> deviceDescriptor;
 		boost::optional<Parsing::BodyGraphDescriptor> bodygraphDescriptor;
@@ -73,13 +63,16 @@ public:
 	void setDispatcher(std::unique_ptr<PluginEventSource> dispatcher);
 	void addDeviceResources(DeviceResourceBundle resources);
 
-	DeviceResourceBundle& resources();
+	//Non-const.. we could return the unique_ptr, then modify it in DeviceBuilder etc., then return it back.
+	//Or we could pass a non-owning pointer to it.
+	DeviceResources* resources();
+
 private:
 	DeviceResourceBundle m_resources;
 
 	std::unique_ptr<boost::dll::shared_library> m_dll;
 	boost::asio::io_service& m_io;
-	typedef std::function<int(nsvr_plugin_api*)> plugin_registration_t;
+	using plugin_registration_t = std::function<int(nsvr_plugin_api*)>;
 	plugin_registration_t m_pluginRegisterFunction;
 
 	std::shared_ptr<my_logger> m_logger;
@@ -104,9 +97,7 @@ template<class TFunc>
 bool tryLoad(std::unique_ptr<boost::dll::shared_library>& lib, const std::string& symbol, std::function<TFunc>& result) {
 	try {
 		result = lib->get<TFunc>(symbol);
-		return result ? true : false; //This looks dumb. But I did it because result wasn't being implicitly converted to bool
-		//it still looks dumb. 
-		//return (bool)result;
+		return (bool) result;
 	}
 	catch (const boost::system::system_error&) {
 		BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "[PluginInstance] Unable to find function named " << symbol << '\n';

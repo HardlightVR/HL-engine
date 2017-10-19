@@ -5,7 +5,7 @@
 
 
 //Either we are provided a set of apis from the plugin (which we copy)
-DeviceBuilder::DeviceBuilder(PluginApis* apis, PluginInstance::DeviceResourceBundle& resources, nsvr_device_id id) : m_id(id), m_apis(apis), m_resources(resources)
+DeviceBuilder::DeviceBuilder(PluginApis* apis, PluginInstance::DeviceResources* resources, nsvr_device_id id) : m_id(id), m_apis(apis), m_resources(resources)
 {
 	//PluginApis p;
 	//p.ConstructDefault<device_api>();
@@ -24,11 +24,6 @@ DeviceBuilder & DeviceBuilder::WithOriginatingPlugin(std::string pluginName)
 	return *this;
 }
 
-DeviceBuilder & DeviceBuilder::WithBodygraphDescriptor(Parsing::BodyGraphDescriptor descriptor)
-{
-	m_resources->bodygraphDescriptor = descriptor;
-	return *this;
-}
 
 
 

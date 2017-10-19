@@ -14,13 +14,11 @@ class PluginApis;
 
 class DeviceBuilder {
 public:
-	DeviceBuilder(PluginApis* apis, PluginInstance::DeviceResourceBundle& resources, nsvr_device_id id);
+	DeviceBuilder(PluginApis* apis, PluginInstance::DeviceResources* resources, nsvr_device_id id);
 
 	
 	DeviceBuilder& WithDescriptor(DeviceDescriptor deviceDescription);
 	DeviceBuilder& WithOriginatingPlugin(std::string pluginName);
-	//DeviceBuilder& WithVisualizer(std::unique_ptr<DeviceVisualizer> visualizer);
-	DeviceBuilder& WithBodygraphDescriptor(Parsing::BodyGraphDescriptor descriptor);
 
 	std::unique_ptr<Device> Build();
 private:
@@ -29,7 +27,7 @@ private:
 	std::unique_ptr<HardwareBinding> bind_component(std::unique_ptr<FakeApi>& fake);
 	PluginApis* m_apis;
 	
-	PluginInstance::DeviceResourceBundle& m_resources;
+	PluginInstance::DeviceResources* m_resources;
 
 	std::unique_ptr<DeviceVisualizer> m_visualizer;
 	boost::optional<DeviceDescriptor> m_description;

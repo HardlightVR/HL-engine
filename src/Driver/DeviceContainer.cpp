@@ -15,7 +15,7 @@ DeviceContainer::DeviceContainer()
 {
 }
 
-void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources)
+void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::string originatingPlugin, PluginInstance::DeviceResources* resources)
 {
 
 	DeviceDescriptor descriptor;

@@ -194,9 +194,9 @@ void PluginInstance::addDeviceResources(DeviceResourceBundle resources)
 }
 
 //see if this can be const ref
-PluginInstance::DeviceResourceBundle & PluginInstance::resources()
+PluginInstance::DeviceResources* PluginInstance::resources()
 {
-	return m_resources;
+	return m_resources.get();
 }
 
 int PluginInstance::GetWorkingDirectory(nsvr_directory* outDir)
