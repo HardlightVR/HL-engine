@@ -25,7 +25,7 @@ namespace Parsing {
 		{ "gun", nsvr_device_concept_gun}
 	};
 
-	static std::unordered_map<std::string, nsvr_node_type> node_concept_map = {
+	static std::unordered_map<std::string, nsvr_node_concept> node_concept_map = {
 		{"haptic", nsvr_node_type_haptic},
 		{"inertial_tracker", nsvr_node_type_inertial_tracker},
 		{"absolute_tracker", nsvr_node_type_absolute_tracker},

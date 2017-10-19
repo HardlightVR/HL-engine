@@ -21,7 +21,7 @@ private:
 class FakeDiscovererBuilder {
 public:
 	FakeDiscovererBuilder();
-	FakeDiscovererBuilder& WithNode(nsvr_node_id id, nsvr_node_type type, std::string name);
+	FakeDiscovererBuilder& WithNode(nsvr_node_id id, nsvr_node_concept type, std::string name);
 	std::unique_ptr<FakeDiscoverer> Build();
 private:
 	std::vector<Node> m_nodes;

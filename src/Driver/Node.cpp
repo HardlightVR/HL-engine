@@ -29,7 +29,7 @@ std::string Node::name() const
 	return m_name;
 }
 
-nsvr_node_type Node::type() const
+nsvr_node_concept Node::type() const
 {
 	return m_type;
 }

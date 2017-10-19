@@ -115,17 +115,16 @@ extern "C" {
 		unsigned int node_count;
 	} nsvr_node_ids;
 
-	typedef enum nsvr_node_type {
+	typedef enum nsvr_node_concept {
 		nsvr_node_type_unknown = 0,
 		nsvr_node_type_haptic,
 		nsvr_node_type_led,
 		nsvr_node_type_inertial_tracker,
 		nsvr_node_type_absolute_tracker
-	} nsvr_node_type;
+	} nsvr_node_concept;
 
 	typedef struct nsvr_node_info {
-		nsvr_node_id id;
-		nsvr_node_type type;
+		nsvr_node_concept concept;
 		char name[512];
 	} nsvr_node_info;
 
@@ -145,10 +144,8 @@ extern "C" {
 	} nsvr_device_concept;
 
 	typedef struct nsvr_device_info {
-		//todo: is the id field necessary?
-		nsvr_device_id id;
-		char name[512];
 		nsvr_device_concept concept;
+		char name[512];
 	} nsvr_device_info;
 
 

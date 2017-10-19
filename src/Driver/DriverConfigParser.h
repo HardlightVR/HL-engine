@@ -57,7 +57,7 @@ namespace Parsing {
 	struct VirtualNodeDescriptor {
 		uint32_t id;
 		std::string name;
-		nsvr_node_type concept;
+		nsvr_node_concept concept;
 		std::vector<std::string> regions;
 	};
 	struct VirtualDeviceDescriptor {

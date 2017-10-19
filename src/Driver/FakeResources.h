@@ -129,10 +129,9 @@ struct DefaultNodeDiscoverer : public FakeNodeDiscoverer {
 	void info(nsvr_node_id id, nsvr_node_info* info)
 	{
 		auto node = m_nodes.at(NodeId<local>{id});
-		info->id = id;
 		std::string name = node.name();
 		std::copy(name.begin(), name.end(), info->name);
-		info->type = node.type();
+		info->concept= node.type();
 	}
 
 

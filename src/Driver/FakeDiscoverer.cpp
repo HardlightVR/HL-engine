@@ -6,7 +6,7 @@ FakeDiscovererBuilder::FakeDiscovererBuilder()
 {
 }
 
-FakeDiscovererBuilder & FakeDiscovererBuilder::WithNode(nsvr_node_id id, nsvr_node_type type, std::string name)
+FakeDiscovererBuilder & FakeDiscovererBuilder::WithNode(nsvr_node_id id, nsvr_node_concept type, std::string name)
 {
 	NodeDescriptor desc{ type, std::move(name), id };
 	m_nodes.emplace_back(std::move(desc));
@@ -41,8 +41,7 @@ void FakeDiscoverer::Augment(device_api * device_api)
 
 void FakeDiscoverer::get_info(nsvr_node_id id, nsvr_node_info * info)
 {
-	info->id = id;
-	info->type = m_nodes.at(NodeId<local>{id}).type();
+	info->concept = m_nodes.at(NodeId<local>{id}).type();
 
 	const std::string& name = m_nodes.at(NodeId<local>{id}).name();
 	std::copy(name.begin(), name.end(), info->name);

@@ -31,7 +31,7 @@ void HardwareNodeEnumerator::ForEachNode(NodeDiscoverer::NodeAction action)
 	}
 }
 
-std::vector<nsvr_node_id> HardwareNodeEnumerator::GetNodesOfType(nsvr_node_type type)
+std::vector<nsvr_node_id> HardwareNodeEnumerator::GetNodesOfType(nsvr_node_concept type)
 {
 	std::vector<nsvr_node_id> filteredNodes;
 	for (auto& kvp : m_nodes) {
@@ -53,7 +53,7 @@ Node* HardwareNodeEnumerator::Get(nsvr_node_id id)
 	return nullptr;
 }
 
-std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_type type)
+std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_concept type)
 {
 	std::vector<nsvr_node_id> output;
 	for (nsvr_node_id id : items) {
@@ -69,13 +69,14 @@ std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector
 
 void HardwareNodeEnumerator::fetchNodeInfo(nsvr_node_id node_id)
 {
-	nsvr_node_info info = { 0 };
+	nsvr_node_info info{ nsvr_node_type_unknown, {0} };
+
 	m_api->submit_getnodeinfo(node_id, &info);
 
 	NodeDescriptor desc;
 	desc.displayName = std::string(info.name);
 	desc.id = node_id;
-	desc.type = info.type;
+	desc.type = info.concept;
 
 	createNewNode(desc);
 }
@@ -86,3 +87,23 @@ void HardwareNodeEnumerator::createNewNode(const NodeDescriptor& desc)
 
 	
 }
+
+//So the current question is: how should nodes specify what theysupport?
+/*
+For instance the plugin supports the Waveform API. But how do we know if Node A supports it? 
+
+Maybe Node A is a kicker, and only supports the Impact API, not the Waveform API. 
+
+Should it be like:
+
+Node {
+	caps: supports_kicker | supports_buffered
+	concept: haptic
+	name: "Left shoulder kicker"
+
+
+	hmm interesting. You could say "Hey, this LED actually supports waveform as well. Whoah dude. Therefore any haptic waveform sent to the 
+	pads on this suit will also be sent to the LEDs on those pads."
+
+	Okay so instead of saying, in the device, "If apis->supports waveform" we say something like "if (this particular node) supports waveform
+*/

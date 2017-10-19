@@ -13,7 +13,7 @@ struct RenderedNode {
 		float data_3;
 	};
 	NodeId<local> Id;
-	nsvr_node_type type;
+	nsvr_node_concept type;
 	GenericData data;
 };
 
