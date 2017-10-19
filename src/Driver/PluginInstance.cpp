@@ -16,13 +16,13 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 	m_eventHandler(),
 	m_io(io),
 	m_id(id),
-	m_logger(boost::log::keywords::channel = "plugin")
+	m_logger(std::make_shared<my_logger>(boost::log::keywords::channel = "plugin"))
 	
 {
 	boost::filesystem::path pluginPath(m_fileName);
 	
 
-	m_logger.add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
+	m_logger->add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
 
 	m_resources = std::make_unique<DeviceResources>();
 	/*auto il = {
@@ -37,12 +37,6 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 
 }
 
-
-
-
-PluginInstance::~PluginInstance()
-{
-}
 
 
 
@@ -175,11 +169,14 @@ void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
 
 void PluginInstance::Log(nsvr_severity level, const char * component, const char * message)
 {
-	m_io.post([&lg = m_logger, level, cmp = std::string(component), msg = std::string(message)]() {
-		//plogger::get().add_attribute("Component", boost::log::attributes::constant<std::string>(cmp));
-		lg.add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(cmp));
-
-		BOOST_LOG_SEV(lg, level) << msg;
+	m_io.post([weak_logger = std::weak_ptr<my_logger>(m_logger), level, cmp = std::string(component), msg = std::string(message)]() {
+		//tentative fix for bug where program shuts down, and this handler tries to write to the log while the io service is already dead
+		//now it must be able to lock the shared ptr
+		//..but what happens if it locks it, but then the io service dies anyways? Hmm.
+		if (auto lg = weak_logger.lock()) {
+			lg->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(cmp));
+			BOOST_LOG_SEV(*lg, level) << msg;
+		}
 	});
 }
 

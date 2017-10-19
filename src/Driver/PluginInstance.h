@@ -45,7 +45,6 @@ public:
 	using DeviceResourceBundle = std::unique_ptr<DeviceResources>;
 
 	PluginInstance(boost::asio::io_service& io, std::string fileName, uint32_t id);
-	~PluginInstance();
 	
 	bool Link();
 	bool Instantiate();
@@ -83,7 +82,7 @@ private:
 	typedef std::function<int(nsvr_plugin_api*)> plugin_registration_t;
 	plugin_registration_t m_pluginRegisterFunction;
 
-	my_logger m_logger;
+	std::shared_ptr<my_logger> m_logger;
 
 	nsvr_plugin_api m_pluginFunctions;
 	nsvr_plugin* m_pluginPointer;

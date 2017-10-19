@@ -112,6 +112,8 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 		const auto& loc = event.locational_event().location();
 		if (loc.where_case() == NullSpaceIPC::Location::kNodes) {
 		
+			//todo(casey): Check if hlvr_allnodes {0} is present. If so, we target all nodes.
+
 			std::unordered_map<LocalDevice, std::vector<NodeId<local>>> all_nodes;
 			for (const auto& node : loc.nodes().nodes()) {
 				
