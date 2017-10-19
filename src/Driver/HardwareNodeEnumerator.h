@@ -14,7 +14,8 @@ public:
 	void ForEachNode(NodeDiscoverer::NodeAction action) override;
 	std::vector<nsvr_node_id> GetNodesOfType(nsvr_node_concept type) override;
 	Node* Get(nsvr_node_id id) override;
-	std::vector<nsvr_node_id> FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_concept type) override;
+	std::vector<nsvr_node_id> FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_concept type) const override;
+	std::vector<nsvr_node_id> FilterBySupport(const std::vector<nsvr_node_id>& items, nsvr_api_support apis) const override;
 private:
 	nsvr_device_id m_id;
 	std::unordered_map<nsvr_node_id, Node> m_nodes;

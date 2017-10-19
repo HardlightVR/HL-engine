@@ -53,7 +53,7 @@ Node* HardwareNodeEnumerator::Get(nsvr_node_id id)
 	return nullptr;
 }
 
-std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_concept type)
+std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector<nsvr_node_id>& items, nsvr_node_concept type) const
 {
 	std::vector<nsvr_node_id> output;
 	for (nsvr_node_id id : items) {
@@ -67,9 +67,20 @@ std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector
 	return output;
 }
 
+std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterBySupport(const std::vector<nsvr_node_id>& items, nsvr_api_support apis) const {
+	std::vector<nsvr_node_id> output;
+	for (nsvr_node_id id : items) {
+		auto it = m_nodes.find(id);
+		if (it != m_nodes.end()) {
+			
+		}
+	}
+	return output;
+}
+
 void HardwareNodeEnumerator::fetchNodeInfo(nsvr_node_id node_id)
 {
-	nsvr_node_info info{ nsvr_node_type_unknown, {0} };
+	nsvr_node_info info{ {0}, nsvr_node_type_unknown, nsvr_api_support_none};
 
 	m_api->submit_getnodeinfo(node_id, &info);
 
@@ -77,6 +88,7 @@ void HardwareNodeEnumerator::fetchNodeInfo(nsvr_node_id node_id)
 	desc.displayName = std::string(info.name);
 	desc.id = node_id;
 	desc.type = info.concept;
+	desc.apiSupport = info.api_support;
 
 	createNewNode(desc);
 }

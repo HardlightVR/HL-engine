@@ -115,6 +115,14 @@ extern "C" {
 		unsigned int node_count;
 	} nsvr_node_ids;
 
+	typedef enum nsvr_api_support {
+		nsvr_api_support_none = 0,
+		nsvr_api_supports_waveform = 1 << 0,
+		nsvr_api_supports_buffered = 1 << 1,
+		
+
+
+	} nsvr_api_support;
 	typedef enum nsvr_node_concept {
 		nsvr_node_type_unknown = 0,
 		nsvr_node_type_haptic,
@@ -124,8 +132,9 @@ extern "C" {
 	} nsvr_node_concept;
 
 	typedef struct nsvr_node_info {
-		nsvr_node_concept concept;
 		char name[512];
+		nsvr_node_concept concept;
+		nsvr_api_support api_support;
 	} nsvr_node_info;
 
 
@@ -144,8 +153,8 @@ extern "C" {
 	} nsvr_device_concept;
 
 	typedef struct nsvr_device_info {
-		nsvr_device_concept concept;
 		char name[512];
+		nsvr_device_concept concept;
 	} nsvr_device_info;
 
 

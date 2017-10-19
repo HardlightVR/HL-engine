@@ -24,7 +24,7 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::strin
 
 	}
 	else {
-		nsvr_device_info info = { nsvr_device_concept_unknown , { 0 }};
+		nsvr_device_info info = { { 0 }, nsvr_device_concept_unknown };
 		apis.GetApi<device_api>()->submit_getdeviceinfo(id, &info);
 
 		DeviceDescriptor desc;
