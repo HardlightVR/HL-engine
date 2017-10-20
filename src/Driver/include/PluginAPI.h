@@ -124,11 +124,11 @@ extern "C" {
 
 	} nsvr_api_support;
 	typedef enum nsvr_node_concept {
-		nsvr_node_type_unknown = 0,
-		nsvr_node_type_haptic,
-		nsvr_node_type_led,
-		nsvr_node_type_inertial_tracker,
-		nsvr_node_type_absolute_tracker
+		nsvr_node_concept_unknown = 0,
+		nsvr_node_concept_haptic,
+		nsvr_node_concept_led,
+		nsvr_node_concept_inertial_tracker,
+		nsvr_node_concept_absolute_tracker
 	} nsvr_node_concept;
 
 	typedef struct nsvr_node_info {

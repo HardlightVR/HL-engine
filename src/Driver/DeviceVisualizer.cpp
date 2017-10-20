@@ -41,7 +41,7 @@ std::vector<RenderedNode> DeviceVisualizer::render()
 
 	std::vector<RenderedNode> nodes;
 	for (auto& kvp : m_nodes) {
-		nodes.push_back(RenderedNode{ NodeId<local>(kvp.first), nsvr_node_type_haptic, kvp.second.render() });
+		nodes.push_back(RenderedNode{ NodeId<local>(kvp.first), nsvr_node_concept_haptic, kvp.second.render() });
 	}
 	return nodes;
 }

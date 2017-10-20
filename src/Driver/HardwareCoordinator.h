@@ -4,14 +4,13 @@
 #include "PluginAPI.h"
 #include "IdentificationService.h"
 #include "ScheduledEvent.h"
+#include "protobuff_defs/HighLevelEvent.pb.h"
 
 class EventDispatcher;
 class DeviceContainer;
 class DriverMessenger;
 
-namespace NullSpaceIPC {
-	class LocationalEvent;
-}
+
 class HardwareCoordinator
 {
 public:
@@ -27,9 +26,14 @@ private:
 	void writeTracking(nsvr_node_id region, nsvr_quaternion* quat);
 	ScheduledEvent m_writeBodyRepresentation;
 
+	void genericDispatch(uint64_t id, const NullSpaceIPC::LocationalEvent& event);
 	void writeBodyRepresentation();
-	void dispatchToNodes(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event);
-	void dispatchToRegions(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event);
+
+
+	void setupDispatchTable();
+
+	std::unordered_map<NullSpaceIPC::LocationalEvent::EventsCase,
+		std::function<void(uint64_t, const NullSpaceIPC::LocationalEvent&)>> m_dispatchTable;
 };
 
 

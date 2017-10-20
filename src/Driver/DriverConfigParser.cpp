@@ -29,10 +29,10 @@ namespace Parsing {
 	};
 
 	static std::unordered_map<std::string, nsvr_node_concept> node_concept_map = {
-		{"haptic", nsvr_node_type_haptic},
-		{"inertial_tracker", nsvr_node_type_inertial_tracker},
-		{"absolute_tracker", nsvr_node_type_absolute_tracker},
-		{"led", nsvr_node_type_led}
+		{"haptic", nsvr_node_concept_haptic},
+		{"inertial_tracker", nsvr_node_concept_inertial_tracker},
+		{"absolute_tracker", nsvr_node_concept_absolute_tracker},
+		{"led", nsvr_node_concept_led}
 	};
 	double angle_distance(double angle_a, double angle_b) {
 		if (angle_a > angle_b) {

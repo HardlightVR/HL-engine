@@ -14,6 +14,9 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_writeBodyRepresentation(io, boost::posix_time::milliseconds(8))
 	, m_idService()
 {
+
+	setupDispatchTable();
+
 	m_devices.OnDeviceAdded([this](Device* device) {
 	
 		NullSpace::SharedMemory::DeviceInfo info = {0};
@@ -74,8 +77,8 @@ void HardwareCoordinator::writeBodyRepresentation()
 	std::unordered_map<nsvr_region, std::vector<std::pair<NodeId<global>, RenderedNode>>> groupedByRegion;
 
 	m_devices.EachDevice([&](Device* device) {
-		device->update_visualizer(.008);
-		auto nodes = device->render_visualizer();
+		device->UpdateVisualizer(.008);
+		auto nodes = device->RenderVisualizer();
 
 		for (auto& node : nodes) {
 
@@ -100,60 +103,72 @@ void HardwareCoordinator::writeBodyRepresentation()
 }
 
 
-void HardwareCoordinator::dispatchToNodes(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event)
-{
-	std::unordered_map<LocalDevice, std::vector<NodeId<local>>> to_be_dispatched;
 
-	for (const auto& globalNode : event.location().nodes().nodes()) {
-		if (auto lookup = m_idService.FromGlobalNode(NodeId<global>{globalNode})) {
-			to_be_dispatched[LocalDevice{ lookup->device_id, lookup->plugin }].push_back(lookup->id);
+ 
+
+void HardwareCoordinator::genericDispatch(uint64_t id, const NullSpaceIPC::LocationalEvent& event) {
+	if (event.location().where_case() == NullSpaceIPC::Location::kNodes) {
+		std::unordered_map<LocalDevice, std::vector<NodeId<local>>> toBeDispatched;
+
+		const auto& nodes = event.location().nodes().nodes();
+
+		for (const auto& globalNode : nodes) {
+			if (auto lookup = m_idService.FromGlobalNode(NodeId<global>{globalNode})) {
+				toBeDispatched[LocalDevice{ lookup->device_id, lookup->plugin }].push_back(lookup->id);
+			}
+		}
+
+		for (const auto& localDevice : toBeDispatched) {
+			if (auto ptr = m_devices.Get(localDevice.first)) {
+				ptr->Deliver(id, event, localDevice.second);
+			}
 		}
 	}
 
-	for (const auto& localDevice : to_be_dispatched) {
-		m_devices.Get(localDevice.first)->DispatchEvent(parent_id, event.simple_haptic(), localDevice.second);
-	}
-	
-}
+	else if (event.location().where_case() == NullSpaceIPC::Location::kRegions) {
+		const auto& protoBufRegions = event.location().regions().regions();
+		std::vector<nsvr_region> regions(protoBufRegions.begin(), protoBufRegions.end());
 
-void HardwareCoordinator::dispatchToRegions(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event)
-{
-	std::vector<nsvr_region> casted_regions;
-
-
-	casted_regions.reserve(event.location().regions().regions().size());
-
-	for (const auto& region : event.location().regions().regions()) {
-		casted_regions.push_back(region);
+		m_devices.EachDevice([&](Device* device) {
+			device->Deliver(id, event, regions);
+		});
 	}
 
-	m_devices.EachDevice([&](Device* device) {
-		device->DispatchEvent(parent_id, event.simple_haptic(), casted_regions);
-	});
-
+	else {
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "Unknown 'where' case in event: " << event.location().where_case();
+	}
 }
+void HardwareCoordinator::setupDispatchTable() {
+	using namespace NullSpaceIPC;
+
+	//In an ideal world, we have the global bodygraph. We can query it with our global node ids and then perform haptic stuff.
+	//But really, we have a bunch of device-local bodygraphs.
+	//The events coming in might be targeting a group of regions, or a group of global nodes.
+	//If regions, we can basically pass the buck and say "hey, each device, you need to handle this". Which means that if you were ever wearing 
+	//two haptic suits at the same time.. you'd feel it on both.
+
+	//But if nodes, we need to translate those to device-local, and then pass the buck. This asymmetry is leading to kind of nasty code. 
+
+	//It is also redundant to subscribe to simpleHaptic, for example, and then have an additional switch inside of device->Deliver.
+	//Need to decide if the coordinator should be like "I don't know what this event type even is, but I'm passing it to every device"
+	//or if it should instead pass to a bunch of overloads on the device.
+
+//	m_dispatchTable[LocationalEvent::EventsCase::kSimpleHaptic] = [&](uint64_t id, const NullSpaceIPC::LocationalEvent& event) { genericDispatch(id, event); };
+
+	//m_dispatchTable[LocationalEvent::EventsCase::kContinuousHaptic] = [&](uint64_t id, const NullSpaceIPC::LocationalEvent& event) { genericDispatch(id, event); };
+}
+
 
 void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 {
 
 	
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kPlaybackEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		m_devices.EachDevice([&](Device* device) { device->DispatchEvent(event.playback_event()); });
+		m_devices.EachDevice([&](Device* device) { device->Deliver(event.parent_id(), event.playback_event()); });
 	});
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kLocationalEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
-		const auto& loc = event.locational_event().location();
-		switch (loc.where_case()) {
-		case NullSpaceIPC::Location::kNodes:
-			dispatchToNodes(event.parent_id(), event.locational_event());
-			break;
-		case NullSpaceIPC::Location::kRegions:
-			dispatchToRegions(event.parent_id(), event.locational_event());
-			break;
-		default:
-			BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "Unknown location for event: " << loc.where_case();
-			break;
-		}
+		genericDispatch(event.parent_id(), event.locational_event());
 	});
 	
 }
