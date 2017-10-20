@@ -22,7 +22,7 @@ IdentificationService::IdentificationService()
 
 DeviceId<global> IdentificationService::FromLocal(PluginId plugin, DeviceId<local> id)
 {
-	LocalDevice local{ id.value, plugin };
+	LocalDevice local{ id, plugin };
 	auto it = deviceLocalToGlobal.find(local);
 	if (it != deviceLocalToGlobal.end()) {
 		return it->second;
@@ -48,7 +48,7 @@ boost::optional<LocalDevice> IdentificationService::FromGlobalDevice(DeviceId<gl
 
 NodeId<global> IdentificationService::FromLocal(PluginId pluginId, DeviceId<local> deviceId, NodeId<local> nodeId)
 {
-	LocalNode local{ nodeId.value, pluginId, deviceId.value };
+	LocalNode local{ nodeId, pluginId, deviceId };
 	auto it = nodeLocalToGlobal.find(local);
 	if (it != nodeLocalToGlobal.end()) {
 		return it->second;

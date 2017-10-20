@@ -9,6 +9,9 @@ class EventDispatcher;
 class DeviceContainer;
 class DriverMessenger;
 
+namespace NullSpaceIPC {
+	class LocationalEvent;
+}
 class HardwareCoordinator
 {
 public:
@@ -25,6 +28,8 @@ private:
 	ScheduledEvent m_writeBodyRepresentation;
 
 	void writeBodyRepresentation();
+	void dispatchToNodes(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event);
+	void dispatchToRegions(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event);
 };
 
 

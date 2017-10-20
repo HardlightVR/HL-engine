@@ -308,7 +308,6 @@
     <ClInclude Include="..\src\Driver\FakeDiscoverer.h" />
     <ClInclude Include="..\src\Driver\FakeResources.h" />
     <ClInclude Include="..\src\Driver\FakeTrackingProvider.h" />
-    <ClInclude Include="..\src\Driver\HapticInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareEventDispatcher.h" />

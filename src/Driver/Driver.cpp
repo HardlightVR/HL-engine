@@ -190,6 +190,8 @@ void DoForEachBit(std::function<void(Location l)> fn, uint32_t bits) {
 	for (uint32_t bit = 1; bits >= bit; bit *= 2) if (bits & bit) fn(Location(bit));
 
 }
+
+//todo: delete this
 void Driver::handleCommands()
 {
 	if (auto commands = m_messenger.ReadCommands()) {

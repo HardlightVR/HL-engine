@@ -83,11 +83,14 @@ void DeviceContainer::EachDevice(DeviceFn forEach)
 
 
 
-Device* DeviceContainer::Get(std::string plugin, DeviceId<local> id)
+Device* DeviceContainer::Get(LocalDevice deviceId)
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 
-	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id, plugin](const auto& device) { return device->id() == id && device->parentPlugin() == plugin; });
+	auto it = std::find_if(m_devices.begin(), m_devices.end(), [&](const auto& device) {
+		return device->id() == deviceId.id && device->parentPlugin() == deviceId.plugin; 
+	});
+
 	if (it != m_devices.end()) {
 		return (*it).get();
 	}

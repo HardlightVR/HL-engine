@@ -100,6 +100,39 @@ void HardwareCoordinator::writeBodyRepresentation()
 }
 
 
+void HardwareCoordinator::dispatchToNodes(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event)
+{
+	std::unordered_map<LocalDevice, std::vector<NodeId<local>>> to_be_dispatched;
+
+	for (const auto& globalNode : event.location().nodes().nodes()) {
+		if (auto lookup = m_idService.FromGlobalNode(NodeId<global>{globalNode})) {
+			to_be_dispatched[LocalDevice{ lookup->device_id, lookup->plugin }].push_back(lookup->id);
+		}
+	}
+
+	for (const auto& localDevice : to_be_dispatched) {
+		m_devices.Get(localDevice.first)->DispatchEvent(parent_id, event.simple_haptic(), localDevice.second);
+	}
+	
+}
+
+void HardwareCoordinator::dispatchToRegions(uint64_t parent_id, const NullSpaceIPC::LocationalEvent& event)
+{
+	std::vector<nsvr_region> casted_regions;
+
+
+	casted_regions.reserve(event.location().regions().regions().size());
+
+	for (const auto& region : event.location().regions().regions()) {
+		casted_regions.push_back(region);
+	}
+
+	m_devices.EachDevice([&](Device* device) {
+		device->DispatchEvent(parent_id, event.simple_haptic(), casted_regions);
+	});
+
+}
+
 void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 {
 
@@ -110,38 +143,18 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kLocationalEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		const auto& loc = event.locational_event().location();
-		if (loc.where_case() == NullSpaceIPC::Location::kNodes) {
-		
-			//todo(casey): Check if hlvr_allnodes {0} is present. If so, we target all nodes.
-
-			std::unordered_map<LocalDevice, std::vector<NodeId<local>>> all_nodes;
-			for (const auto& node : loc.nodes().nodes()) {
-				
-				if (auto possibleNode = m_idService.FromGlobalNode(NodeId<global>{node})) {
-					all_nodes[LocalDevice{ possibleNode->device_id, possibleNode->plugin }].push_back(NodeId<local>{possibleNode->id});
-				}
-			}
-			
-			for (const auto& kvp : all_nodes) {
-				Device* d = m_devices.Get(kvp.first.plugin, DeviceId<local>{kvp.first.id});
-				if (d) {
-					d->DispatchEvent(event.parent_id(), event.locational_event().simple_haptic(), kvp.second);
-				}
-			}
+		switch (loc.where_case()) {
+		case NullSpaceIPC::Location::kNodes:
+			dispatchToNodes(event.parent_id(), event.locational_event());
+			break;
+		case NullSpaceIPC::Location::kRegions:
+			dispatchToRegions(event.parent_id(), event.locational_event());
+			break;
+		default:
+			BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "Unknown location for event: " << loc.where_case();
+			break;
 		}
-		else {
-			std::vector<nsvr_region> regions;
-			for (const auto& region : loc.regions().regions()) {
-				regions.push_back(region);
-			}
-
-			m_devices.EachDevice([&](Device* device) {
-				device->DispatchEvent(event.parent_id(), event.locational_event().simple_haptic(), regions);
-			});
-		}
-	
 	});
-		
 	
 }
 

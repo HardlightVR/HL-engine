@@ -149,7 +149,8 @@ extern "C" {
 		nsvr_device_concept_controller,
 		nsvr_device_concept_headwear,
 		nsvr_device_concept_gun,
-		nsvr_device_concept_sword
+		nsvr_device_concept_sword,
+		nsvr_device_concept_gauntlet
 	} nsvr_device_concept;
 
 	typedef struct nsvr_device_info {

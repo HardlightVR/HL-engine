@@ -22,7 +22,10 @@ namespace Parsing {
 	static std::unordered_map<std::string, nsvr_device_concept> concept_map = {
 		{ "suit", nsvr_device_concept_suit },
 		{ "controller", nsvr_device_concept_controller },
-		{ "gun", nsvr_device_concept_gun}
+		{ "gun", nsvr_device_concept_gun},
+		{"gauntlet", nsvr_device_concept_gauntlet},
+		{"headwear", nsvr_device_concept_headwear},
+		{"sword", nsvr_device_concept_sword}
 	};
 
 	static std::unordered_map<std::string, nsvr_node_concept> node_concept_map = {

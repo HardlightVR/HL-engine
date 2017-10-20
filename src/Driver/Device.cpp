@@ -54,11 +54,45 @@ void Device::DispatchEvent(const NullSpaceIPC::PlaybackEvent & playback_event)
 
 void Device::DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic & simple, const std::vector<nsvr_region>& regions)
 {
-	auto nodes = m_bodygraph->GetNodesAtRegions(regions);
-	auto haptic_only = m_discoverer->FilterByType(nodes, nsvr_node_type_haptic);
+	
+	auto haptic_only = m_discoverer->FilterByType(m_bodygraph->GetNodesAtRegions(regions), nsvr_node_type_haptic);
 
+	//So I guess the question is.. what do we do here.
+	//Do we dispatch to only haptic nodes, in order of waveform->continueous->buffered?
+	//Do we dispatch to anything that supports the correct apis? 
+	//I think we need some Policies. 
+
+	//policy{
+
+	//if [haptic] and [supports waveform] then send IF  policy_strict?
+	//if [led] and [supports waveform] then send IF policy_relaxed?
+	//policy_greedy and policy_restrained?
+
+
+	//so when you send an event you can say "let this be a greedy event, it will try to play on whatever it possibly can.
+	//So if its a waveform, sure its gonna try to play on that kicker and that LED, not just an erm.
+	//Or, "let this be a restrained event, only play on specific hardware that is really meant to support it". 
+	
+	/*
+	Making up terminology: an event has an "execution class" such as haptic, led, kicker, etc.
+	These events are implemented, at this level, by using the low level apis that somewhat correspond to the events.
+
+	So with a "restrained" hint, it will only play on nodes that match the "execution class" of the event, and support the correct
+	apis. With a "relaxed" hint, it will play on nodes that don't necessarily match the execution class, but do support the correct
+	apis. 
+
+	What does this get us? Just a ton of complexity?
+	Freebees for the dev like: controlling all leds with haptics. Controlling a heat pad with a waveform.
+	Triggering a kicker with a normal preset waveform instead of a specific impact event. 
+
+	This could be the thing that allows the developer to say "hey, I want to target other hardware. I get that it might not be as good,
+	but use your intelligence and do it". Or the dev can say, "Hey I want to target only this specific hardware". 
+	
+	
+	*/
 	for (const auto& node : haptic_only) {
-		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
+		//if (m_discoverer->)
+		//m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
 	}
 
 	m_playback->CreateEventRecord(event_id, haptic_only);
@@ -75,7 +109,8 @@ void Device::DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic& 
 	auto haptic_only = m_discoverer->FilterByType(temp, nsvr_node_type_haptic);
 
 	for (const auto& node : haptic_only) {
-		m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
+		//todo: FIX
+		//m_haptics->SubmitSimpleHaptic(event_id, node, SimpleHaptic(simple.effect(), simple.duration(), simple.strength()));
 	}
 
 	m_playback->CreateEventRecord(event_id, haptic_only); 

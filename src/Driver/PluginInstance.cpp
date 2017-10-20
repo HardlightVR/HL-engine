@@ -173,6 +173,8 @@ void PluginInstance::Log(nsvr_severity level, const char * component, const char
 		//tentative fix for bug where program shuts down, and this handler tries to write to the log while the io service is already dead
 		//now it must be able to lock the shared ptr
 		//..but what happens if it locks it, but then the io service dies anyways? Hmm.
+
+		//Update: it didn't fix it
 		if (auto lg = weak_logger.lock()) {
 			lg->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(cmp));
 			BOOST_LOG_SEV(*lg, level) << msg;

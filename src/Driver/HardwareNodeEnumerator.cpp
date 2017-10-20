@@ -67,16 +67,7 @@ std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterByType(const std::vector
 	return output;
 }
 
-std::vector<nsvr_node_id> HardwareNodeEnumerator::FilterBySupport(const std::vector<nsvr_node_id>& items, nsvr_api_support apis) const {
-	std::vector<nsvr_node_id> output;
-	for (nsvr_node_id id : items) {
-		auto it = m_nodes.find(id);
-		if (it != m_nodes.end()) {
-			
-		}
-	}
-	return output;
-}
+
 
 void HardwareNodeEnumerator::fetchNodeInfo(nsvr_node_id node_id)
 {
