@@ -102,6 +102,16 @@
                               "rotation": 180
                         }
                   },
+                  {
+
+
+                        "name" : "chestCenter",
+                        "bodypart" : "torso",
+                        "location" : {
+                              "height" : 0.5,
+                              "rotation" : 0.0
+                        }
+                  },
 
                   {
                         "name": "leftCircletLower",

@@ -17,8 +17,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	m_device(),
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
 	m_imus(m_dispatcher),
-	m_core{nullptr},
-	m_trackingStream{nullptr}
+	m_core{nullptr}
 
 {
 	
@@ -57,18 +56,11 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 
 	m_eventPull.Start();
 
-	m_imus.OnTracking([&](const std::string& id, nsvr_quaternion quat) {
-
-		if (m_trackingStream != nullptr) {
-
-			nsvr_tracking_stream_push(m_trackingStream, &quat);
-
-		}
-	});
+	
 
 	
-	m_imus.AssignMapping(0x3a, Imu::Chest, "chest"); 
-	m_imus.AssignMapping(0x3c, Imu::Left_Upper_Arm, "left_upper_arm");
+	m_imus.AssignMapping(0x3c, Imu::Chest, 50); 
+	m_imus.AssignMapping(0x3a, Imu::Left_Upper_Arm, 51);
 
 	
 
@@ -169,17 +161,16 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	return 1;
 }
 
-void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id region)
+void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id id)
 {
-	assert(region == 50); //chest_imu
+	m_imus.AssignStream(stream, id);
 	m_firmware.EnableTracking();
-	m_trackingStream = stream;
 }
 
-void HardlightPlugin::EndTracking(nsvr_node_id region)
+void HardlightPlugin::EndTracking(nsvr_node_id id)
 {
+	m_imus.RemoveStream(id);
 	m_firmware.DisableTracking();
-	m_trackingStream = nullptr;
 }
 
 void HardlightPlugin::EnumerateNodesForDevice(nsvr_device_id, nsvr_node_ids * ids)

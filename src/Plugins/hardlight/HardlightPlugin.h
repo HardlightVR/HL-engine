@@ -44,7 +44,6 @@ private:
 
 	ScheduledEvent m_eventPull;
 	nsvr_core* m_core;
-	nsvr_tracking_stream* m_trackingStream;
 	bool m_running;
 
 	ImuConsumer m_imus;

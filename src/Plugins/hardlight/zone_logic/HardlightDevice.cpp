@@ -160,6 +160,9 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 
 	nsvr_bodygraph_associate(g, "upperBackActuators:1", m_drivers[Location::Upper_Back_Right]->GetId());
 
+	nsvr_bodygraph_associate(g, "chestCenter", 50); //chest_imu
+
+
 }
 
 //void HardlightDevice::handle(uint64_t request_id, uint64_t device_id, nsvr_waveform* wave) {

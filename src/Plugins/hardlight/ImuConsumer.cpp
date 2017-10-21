@@ -14,24 +14,36 @@ ImuConsumer::ImuConsumer(PacketDispatcher &dispatcher):
 
 }
 
-void ImuConsumer::OnTracking(TrackingCallback cb)
-{
-	m_callback = cb;
+void ImuConsumer::AssignStream(nsvr_tracking_stream* stream, nsvr_node_id id) {
+	for (auto& kvp : m_mapping) {
+		if (kvp.second.node_id == id) {
+			kvp.second.stream = stream;
+		}
+	}
 }
 
-void ImuConsumer::AssignMapping(uint32_t key, Imu id, const std::string& readable_id)
+void ImuConsumer::RemoveStream(nsvr_node_id id) {
+	for (auto& kvp : m_mapping) {
+		if (kvp.second.node_id == id) {
+			kvp.second.stream = nullptr;
+		}
+	}
+}
+
+void ImuConsumer::AssignMapping(uint32_t key, Imu id, nsvr_node_id node_id)
 {
-	m_mapping[key] = std::make_pair(id, readable_id);
+	m_mapping[key] = Mapping(id, node_id);
 }
 void ImuConsumer::consumePacket(Packet Packet)
 {
 
 	const auto& mapping = m_mapping[Packet[11]];
-	Imu id = mapping.first;
+	Imu id = mapping.imu;
 	if (id != Imu::Unknown) {
 		m_quaternions[id] = parseQuaternion(Packet.data());
-		if (m_callback) {
-			(*m_callback)(mapping.second, m_quaternions.at(id));
+
+		if (mapping.stream) {
+			nsvr_tracking_stream_push(mapping.stream, &m_quaternions.at(id));
 		}
 	}
 }
