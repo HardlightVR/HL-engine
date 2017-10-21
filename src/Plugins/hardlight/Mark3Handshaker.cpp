@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Mark3Handshaker.h"
 
-const uint8_t Mark3Handshaker::pingData[7] = { 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A };
+const uint8_t Mark3Handshaker::pingData[16] = { 0x24, 0x02, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x0D, 0x0A };
 
 Mark3Handshaker::Mark3Handshaker(std::string name, boost::asio::io_service& io)
 	: Handshaker(name, io)
@@ -24,7 +24,7 @@ const uint8_t * Mark3Handshaker::ping_data() const
 
 std::size_t Mark3Handshaker::ping_data_length() const
 {
-	return 7;
+	return sizeof(pingData) / sizeof(uint8_t);
 }
 
 bool Mark3Handshaker::is_good_response(const uint8_t * data, unsigned int length) const
@@ -36,7 +36,7 @@ bool Mark3Handshaker::is_good_response(const uint8_t * data, unsigned int length
 	return (
 		data[0] == '$'
 		&& data[1] == 0x02
-		&& data[2] == 0x02
+	//	&& data[2] == 0x02
 	);
 }
 

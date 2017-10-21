@@ -3,7 +3,8 @@
 #include "better_enum.h"
 #include <cstdint>
 #include <vector>
-
+#include "FirmwareInterface.h"
+#include "PacketVersion.h"
 class InstructionSet;
 
 namespace nsvr {
@@ -29,9 +30,10 @@ namespace nsvr {
 
 		struct Instruction {
 			using Param = std::pair<std::string, uint8_t>;
-			Instruction(InstructionId id, std::vector<Param> params) : id(id), params(std::move(params)) {}
+			Instruction(InstructionId id, PacketVersion version, std::vector<Param> params) : id(id), params(std::move(params)), version(version) {}
 			InstructionId id;
 			std::vector<Param> params;
+			PacketVersion version;
 		};
 
 		std::string HumanReadable(const Instruction& instruction);

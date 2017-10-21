@@ -11,7 +11,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	m_io(std::make_shared<IoService>()),
 	m_dispatcher(),
 	m_adapter(std::make_unique<BoostSerialAdapter>(m_io->GetIOService())),
-	m_firmware(data_dir, m_adapter, m_io->GetIOService()),
+	m_firmware(data_dir, m_adapter.get(), m_io->GetIOService()),
 	m_monitor(std::make_shared<KeepaliveMonitor>(m_io->GetIOService(), m_firmware)),
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, m_io->GetIOService())),
 	m_device(),
@@ -39,6 +39,9 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	
 	m_synchronizer->BeginSync();
 
+	m_dispatcher.AddConsumer(PacketType::Ping, [this](const auto&) { m_monitor->ReceivePing(); });
+	m_dispatcher.AddConsumer(PacketType::ImuData, [this](const auto&) { m_monitor->ReceivePing(); });
+
 
 	m_eventPull.SetEvent([&]() {
 		constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
@@ -64,7 +67,8 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	});
 
 	
-	m_imus.AssignMapping(0x12, Imu::Chest, "chest");
+	m_imus.AssignMapping(0x3a, Imu::Chest, "chest"); 
+	m_imus.AssignMapping(0x3c, Imu::Left_Upper_Arm, "left_upper_arm");
 
 	
 
@@ -167,6 +171,7 @@ int HardlightPlugin::Configure(nsvr_core* core)
 
 void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id region)
 {
+	assert(region == 50); //chest_imu
 	m_firmware.EnableTracking();
 	m_trackingStream = stream;
 }
@@ -196,7 +201,7 @@ void HardlightPlugin::EnumerateDevices(nsvr_device_ids* ids)
 void HardlightPlugin::GetDeviceInfo(nsvr_device_id id, nsvr_device_info * info)
 {
 	if (id == 0) {
-		info->id = 0;
+	
 		std::string device_name("Hardlight Suit");
 		std::copy(device_name.begin(), device_name.end(), info->name);
 		info->concept = nsvr_device_concept_suit;

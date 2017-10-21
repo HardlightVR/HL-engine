@@ -333,6 +333,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Mark3Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\PacketVersion.h" />
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\SequentialHandshaker.h" />

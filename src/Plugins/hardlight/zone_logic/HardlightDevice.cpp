@@ -95,23 +95,35 @@ void HardlightDevice::EnumerateNodesForDevice(nsvr_node_ids* ids)
 		found_ids.push_back(device.second->GetId());
 	}
 	
+	found_ids.push_back(50); //chest imu
+
 	for (std::size_t i = 0; i < found_ids.size(); i++) {
 		ids->ids[i] = found_ids[i];
 	}
+
+	
 
 	ids->node_count = found_ids.size();
 }
 
 
 void HardlightDevice::GetNodeInfo(nsvr_node_id id, nsvr_node_info* info) {
+
+	if (id == 50) //chest imu 
+	{
+		info->concept = nsvr_node_concept_inertial_tracker;
+		std::string outStr = "Hardlight Chest IMU ";
+		std::copy(outStr.begin(), outStr.end(), info->name);
+		return;
+	}
+
 	const auto& t = Locator::Translator();
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [id = id](const auto& driver) {
 		return driver.second->GetId() == id;
 	});
 
 	if (it != m_drivers.end()) {
-		info->type = nsvr_node_type_haptic;
-		info->id = id;
+		info->concept = nsvr_node_concept_haptic;
 
 		const auto& driver = it->second;
 		std::string outStr = "Hardlight ZoneDriver " + t.ToString(driver->GetLocation());

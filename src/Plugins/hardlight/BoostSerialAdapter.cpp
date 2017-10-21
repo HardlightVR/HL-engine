@@ -9,7 +9,7 @@
 #include <atomic>
 #include "Mark2Handshaker.h"
 #include "Mark3Handshaker.h"
-
+#include "PacketVersion.h"
 
 BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 	m_filteredSuitData(4096), 
@@ -17,7 +17,8 @@ BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
 	m_io(io),
 	m_suitReconnectionTimeout(boost::posix_time::milliseconds(1000)),
 	m_suitReconnectionTimer(io),
-	m_handshakers()
+	m_handshakers(),
+	m_onPacketVersionChange()
 {
 	std::fill(m_tempSuitData, m_tempSuitData + INCOMING_DATA_BUFFER_SIZE, 0);
 }
@@ -67,8 +68,8 @@ std::vector<std::string> fetchAllSerialPortNames() {
 		core_log(nsvr_severity_info, "SerialAdapter", "No ports available on the system");
 	}
 	std::vector<std::string> portNames = {};
-	for (std::size_t i = 0; i < ports.size(); i++) {
-		portNames.push_back("COM" + std::to_string(ports[i]));
+	for (unsigned int port : ports) {
+		portNames.push_back("COM" + std::to_string(port));
 	}
 	return portNames;
 }
@@ -88,13 +89,16 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 		
 		auto hs = make_handshaking_algorithm(m_io, 
 			//Success handler
-			[this](std::unique_ptr<boost::asio::serial_port> p) {
+			[this](std::unique_ptr<boost::asio::serial_port> p, PacketVersion version) {
 				core_log("SerialAdapter", "A handshaker has finished successfully");
 				m_port = std::move(p);
 				for (auto& hs : m_handshakers) { hs->async_cancel(); }
-				m_io.post([this]() {
+				m_io.post([this, version]() {
 					m_handshakers.clear();
 					assert(m_port->is_open());
+
+					//first, tell the firmware interface to use the correct packet version (pinging will depend on this, etc.)
+					m_onPacketVersionChange(version);
 					endReconnectionProcess();
 				});
 
@@ -160,7 +164,7 @@ void BoostSerialAdapter::endReconnectionProcess()
 	m_isReconnecting = false;
 	assert(m_keepaliveMonitor);
 	m_keepaliveMonitor->BeginMonitoring();
-
+	
 	kickoffSuitReading();
 }
 
@@ -182,15 +186,18 @@ void BoostSerialAdapter::kickoffSuitReading()
 				//If not, then maybe we end up making multiple plugins, one for mark2, one for mark3. Right now it seems like they are pretty similar so we can
 				//getaway with things like IsPingPacket working for both a mark1 and a mark2. 
 
-				if (!IsPingPacket(m_tempSuitData, bytes_transferred)) {
+				//if (!IsPingPacket(m_tempSuitData, bytes_transferred)) {
 					//if it's not a ping packet, put it into the data stream. Don't want pings cluttering stuff up.
 					m_filteredSuitData.push(m_tempSuitData, bytes_transferred);
 					std::fill(m_tempSuitData, m_tempSuitData + INCOMING_DATA_BUFFER_SIZE, 0);
-				}
-				else {
-					assert(m_keepaliveMonitor);
-					m_keepaliveMonitor->ReceivePing();
-				}
+			//	}
+			//	else {
+				//	assert(m_keepaliveMonitor);
+				//	m_keepaliveMonitor->ReceivePing();
+			//	}
+			//	assert(m_keepaliveMonitor);
+			//	m_keepaliveMonitor->ReceivePing();
+
 				kickoffSuitReading();
 			}	
 		}
@@ -216,6 +223,11 @@ void BoostSerialAdapter::SetConnectionMonitor(std::shared_ptr<KeepaliveMonitor> 
 	m_keepaliveMonitor = monitor;	
 	m_keepaliveMonitor->OnDisconnect([this]() { beginReconnectionProcess(); });
 
+}
+
+void BoostSerialAdapter::OnPacketVersionChange(std::function<void(PacketVersion)> fn)
+{
+	m_onPacketVersionChange = fn;
 }
 
 

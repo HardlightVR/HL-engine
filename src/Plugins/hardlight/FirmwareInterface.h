@@ -4,21 +4,27 @@
 #include "Enums.h"
 #include <boost/asio/io_service.hpp>
 #include "zone_logic/HardwareCommands.h"
-
-#include "Instructions.h"
+#include "PacketVersion.h"
+namespace nsvr {
+	namespace config {
+		struct Instruction;
+	}
+}
 
 class FirmwareInterface
 {
 	
 public:
 	
+
 	struct AudioOptions {
 		int AudioMax;
 		int AudioMin;
 		int PeakTime;
 		int Filter;
 	};
-	FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io);
+	FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io);
+
 
 	void Execute(const CommandBuffer& buffer);
 	void PlayEffect(Location location, uint32_t effect, float strength);
@@ -41,11 +47,12 @@ public:
 
 	std::size_t GetTotalBytesSent() const;
 private:
+	PacketVersion m_packetVersion;
 	void VerifyThenExecute(InstructionBuilder& builder);
 	void VerifyThenExecute(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
 	std::shared_ptr<InstructionSet> m_instructionSet;
 	void queue_packet(const std::vector<uint8_t>& packet);
-	std::unique_ptr<BoostSerialAdapter>& _adapter;
+	BoostSerialAdapter* _adapter;
 	InstructionBuilder _builder;
 	boost::asio::deadline_timer _writeTimer;
 	boost::asio::deadline_timer _batchingDeadline;

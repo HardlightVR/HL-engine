@@ -4,7 +4,8 @@
 #include "InstructionSet.h"
 #include "HardwareCommandVisitor.h"
 #include "logger.h"
-FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io):
+#include "Instructions.h"
+FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io):
 m_instructionSet(std::make_shared<InstructionSet>(data_dir)),
 _adapter(adapter),
 _builder(m_instructionSet),
@@ -18,11 +19,15 @@ _isBatching(false),
 m_totalBytesSent(0)
 
 {
+	_adapter->OnPacketVersionChange([this](PacketVersion version) { 
+		m_packetVersion = version;  
+	});
 
 	_writeTimer.expires_from_now(_writeInterval);
 	_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
 
 }
+
 
 
 
@@ -93,7 +98,7 @@ void FirmwareInterface::writeBuffer() {
 void FirmwareInterface::EnableTracking()
 {
 
-	VerifyThenExecute(_builder.UseInstruction("IMU_ENABLE"));
+	VerifyThenExecute(_builder.UseInstruction("IMU_ENABLE"), nsvr::config::Instruction(nsvr::config::InstructionId::IMU_ENABLE, m_packetVersion, {}));
 }
 
 void FirmwareInterface::DisableTracking()
@@ -131,18 +136,18 @@ void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
 }
 
 void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder, const nsvr::config::Instruction& alternateInst) {
-	bool normalVerify = builder.Verify();
+	//bool normalVerify = builder.Verify();
 	bool alternateVerify = nsvr::config::Verify(alternateInst, m_instructionSet.get());
 
-	assert(normalVerify == alternateVerify);
+	//assert(normalVerify == alternateVerify);
 
-	auto normalPacket = builder.Build();
+//	auto normalPacket = builder.Build();
 	auto alternatePacket = nsvr::config::Build(alternateInst);
 
-	assert(normalPacket == alternatePacket);
+//	assert(normalPacket == alternatePacket);
 
-	if (normalVerify) {
-		queue_packet(normalPacket);
+	if (alternateVerify) {
+		queue_packet(alternatePacket);
 	}
 	else {
 		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
@@ -187,7 +192,8 @@ void FirmwareInterface::PlayRtp(Location location, int strength)
 
 void FirmwareInterface::Ping()
 {
-	queue_packet({ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+	VerifyThenExecute(_builder.UseInstruction("STATUS_PING"), nsvr::config::Instruction(nsvr::config::InstructionId::STATUS_PING, m_packetVersion, {}));
+
 }
 
 void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)

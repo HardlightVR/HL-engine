@@ -6,6 +6,7 @@
 #include "Synchronizer.h"
 #include "SerialPort.h"
 #include "SequentialHandshaker.h"
+#include "PacketVersion.h"
 
 
 //Note: serial ports are a total pain. Using boost::asio, they are slightly less of a pain.
@@ -31,7 +32,12 @@ public:
 
 	void SetConnectionMonitor(std::shared_ptr<KeepaliveMonitor> monitor);
 
+	//only one handler can be set
+	//this is bad architecture and hacky for now
+	void OnPacketVersionChange(std::function<void(PacketVersion)>);
+
 private:
+	std::function<void(PacketVersion)> m_onPacketVersionChange;
 	boost::asio::io_service& m_io;
 
 	std::unique_ptr<boost::asio::serial_port> m_port;

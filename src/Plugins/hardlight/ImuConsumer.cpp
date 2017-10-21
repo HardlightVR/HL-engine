@@ -11,9 +11,7 @@ ImuConsumer::ImuConsumer(PacketDispatcher &dispatcher):
 		this->consumePacket(p);
 	});
 
-	dispatcher.AddConsumer(PacketType::DummyTracking, [&](Packet p) {
-		this->consumePacketDummy(p);
-	});
+
 }
 
 void ImuConsumer::OnTracking(TrackingCallback cb)
@@ -38,22 +36,6 @@ void ImuConsumer::consumePacket(Packet Packet)
 	}
 }
 
-void ImuConsumer::consumePacketDummy(Packet Packet)
-{
-	const auto& mapping = m_mapping[Packet[11]];
-	Imu id = mapping.first;
-	if (id != Imu::Unknown) {
-		float x;
-		memcpy(&x, &Packet[3], sizeof(x));
-		nsvr_quaternion q = { 0 };
-		q.x = x;
-		q.w = 1.0f;
-		m_quaternions[id] = q;
-		if (m_callback) {
-			(*m_callback)(mapping.second, m_quaternions.at(id));
-		}
-	}
-}
 
 nsvr_quaternion ImuConsumer::parseQuaternion(const uint8_t * rec) const
 {

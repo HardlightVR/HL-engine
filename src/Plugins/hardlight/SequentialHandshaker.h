@@ -3,9 +3,10 @@
 #include <boost/asio/io_service.hpp>
 #include <string>
 #include "Handshaker.h"
+#include "PacketVersion.h"
 class SequentialHandshaker {
 public:
-	using SuccessHandler = std::function<void(std::unique_ptr<boost::asio::serial_port>)>;
+	using SuccessHandler = std::function<void(std::unique_ptr<boost::asio::serial_port>, PacketVersion)>;
 	using FailHandler = std::function<void()>;
 	SequentialHandshaker(boost::asio::io_service& io);
 	void async_begin_handshake();

@@ -27,7 +27,13 @@ std::string nsvr::config::HumanReadable(const Instruction & instruction)
 
 std::vector<uint8_t> nsvr::config::Build(const Instruction & instruction)
 {
-	const auto packetLength = instruction.params.size() + packet_header_len + packet_footer_len;
+	//Yes this branching on firmware version is gross. Will fix. Really.
+	//10.20.2017
+
+	const auto packetLength = instruction.version == PacketVersion::MarkII ?
+		instruction.params.size() + packet_header_len + packet_footer_len 
+		: 16;
+
 	assert(packetLength <= 255);
 
 	std::vector<uint8_t> packet(packetLength, 0);
@@ -40,9 +46,16 @@ std::vector<uint8_t> nsvr::config::Build(const Instruction & instruction)
 		packet[i + 4] = instruction.params[i].second;
 	}
 
-	packet[packetLength - 3] = 0xFF;
-	packet[packetLength - 2] = 0xFF;
-	packet[packetLength - 1] = 0x0A;
+	if (instruction.version == PacketVersion::MarkII) {
+		packet[packetLength - 3] = 0xFF; 
+		packet[packetLength - 2] = 0xFF; 
+		packet[packetLength - 1] = 0x0A; 
+	}
+	else {
+		packet[packetLength - 3] = 0xFF; 
+		packet[packetLength - 2] = 0x0D; 
+		packet[packetLength - 1] = 0x0A;
+	}
 
 	return packet;
 }
