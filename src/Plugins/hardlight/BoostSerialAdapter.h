@@ -22,7 +22,7 @@ public:
 	void Disconnect();
 
 
-	void Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, WriteHandler&& write_handler = [](const auto& ec, std::size_t) {});
+	void Write(uint8_t* bytes, std::size_t length, WriteHandler&&);
 
 	Buffer& GetDataStream();
 

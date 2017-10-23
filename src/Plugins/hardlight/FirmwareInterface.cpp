@@ -60,7 +60,7 @@ void FirmwareInterface::writeBuffer() {
 				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 				const int actualLen = m_queue.pop(*a, BATCH_SIZE);
 
-				this->m_serial->Write(a, actualLen, [this](const boost::system::error_code& e, std::size_t bytes_t) {
+				this->m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& e, std::size_t bytes_t) {
 					if (e) {
 						core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while batching");
 					}
@@ -81,7 +81,7 @@ void FirmwareInterface::writeBuffer() {
 		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
 		const int actualLen = m_queue.pop(*a, BATCH_SIZE);
 		
-		m_serial->Write(a, actualLen, [this](const boost::system::error_code& ec, std::size_t bytes_t) {
+		m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& ec, std::size_t bytes_t) {
 
 			if (ec) {
 				core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");

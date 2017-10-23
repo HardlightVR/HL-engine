@@ -8,7 +8,8 @@
 #include "PluginManager.h"
 
 #include "DeviceContainer.h"
-class IoService;
+
+#include "IoService.h"
 
 class Driver {
 
@@ -23,7 +24,7 @@ public:
 
 	int GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo);
 private:
-	std::shared_ptr<IoService> m_ioService;
+	IoService m_ioService;
 	boost::asio::io_service& m_io;
 	DriverMessenger m_messenger;
 

@@ -77,6 +77,7 @@ std::vector<std::string> fetchAllSerialPortNames() {
 	return portNames;
 }
 
+
 void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	if (ec) {
 		return;
@@ -138,10 +139,10 @@ void BoostSerialAdapter::Disconnect()
 	}
 }
 
-void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, WriteHandler&& write_handler)
+void BoostSerialAdapter::Write(uint8_t* bytes, std::size_t length, WriteHandler&& write_handler)
 {
 	if (this->m_port && this->m_port->is_open()) {
-		this->m_port->async_write_some(boost::asio::buffer(*bytes, length), std::move(write_handler));
+		this->m_port->async_write_some(boost::asio::buffer(bytes, length), std::move(write_handler));
 	}
 }
 
@@ -176,8 +177,8 @@ void BoostSerialAdapter::kickoffSuitReading()
 
 	m_port->async_read_some(boost::asio::buffer(m_suitReadBuffer, INCOMING_DATA_BUFFER_SIZE), [this]
 		(const auto& error, auto bytes_transferred) {
+
 			if (!error) {
-				
 				m_incomingSuitData.push(m_suitReadBuffer, bytes_transferred);
 				std::fill(m_suitReadBuffer, m_suitReadBuffer + INCOMING_DATA_BUFFER_SIZE, 0);
 		

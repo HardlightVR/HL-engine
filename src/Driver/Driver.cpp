@@ -34,8 +34,8 @@
 //}
 
 Driver::Driver() :
-	m_ioService(new IoService()),
-	m_io(m_ioService->GetIOService()),
+	m_ioService(),
+	m_io(m_ioService.GetIOService()),
 	m_messenger(m_io),
 
 	m_pluginManager(m_io),
@@ -140,7 +140,7 @@ bool Driver::Shutdown()
 	m_trackingPush.Stop();
 	m_messenger.Disconnect();
 	
-	m_ioService->Shutdown();
+	m_ioService.Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	return true;
 }
