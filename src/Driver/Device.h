@@ -38,6 +38,7 @@ public:
 	);
 	using TrackingHandler = std::function<void(nsvr_region, nsvr_quaternion*)>;
 
+	~Device();
 	
 
 	DeviceId<local> id() const;

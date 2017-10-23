@@ -15,14 +15,14 @@ std::vector<boost::filesystem::path> findManifests(const boost::filesystem::path
 
 class PluginManager {
 public:
-	//When PluginManager configures and instantiates all the plugins, 
-	//each plugin may provide some devices for use in the system.
-	//PluginManager needs somewhere to put them, but doesn't care beyond that (we deal with devices on a higher level than the Manager).
-
-	PluginManager(boost::asio::io_service& io, DeviceContainer& devices);
+	
+	PluginManager(boost::asio::io_service& io);
 	PluginManager(const PluginManager&) = delete;
 	const PluginManager& operator=(const PluginManager&) = delete;
+	~PluginManager() {
+		std::cout << "PLUGIN MANAGER DESTRUCTOR\n";
 
+	}
 	//Look for any manifest files present and attempt to parse them, figuring out the .dll name, etc.
 	void Discover();
 
@@ -52,6 +52,7 @@ public:
 		Parsing::ManifestDescriptor Descriptor;
 		std::string DllPath;
 	};
+	void SetDeviceContainer(DeviceContainer* devices);
 private:
 
 	std::function<void()> m_fatalErrorHandler;
@@ -68,7 +69,7 @@ private:
 
 
 	std::unordered_map<std::string, std::unique_ptr<PluginInstance>> m_plugins;
-	DeviceContainer& m_deviceContainer;
+	DeviceContainer* m_deviceContainer;
 	boost::asio::io_service& m_io;
 	ScheduledEvent m_pluginEventLoop;
 

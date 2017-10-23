@@ -7,16 +7,31 @@
 #include "DeviceContainer.h"
 
 
-PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName, uint32_t id) :
-	m_fileName(fileName), 
-	m_loaded{ false },
-	m_pluginFunctions{},
-	m_pluginRegisterFunction{},
-	m_apis(),
-	m_eventHandler(),
-	m_io(io),
-	m_id(id),
-	m_logger(std::make_shared<my_logger>(boost::log::keywords::channel = "plugin"))
+PluginInstance::~PluginInstance()
+{
+	{
+		std::cout << "PL INSTANCE DESTRUCTOR\n";
+
+	}
+
+	
+}
+
+PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName, uint32_t id) 
+	: m_fileName(fileName)
+	, m_loaded{false}
+	, m_id(id)
+	, m_io(io)
+	, m_logger(std::make_shared<my_logger>(boost::log::keywords::channel = "plugin"))
+	, m_resources(std::make_unique<DeviceResources>())
+	, m_pluginFunctions{}
+	, m_pluginPointer(nullptr)
+	, m_eventHandler()
+	, m_apis()
+	, m_pluginRegisterFunction{}
+	, m_dll()
+
+	
 	
 {
 	boost::filesystem::path pluginPath(m_fileName);
@@ -24,7 +39,6 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 
 	m_logger->add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
 
-	m_resources = std::make_unique<DeviceResources>();
 	/*auto il = {
 		0,
 	std::make_unique<FakeBodygraph>(),
@@ -82,7 +96,7 @@ bool PluginInstance::tick_once(uint64_t dt)
 			api->submit_update(dt);
 		}
 		catch (const std::runtime_error& err) {
-			LOG_ERROR() << "Runtime error in plugin " << m_displayName << ": " << err.what();
+			LOG_ERROR() << "Runtime error in plugin " << m_fileName << ": " << err.what();
 			return false;
 		}
 	}
@@ -146,10 +160,7 @@ std::string PluginInstance::GetFileName() const
 	return m_fileName;
 }
 
-std::string PluginInstance::GetDisplayName() const
-{
-	return m_displayName;
-}
+
 
 
 uint32_t PluginInstance::GetId() const
@@ -175,6 +186,8 @@ void PluginInstance::Log(nsvr_severity level, const char * component, const char
 		//..but what happens if it locks it, but then the io service dies anyways? Hmm.
 
 		//Update: it didn't fix it
+
+		//What needs to happen: When PluginInstance is destroyed, we need the underlying dll to be unloaded first..
 		if (auto lg = weak_logger.lock()) {
 			lg->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(cmp));
 			BOOST_LOG_SEV(*lg, level) << msg;

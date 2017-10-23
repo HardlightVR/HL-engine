@@ -23,13 +23,18 @@ public:
 
 	int GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo);
 private:
+	std::shared_ptr<IoService> m_ioService;
+	boost::asio::io_service& m_io;
+	DriverMessenger m_messenger;
+
+
+	PluginManager m_pluginManager;
+
 	DeviceContainer m_devices;
 	EventDispatcher m_eventDispatcher;
 
-	std::shared_ptr<IoService> m_ioService;
-	boost::asio::io_service& m_io;
 
-	DriverMessenger m_messenger;
+	HardwareCoordinator m_coordinator;
 
 
 	ScheduledEvent m_curveEngineUpdate;
@@ -44,9 +49,7 @@ private:
 	void handleCommands();
 
 	NullSpace::SharedMemory::TrackingUpdate m_cachedTracking;
-	HardwareCoordinator m_coordinator;
 
-	PluginManager m_pluginManager;   
 	void handleTracking();
 
 	hvr_diagnostics_ui m_renderingApi;

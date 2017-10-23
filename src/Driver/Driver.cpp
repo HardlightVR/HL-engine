@@ -37,16 +37,19 @@ Driver::Driver() :
 	m_ioService(new IoService()),
 	m_io(m_ioService->GetIOService()),
 	m_messenger(m_io),
+
+	m_pluginManager(m_io),
+	m_devices(),
+	m_coordinator(m_io, m_messenger, m_devices),
+
 	m_statusPush(m_io, boost::posix_time::millisec(250)),
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
 	m_commandPull(m_io, boost::posix_time::millisec(50)),
 	m_trackingPush(m_io, boost::posix_time::millisec(10)),
 	m_curveEngineUpdate(m_io, boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
-	m_eventDispatcher(),
+	m_eventDispatcher()
 
-	m_coordinator(m_io, m_messenger, m_devices),
-	m_pluginManager(m_io, m_devices)
 
 
 {
@@ -57,6 +60,7 @@ Driver::Driver() :
 		this->Shutdown();
 		std::exit(-100);
 	});
+	m_pluginManager.SetDeviceContainer(&m_devices);
 
 	m_pluginManager.Discover();
 	m_pluginManager.LoadAll();
@@ -95,6 +99,8 @@ Driver::Driver() :
 
 Driver::~Driver()
 {
+	std::cout << "DRIVER DESTRUCTOR\n";
+
 }
 
 bool Driver::StartThread()

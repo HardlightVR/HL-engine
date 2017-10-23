@@ -4,6 +4,13 @@
 #include "PluginApis.h"
 #include "DeviceBuilder.h"
 
+DeviceContainer::~DeviceContainer()
+{
+	{
+		std::cout << "CONTAINER DESTRUCTOR\n";
+	}
+}
+
 DeviceContainer::DeviceContainer()
 
 	: m_onDeviceAdded()

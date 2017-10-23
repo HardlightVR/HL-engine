@@ -6,9 +6,10 @@
 #include "HardwareEventDispatcher.h"
 #include <boost/filesystem.hpp>
 #include "logger.h"
-PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw)
+#include <cassert>
+PluginManager::PluginManager(boost::asio::io_service& io)
 	: m_plugins()
-	, m_deviceContainer(hw)
+	, m_deviceContainer(nullptr)
 	, m_io(io)
 	, m_pluginEventLoop(io, boost::posix_time::millisec(16))
 	, m_pluginInfo()
@@ -104,12 +105,14 @@ void PluginManager::UnloadAll()
 
 PluginInstance * PluginManager::MakeVirtualPlugin()
 {
+	assert(m_deviceContainer);
+
 	auto size = m_plugins.size();
 	std::string pluginName = "VirtualDeviceHost" + std::to_string(size);
 	auto plugin = std::make_unique<PluginInstance>(m_io, pluginName, size);
 	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
 	dispatcher->OnDeviceConnected([name = pluginName, this](nsvr_device_id id, PluginInstance* plugin) {
-		m_deviceContainer.AddDevice(id, plugin->apis(),  name, plugin->resources());
+		m_deviceContainer->AddDevice(id, plugin->apis(),  name, plugin->resources());
 	});
 	plugin->setDispatcher(std::move(dispatcher));
 
@@ -227,6 +230,11 @@ boost::optional<std::pair<std::string, PluginManager::PluginInfo>> PluginManager
 	return boost::none;
 }
 
+void PluginManager::SetDeviceContainer(DeviceContainer* devices)
+{
+	m_deviceContainer = devices;
+}
+
 std::unique_ptr<PluginInstance> PluginManager::linkPlugin(const std::string& filename) {
 
 
@@ -267,6 +275,7 @@ bool PluginManager::configurePlugin(PluginInstance* plugin)
 
 bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::string& dllName)
 {
+
 	auto plugin = linkPlugin((boost::filesystem::path(searchDirectory) / dllName).string());
 	if (plugin) {
 	
@@ -276,12 +285,16 @@ bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::st
 		auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
 		
 		dispatcher->OnDeviceConnected([this, dll = dllName](nsvr_device_id id, PluginInstance* plugin) {
+			assert(m_deviceContainer);
 			plugin->resources()->bodygraphDescriptor = m_pluginInfo.at(dll).Descriptor.bodygraph;
 
-			m_deviceContainer.AddDevice(id, plugin->apis(), dll, plugin->resources());
+			m_deviceContainer->AddDevice(id, plugin->apis(), dll, plugin->resources());
 		});
 		dispatcher->OnDeviceDisconnected([this, dll = dllName](nsvr_device_id id) {
-			m_deviceContainer.RemoveDevice(DeviceId<local>{id}, dll);
+			assert(m_deviceContainer);
+
+
+			m_deviceContainer->RemoveDevice(DeviceId<local>{id}, dll);
 		}); 
 
 		m_plugins[dllName]->setDispatcher(std::move(dispatcher));

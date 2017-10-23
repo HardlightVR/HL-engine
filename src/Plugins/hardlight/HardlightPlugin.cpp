@@ -29,6 +29,8 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	});
 
 	m_monitor->OnDisconnect([&]() {
+	//	m_imus.RemoveStream(50);//chest_imu;
+
 		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 0);
 	});
 

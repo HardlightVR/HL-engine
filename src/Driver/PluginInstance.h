@@ -32,6 +32,8 @@ public:
 		std::unique_ptr<FakeBufferedHaptics> bufferedHaptics;
 	};
 
+	~PluginInstance();
+
 	using DeviceResourceBundle = std::unique_ptr<DeviceResources>;
 
 	PluginInstance(boost::asio::io_service& io, std::string fileName, uint32_t id);
@@ -46,7 +48,6 @@ public:
 	bool Unload();
 	bool IsLoaded() const;
 	std::string GetFileName() const;
-	std::string GetDisplayName() const;
 	uint32_t GetId() const;
 	PluginInstance(const PluginInstance&) = delete;
 	const PluginInstance& operator=(const PluginInstance&) = delete;
@@ -68,26 +69,27 @@ public:
 	DeviceResources* resources();
 
 private:
-	DeviceResourceBundle m_resources;
+	std::string m_fileName;
+	bool m_loaded;
+	uint32_t m_id;
 
-	std::unique_ptr<boost::dll::shared_library> m_dll;
 	boost::asio::io_service& m_io;
-	using plugin_registration_t = std::function<int(nsvr_plugin_api*)>;
-	plugin_registration_t m_pluginRegisterFunction;
-
 	std::shared_ptr<my_logger> m_logger;
-
+	DeviceResourceBundle m_resources;
 	nsvr_plugin_api m_pluginFunctions;
 	nsvr_plugin* m_pluginPointer;
 
-	std::string m_displayName;
-	std::string m_fileName;
-	bool m_loaded;
-
-	PluginApis m_apis;
 	std::unique_ptr<PluginEventSource> m_eventHandler;
+	PluginApis m_apis;
 
-	uint32_t m_id;
+	using plugin_registration_t = std::function<int(nsvr_plugin_api*)>;
+	plugin_registration_t m_pluginRegisterFunction;
+
+	
+
+	std::unique_ptr<boost::dll::shared_library> m_dll;
+
+
 
 public:
 	int GetWorkingDirectory(nsvr_directory* outDir);

@@ -18,7 +18,7 @@ class DeviceContainer {
 public:
 	using DeviceEvent = boost::signals2::signal<void(Device*)>;
 	using DeviceFn = std::function<void(Device*)>;
-
+	~DeviceContainer();
 	DeviceContainer();
 	void AddDevice(nsvr_device_id id, PluginApis& apis, std::string originatingPlugin, PluginInstance::DeviceResources* resources);
 	void RemoveDevice(DeviceId<local> id, std::string pluginName);
