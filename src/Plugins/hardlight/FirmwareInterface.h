@@ -50,7 +50,7 @@ public:
 private:
 	//So as far as I can tell.. the queue is written to from the IO thread, and then read from the IO thread, all using boost::asio.
 	//So the handlers will run synchronously, therefore we don't need a lock-free queue in the first place. 
-	boost::lockfree::spsc_queue<uint8_t> m_queue;
+	boost::lockfree::spsc_queue<uint8_t, boost::lockfree::capacity<10240>> m_queue;
 
 	std::shared_ptr<InstructionSet> m_instructionSet;
 

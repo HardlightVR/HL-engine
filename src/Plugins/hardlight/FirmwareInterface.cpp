@@ -9,7 +9,7 @@
 constexpr unsigned int BATCH_SIZE = 192;
 
 FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io)
-	: m_queue(10240)
+	: m_queue()
 	, m_instructionSet(std::make_shared<InstructionSet>(data_dir))
 	, m_instructionBuilder(m_instructionSet)
 	, m_serial(adapter)
@@ -258,7 +258,7 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 
 void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
 {
-	m_queue.push(packet.data(), packet.size());
+		m_queue.push(packet.data(), packet.size());
 }
 
 
