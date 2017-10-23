@@ -5,6 +5,7 @@
 #include <boost/asio/io_service.hpp>
 #include "zone_logic/HardwareCommands.h"
 #include "PacketVersion.h"
+#include <queue>
 namespace nsvr {
 	namespace config {
 		struct Instruction;
@@ -47,23 +48,34 @@ public:
 
 	std::size_t GetTotalBytesSent() const;
 private:
-	PacketVersion m_packetVersion;
-	void VerifyThenExecute(InstructionBuilder& builder);
-	void VerifyThenExecute(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
+	//So as far as I can tell.. the queue is written to from the IO thread, and then read from the IO thread, all using boost::asio.
+	//So the handlers will run synchronously, therefore we don't need a lock-free queue in the first place. 
+	boost::lockfree::spsc_queue<uint8_t> m_queue;
+
 	std::shared_ptr<InstructionSet> m_instructionSet;
-	void queue_packet(const std::vector<uint8_t>& packet);
-	BoostSerialAdapter* _adapter;
-	InstructionBuilder _builder;
-	boost::asio::deadline_timer _writeTimer;
-	boost::asio::deadline_timer _batchingDeadline;
-	boost::posix_time::milliseconds _batchingTimeout;
-	boost::posix_time::milliseconds _writeInterval;
-	void writeBuffer();
-	boost::lockfree::spsc_queue<uint8_t> _lfQueue;
-	const unsigned int BATCH_SIZE;
-	bool _isBatching;
+
+	InstructionBuilder m_instructionBuilder;
+
+	BoostSerialAdapter* m_serial;
+
+	PacketVersion m_packetVersion;
+
+	bool m_isBatching;
 
 	std::size_t m_totalBytesSent;
+
+	boost::posix_time::milliseconds m_writeInterval;
+	boost::asio::deadline_timer m_writeTimer;
+	boost::posix_time::milliseconds m_batchingTimeout;
+	boost::asio::deadline_timer m_batchingDeadline;
+
+	void verifyThenQueue(InstructionBuilder& builder);
+	void verifyThenQueue(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
+	void queuePacket(const std::vector<uint8_t>& packet);
+	void writeBuffer();
+	
+	
+	
 	
 };
 
