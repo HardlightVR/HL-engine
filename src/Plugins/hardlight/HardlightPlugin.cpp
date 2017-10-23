@@ -34,7 +34,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 
 	
 
-	m_adapter->Connect();
+	m_adapter->ConnectAsync();
 	
 	m_synchronizer->BeginSync();
 
