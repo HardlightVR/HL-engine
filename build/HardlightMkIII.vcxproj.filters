@@ -96,9 +96,6 @@
     <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\KeepaliveMonitor.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Locator.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -174,6 +171,9 @@
     <ClInclude Include="..\src\Plugins\hardlight\PacketVersion.h">
       <Filter>plugins</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -223,9 +223,6 @@
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp">
       <Filter>plugins\hardlight\Json</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\KeepaliveMonitor.cpp">
-      <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp">
       <Filter>plugins\hardlight</Filter>
@@ -289,6 +286,9 @@
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp">
+      <Filter>plugins\hardlight</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

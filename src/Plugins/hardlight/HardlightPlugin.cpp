@@ -12,7 +12,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	m_dispatcher(),
 	m_adapter(std::make_unique<BoostSerialAdapter>(m_io->GetIOService())),
 	m_firmware(data_dir, m_adapter.get(), m_io->GetIOService()),
-	m_monitor(std::make_shared<KeepaliveMonitor>(m_io->GetIOService(), m_firmware)),
+	m_monitor(std::make_shared<Heartbeat>(m_io->GetIOService(), m_firmware)),
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, m_io->GetIOService())),
 	m_device(),
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
@@ -38,8 +38,8 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	
 	m_synchronizer->BeginSync();
 
-	m_dispatcher.AddConsumer(PacketType::Ping, [this](const auto&) { m_monitor->ReceivePing(); });
-	m_dispatcher.AddConsumer(PacketType::ImuData, [this](const auto&) { m_monitor->ReceivePing(); });
+	m_dispatcher.AddConsumer(PacketType::Ping, [this](const auto&) { m_monitor->ReceiveResponse(); });
+	m_dispatcher.AddConsumer(PacketType::ImuData, [this](const auto&) { m_monitor->ReceiveResponse(); });
 
 
 	m_eventPull.SetEvent([&]() {

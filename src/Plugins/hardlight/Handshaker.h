@@ -41,7 +41,7 @@ private:
 	std::unique_ptr<boost::asio::serial_port> m_port;
 	boost::asio::io_service& m_io;
 
-	boost::asio::deadline_timer m_writeTimer;
+	boost::asio::deadline_timer m_heartbeatTimer;
 	boost::asio::deadline_timer m_readTimer;
 
 

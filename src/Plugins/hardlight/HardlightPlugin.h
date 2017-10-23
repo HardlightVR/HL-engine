@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "PacketDispatcher.h"
 #include <memory>
-#include "KeepaliveMonitor.h"
+#include "Heartbeat.h"
 #include "BoostSerialAdapter.h"
 #include "Synchronizer.h"
 #include <thread>
@@ -38,7 +38,7 @@ private:
 	FirmwareInterface m_firmware;
 
 	HardlightDevice m_device;
-	std::shared_ptr<KeepaliveMonitor> m_monitor;
+	std::shared_ptr<Heartbeat> m_monitor;
 
 	std::unique_ptr<Synchronizer> m_synchronizer;
 

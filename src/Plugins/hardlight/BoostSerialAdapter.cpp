@@ -163,7 +163,7 @@ void BoostSerialAdapter::endReconnectionProcess()
 {
 	m_isReconnecting = false;
 	assert(m_keepaliveMonitor);
-	m_keepaliveMonitor->BeginMonitoring();
+	m_keepaliveMonitor->BeginListening();
 	
 	kickoffSuitReading();
 }
@@ -193,10 +193,10 @@ void BoostSerialAdapter::kickoffSuitReading()
 			//	}
 			//	else {
 				//	assert(m_keepaliveMonitor);
-				//	m_keepaliveMonitor->ReceivePing();
+				//	m_keepaliveMonitor->ReceiveResponse();
 			//	}
 			//	assert(m_keepaliveMonitor);
-			//	m_keepaliveMonitor->ReceivePing();
+			//	m_keepaliveMonitor->ReceiveResponse();
 
 				kickoffSuitReading();
 			}	
@@ -218,7 +218,7 @@ bool BoostSerialAdapter::IsConnected() const
 	return  !m_isReconnecting &&  this->m_port && this->m_port->is_open();
 }
 
-void BoostSerialAdapter::SetConnectionMonitor(std::shared_ptr<KeepaliveMonitor> monitor)
+void BoostSerialAdapter::SetConnectionMonitor(std::shared_ptr<Heartbeat> monitor)
 {
 	m_keepaliveMonitor = monitor;	
 	m_keepaliveMonitor->OnDisconnect([this]() { beginReconnectionProcess(); });

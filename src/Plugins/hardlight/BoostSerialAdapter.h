@@ -1,6 +1,6 @@
 #pragma once
 #include <boost\lockfree\spsc_queue.hpp>
-#include "KeepaliveMonitor.h"
+#include "Heartbeat.h"
 #include <boost/asio/serial_port.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "Synchronizer.h"
@@ -30,7 +30,7 @@ public:
 
 	bool IsConnected() const;
 
-	void SetConnectionMonitor(std::shared_ptr<KeepaliveMonitor> monitor);
+	void SetConnectionMonitor(std::shared_ptr<Heartbeat> monitor);
 
 	//only one handler can be set
 	//this is bad architecture and hacky for now
@@ -51,7 +51,7 @@ private:
 	bool m_isReconnecting = false;
 
 	//Handles disconnect logic, e.g. if the suit doesn't send a ping in 1 sec, tell us to reconnect
-	std::shared_ptr<KeepaliveMonitor> m_keepaliveMonitor;
+	std::shared_ptr<Heartbeat> m_keepaliveMonitor;
 
 	void kickoffSuitReading();
 
