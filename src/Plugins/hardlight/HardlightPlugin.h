@@ -1,18 +1,19 @@
 #pragma once
-#include "PluginAPI.h"
-#include <stdint.h>
-#include "PacketDispatcher.h"
+#include <cstdint>
 #include <memory>
-#include "Heartbeat.h"
-#include <thread>
+
+#include "PluginAPI.h"
+#include "PacketDispatcher.h"
 #include "FirmwareInterface.h"
-#include "IoService.h"
+#include "ImuConsumer.h"
 #include "zone_logic/hardlightdevice.h"
 #include "ScheduledEvent.h"
-#include <functional>
-#include "ImuConsumer.h"
 
 
+class IoService;
+class BoostSerialAdapter;
+class Heartbeat;
+class Synchronizer;
 
 class HardlightPlugin {
 public:

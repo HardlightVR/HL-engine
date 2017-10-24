@@ -3,6 +3,8 @@
 /* std */
 
 #include <stdio.h>
+#include <stdint.h>
+#include <cstdint>
 #include <tchar.h>
 #include <memory>
 #include <vector>
@@ -13,6 +15,7 @@
 #include <unordered_map>
 #include <iterator>
 #include <algorithm>
+#include <queue>
 
 /* boost */
 
@@ -22,6 +25,7 @@
 #include <boost\asio\placeholders.hpp>
 #include <boost\asio\io_service.hpp>
 #include <boost\asio\use_future.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/variant.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/optional/optional.hpp>

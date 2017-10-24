@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "PluginDummy.h"
 #include <string>
-PluginDummy::PluginDummy()
-	: m_plugin()
-{
-}
+#include "PluginDummy.h"
+
+
+
 
 int PluginDummy::Configure(nsvr_core* core)
 {
+	int x = 4;
 	nsvr_directory data_dir = { 0 };
 	nsvr_filesystem_getdatadirectory(core, &data_dir);
 

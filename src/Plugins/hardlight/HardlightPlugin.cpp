@@ -1,12 +1,15 @@
 #include "stdafx.h"
 #include "HardlightPlugin.h"
-#include "PluginAPI.h"
-#include <iostream>
+
+#include "IoService.h"
+#include "Heartbeat.h"
+#include "BoostSerialAdapter.h"
+#include "Synchronizer.h"
+
 #include <typeinfo>
 #include "PluginAPIWrapper.h"
 #include "IMU_ID.h"
-#include "Synchronizer.h"
-#include "BoostSerialAdapter.h"
+
 nsvr_core* global_core = nullptr;
 
 HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
@@ -37,7 +40,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 0);
 	});
 
-	int p = 7;
+	int p = 8;
 
 	m_adapter->ConnectAsync();
 	
