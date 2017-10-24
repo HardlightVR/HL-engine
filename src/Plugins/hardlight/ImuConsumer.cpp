@@ -1,14 +1,17 @@
 #include "stdafx.h"
 #include "ImuConsumer.h"
 #include "Enums.h"
-
 #include "PacketDispatcher.h"
 ImuConsumer::ImuConsumer(PacketDispatcher &dispatcher):
 	m_quaternions(),
 	m_mapping()
 {
 	dispatcher.AddConsumer(PacketType::ImuData, [&](Packet p) {
-		this->consumePacket(p);
+		this->consumeDataPacket(p);
+	});
+
+	dispatcher.AddConsumer(PacketType::ImuStatus, [&](Packet p) {
+		this->consumeStatusPacket(p);
 	});
 
 
@@ -30,11 +33,27 @@ void ImuConsumer::RemoveStream(nsvr_node_id id) {
 	}
 }
 
+std::vector<ImuInfo> ImuConsumer::GetInfo() const
+{
+	std::vector<ImuInfo> mappings;
+	for (const auto& kvp : m_mapping) {
+		mappings.push_back(ImuInfo{ kvp.second.imu, kvp.second.status, kvp.first });
+	}
+	return mappings;
+}
+
 void ImuConsumer::AssignMapping(uint32_t key, Imu id, nsvr_node_id node_id)
 {
 	m_mapping[key] = Mapping(id, node_id);
 }
-void ImuConsumer::consumePacket(Packet Packet)
+void ImuConsumer::consumeStatusPacket(Packet packet) {
+	auto& mapping = m_mapping[packet[4]];
+	Imu id = mapping.imu;
+	if (id != Imu::Unknown) {
+		mapping.status = static_cast<HL_Unit::_enumerated>(packet[3]);
+	}
+}
+void ImuConsumer::consumeDataPacket(Packet Packet)
 {
 
 	const auto& mapping = m_mapping[Packet[11]];

@@ -1,6 +1,6 @@
 #pragma once
 #include "suit_packet.h"
-
+#include "Instructions.h"
 enum class PacketType {
 	SuitVersion = 0x01,
 	Ping = 0x02,
@@ -9,6 +9,7 @@ enum class PacketType {
 	ImuData = 0x33,
 	FifoOverflow = 0x34,
 	DummyTracking = 0x99,
+	ImuStatus = 0x39, //nsvr::config::InstructionId::GET_TRACK_STATUS, update to this when tom emails back
 	Undefined
 };
 

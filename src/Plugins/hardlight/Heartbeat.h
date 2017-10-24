@@ -3,7 +3,7 @@
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/signals2.hpp>
-#include <functional>
+
 
 
 class FirmwareInterface;

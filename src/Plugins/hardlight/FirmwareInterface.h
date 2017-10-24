@@ -32,7 +32,7 @@ public:
 	void HaltEffect(Location location);
 	void PlayEffectContinuous(Location location, uint32_t effect, float strength);
 
-
+	void RequestTrackingStatus();
 	void EnableTracking();
 	void DisableTracking();
 	void RequestSuitVersion();
@@ -68,7 +68,7 @@ private:
 	boost::asio::deadline_timer m_writeTimer;
 	boost::posix_time::milliseconds m_batchingTimeout;
 	boost::asio::deadline_timer m_batchingDeadline;
-
+	void verifyThenQueue(const nsvr::config::Instruction& inst);
 	void verifyThenQueue(InstructionBuilder& builder);
 	void verifyThenQueue(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
 	void queuePacket(const std::vector<uint8_t>& packet);

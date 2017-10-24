@@ -3,13 +3,12 @@
 #include <boost\lockfree\spsc_queue.hpp>
 #include <boost\asio\deadline_timer.hpp>
 #include <boost\optional.hpp>
-#include "PacketDispatcher.h"
 
 #include "suit_packet.h"
 
 using Buffer = boost::lockfree::spsc_queue<uint8_t>;
 
-
+class PacketDispatcher;
 class Synchronizer
 {
 public:

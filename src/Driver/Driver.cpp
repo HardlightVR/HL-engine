@@ -10,7 +10,6 @@
 #include "Enums.h"
 #include "IoService.h"
 #include "DeviceBuilder.h"
-#include "FakeDiscoverer.h"
 
 //Belongs in the hardlight plugin now
 //void extractDrvData(const packet& packet) {

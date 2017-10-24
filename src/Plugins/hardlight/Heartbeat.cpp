@@ -34,6 +34,7 @@ void Heartbeat::schedulePingTimer()
 void Heartbeat::doHeartbeat()
 {
 	m_firmware.Ping();
+	int a = 9;
 	scheduleResponseTimer();
 }
 

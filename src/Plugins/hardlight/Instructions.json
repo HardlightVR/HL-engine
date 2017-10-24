@@ -128,7 +128,7 @@
 		"parameters": []
 	},
 	{
-		"id": "0x39",
+		"id": "0x30",
 		"name": "GET_TRACK_STATUS",
 		"purpose": "Get the status of one sensor",
 		"parameters": ["sensor"]

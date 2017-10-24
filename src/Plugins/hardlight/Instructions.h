@@ -24,7 +24,8 @@ namespace nsvr {
 			PLAY_RTP = 0x1D,
 			INIT_TRACKING = 0x32,
 			IMU_ENABLE = 0x34,
-			IMU_DISABLE = 0x35
+			IMU_DISABLE = 0x35,
+			GET_TRACK_STATUS = 0x30
 		);
 
 

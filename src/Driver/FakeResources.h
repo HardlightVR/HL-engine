@@ -22,6 +22,41 @@ DECLARE_FAKE_INTERFACE(FakePlayback, playback_api)
 DECLARE_FAKE_INTERFACE(FakeTracking, tracking_api)
 
 
+//This is just an idea
+
+//wrapping our callback structs with normal virtual dispatch
+//maybe convenient?
+
+class ClassBodygraph {
+public:
+	void bind(bodygraph_api* api) {
+		api->submit_setup.user_data = this; 
+		api->submit_setup.handler = [](nsvr_bodygraph* bg, void* ud) {
+			static_cast<ClassBodygraph*>(ud)->setup(bg);
+		};
+	}
+
+private:
+	virtual void setup(nsvr_bodygraph* bg) {}
+};
+
+class DefaultClassBodygraph : public ClassBodygraph {
+public:
+	DefaultClassBodygraph() : ClassBodygraph(), m_assocs() {}
+	struct association {
+		std::string node;
+		nsvr_node_id id;
+	};
+	void setup(nsvr_bodygraph* bg) override {
+		for (const auto& assoc : m_assocs) {
+			nsvr_bodygraph_associate(bg, assoc.node.c_str(), assoc.id);
+		}
+	}
+private:
+	std::vector<association> m_assocs;
+};
+
+//idea is over now
 struct DefaultBodygraph : public FakeBodygraph {
 
 	struct association {

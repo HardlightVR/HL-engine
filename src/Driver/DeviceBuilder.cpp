@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "DeviceBuilder.h"
 #include "PluginApis.h"
+#include "Device.h"
+#include "DeviceVisualizer.h"
 
 
 

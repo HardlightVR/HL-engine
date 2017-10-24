@@ -4,8 +4,6 @@
 #include "PacketDispatcher.h"
 #include <memory>
 #include "Heartbeat.h"
-#include "BoostSerialAdapter.h"
-#include "Synchronizer.h"
 #include <thread>
 #include "FirmwareInterface.h"
 #include "IoService.h"
@@ -32,6 +30,9 @@ public:
 
 	void Render(nsvr_diagnostics_ui* ui);
 private:
+	nsvr_core* m_core;
+
+
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;
 	std::unique_ptr<BoostSerialAdapter> m_adapter;
@@ -43,7 +44,6 @@ private:
 	std::unique_ptr<Synchronizer> m_synchronizer;
 
 	ScheduledEvent m_eventPull;
-	nsvr_core* m_core;
 	bool m_running;
 
 	ImuConsumer m_imus;

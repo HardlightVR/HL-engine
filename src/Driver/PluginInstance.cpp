@@ -187,7 +187,6 @@ void PluginInstance::Log(nsvr_severity level, const char * component, const char
 
 		//Update: it didn't fix it
 
-		//What needs to happen: When PluginInstance is destroyed, we need the underlying dll to be unloaded first..
 		if (auto lg = weak_logger.lock()) {
 			lg->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(cmp));
 			BOOST_LOG_SEV(*lg, level) << msg;

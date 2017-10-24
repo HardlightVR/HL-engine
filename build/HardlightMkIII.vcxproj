@@ -97,6 +97,8 @@
     <IntDir>obj\Win32\Debug\HardlightMkIII\</IntDir>
     <TargetName>HardlightPlugin</TargetName>
     <TargetExt>.dll</TargetExt>
+    <CodeAnalysisRuleSet>C:\Program Files (x86)\Microsoft Visual Studio 14.0\Team Tools\Static Analysis Tools\Rule Sets\NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -146,6 +148,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>-D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,6 +156,7 @@
       <AdditionalDependencies>HardlightPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_61_0\stage\win32\lib;bin\Debug\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Plugins\Debug\Win32\HardlightPlugin.lib</ImportLibrary>
+      <ShowProgress>NotSet</ShowProgress>
     </Link>
     <PostBuildEvent>
       <Command>mkdir ..\build\bin\Debug\UnitTestWin32\plugins\hardlight
@@ -315,9 +319,12 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h" />
     <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h" />
+    <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h" />
     <ClInclude Include="..\src\plugins\hardlight\HexUtils.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\HL_Firmware_Defines.h" />
     <ClInclude Include="..\src\plugins\hardlight\ILogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\ImuConsumer.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\IMU_ID.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h" />
@@ -327,13 +334,12 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Json\json-forwards.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\json.h" />
     <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h" />
-    <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h" />
     <ClInclude Include="..\src\plugins\hardlight\Locator.h" />
     <ClInclude Include="..\src\plugins\hardlight\Mark2Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\Mark3Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\PacketVersion.h" />
+    <ClInclude Include="..\src\plugins\hardlight\PacketVersion.h" />
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\SequentialHandshaker.h" />
@@ -363,6 +369,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\Handshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ImuConsumer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
@@ -371,7 +378,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\Instructions.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\IoService.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Mark2Handshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Mark3Handshaker.cpp" />
@@ -400,6 +406,9 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\RtpModel.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

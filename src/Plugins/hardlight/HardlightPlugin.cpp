@@ -4,10 +4,14 @@
 #include <iostream>
 #include <typeinfo>
 #include "PluginAPIWrapper.h"
-
+#include "IMU_ID.h"
+#include "Synchronizer.h"
+#include "BoostSerialAdapter.h"
 nsvr_core* global_core = nullptr;
 
 HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
+	m_core{ nullptr },
+
 	m_io(std::make_shared<IoService>()),
 	m_dispatcher(),
 	m_adapter(std::make_unique<BoostSerialAdapter>(m_io->GetIOService())),
@@ -16,8 +20,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, m_io->GetIOService())),
 	m_device(),
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
-	m_imus(m_dispatcher),
-	m_core{nullptr}
+	m_imus(m_dispatcher)
 
 {
 	
@@ -34,7 +37,7 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 0);
 	});
 
-	
+	int p = 7;
 
 	m_adapter->ConnectAsync();
 	
@@ -61,8 +64,9 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	
 
 	
-	m_imus.AssignMapping(0x3c, Imu::Chest, 50); 
-	m_imus.AssignMapping(0x3a, Imu::Left_Upper_Arm, 51);
+	m_imus.AssignMapping(0x3c, Imu::Chest, NODE_IMU_CHEST); 
+	m_imus.AssignMapping(0x3a, Imu::Right_Upper_Arm, NODE_IMU_RIGHT_UPPER_ARM);
+	m_imus.AssignMapping(0x39, Imu::Left_Upper_Arm, NODE_IMU_LEFT_UPPER_ARM);
 
 	
 
@@ -213,6 +217,15 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 	m_device.SetupDeviceAssociations(g);
 	
 }
+std::string stringifyStatusBits(HL_Unit status) {
+	std::stringstream ss;
+	for (auto val : HL_Unit::_values()) {
+		if (status & val) {
+			ss << val._to_string() << "|";
+		}
+	}
+	return ss.str();
+}
 
 void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 {
@@ -235,6 +248,18 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		m_firmware.DisableTracking();
 	}
 
+	if (ui->button("GET_TRACK_STATUS")) {
+		m_firmware.RequestTrackingStatus();
+	}
+
+
+	auto imuInfo = m_imus.GetInfo();
+	for (const auto& imu : imuInfo) {
+		std::string imuId("Imu " + std::to_string((int)imu.firmwareId));
+		std::string friendlyId("(friendly = " + std::to_string((int)imu.friendlyName) + ")");
+		ui->keyval(imuId.c_str(), friendlyId.c_str());
+		ui->keyval("status", stringifyStatusBits(imu.status).c_str());
+	}
 
 
 	ui->keyval("Total bytes sent", std::to_string(m_firmware.GetTotalBytesSent()).c_str());

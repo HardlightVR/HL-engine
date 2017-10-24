@@ -60,6 +60,9 @@
     <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\HexUtils.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -109,6 +112,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\PacketVersion.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h">
@@ -168,10 +174,8 @@
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Plugins\hardlight\PacketVersion.h">
-      <Filter>plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h">
+    <ClInclude Include="..\src\Plugins\hardlight\IMU_ID.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\HL_Firmware_Defines.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
   </ItemGroup>
@@ -198,6 +202,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp">
@@ -287,8 +294,8 @@
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

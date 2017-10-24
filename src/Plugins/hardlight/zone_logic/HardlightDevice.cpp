@@ -4,7 +4,7 @@
 #include <experimental/vector>
 #include "PluginAPI.h"
 #include "Locator.h"
-
+#include "IMU_ID.h"
 
 
 HardlightDevice::HardlightDevice() 
@@ -95,7 +95,8 @@ void HardlightDevice::EnumerateNodesForDevice(nsvr_node_ids* ids)
 		found_ids.push_back(device.second->GetId());
 	}
 	
-	found_ids.push_back(50); //chest imu
+	found_ids.push_back(NODE_IMU_CHEST);
+	found_ids.push_back(NODE_IMU_RIGHT_UPPER_ARM);
 
 	for (std::size_t i = 0; i < found_ids.size(); i++) {
 		ids->ids[i] = found_ids[i];
@@ -109,10 +110,17 @@ void HardlightDevice::EnumerateNodesForDevice(nsvr_node_ids* ids)
 
 void HardlightDevice::GetNodeInfo(nsvr_node_id id, nsvr_node_info* info) {
 
-	if (id == 50) //chest imu 
+	if (id == NODE_IMU_CHEST) //chest imu 
 	{
 		info->concept = nsvr_node_concept_inertial_tracker;
 		std::string outStr = "Hardlight Chest IMU ";
+		std::copy(outStr.begin(), outStr.end(), info->name);
+		return;
+	}
+
+	if (id == NODE_IMU_RIGHT_UPPER_ARM) {
+		info->concept = nsvr_node_concept_inertial_tracker;
+		std::string outStr = "Hardlight Right Upper Arm IMU ";
 		std::copy(outStr.begin(), outStr.end(), info->name);
 		return;
 	}
@@ -160,7 +168,9 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 
 	nsvr_bodygraph_associate(g, "upperBackActuators:1", m_drivers[Location::Upper_Back_Right]->GetId());
 
-	nsvr_bodygraph_associate(g, "chestCenter", 50); //chest_imu
+	nsvr_bodygraph_associate(g, "chestCenter", NODE_IMU_CHEST);
+	nsvr_bodygraph_associate(g, "leftUpperArmActuator", NODE_IMU_LEFT_UPPER_ARM);
+
 
 
 }

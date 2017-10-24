@@ -5,7 +5,7 @@
 #include "HardwareCommandVisitor.h"
 #include "logger.h"
 #include "Instructions.h"
-
+#include "IMU_ID.h"
 constexpr unsigned int BATCH_SIZE = 192;
 
 FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io)
@@ -98,6 +98,15 @@ void FirmwareInterface::writeBuffer() {
 
 }
 
+void FirmwareInterface::RequestTrackingStatus()
+{
+	auto sensors = { 0x3c, 0x3a };
+	for (auto sensor : sensors) {
+		verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_TRACK_STATUS, m_packetVersion, { {"sensor", sensor } }));
+	}
+
+}
+
 void FirmwareInterface::EnableTracking()
 {
 
@@ -106,7 +115,7 @@ void FirmwareInterface::EnableTracking()
 
 void FirmwareInterface::DisableTracking()
 {
-	verifyThenQueue(m_instructionBuilder.UseInstruction("IMU_DISABLE"));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::IMU_DISABLE, m_packetVersion, {}));
 }
 
 void FirmwareInterface::RequestSuitVersion()
@@ -138,6 +147,15 @@ void FirmwareInterface::verifyThenQueue(InstructionBuilder& builder) {
 	}
 }
 
+void FirmwareInterface::verifyThenQueue(const nsvr::config::Instruction& inst) {
+	bool alternateVerify = nsvr::config::Verify(inst, m_instructionSet.get());
+	if (alternateVerify) {
+		queuePacket(nsvr::config::Build(inst));
+	}
+	else {
+		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + nsvr::config::HumanReadable(inst)));
+	}
+}
 void FirmwareInterface::verifyThenQueue(InstructionBuilder& builder, const nsvr::config::Instruction& alternateInst) {
 	//bool normalVerify = builder.Verify();
 	bool alternateVerify = nsvr::config::Verify(alternateInst, m_instructionSet.get());

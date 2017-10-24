@@ -2,6 +2,7 @@
 #include "Synchronizer.h"
 #include <iostream>
 #include "logger.h"
+#include "PacketDispatcher.h"
 
 const int BAD_SYNC_LIMIT = 2;
 

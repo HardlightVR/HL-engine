@@ -2,15 +2,14 @@
 #include <string>
 #include <memory>
 
-#include "Device.h"
 #include "DeviceDescriptor.h" 
 #include "PluginAPI.h" //needed for nsvr_device_id
-#include "DeviceVisualizer.h"
 #include "PluginInstance.h"
 #include "logger.h"
 
 class PluginApis;
-
+class Device;
+class DeviceVisualizer;
 
 class DeviceBuilder {
 public:
