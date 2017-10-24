@@ -33,7 +33,7 @@ public:
 		std::unique_ptr<HardwareBodygraphCreator>,
 		std::unique_ptr<HardwareNodeEnumerator>, 
 		std::unique_ptr<HardwarePlaybackController>, 
-		std::unique_ptr<HardwareWaveform>,
+		std::unique_ptr<HardwareHapticInterface>,
 		std::unique_ptr<HardwareTracking>
 	);
 	using TrackingHandler = std::function<void(nsvr_region, nsvr_quaternion*)>;
@@ -74,7 +74,7 @@ private:
 	std::unique_ptr<HardwareBodygraphCreator> m_bodygraph;
 	std::unique_ptr<HardwareNodeEnumerator> m_discoverer;
 	std::unique_ptr<HardwarePlaybackController> m_playback;
-	std::unique_ptr<HardwareWaveform> m_haptics;
+	std::unique_ptr<HardwareHapticInterface> m_haptics;
 	std::unique_ptr<HardwareTracking> m_trackingProvider;
 	
 };

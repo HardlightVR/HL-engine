@@ -11,7 +11,7 @@ Device::Device(
 	std::unique_ptr<HardwareBodygraphCreator> bodygraph,
 	std::unique_ptr<HardwareNodeEnumerator> discoverer, 
 	std::unique_ptr<HardwarePlaybackController> playback,
-	std::unique_ptr<HardwareWaveform> haptics,
+	std::unique_ptr<HardwareHapticInterface> haptics,
 	std::unique_ptr<HardwareTracking> tracking
 )
 	: m_description(descriptor)
@@ -221,7 +221,7 @@ void Device::handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic& event, c
 	auto onlyHaptic = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
 	for (nsvr_node_id hapticNode : onlyHaptic) {
 		//todo FILL IN DATA
-		m_haptics->Submit(eventId, hapticNode, WaveformData{});
+		m_haptics->Submit(eventId, hapticNode, WaveformData{event.duration(), event.strength(), event.effect()});
 	}
 	m_playback->CreateEventRecord(eventId, onlyHaptic); 
 

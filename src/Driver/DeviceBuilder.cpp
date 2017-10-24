@@ -29,10 +29,29 @@ DeviceBuilder & DeviceBuilder::WithOriginatingPlugin(std::string pluginName)
 
 std::unique_ptr<Device> DeviceBuilder::Build()
 {
+	//Bad symmetry here between the member functions augment_with and bind_component. Maybe augment_with and bind_component should be free functions..
+	//Either way, they need better names
+	//Augment_with_fake basically default constructs the api if not present (so that calls into that api will be no-ops) and then
+	//if the fake is present, hooks the fake into that newly constructed API.
+
+	//bind_component is a straight up old name, but it does almost the same as augmnet_with_fake except it also constructs a unique ptr 
+	//to the particular interface type (only supports constructor with one argument: the underlying api.)
 	
 
+	//Reasons why we can't just pass in GetApi<buffered> and GetApi<waveform> to HardwareHapticInterface: although it would be a natural way of saying
+	//"this api is present" (non-nullptr) or "this api is not present" (nullptr) then we can't make a good fake, because it will be nullptr in the case
+	//of a virtual device. Really, we want to say "hey this api is not present ONLY in these cases: 1) not present in a real plugin 2) not present in a virtual plugin
 
-	auto waveformApi = bind_component<waveform_api, HardwareWaveform>(m_resources->waveformHaptics);
+
+	auto hapticInterface = std::make_unique<HardwareHapticInterface>();
+
+	if (augment_with_fake<waveform_api>(m_resources->waveformHaptics)) {
+		hapticInterface->ProvideWaveform(m_apis->GetApi<waveform_api>());
+	}
+
+	if (augment_with_fake<buffered_api>(m_resources->bufferedHaptics)) {
+		hapticInterface->ProvideBuffered(m_apis->GetApi<buffered_api>());
+	}
 
 	auto playback = bind_component<playback_api, HardwarePlaybackController>(m_resources->playback);
 
@@ -64,7 +83,7 @@ std::unique_ptr<Device> DeviceBuilder::Build()
 		std::move(bodygraph),
 		std::move(discovery),
 		std::move(playback),
-		std::move(waveformApi),
+		std::move(hapticInterface),
 		std::move(tracking)
 		);
 
