@@ -23,6 +23,10 @@
 
 #include <boost\thread.hpp>
 #include <boost\asio\placeholders.hpp>
+#include <boost/thread/barrier.hpp>
+#include <boost/thread/condition_variable.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/uuid/random_generator.hpp>
 #include <boost\asio\io_service.hpp>
 #include <boost\asio\use_future.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>

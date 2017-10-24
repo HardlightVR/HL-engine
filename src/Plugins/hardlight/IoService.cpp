@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "IoService.h"
 #include <iostream>
 #include "Locator.h"

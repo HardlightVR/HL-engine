@@ -1,17 +1,11 @@
 #pragma once
 
 #include <unordered_map>
-#include <boost\optional.hpp>
 #include "suit_packet.h"
 #include "PluginAPI.h"
-#include <tuple>
 #include "HL_Firmware_Defines.h"
 
 enum class Imu;
-
-
-
-
 class PacketDispatcher;
 
 struct Mapping {

@@ -1,11 +1,12 @@
 #pragma once
+#include <queue>
+#include "Enums.h"
+
 #include "BoostSerialAdapter.h"
 #include "InstructionBuilder.h"
-#include "Enums.h"
 #include <boost/asio/io_service.hpp>
 #include "zone_logic/HardwareCommands.h"
 #include "PacketVersion.h"
-#include <queue>
 namespace nsvr {
 	namespace config {
 		struct Instruction;
