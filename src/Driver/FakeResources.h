@@ -24,39 +24,23 @@ DECLARE_FAKE_INTERFACE(FakeTracking, tracking_api)
 
 //This is just an idea
 
-//wrapping our callback structs with normal virtual dispatch
-//maybe convenient?
 
-class ClassBodygraph {
-public:
-	void bind(bodygraph_api* api) {
-		api->submit_setup.user_data = this; 
-		api->submit_setup.handler = [](nsvr_bodygraph* bg, void* ud) {
-			static_cast<ClassBodygraph*>(ud)->setup(bg);
-		};
+
+struct DefaultWaveform : public FakeWaveformHaptics {
+	void Augment(waveform_api* api) override {
+		api->submit_activate.handler = [](auto...){};
 	}
-
-private:
-	virtual void setup(nsvr_bodygraph* bg) {}
 };
 
-class DefaultClassBodygraph : public ClassBodygraph {
-public:
-	DefaultClassBodygraph() : ClassBodygraph(), m_assocs() {}
-	struct association {
-		std::string node;
-		nsvr_node_id id;
-	};
-	void setup(nsvr_bodygraph* bg) override {
-		for (const auto& assoc : m_assocs) {
-			nsvr_bodygraph_associate(bg, assoc.node.c_str(), assoc.id);
-		}
+struct DefaultBuffered : public FakeBufferedHaptics {
+	void Augment(buffered_api* api) override {
+		api->submit_buffer.handler = [](auto...) {};
+		api->submit_getmaxsamples.handler = [](uint32_t* outMaxSamples, void* ud) { *outMaxSamples = 256; };
+		api->submit_getsampleduration.handler = [](double* outDuration, void* ud) { *outDuration = 0.1; };
 	}
-private:
-	std::vector<association> m_assocs;
 };
 
-//idea is over now
+
 struct DefaultBodygraph : public FakeBodygraph {
 
 	struct association {

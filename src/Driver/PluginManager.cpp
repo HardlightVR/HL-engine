@@ -346,7 +346,8 @@ void PluginManager::instantiateVirtualDevice(const std::string& plugin, const Pa
 	}
 	resources->discoverer = std::make_unique<DefaultNodeDiscoverer>(nodes);
 	resources->id = DeviceId<local>(0);
-
+	resources->waveformHaptics = std::make_unique<DefaultWaveform>();
+	resources->bufferedHaptics = std::make_unique<DefaultBuffered>();
 	
 
 
