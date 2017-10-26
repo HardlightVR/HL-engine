@@ -173,13 +173,13 @@ void PluginInstance::LogNow(nsvr_severity level, const std::string& component, c
 	m_logger->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(component));
 	BOOST_LOG_SEV(*m_logger, level) << message;
 }
-void PluginInstance::Log(nsvr_severity level, const char * component, const char * message)
+void PluginInstance::LogAsync(nsvr_severity level, const char * component, const char * message)
 {
 	//Problem: when the handler is invoked, the plugin may be destroyed (in the case of shutting down the app)
 	//Tentative solution: make the PluginManager store shared_ptrs of each PluginInstance. Use enable_shared_from_this.
 	//Then, when the handler is invoked, attempt to lock a weak_ptr which was created when the handler was created. 
 	//If that works, then we can assume the plugin is still alive. (?)
-
+	//void Widget::doThing() { io_service.post([weak_obj = std::weak_ptr<Widget>(shared_from_this())]() { //lock the weak_ptr };); }
 	m_io.post([weak_plugin = std::weak_ptr<PluginInstance>(shared_from_this()), level, cmp = std::string(component), msg = std::string(message)]() {
 		
 

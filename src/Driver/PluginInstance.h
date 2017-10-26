@@ -59,7 +59,7 @@ public:
 	void RegisterPluginApi(ExternalApi* api);
 
 	void RaiseEvent(nsvr_device_event_type type, nsvr_device_id id);
-	void Log(nsvr_severity level, const char * component, const char * message);
+	void LogAsync(nsvr_severity level, const char * component, const char * message);
 
 	void setDispatcher(std::unique_ptr<PluginEventSource> dispatcher);
 	void addDeviceResources(DeviceResourceBundle resources);

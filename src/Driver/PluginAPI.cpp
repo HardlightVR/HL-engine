@@ -52,7 +52,7 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_device_event_raise(nsvr_core* core, nsvr_devi
 NSVR_CORE_RETURN(int) nsvr_log(nsvr_core * core, nsvr_severity level, const char * component, const char * message)
 {
 	RETURN_IF_NULL(core);
-	AS_TYPE(PluginInstance, core)->Log(level, component, message);
+	AS_TYPE(PluginInstance, core)->LogAsync(level, component, message);
 	return nsvr_success;
 }
 
