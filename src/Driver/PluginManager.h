@@ -68,7 +68,7 @@ private:
 	void destroyAll();
 
 
-	std::unordered_map<std::string, std::unique_ptr<PluginInstance>> m_plugins;
+	std::unordered_map<std::string, std::shared_ptr<PluginInstance>> m_plugins;
 	DeviceContainer* m_deviceContainer;
 	boost::asio::io_service& m_io;
 	ScheduledEvent m_pluginEventLoop;

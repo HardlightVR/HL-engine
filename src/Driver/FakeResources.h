@@ -37,17 +37,13 @@ struct DefaultBodygraph : public FakeInterface<bodygraph_api> {
 		nsvr_node_id id;
 	};
 	DefaultBodygraph(std::vector<association> assocs = {}) : m_assocs(assocs) {}
+	
 	void Augment(bodygraph_api* api) override {
-		api->submit_setup.user_data = this;
-		api->submit_setup.handler = [](nsvr_bodygraph* bg, void* ud) {
-			static_cast<DefaultBodygraph*>(ud)->setup(bg);
+		api->submit_setup.cpp_fn = [this](nsvr_bodygraph* bg) {
+			for (const auto& assoc : m_assocs) {
+				nsvr_bodygraph_associate(bg, assoc.node.c_str(), assoc.id);
+			}
 		};
-	}
-
-	void setup(nsvr_bodygraph* bg) {
-		for (const auto& assoc : m_assocs) {
-			nsvr_bodygraph_associate(bg, assoc.node.c_str(), assoc.id);
-		}
 	}
 
 	std::vector<association> m_assocs;
@@ -69,15 +65,14 @@ struct DefaultTracking : public FakeInterface<tracking_api> {
 		m_dataProvider = cb;
 	}
 	void Augment(tracking_api* api) override {
-		api->submit_beginstreaming.user_data = this;
-		api->submit_beginstreaming.handler = [](nsvr_tracking_stream* stream, nsvr_node_id id, void* ud) {
-			static_cast<DefaultTracking*>(ud)->begin(stream, id);
+		api->submit_beginstreaming.cpp_fn = [this](nsvr_tracking_stream* stream, nsvr_node_id id) {
+			m_streams[id] = stream;
+			m_beginningOfTime = std::chrono::high_resolution_clock::now();
+			m_timers[id]->Start();
 		};
 
-
-		api->submit_endstreaming.user_data = this;
-		api->submit_endstreaming.handler = [](nsvr_node_id id, void* ud) {
-			static_cast<DefaultTracking*>(ud)->end(id);
+		api->submit_endstreaming.cpp_fn = [this](nsvr_node_id id) {
+			m_timers[id]->Stop();
 		};
 	}
 
@@ -90,14 +85,6 @@ struct DefaultTracking : public FakeInterface<tracking_api> {
 		}
 	}
 	
-	void begin(nsvr_tracking_stream* stream, nsvr_node_id id) {
-		m_streams[id] = stream;
-		m_beginningOfTime = std::chrono::high_resolution_clock::now();
-		m_timers[id]->Start();
-	}
-	void end(nsvr_node_id id) {
-		m_timers[id]->Stop();
-	}
 	std::unordered_map<nsvr_node_id, nsvr_tracking_stream*> m_streams;
 	std::unordered_map<nsvr_node_id, std::unique_ptr<ScheduledEvent>> m_timers;
 	std::chrono::high_resolution_clock::time_point m_beginningOfTime;

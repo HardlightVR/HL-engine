@@ -168,19 +168,28 @@ void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
 {
 	m_eventHandler->Raise(type, id, this);
 }
-
+void PluginInstance::LogNow(nsvr_severity level, const std::string& component, const std::string& message)
+{
+	m_logger->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(component));
+	BOOST_LOG_SEV(*m_logger, level) << message;
+}
 void PluginInstance::Log(nsvr_severity level, const char * component, const char * message)
 {
-	m_io.post([weak_logger = std::weak_ptr<my_logger>(m_logger), level, cmp = std::string(component), msg = std::string(message)]() {
-		//tentative fix for bug where program shuts down, and this handler tries to write to the log while the io service is already dead
-		//now it must be able to lock the shared ptr
-		//..but what happens if it locks it, but then the io service dies anyways? Hmm.
+	//Problem: when the handler is invoked, the plugin may be destroyed (in the case of shutting down the app)
+	//Tentative solution: make the PluginManager store shared_ptrs of each PluginInstance. Use enable_shared_from_this.
+	//Then, when the handler is invoked, attempt to lock a weak_ptr which was created when the handler was created. 
+	//If that works, then we can assume the plugin is still alive. (?)
 
-		//Update: it didn't fix it
+	m_io.post([weak_plugin = std::weak_ptr<PluginInstance>(shared_from_this()), level, cmp = std::string(component), msg = std::string(message)]() {
+		
 
-		if (auto lg = weak_logger.lock()) {
-			lg->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(cmp));
-			BOOST_LOG_SEV(*lg, level) << msg;
+		if (auto plugin = weak_plugin.lock()) {
+			plugin->LogNow(level, cmp, msg);
+		}
+		else {
+			//If you see this assert trigger, don't fear. Instead, delete the assert and the else statement, and add a note to the comment above
+			//with the date, and that you observed the assert. If we stop getting crashes, and we see this a few times, I'd say the bug is solved..
+			assert(false);
 		}
 	});
 }

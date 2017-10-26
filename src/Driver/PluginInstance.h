@@ -17,7 +17,7 @@
 
 class DeviceContainer;
 
-class PluginInstance
+class PluginInstance : public std::enable_shared_from_this<PluginInstance>
 {
 public:
 	struct DeviceResources {
@@ -67,7 +67,7 @@ public:
 	//Non-const.. we could return the unique_ptr, then modify it in DeviceBuilder etc., then return it back.
 	//Or we could pass a non-owning pointer to it.
 	DeviceResources* resources();
-
+	void PluginInstance::LogNow(nsvr_severity level, const std::string& component, const std::string& message);
 private:
 	std::string m_fileName;
 	bool m_loaded;
