@@ -1,109 +1,346 @@
 {
-   "name": "Hardlight MKII Haptic Suit",
-   "manifest-version": 1,
-   "concept": "suit",
-   "bodygraph" : {
-      "regions": [
-      	{
-      		"name" : "upperChestActuators",
-      		"bodypart" : "torso",
-      		"location_start" : {
-      			"height" : 1.0,
-      			"rotation" : 350
-      		},
-      		"location_end" : {
-      			"height" : 1.0,
-      			"rotation" : 10
-      		},
-      		"count" : 2
-      	},
-      	{
-      		"name" : "leftAbActuators",
-      		"bodypart" : "torso",
-      		"location_start" : {
-      			"height" : 0.6,
-      			"rotation" : 350 
-      		},
-      		"location_end" : {
-      			"height" : 0.3,
-      			"rotation" : 350
-      		},
-      		"count" : 3
-      	},
-      	{
-      		"name" : "rightAbActuators",
-      		"bodypart" : "torso",
-      		"location_start" : {
-      			"height" : 0.6,
-      			"rotation" : 10
-      		},
-      		"location_end" : {
-      			"height" : 0.3,
-      			"rotation" : 10
-      		},
-      		"count" : 3
-      	},
-      	{
-      		"name" : "leftShoulderActuator",
-      		"bodypart" : "upperarm_left",
-      		"location" : {
-      			"height":1.0,
-      			"rotation" : 180
-      		}
-      	},
-      	{
-      		"name" : "rightShoulderActuator",
-      		"bodypart" : "upperarm_right",
-      		"location" : {
-      			"height":1.0,
-      			"rotation" : 180
-      		}
-      	},
-      	{
-      		"name" : "upperBackActuators",
-      		"bodypart" : "torso",
-      		"location_start" : {
-      			"height": 0.9,
-      			"rotation" : 180
-      		},
-      		"location_end" : {
-      			"height" : 0.9,
-      			"rotation" : 170
-      		},
-      		"count" : 2
-      	},
-      	{
-      		"name" : "leftUpperArmActuator",
-      		"bodypart" : "upperarm_left",
-      		"location" : {
-      			"height":0.5,
-      			"rotation" : 180
-      		}
-      	},
-      	{
-      		"name" : "rightUpperArmActuator",
-      		"bodypart" : "upperarm_right",
-      		"location" : {
-      			"height":0.5,
-      			"rotation" : 180
-      		}
-      	},
-      	{
-      		"name" : "leftLowerArmActuator",
-      		"bodypart" : "lowerarm_left",
-      		"location" : {
-      			"height":0.5,
-      			"rotation" : 180
-      		}
-      	},
-      	{
-      		"name" : "rightLowerArmActuator",
-      		"bodypart" : "lowerarm_right",
-      		"location" : {
-      			"height":0.5,
-      			"rotation" : 180
-      		}
-      	}
+      "name": "Hardlight Haptic Products",
+      "manifest-version": 1,
+      "bodygraph": {
+            "regions": [{
+                        "name": "upperChestActuators",
+                        "bodypart": "torso",
+                        "location_start": {
+                              "height": 1.0,
+                              "rotation": 350
+                        },
+                        "location_end": {
+                              "height": 1.0,
+                              "rotation": 10
+                        },
+                        "count": 2
+                  },
+                  {
+                        "name": "leftAbActuators",
+                        "bodypart": "torso",
+                        "location_start": {
+                              "height": 0.6,
+                              "rotation": 350
+                        },
+                        "location_end": {
+                              "height": 0.3,
+                              "rotation": 350
+                        },
+                        "count": 3
+                  },
+                  {
+                        "name": "rightAbActuators",
+                        "bodypart": "torso",
+                        "location_start": {
+                              "height": 0.6,
+                              "rotation": 10
+                        },
+                        "location_end": {
+                              "height": 0.3,
+                              "rotation": 10
+                        },
+                        "count": 3
+                  },
+                  {
+                        "name": "leftShoulderActuator",
+                        "bodypart": "upperarm_left",
+                        "location": {
+                              "height": 1.0,
+                              "rotation": 180
+                        }
+                  },
+                  {
+                        "name": "rightShoulderActuator",
+                        "bodypart": "upperarm_right",
+                        "location": {
+                              "height": 1.0,
+                              "rotation": 180
+                        }
+                  },
+                  {
+                        "name": "upperBackActuators",
+                        "bodypart": "torso",
+                        "location_start": {
+                              "height": 0.9,
+                              "rotation": 180
+                        },
+                        "location_end": {
+                              "height": 0.9,
+                              "rotation": 170
+                        },
+                        "count": 2
+                  },
+                  {
+                        "name": "leftUpperArmActuator",
+                        "bodypart": "upperarm_left",
+                        "location": {
+                              "height": 0.5,
+                              "rotation": 180
+                        }
+                  },
+                  {
+                        "name": "rightUpperArmActuator",
+                        "bodypart": "upperarm_right",
+                        "location": {
+                              "height": 0.5,
+                              "rotation": 180
+                        }
+                  },
+                  {
+                        "name": "leftLowerArmActuator",
+                        "bodypart": "lowerarm_left",
+                        "location": {
+                              "height": 0.5,
+                              "rotation": 180
+                        }
+                  },
+                  {
+                        "name": "rightLowerArmActuator",
+                        "bodypart": "lowerarm_right",
+                        "location": {
+                              "height": 0.5,
+                              "rotation": 180
+                        }
+                  },
+                  {
+
+
+                        "name" : "chestCenter",
+                        "bodypart" : "torso",
+                        "location" : {
+                              "height" : 0.5,
+                              "rotation" : 0.0
+                        }
+                  },
+
+                  {
+                        "name": "leftCircletLower",
+                        "bodypart": "lowerarm_left",
+                        "location_start": {
+                              "height": 0.0,
+                              "rotation": 0
+                        },
+                        "location_end": {
+                              "height": 0.0,
+                              "rotation": 270
+                        }
+                  },
+                  {
+                        "name": "leftCircletMiddle",
+                        "bodypart": "lowerarm_left",
+                        "location_start": {
+                              "height": 0.5,
+                              "rotation": 0
+                        },
+                        "location_end": {
+                              "height": 0.5,
+                              "rotation": 270
+                        }
+                  },
+                  {
+                        "name": "leftCircletUpper",
+                        "bodypart": "lowerarm_left",
+                        "location_start": {
+                              "height": 1.0,
+                              "rotation": 0
+                        },
+                        "location_end": {
+                              "height": 1.0,
+                              "rotation": 270
+                        }
+                  }
+            ]
+      },
+      "virtual_devices": [{
+                  "name": "Virtual Hardlight MKII & MKIII",
+                  "concept": "suit",
+                  "nodes": [{
+                              "id": 0,
+                              "name": "Left Forearm",
+                              "concept": "haptic",
+                              "regions": ["leftLowerArmActuator"]
+                        },
+                        {
+                              "id": 1,
+                              "name": "Left Upper Arm",
+                              "concept": "haptic",
+                              "regions": ["leftUpperArmActuator"]
+                        },
+                        {
+                              "id": 2,
+                              "name": "Left Shoulder",
+                              "concept": "haptic",
+                              "regions": ["leftShoulderActuator"]
+                        },
+                        {
+                              "id": 3,
+                              "name": "Left Upper Back",
+                              "concept": "haptic",
+                              "regions": ["upperBackActuators:0"]
+                        },
+                        {
+                              "id": 4,
+                              "name": "Left Chest",
+                              "concept": "haptic",
+                              "regions": ["upperChestActuators:0"]
+                        },
+                        {
+                              "id": 5,
+                              "name": "Left Upper Ab",
+                              "concept": "haptic",
+                              "regions": ["leftAbActuators:0"]
+                        },
+                        {
+                              "id": 6,
+                              "name": "Left Mid Ab",
+                              "concept": "haptic",
+                              "regions": ["leftAbActuators:1"]
+                        },
+                        {
+                              "id": 7,
+                              "name": "Left Lower Ab",
+                              "concept": "haptic",
+                              "regions": ["leftAbActuators:2"]
+                        },
+                        {
+                              "id": 8,
+                              "name": "Right Forearm",
+                              "concept": "haptic",
+                              "regions": ["rightLowerArmActuator"]
+                        },
+                        {
+                              "id": 9,
+                              "name": "Right Upper Arm",
+                              "concept": "haptic",
+                              "regions": ["rightUpperArmActuator"]
+                        },
+                        {
+                              "id": 10,
+                              "name": "Right Shoulder",
+                              "concept": "haptic",
+                              "regions": ["rightShoulderActuator"]
+                        },
+                        {
+                              "id": 11,
+                              "name": "Right Upper Back",
+                              "concept": "haptic",
+                              "regions": ["upperBackActuators:1"]
+                        },
+                        {
+                              "id": 12,
+                              "name": "Right Chest",
+                              "concept": "haptic",
+                              "regions": ["upperChestActuators:1"]
+                        },
+                        {
+                              "id": 13,
+                              "name": "Right Upper Ab",
+                              "concept": "haptic",
+                              "regions": ["rightAbActuators:0"]
+                        },
+                        {
+                              "id": 14,
+                              "name": "Right Mid Ab",
+                              "concept": "haptic",
+                              "regions": ["rightAbActuators:1"]
+                        },
+                        {
+                              "id": 15,
+                              "name": "Right Lower Ab",
+                              "concept": "haptic",
+                              "regions": ["rightAbActuators:2"]
+                        }
+                  ]
+            },
+            {
+                  "name": "Hardlight Gauntlet (Left)",
+                  "concept": "gauntlet",
+                  "nodes": [{
+                              "id": 10,
+                              "name": "Kicker 1",
+                              "concept": "haptic",
+                              "regions": ["leftCircletUpper:2"]
+                        },
+                        {
+                              "id": 11,
+                              "name": "Kicker 2",
+                              "concept": "haptic",
+                              "regions": ["leftCircletUpper:0"]
+                        },
+                        {
+                              "id": 20,
+                              "name": "CircletLower-0",
+                              "concept": "haptic",
+                              "regions": ["leftCircletLower:0"]
+                        },
+                        {
+                              "id": 21,
+                              "name": "CircletLower-1",
+                              "concept": "haptic",
+                              "regions": ["leftCircletLower:1"]
+                        },
+                        {
+                              "id": 22,
+                              "name": "CircletLower-2",
+                              "concept": "haptic",
+                              "regions": ["leftCircletLower:2"]
+                        },
+                        {
+                              "id": 23,
+                              "name": "CircletLower-3",
+                              "concept": "haptic",
+                              "regions": ["leftCircletLower:3"]
+                        },
+                        {
+                              "id": 30,
+                              "name": "CircletMiddle-0",
+                              "concept": "haptic",
+                              "regions": ["leftCircletMiddle:0"]
+                        },
+                        {
+                              "id": 31,
+                              "name": "CircletMiddle-1",
+                              "concept": "haptic",
+                              "regions": ["leftCircletMiddle:1"]
+                        },
+                        {
+                              "id": 32,
+                              "name": "CircletMiddle-2",
+                              "concept": "haptic",
+                              "regions": ["leftCircletMiddle:2"]
+                        },
+                        {
+                              "id": 33,
+                              "name": "CircletMiddle-3",
+                              "concept": "haptic",
+                              "regions": ["leftCircletMiddle:3"]
+                        },
+                        {
+                              "id": 40,
+                              "name": "CircletTop-0",
+                              "concept": "haptic",
+                              "regions": ["leftCircletUpper:0"]
+                        },
+                        {
+                              "id": 41,
+                              "name": "CircletTop-1",
+                              "concept": "haptic",
+                              "regions": ["leftCircletUpper:1"]
+                        },
+                        {
+                              "id": 42,
+                              "name": "CircletTop-2",
+                              "concept": "haptic",
+                              "regions": ["leftCircletUpper:2"]
+                        },
+                        {
+                              "id": 43,
+                              "name": "CircletTop-3",
+                              "concept": "haptic",
+                              "regions": ["leftCircletUpper:3"]
+                        }
+                  ]
+            }
+
       ]
-   }
 }

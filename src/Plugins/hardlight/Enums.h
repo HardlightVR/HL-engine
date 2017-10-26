@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <cstdint>
 enum class Side
 {
 	/// <summary>
@@ -25,7 +25,7 @@ enum class Side
 	NotSpecified
 };
 
-enum class Location
+enum class Location : uint8_t
 {
 	/// <summary>
 	/// Right lower abdominal feedback zone

@@ -1,13 +1,14 @@
 #pragma once
-#include <boost/asio/io_service.hpp>
+#include <atomic>
+#include <memory>
 #include <functional>
 #include <thread>
 
-#include <memory>
+#include <boost/asio/io_service.hpp>
 #include <boost/thread/barrier.hpp>
 #include <boost/thread/condition_variable.hpp>
 #include <boost/thread/mutex.hpp>
-#include <atomic>
+
 class IoService
 {
 public:

@@ -4,7 +4,7 @@
 SequentialHandshaker::SequentialHandshaker(boost::asio::io_service & io)
 	: m_io(io)
 	, m_handshakers()
-	, m_onSuccess([](std::unique_ptr<boost::asio::serial_port> p ) { 
+	, m_onSuccess([](std::unique_ptr<boost::asio::serial_port> p, PacketVersion ) { 
 			boost::system::error_code ignored;
 			p->close(ignored);
 		})
@@ -49,10 +49,11 @@ void SequentialHandshaker::async_cancel()
 
 void SequentialHandshaker::handshaker_finished_handler()
 {
+
 	if ((*m_currentHandshaker)->status() == Handshaker::Status::Connected) {
 		
 
-		m_onSuccess((*m_currentHandshaker)->release());
+		m_onSuccess((*m_currentHandshaker)->release(), (*m_currentHandshaker)->packet_version());
 
 	}
 	else {

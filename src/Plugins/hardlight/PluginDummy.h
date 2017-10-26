@@ -1,12 +1,11 @@
 #pragma once
 
 #include <memory>
-#include "HardlightPlugin.h"
 #include "PluginAPI.h"
-
+#include "HardlightPlugin.h"
+class HardlightPlugin;
 class PluginDummy {
 public:
-	PluginDummy();
 	int Configure(nsvr_core* core);
 private:
 	std::unique_ptr<HardlightPlugin> m_plugin;

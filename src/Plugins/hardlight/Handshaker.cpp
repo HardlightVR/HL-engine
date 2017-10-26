@@ -10,7 +10,7 @@ void Handshaker::start_handshake()
 Handshaker::Handshaker(std::string name, boost::asio::io_service & io)
 	: m_io(io)
 	, m_name(name)
-	, m_writeTimer(io)
+	, m_heartbeatTimer(io)
 	, m_readTimer(io)
 	, m_port(std::make_unique<boost::asio::serial_port>(io))
 	, m_status(Status::Closed)
@@ -37,7 +37,7 @@ std::unique_ptr<boost::asio::serial_port> Handshaker::release()
 void Handshaker::cancel_timers_close_port()
 {
 	m_protocolFinished = true;
-	m_writeTimer.cancel();
+	m_heartbeatTimer.cancel();
 	m_readTimer.cancel();
 	boost::system::error_code ec;
 
@@ -84,8 +84,8 @@ void Handshaker::async_open_port()
 void Handshaker::async_ping_port()
 {
 	core_log("Handshaker", std::string("Waiting on sending data to   " + m_name));
-	m_writeTimer.expires_from_now(write_timeout());
-	m_writeTimer.async_wait([this](const auto& ec) {check_write_deadline(ec); });
+	m_heartbeatTimer.expires_from_now(write_timeout());
+	m_heartbeatTimer.async_wait([this](const auto& ec) {check_write_deadline(ec); });
 	m_port->async_write_some(boost::asio::buffer(ping_data(), ping_data_length()), [this](const auto& ec, auto bytes_transferred) { write_handler(ec, bytes_transferred); });
 
 }
@@ -99,7 +99,7 @@ void Handshaker::write_handler(const boost::system::error_code & ec, std::size_t
 	if (m_protocolFinished) {
 		return;
 	}
-	m_writeTimer.cancel();
+	m_heartbeatTimer.cancel();
 
 	if (!m_port->is_open()) {
 		m_status = Status::TimedOutWriting;
@@ -164,12 +164,12 @@ void Handshaker::check_write_deadline(const boost::system::error_code& ec)
 	if (m_protocolFinished) {
 		return;
 	}
-	if (m_writeTimer.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
+	if (m_heartbeatTimer.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
 		core_log("SerialPort", std::string("Write timeout expired on " + m_name + ", closing port"));
 		m_status = Status::TimedOutWriting;
 		boost::system::error_code ignored;
 		m_port->close(ignored);
-		m_writeTimer.expires_at(boost::posix_time::pos_infin);
+		m_heartbeatTimer.expires_at(boost::posix_time::pos_infin);
 	}
 
 }

@@ -4,6 +4,13 @@
 #include "PluginApis.h"
 #include "DeviceBuilder.h"
 
+DeviceContainer::~DeviceContainer()
+{
+	{
+		std::cout << "CONTAINER DESTRUCTOR\n";
+	}
+}
+
 DeviceContainer::DeviceContainer()
 
 	: m_onDeviceAdded()
@@ -15,7 +22,7 @@ DeviceContainer::DeviceContainer()
 {
 }
 
-void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources)
+void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::string originatingPlugin, PluginInstance::DeviceResources* resources)
 {
 
 	DeviceDescriptor descriptor;
@@ -24,12 +31,12 @@ void DeviceContainer::AddDevice(nsvr_device_id id, PluginApis & apis, std::strin
 
 	}
 	else {
-		nsvr_device_info info = { 0 };
+		nsvr_device_info info = { { 0 }, nsvr_device_concept_unknown };
 		apis.GetApi<device_api>()->submit_getdeviceinfo(id, &info);
 
 		DeviceDescriptor desc;
 		desc.displayName = std::string(info.name);
-		desc.id = info.id;
+		desc.id = id;
 		desc.concept = info.concept;
 		descriptor = desc;
 	}
@@ -83,11 +90,14 @@ void DeviceContainer::EachDevice(DeviceFn forEach)
 
 
 
-Device* DeviceContainer::Get(std::string plugin, DeviceId<local> id)
+Device* DeviceContainer::Get(LocalDevice deviceId)
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 
-	auto it = std::find_if(m_devices.begin(), m_devices.end(), [id, plugin](const auto& device) { return device->id() == id && device->parentPlugin() == plugin; });
+	auto it = std::find_if(m_devices.begin(), m_devices.end(), [&](const auto& device) {
+		return device->id() == deviceId.id && device->parentPlugin() == deviceId.plugin; 
+	});
+
 	if (it != m_devices.end()) {
 		return (*it).get();
 	}

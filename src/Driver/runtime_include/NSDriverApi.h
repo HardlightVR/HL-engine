@@ -11,6 +11,18 @@
 #define HVR_PLATFORM_API_VERSION_MAJOR 0
 #define HVR_PLATFORM_API_VERSION_MINOR 4
 #define HVR_PLATFORM_API_VERSION ((HVR_PLATFORM_API_VERSION_MAJOR << 16) | HVR_PLATFORM_API_VERSION_MINOR)
+
+#if !defined(HLVR_TOSTRING)
+#define	HLVR_TOSTRINGH(x) #x
+#define HLVR_TOSTRING(x) HLVR_TOSTRINGH(x)
+#endif
+
+#if !defined(HVR_VERSION_STRING)
+#define HVR_VERSION_STRING HLVR_TOSTRING(HVR_PLATFORM_API_VERSION_MAJOR.HVR_PLATFORM_API_VERSION_MINOR)
+#endif
+
+
+
 #define HVR_RETURN(ReturnType) HVR_PLATFORM_API ReturnType __cdecl
 
 #ifdef __cplusplus
@@ -29,9 +41,11 @@ extern "C" {
 	struct hvr_diagnostics_ui {
 		typedef void(*make_keyval)(const char* key, const char* val);
 		typedef bool(*make_button)(const char* label);
+		typedef void(*push_log)(const char* msg);
 
 		make_keyval keyval;
 		make_button button;
+		push_log log;
 
 	};
 
@@ -64,9 +78,6 @@ extern "C" {
 	} hvr_quaternion;
 
 	typedef void(*hvr_device_tracking_datasource)(uint32_t, hvr_quaternion* quat);
-	HVR_RETURN(int) hvr_platform_createdevice(hvr_platform* ptr, uint32_t device_id);
-	HVR_RETURN(int) hvr_platform_createdevice_with_tracking(hvr_platform* ptr, uint32_t device_id, hvr_device_tracking_datasource cb);
-
 
 #ifdef __cplusplus
 }

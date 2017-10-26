@@ -4,16 +4,10 @@
 #include <vector>
 #include <boost/variant.hpp>
 #include <boost/optional.hpp>
-#include "PluginAPI.h"
 #include "json/json-forwards.h"
-
+#include "PluginAPI.h"
 namespace Parsing {
-	enum class Concept {
-		Unknown = 0,
-		Suit,
-		Gun,
-		Controller
-	};
+
 
 
 
@@ -59,24 +53,34 @@ namespace Parsing {
 
 		BodyGraphDescriptor();
 	}; 
+
+	struct VirtualNodeDescriptor {
+		uint32_t id;
+		std::string name;
+		nsvr_node_concept concept;
+		std::vector<std::string> regions;
+	};
+	struct VirtualDeviceDescriptor {
+		std::string name;
+		nsvr_device_concept concept;
+		std::vector<VirtualNodeDescriptor> nodes;
+	};
+
+	struct VirtualDeviceList {
+		std::vector<VirtualDeviceDescriptor> devices;
+	};
 	
 	struct ManifestDescriptor {
 		std::string pluginName;
 		uint32_t version;
-		Parsing::Concept concept;
 		BodyGraphDescriptor bodygraph;
-
+		VirtualDeviceList vdevices;
 		ManifestDescriptor();
 
 	};
 	bool IsProbablyManifest(const std::string& path_string);
 	LocationDescriptor lerp(const Parsing::LocationDescriptor& a, const Parsing::LocationDescriptor& b, float percentage);
-	bool deserialize(LocationDescriptor& location, const Json::Value& json, std::string& error);
-	bool deserialize(SingleRegionDescriptor& descriptor, const Json::Value& json, std::string& error);
-	bool deserialize(MultiRegionDescriptor& descriptor, const Json::Value& json, std::string& error);
-	bool deserialize(BodyGraphDescriptor& descriptor, const Json::Value& json, std::string& error);
-	bool deserialize(ManifestDescriptor& descriptor, const Json::Value& json, std::string& error);
-
+	
 	boost::optional<Parsing::ManifestDescriptor> ParseConfig(const std::string & path);
 }
 

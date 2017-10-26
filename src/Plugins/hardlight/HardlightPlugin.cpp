@@ -1,25 +1,29 @@
 #include "stdafx.h"
 #include "HardlightPlugin.h"
-#include "PluginAPI.h"
-#include <iostream>
+
+#include "IoService.h"
+#include "Heartbeat.h"
+#include "BoostSerialAdapter.h"
+#include "Synchronizer.h"
+
 #include <typeinfo>
 #include "PluginAPIWrapper.h"
+#include "IMU_ID.h"
 
 nsvr_core* global_core = nullptr;
 
 HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
+	m_core{ nullptr },
+
 	m_io(std::make_shared<IoService>()),
 	m_dispatcher(),
 	m_adapter(std::make_unique<BoostSerialAdapter>(m_io->GetIOService())),
-	m_firmware(data_dir, m_adapter, m_io->GetIOService()),
-	m_monitor(std::make_shared<KeepaliveMonitor>(m_io->GetIOService(), m_firmware)),
+	m_firmware(data_dir, m_adapter.get(), m_io->GetIOService()),
+	m_monitor(std::make_shared<Heartbeat>(m_io->GetIOService(), m_firmware)),
 	m_synchronizer(std::make_unique<Synchronizer>(m_adapter->GetDataStream(), m_dispatcher, m_io->GetIOService())),
 	m_device(),
 	m_eventPull(m_io->GetIOService(), boost::posix_time::milliseconds(5)),
-	m_imus(m_dispatcher),
-	m_mockTracking(m_io->GetIOService(), boost::posix_time::millisec(16)),
-	m_core{nullptr},
-	m_trackingStream{nullptr}
+	m_imus(m_dispatcher)
 
 {
 	
@@ -31,14 +35,19 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 	});
 
 	m_monitor->OnDisconnect([&]() {
+	//	m_imus.RemoveStream(50);//chest_imu;
+
 		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 0);
 	});
 
-	
+	int p = 8;
 
-	m_adapter->Connect();
+	m_adapter->ConnectAsync();
 	
 	m_synchronizer->BeginSync();
+
+	m_dispatcher.AddConsumer(PacketType::Ping, [this](const auto&) { m_monitor->ReceiveResponse(); });
+	m_dispatcher.AddConsumer(PacketType::ImuData, [this](const auto&) { m_monitor->ReceiveResponse(); });
 
 
 	m_eventPull.SetEvent([&]() {
@@ -55,37 +64,15 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 
 	m_eventPull.Start();
 
-	m_imus.OnTracking([&](const std::string& id, nsvr_quaternion quat) {
-
-		if (m_trackingStream != nullptr) {
-
-			nsvr_tracking_stream_push(m_trackingStream, &quat);
-
-		}
-	});
+	
 
 	
-	m_imus.AssignMapping(0x12, Imu::Chest, "chest");
+	m_imus.AssignMapping(0x3c, Imu::Chest, NODE_IMU_CHEST); 
+	m_imus.AssignMapping(0x3a, Imu::Right_Upper_Arm, NODE_IMU_RIGHT_UPPER_ARM);
+	m_imus.AssignMapping(0x39, Imu::Left_Upper_Arm, NODE_IMU_LEFT_UPPER_ARM);
 
 	
-	m_mockTracking.SetEvent([&]() {
-		static float begin = 0;
-		
-		packet fakeTrackingData;
-		memset(&fakeTrackingData.raw, 0, 16);
 
-		float ms = begin;
-
-		fakeTrackingData.raw[2] = 0x99;
-		fakeTrackingData.raw[11] = 0x12;
-
-		memcpy(&fakeTrackingData.raw[3], &ms, sizeof(ms));
-	//	fakeTrackingData.raw[7] = s.count() & 0x0F;
-		m_dispatcher.Dispatch(fakeTrackingData);
-		begin += 0.05f;
-		if (begin >= 1.0) { begin = -1.0f; }
-	
-	});
 
 
 }
@@ -93,7 +80,6 @@ HardlightPlugin::HardlightPlugin(const std::string& data_dir) :
 HardlightPlugin::~HardlightPlugin()
 {
 	m_eventPull.Stop();
-	m_mockTracking.Stop();
 	m_io->Shutdown();
 
 }
@@ -184,16 +170,16 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	return 1;
 }
 
-void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id region)
+void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id id)
 {
+	m_imus.AssignStream(stream, id);
 	m_firmware.EnableTracking();
-	m_trackingStream = stream;
 }
 
-void HardlightPlugin::EndTracking(nsvr_node_id region)
+void HardlightPlugin::EndTracking(nsvr_node_id id)
 {
+	m_imus.RemoveStream(id);
 	m_firmware.DisableTracking();
-	m_trackingStream = nullptr;
 }
 
 void HardlightPlugin::EnumerateNodesForDevice(nsvr_device_id, nsvr_node_ids * ids)
@@ -215,7 +201,7 @@ void HardlightPlugin::EnumerateDevices(nsvr_device_ids* ids)
 void HardlightPlugin::GetDeviceInfo(nsvr_device_id id, nsvr_device_info * info)
 {
 	if (id == 0) {
-		info->id = 0;
+	
 		std::string device_name("Hardlight Suit");
 		std::copy(device_name.begin(), device_name.end(), info->name);
 		info->concept = nsvr_device_concept_suit;
@@ -233,6 +219,15 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 
 	m_device.SetupDeviceAssociations(g);
 	
+}
+std::string stringifyStatusBits(HL_Unit status) {
+	std::stringstream ss;
+	for (auto val : HL_Unit::_values()) {
+		if (status & val) {
+			ss << val._to_string() << "|";
+		}
+	}
+	return ss.str();
 }
 
 void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
@@ -255,30 +250,23 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	if (ui->button("TRACKING_DISABLE")) {
 		m_firmware.DisableTracking();
 	}
-	if (ui->button("FAKE TRACKING START")) {
-		m_mockTracking.Start();
 
-	}
-	if (ui->button("FAKE TRACKING START")) {
-		m_mockTracking.Stop();
-
+	if (ui->button("GET_TRACK_STATUS")) {
+		m_firmware.RequestTrackingStatus();
 	}
 
-	ui->keyval("Total bytes sent to suit", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
 
-	if (ui->button("Tell suit to hum")) {
-		
-		//this is why boundaries are important. I can't drive the suit from software here, because waveform is handed down from above and
-		//since its opaque, I can't build it. Think about this.
-
-//		should have the function accept exactly what it needs, and then have an adapter that transforms the waveform into that and passes it in.
-		BasicHapticEventData data = { 0 };
-		data.duration = 0.6f;
-		data.effect = 6;
-		data.strength = 1.0;
-		
-		m_device.handle_waveform(0, 0, std::move(data));
+	auto imuInfo = m_imus.GetInfo();
+	for (const auto& imu : imuInfo) {
+		std::string imuId("Imu " + std::to_string((int)imu.firmwareId));
+		std::string friendlyId("(friendly = " + std::to_string((int)imu.friendlyName) + ")");
+		ui->keyval(imuId.c_str(), friendlyId.c_str());
+		ui->keyval("status", stringifyStatusBits(imu.status).c_str());
 	}
+
+
+	ui->keyval("Total bytes sent", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
+	ui->keyval("Total bytes rec'd", std::to_string(m_synchronizer->GetTotalBytesRead()).c_str());
 	
 }
 

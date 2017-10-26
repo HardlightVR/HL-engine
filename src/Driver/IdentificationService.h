@@ -7,13 +7,13 @@
 #include "DeviceIds.h"
 
 struct LocalDevice {
-	nsvr_device_id id;
+	DeviceId<local> id;
 	std::string plugin;
 };
 struct LocalNode {
-	nsvr_node_id id;
+	NodeId<local> id;
 	std::string plugin;
-	nsvr_device_id device_id;
+	DeviceId<local> device_id;
 };
 
 
@@ -24,7 +24,7 @@ namespace std {
 	template<> struct hash<LocalDevice> {
 		size_t operator()(const LocalDevice& x) const {
 			std::size_t seed = 0;
-			boost::hash_combine(seed, x.id);
+			boost::hash_combine(seed, x.id.value);
 			boost::hash_combine(seed, x.plugin);
 			return seed;
 		}
@@ -33,8 +33,8 @@ namespace std {
 	template<> struct hash<LocalNode> {
 		size_t operator()(const LocalNode& x) const {
 			std::size_t seed = 0;
-			boost::hash_combine(seed, x.id);
-			boost::hash_combine(seed, x.device_id);
+			boost::hash_combine(seed, x.id.value);
+			boost::hash_combine(seed, x.device_id.value);
 			boost::hash_combine(seed, x.plugin);
 			return seed;
 		}

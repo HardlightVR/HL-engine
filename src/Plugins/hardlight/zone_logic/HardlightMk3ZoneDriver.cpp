@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "HardlightMk3ZoneDriver.h"
-#include "Locator.h"
-#include <boost/uuid/random_generator.hpp>
 #include <limits>
+#include "Locator.h"
+
 CommandBuffer Hardlight_Mk3_ZoneDriver::update(float dt)
 {
 	//think about if the commandbuffer vectors should really be reversed

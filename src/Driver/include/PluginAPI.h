@@ -115,18 +115,26 @@ extern "C" {
 		unsigned int node_count;
 	} nsvr_node_ids;
 
-	typedef enum nsvr_node_type {
-		nsvr_node_type_unknown = 0,
-		nsvr_node_type_haptic,
-		nsvr_node_type_led,
-		nsvr_node_type_inertial_tracker,
-		nsvr_node_type_absolute_tracker
-	} nsvr_node_type;
+	typedef enum nsvr_api_support {
+		nsvr_api_support_none = 0,
+		nsvr_api_supports_waveform = 1 << 0,
+		nsvr_api_supports_buffered = 1 << 1,
+		
+
+
+	} nsvr_api_support;
+	typedef enum nsvr_node_concept {
+		nsvr_node_concept_unknown = 0,
+		nsvr_node_concept_haptic,
+		nsvr_node_concept_led,
+		nsvr_node_concept_inertial_tracker,
+		nsvr_node_concept_absolute_tracker
+	} nsvr_node_concept;
 
 	typedef struct nsvr_node_info {
-		nsvr_node_id id;
-		nsvr_node_type type;
 		char name[512];
+		nsvr_node_concept concept;
+		nsvr_api_support api_support;
 	} nsvr_node_info;
 
 
@@ -141,12 +149,11 @@ extern "C" {
 		nsvr_device_concept_controller,
 		nsvr_device_concept_headwear,
 		nsvr_device_concept_gun,
-		nsvr_device_concept_sword
+		nsvr_device_concept_sword,
+		nsvr_device_concept_gauntlet
 	} nsvr_device_concept;
 
 	typedef struct nsvr_device_info {
-		//todo: is the id field necessary?
-		nsvr_device_id id;
 		char name[512];
 		nsvr_device_concept concept;
 	} nsvr_device_info;
@@ -346,9 +353,10 @@ extern "C" {
 	typedef struct nsvr_diagnostics_ui {
 		typedef void(*make_keyval)(const char* key, const char* val);
 		typedef bool(*make_button)(const char* label);
-
+		typedef void(*push_log)(const char* msg);
 		make_keyval keyval;
 		make_button button;
+		push_log log;
 
 	} nsvr_diagnostics_ui;
 	typedef struct nsvr_plugin_diagnostics_api {

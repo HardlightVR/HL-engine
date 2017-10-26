@@ -10,7 +10,6 @@
 #include "Enums.h"
 #include "IoService.h"
 #include "DeviceBuilder.h"
-#include "FakeDiscoverer.h"
 
 //Belongs in the hardlight plugin now
 //void extractDrvData(const packet& packet) {
@@ -34,19 +33,22 @@
 //}
 
 Driver::Driver() :
-	m_ioService(new IoService()),
-	m_io(m_ioService->GetIOService()),
+	m_ioService(),
+	m_io(m_ioService.GetIOService()),
 	m_messenger(m_io),
+
+	m_pluginManager(m_io),
+	m_devices(),
+	m_coordinator(m_io, m_messenger, m_devices),
+
 	m_statusPush(m_io, boost::posix_time::millisec(250)),
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
 	m_commandPull(m_io, boost::posix_time::millisec(50)),
 	m_trackingPush(m_io, boost::posix_time::millisec(10)),
 	m_curveEngineUpdate(m_io, boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
-	m_eventDispatcher(),
+	m_eventDispatcher()
 
-	m_coordinator(m_io, m_messenger, m_devices),
-	m_pluginManager(m_io, m_devices)
 
 
 {
@@ -57,6 +59,7 @@ Driver::Driver() :
 		this->Shutdown();
 		std::exit(-100);
 	});
+	m_pluginManager.SetDeviceContainer(&m_devices);
 
 	m_pluginManager.Discover();
 	m_pluginManager.LoadAll();
@@ -95,6 +98,8 @@ Driver::Driver() :
 
 Driver::~Driver()
 {
+	std::cout << "DRIVER DESTRUCTOR\n";
+
 }
 
 bool Driver::StartThread()
@@ -134,7 +139,7 @@ bool Driver::Shutdown()
 	m_trackingPush.Stop();
 	m_messenger.Disconnect();
 	
-	m_ioService->Shutdown();
+	m_ioService.Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	return true;
 }
@@ -167,54 +172,7 @@ int Driver::GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo) {
 	}
 }
 
-int Driver::CreateDevice(uint32_t device_id, hvr_device_tracking_datasource cb)
-{
-	using namespace std::literals;
 
-	std::vector<Node> hardlight_nodes = {
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Left Shoulder"s, 0 }),
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Shoulder"s, 1 }),
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Left Upper Arm"s, 2 }),
-		Node(NodeDescriptor{ nsvr_node_type_haptic, "Right Upper Arm"s, 3 }),
-		Node(NodeDescriptor{ nsvr_node_type_inertial_tracker, "Chest IMU"s, 4 })
-	};
-
-	Parsing::BodyGraphDescriptor graph;
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Left Shoulder", nsvr_bodypart_upperarm_left, Parsing::LocationDescriptor(1.0, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Right Shoulder", nsvr_bodypart_upperarm_right, Parsing::LocationDescriptor(1.0, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Left Upper Arm", nsvr_bodypart_upperarm_left, Parsing::LocationDescriptor(0.5, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Right Upper Arm", nsvr_bodypart_upperarm_right, Parsing::LocationDescriptor(0.5, 0.5)));
-	graph.regions.push_back(Parsing::SingleRegionDescriptor("Chest Center", nsvr_bodypart_torso, Parsing::LocationDescriptor(0.5, 0.0)));
-
-
-	auto resources = std::make_unique<PluginInstance::DeviceResources>();
-	resources->discoverer = std::make_unique<DefaultNodeDiscoverer>(hardlight_nodes);
-	auto default_tracking = std::make_unique<DefaultTracking>(m_io, std::vector<nsvr_node_id>{4});
-	if (cb != nullptr) {
-		default_tracking->SetCallback(cb);
-	}
-	
-	resources->tracking = std::move(default_tracking);
-	
-	std::vector<DefaultBodygraph::association> assocs = {
-		DefaultBodygraph::association{"Left Shoulder", 0},
-		DefaultBodygraph::association{"Right Shoulder", 1},
-		DefaultBodygraph::association{"Left Upper Arm", 2},
-		DefaultBodygraph::association{"Right Upper Arm", 3},
-		DefaultBodygraph::association{"Chest Center", 4}
-	};
-
-	resources->bodygraph = std::make_unique<DefaultBodygraph>(assocs);
-	resources->deviceDescriptor = DeviceDescriptor{"Virtual Hardlight MkII", 0, nsvr_device_concept_suit};
-	resources->bodygraphDescriptor = graph;
-
-
-	PluginInstance* plugin = m_pluginManager.MakeVirtualPlugin();
-	plugin->addDeviceResources(std::move(resources));
-
-
-	return 1;
-}
 
 void Driver::handleHaptics()
 {
@@ -237,6 +195,8 @@ void DoForEachBit(std::function<void(Location l)> fn, uint32_t bits) {
 	for (uint32_t bit = 1; bits >= bit; bit *= 2) if (bits & bit) fn(Location(bit));
 
 }
+
+//todo: delete this
 void Driver::handleCommands()
 {
 	if (auto commands = m_messenger.ReadCommands()) {

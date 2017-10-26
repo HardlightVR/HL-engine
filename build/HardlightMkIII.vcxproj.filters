@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Driver">
@@ -60,6 +60,9 @@
     <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\HexUtils.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -78,6 +81,9 @@
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Instructions.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\IoService.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -93,9 +99,6 @@
     <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\KeepaliveMonitor.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Locator.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -108,10 +111,10 @@
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\Packet.h">
+    <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h">
+    <ClInclude Include="..\src\plugins\hardlight\PacketVersion.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h">
@@ -130,6 +133,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\better_enum.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\enumser.h">
@@ -168,6 +174,10 @@
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Plugins\hardlight\IMU_ID.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\HL_Firmware_Defines.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -194,6 +204,9 @@
     <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
@@ -209,14 +222,14 @@
     <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Instructions.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\IoService.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp">
       <Filter>plugins\hardlight\Json</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\KeepaliveMonitor.cpp">
-      <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp">
       <Filter>plugins\hardlight</Filter>
@@ -228,9 +241,6 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\NullLogger.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\Packet.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp">
@@ -284,5 +294,8 @@
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

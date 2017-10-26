@@ -1,28 +1,32 @@
 #include "StdAfx.h"
-#include "BoostSerialAdapter.h"
 #include <iostream>
+#include <atomic>
+#include <boost/optional.hpp>
+
+#include "BoostSerialAdapter.h"
 #include "enumser.h"
 #include "Locator.h"
 #include "AsyncTimeout.h"
-#include <boost/optional.hpp>
 #include "logger.h"
-#include <atomic>
 #include "Mark2Handshaker.h"
 #include "Mark3Handshaker.h"
+#include "PacketVersion.h"
 
-
-BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) :
-	m_filteredSuitData(4096), 
-	m_port(nullptr),
-	m_io(io),
-	m_suitReconnectionTimeout(boost::posix_time::milliseconds(1000)),
-	m_suitReconnectionTimer(io),
-	m_handshakers()
+BoostSerialAdapter::BoostSerialAdapter(boost::asio::io_service& io) 
+	: m_io(io)
+	, m_heartbeat()
+	, m_port()
+	, m_incomingSuitData(4096) 
+	, m_isReconnecting(false)
+	, m_onPacketVersionChange()
+	, m_suitReconnectionTimeout(boost::posix_time::milliseconds(1000))
+	, m_suitReconnectionTimer(io)
+	, m_handshakers()
 {
-	std::fill(m_tempSuitData, m_tempSuitData + INCOMING_DATA_BUFFER_SIZE, 0);
+	std::fill(std::begin(m_suitReadBuffer), std::end(m_suitReadBuffer), 0);
 }
 
-void BoostSerialAdapter::Connect()
+void BoostSerialAdapter::ConnectAsync()
 {
 	beginReconnectionProcess();
 }
@@ -67,11 +71,12 @@ std::vector<std::string> fetchAllSerialPortNames() {
 		core_log(nsvr_severity_info, "SerialAdapter", "No ports available on the system");
 	}
 	std::vector<std::string> portNames = {};
-	for (std::size_t i = 0; i < ports.size(); i++) {
-		portNames.push_back("COM" + std::to_string(ports[i]));
+	for (unsigned int port : ports) {
+		portNames.push_back("COM" + std::to_string(port));
 	}
 	return portNames;
 }
+
 
 void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 	if (ec) {
@@ -88,13 +93,16 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 		
 		auto hs = make_handshaking_algorithm(m_io, 
 			//Success handler
-			[this](std::unique_ptr<boost::asio::serial_port> p) {
+			[this](std::unique_ptr<boost::asio::serial_port> p, PacketVersion version) {
 				core_log("SerialAdapter", "A handshaker has finished successfully");
 				m_port = std::move(p);
 				for (auto& hs : m_handshakers) { hs->async_cancel(); }
-				m_io.post([this]() {
+				m_io.post([this, version]() {
 					m_handshakers.clear();
 					assert(m_port->is_open());
+
+					//first, tell the firmware interface to use the correct packet version (pinging will depend on this, etc.)
+					m_onPacketVersionChange(version);
 					endReconnectionProcess();
 				});
 
@@ -125,20 +133,16 @@ void BoostSerialAdapter::testAllPorts(const boost::system::error_code& ec) {
 
 void BoostSerialAdapter::Disconnect()
 {
-	try {
-		if (m_port->is_open()) {
-			m_port->close();
-		}
-	}
-	catch (const boost::system::error_code&) {
-		//log this
+	boost::system::error_code ignored;
+	if (m_port->is_open()) {
+		m_port->close(ignored);
 	}
 }
 
-void BoostSerialAdapter::Write(std::shared_ptr<uint8_t*> bytes, std::size_t length, WriteHandler&& write_handler)
+void BoostSerialAdapter::Write(uint8_t* bytes, std::size_t length, WriteHandler&& write_handler)
 {
 	if (this->m_port && this->m_port->is_open()) {
-		this->m_port->async_write_some(boost::asio::buffer(*bytes, length), std::move(write_handler));
+		this->m_port->async_write_some(boost::asio::buffer(bytes, length), std::move(write_handler));
 	}
 }
 
@@ -158,9 +162,9 @@ void BoostSerialAdapter::scheduleDelayedSuitReconnect()
 void BoostSerialAdapter::endReconnectionProcess()
 {
 	m_isReconnecting = false;
-	assert(m_keepaliveMonitor);
-	m_keepaliveMonitor->BeginMonitoring();
-
+	assert(m_heartbeat);
+	m_heartbeat->BeginListening();
+	
 	kickoffSuitReading();
 }
 
@@ -169,28 +173,15 @@ void BoostSerialAdapter::endReconnectionProcess()
 void BoostSerialAdapter::kickoffSuitReading()
 {
 
-	if (!m_port || !m_port->is_open()) {
-		return;
-	}
+	if (!IsConnected()) { return;  }
 
-	m_port->async_read_some(boost::asio::buffer(m_tempSuitData, INCOMING_DATA_BUFFER_SIZE), [this]
+	m_port->async_read_some(boost::asio::buffer(m_suitReadBuffer, INCOMING_DATA_BUFFER_SIZE), [this]
 		(const auto& error, auto bytes_transferred) {
-			if (!error) {
-				//We won't necessarily have the same pings for each hardware model. Two ways to go about this:
-				//If we share significant logic between suit models, it might make sense to fix this issue here, and have each BoostSerialAdapter
-				//know what suit it is connected to, how to communicate properly with it, etc.
-				//If not, then maybe we end up making multiple plugins, one for mark2, one for mark3. Right now it seems like they are pretty similar so we can
-				//getaway with things like IsPingPacket working for both a mark1 and a mark2. 
 
-				if (!IsPingPacket(m_tempSuitData, bytes_transferred)) {
-					//if it's not a ping packet, put it into the data stream. Don't want pings cluttering stuff up.
-					m_filteredSuitData.push(m_tempSuitData, bytes_transferred);
-					std::fill(m_tempSuitData, m_tempSuitData + INCOMING_DATA_BUFFER_SIZE, 0);
-				}
-				else {
-					assert(m_keepaliveMonitor);
-					m_keepaliveMonitor->ReceivePing();
-				}
+			if (!error) {
+				m_incomingSuitData.push(m_suitReadBuffer, bytes_transferred);
+				std::fill(m_suitReadBuffer, m_suitReadBuffer + INCOMING_DATA_BUFFER_SIZE, 0);
+		
 				kickoffSuitReading();
 			}	
 		}
@@ -203,7 +194,7 @@ void BoostSerialAdapter::kickoffSuitReading()
 
 Buffer& BoostSerialAdapter::GetDataStream()
 {
-	return m_filteredSuitData;
+	return m_incomingSuitData;
 }
 
 bool BoostSerialAdapter::IsConnected() const
@@ -211,11 +202,16 @@ bool BoostSerialAdapter::IsConnected() const
 	return  !m_isReconnecting &&  this->m_port && this->m_port->is_open();
 }
 
-void BoostSerialAdapter::SetConnectionMonitor(std::shared_ptr<KeepaliveMonitor> monitor)
+void BoostSerialAdapter::SetConnectionMonitor(std::shared_ptr<Heartbeat> monitor)
 {
-	m_keepaliveMonitor = monitor;	
-	m_keepaliveMonitor->OnDisconnect([this]() { beginReconnectionProcess(); });
+	m_heartbeat = monitor;	
+	m_heartbeat->OnDisconnect([this]() { beginReconnectionProcess(); });
 
+}
+
+void BoostSerialAdapter::OnPacketVersionChange(std::function<void(PacketVersion)> fn)
+{
+	m_onPacketVersionChange = fn;
 }
 
 

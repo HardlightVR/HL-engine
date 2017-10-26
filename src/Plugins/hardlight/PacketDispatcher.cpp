@@ -1,30 +1,28 @@
 #include "stdafx.h"
 #include "PacketDispatcher.h"
+#include "logger.h"
 
-
-PacketDispatcher::PacketDispatcher() : _dispatchLimit(32), _consumers()
+PacketDispatcher::PacketDispatcher() : m_consumers()
 {
 }
-
-
-PacketDispatcher::~PacketDispatcher()
+void PacketDispatcher::Dispatch(Packet Packet)
 {
-}
-
-void PacketDispatcher::Dispatch(packet packet)
-{
-	SuitPacket::PacketType packetType = SuitPacket::Type(packet);
-	if (_consumers.find(packetType) != _consumers.end())
+	PacketType packetType = GetType(Packet);
+	
+	if (m_consumers.find(packetType) != m_consumers.end())
 	{
-		for (auto monitor : _consumers.at(packetType))
+		for (const auto& consumer : m_consumers.at(packetType))
 		{
-			monitor(packet);
+			consumer(Packet);
 		}
+	}
+	else {
+		core_log(nsvr_severity_info, "Dispatcher", "Packet type wasn't found: " + std::to_string((int)packetType));
 	}
 }
 
-void PacketDispatcher::AddConsumer(SuitPacket::PacketType ptype, OnReceivePacketFunc packetFunc)
+void PacketDispatcher::AddConsumer(PacketType ptype, OnReceivePacketFunc packetFunc)
 {
-	_consumers[ptype].push_back(packetFunc);
+	m_consumers[ptype].push_back(packetFunc);
 }
 

@@ -37,6 +37,7 @@ void protobuf_AddDesc_HighLevelEvent_2eproto();
 void protobuf_AssignDesc_HighLevelEvent_2eproto();
 void protobuf_ShutdownFile_HighLevelEvent_2eproto();
 
+class ContinuousHaptic;
 class CurveHaptic;
 class CurveHaptic_Sample;
 class HighLevelEvent;
@@ -458,6 +459,88 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   void InitAsDefaultInstance();
   static SimpleHaptic* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class ContinuousHaptic : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.ContinuousHaptic) */ {
+ public:
+  ContinuousHaptic();
+  virtual ~ContinuousHaptic();
+
+  ContinuousHaptic(const ContinuousHaptic& from);
+
+  inline ContinuousHaptic& operator=(const ContinuousHaptic& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ContinuousHaptic& default_instance();
+
+  void Swap(ContinuousHaptic* other);
+
+  // implements Message ----------------------------------------------
+
+  inline ContinuousHaptic* New() const { return New(NULL); }
+
+  ContinuousHaptic* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const ContinuousHaptic& from);
+  void MergeFrom(const ContinuousHaptic& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(ContinuousHaptic* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float strength = 1;
+  void clear_strength();
+  static const int kStrengthFieldNumber = 1;
+  float strength() const;
+  void set_strength(float value);
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.ContinuousHaptic)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  float strength_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static ContinuousHaptic* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -962,6 +1045,7 @@ class LocationalEvent : public ::google::protobuf::Message /* @@protoc_insertion
 
   enum EventsCase {
     kSimpleHaptic = 2,
+    kContinuousHaptic = 3,
     EVENTS_NOT_SET = 0,
   };
 
@@ -1028,10 +1112,20 @@ class LocationalEvent : public ::google::protobuf::Message /* @@protoc_insertion
   ::NullSpaceIPC::SimpleHaptic* release_simple_haptic();
   void set_allocated_simple_haptic(::NullSpaceIPC::SimpleHaptic* simple_haptic);
 
+  // optional .NullSpaceIPC.ContinuousHaptic continuous_haptic = 3;
+  bool has_continuous_haptic() const;
+  void clear_continuous_haptic();
+  static const int kContinuousHapticFieldNumber = 3;
+  const ::NullSpaceIPC::ContinuousHaptic& continuous_haptic() const;
+  ::NullSpaceIPC::ContinuousHaptic* mutable_continuous_haptic();
+  ::NullSpaceIPC::ContinuousHaptic* release_continuous_haptic();
+  void set_allocated_continuous_haptic(::NullSpaceIPC::ContinuousHaptic* continuous_haptic);
+
   EventsCase events_case() const;
   // @@protoc_insertion_point(class_scope:NullSpaceIPC.LocationalEvent)
  private:
   inline void set_has_simple_haptic();
+  inline void set_has_continuous_haptic();
 
   inline bool has_events() const;
   void clear_events();
@@ -1043,6 +1137,7 @@ class LocationalEvent : public ::google::protobuf::Message /* @@protoc_insertion
   union EventsUnion {
     EventsUnion() {}
     ::NullSpaceIPC::SimpleHaptic* simple_haptic_;
+    ::NullSpaceIPC::ContinuousHaptic* continuous_haptic_;
   } events_;
   mutable int _cached_size_;
   ::google::protobuf::uint32 _oneof_case_[1];
@@ -1403,6 +1498,24 @@ inline void SimpleHaptic::set_duration(float value) {
 
 // -------------------------------------------------------------------
 
+// ContinuousHaptic
+
+// optional float strength = 1;
+inline void ContinuousHaptic::clear_strength() {
+  strength_ = 0;
+}
+inline float ContinuousHaptic::strength() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ContinuousHaptic.strength)
+  return strength_;
+}
+inline void ContinuousHaptic::set_strength(float value) {
+  
+  strength_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ContinuousHaptic.strength)
+}
+
+// -------------------------------------------------------------------
+
 // CurveHaptic_Sample
 
 // optional float time = 1;
@@ -1671,6 +1784,54 @@ inline void LocationalEvent::set_allocated_simple_haptic(::NullSpaceIPC::SimpleH
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.LocationalEvent.simple_haptic)
 }
 
+// optional .NullSpaceIPC.ContinuousHaptic continuous_haptic = 3;
+inline bool LocationalEvent::has_continuous_haptic() const {
+  return events_case() == kContinuousHaptic;
+}
+inline void LocationalEvent::set_has_continuous_haptic() {
+  _oneof_case_[0] = kContinuousHaptic;
+}
+inline void LocationalEvent::clear_continuous_haptic() {
+  if (has_continuous_haptic()) {
+    delete events_.continuous_haptic_;
+    clear_has_events();
+  }
+}
+inline  const ::NullSpaceIPC::ContinuousHaptic& LocationalEvent::continuous_haptic() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.LocationalEvent.continuous_haptic)
+  return has_continuous_haptic()
+      ? *events_.continuous_haptic_
+      : ::NullSpaceIPC::ContinuousHaptic::default_instance();
+}
+inline ::NullSpaceIPC::ContinuousHaptic* LocationalEvent::mutable_continuous_haptic() {
+  if (!has_continuous_haptic()) {
+    clear_events();
+    set_has_continuous_haptic();
+    events_.continuous_haptic_ = new ::NullSpaceIPC::ContinuousHaptic;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.LocationalEvent.continuous_haptic)
+  return events_.continuous_haptic_;
+}
+inline ::NullSpaceIPC::ContinuousHaptic* LocationalEvent::release_continuous_haptic() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.LocationalEvent.continuous_haptic)
+  if (has_continuous_haptic()) {
+    clear_has_events();
+    ::NullSpaceIPC::ContinuousHaptic* temp = events_.continuous_haptic_;
+    events_.continuous_haptic_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void LocationalEvent::set_allocated_continuous_haptic(::NullSpaceIPC::ContinuousHaptic* continuous_haptic) {
+  clear_events();
+  if (continuous_haptic) {
+    set_has_continuous_haptic();
+    events_.continuous_haptic_ = continuous_haptic;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.LocationalEvent.continuous_haptic)
+}
+
 inline bool LocationalEvent::has_events() const {
   return events_case() != EVENTS_NOT_SET;
 }
@@ -1804,6 +1965,8 @@ inline HighLevelEvent::EventsCase HighLevelEvent::events_case() const {
   return HighLevelEvent::EventsCase(_oneof_case_[0]);
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

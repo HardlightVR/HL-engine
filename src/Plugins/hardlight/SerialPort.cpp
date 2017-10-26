@@ -22,7 +22,7 @@ bool IsPingPacket(uint8_t* data, std::size_t length)
 void SerialPort::stop()
 {
 	//core_log("SerialPort", std::string("Shutting down " + m_name));
-	m_writeTimer.cancel();
+	m_heartbeatTimer.cancel();
 	boost::system::error_code ec;
 
 	if (m_port && m_port->is_open()) {
@@ -40,7 +40,7 @@ void SerialPort::stop()
 SerialPort::SerialPort(std::string name, boost::asio::io_service & io, std::function<void()> doneFunc)
 	: m_name(name)
 	, m_io(io)
-	, m_writeTimer(io)
+	, m_heartbeatTimer(io)
 	, m_readTimer(io)
 	, m_writeTimeout(boost::posix_time::millisec(100))
 	, m_readTimeout(boost::posix_time::millisec(250))
@@ -101,8 +101,8 @@ void SerialPort::async_open_port()
 void SerialPort::async_ping_port()
 {
 	core_log("SerialPort", std::string("Handshake " + m_name));
-	m_writeTimer.expires_from_now(m_writeTimeout);
-	m_writeTimer.async_wait([this](const auto& ec) {check_write_deadline(ec); });
+	m_heartbeatTimer.expires_from_now(m_writeTimeout);
+	m_heartbeatTimer.async_wait([this](const auto& ec) {check_write_deadline(ec); });
 	m_port->async_write_some(boost::asio::buffer(pingData), [this](const auto& ec, auto bytes_transferred) { write_handler(ec, bytes_transferred); });
 	
 }
@@ -156,12 +156,12 @@ void SerialPort::check_write_deadline(const boost::system::error_code& ec)
 	if (m_protocolFinished) {
 		return;
 	}
-	if (m_writeTimer.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
+	if (m_heartbeatTimer.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
 		core_log("SerialPort", std::string("Write timeout expired on " + m_name + ", closing port"));
 		m_status = Status::TimedOutWriting;
 		boost::system::error_code ignored;
 		m_port->close(ignored);
-		m_writeTimer.expires_at(boost::posix_time::pos_infin);
+		m_heartbeatTimer.expires_at(boost::posix_time::pos_infin);
 	}
 
 }
@@ -202,7 +202,7 @@ void SerialPort::read_handler(const boost::system::error_code & ec, std::size_t 
 
 	if (!ec) {
 		m_protocolFinished = true;
-		m_writeTimer.cancel();
+		m_heartbeatTimer.cancel();
 		m_status = IsPingPacket(m_data, bytes_transferred) ? Status::Connected : Status::BadReturnPing;
 		core_log("SerialPort", std::string(m_name + ": " + (m_status == Status::Connected ? std::string("connected") : std::string("bad ping response."))));
 		

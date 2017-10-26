@@ -6,9 +6,10 @@
 #include "HardwareEventDispatcher.h"
 #include <boost/filesystem.hpp>
 #include "logger.h"
-PluginManager::PluginManager(boost::asio::io_service& io, DeviceContainer& hw)
+#include <cassert>
+PluginManager::PluginManager(boost::asio::io_service& io)
 	: m_plugins()
-	, m_deviceContainer(hw)
+	, m_deviceContainer(nullptr)
 	, m_io(io)
 	, m_pluginEventLoop(io, boost::posix_time::millisec(16))
 	, m_pluginInfo()
@@ -104,12 +105,14 @@ void PluginManager::UnloadAll()
 
 PluginInstance * PluginManager::MakeVirtualPlugin()
 {
+	assert(m_deviceContainer);
+
 	auto size = m_plugins.size();
 	std::string pluginName = "VirtualDeviceHost" + std::to_string(size);
 	auto plugin = std::make_unique<PluginInstance>(m_io, pluginName, size);
 	auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
 	dispatcher->OnDeviceConnected([name = pluginName, this](nsvr_device_id id, PluginInstance* plugin) {
-		m_deviceContainer.AddDevice(id, plugin->apis(),  name, plugin->resources());
+		m_deviceContainer->AddDevice(id, plugin->apis(),  name, plugin->resources());
 	});
 	plugin->setDispatcher(std::move(dispatcher));
 
@@ -182,6 +185,10 @@ std::vector<uint32_t> PluginManager::GetPluginIds() const
 {
 	std::vector<uint32_t> pluginIds;
 	for (const auto& kvp : m_plugins) {
+		//Don't bother returning virtual device hosts
+		if (kvp.first.find("VirtualDeviceHost") != std::string::npos) {
+			continue;
+		}
 		pluginIds.push_back(kvp.second->GetId());
 	}
 	return pluginIds;
@@ -194,6 +201,14 @@ void PluginManager::DrawDiagnostics(uint32_t id, nsvr_diagnostics_ui* ui)
 			diagnostics_api* api = kvp.second->apis().GetApi<diagnostics_api>();
 			if (api) {
 				api->submit_updatemenu(ui);
+			}
+
+			const auto& vdevices = m_pluginInfo.at(kvp.first).Descriptor.vdevices.devices;
+			ui->keyval("Virtual devices available", std::to_string(vdevices.size()).c_str());
+			for (const auto& device : vdevices) {
+				if (ui->button(device.name.c_str())) {
+					instantiateVirtualDevice(kvp.first, device);
+				}
 			}
 		}
 	}
@@ -213,6 +228,11 @@ boost::optional<std::pair<std::string, PluginManager::PluginInfo>> PluginManager
 	}
 
 	return boost::none;
+}
+
+void PluginManager::SetDeviceContainer(DeviceContainer* devices)
+{
+	m_deviceContainer = devices;
 }
 
 std::unique_ptr<PluginInstance> PluginManager::linkPlugin(const std::string& filename) {
@@ -255,6 +275,7 @@ bool PluginManager::configurePlugin(PluginInstance* plugin)
 
 bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::string& dllName)
 {
+
 	auto plugin = linkPlugin((boost::filesystem::path(searchDirectory) / dllName).string());
 	if (plugin) {
 	
@@ -264,12 +285,16 @@ bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::st
 		auto dispatcher = std::make_unique<HardwareEventDispatcher>(m_io);
 		
 		dispatcher->OnDeviceConnected([this, dll = dllName](nsvr_device_id id, PluginInstance* plugin) {
+			assert(m_deviceContainer);
 			plugin->resources()->bodygraphDescriptor = m_pluginInfo.at(dll).Descriptor.bodygraph;
 
-			m_deviceContainer.AddDevice(id, plugin->apis(), dll, plugin->resources());
+			m_deviceContainer->AddDevice(id, plugin->apis(), dll, plugin->resources());
 		});
 		dispatcher->OnDeviceDisconnected([this, dll = dllName](nsvr_device_id id) {
-			m_deviceContainer.RemoveDevice(DeviceId<local>{id}, dll);
+			assert(m_deviceContainer);
+
+
+			m_deviceContainer->RemoveDevice(DeviceId<local>{id}, dll);
 		}); 
 
 		m_plugins[dllName]->setDispatcher(std::move(dispatcher));
@@ -298,6 +323,37 @@ void PluginManager::destroyAll()
 			BOOST_LOG_SEV(clogger::get(), nsvr_severity_error) << "[PluginManager] Warning: unable to destroy " << plugin.first;
 		}
 	}
+
+}
+
+void PluginManager::instantiateVirtualDevice(const std::string& plugin, const Parsing::VirtualDeviceDescriptor& device)
+{
+	const auto& originPlugin = m_pluginInfo.at(plugin);
+
+	auto resources = std::make_unique<PluginInstance::DeviceResources>();
+	resources->bodygraphDescriptor = originPlugin.Descriptor.bodygraph;
+	//for now we use device ID 0. Probably want to pass in a specific ID.
+	resources->deviceDescriptor = DeviceDescriptor{ device.name, 0, device.concept };
+
+	std::vector<DefaultBodygraph::association> assocs;
+
+	std::vector<Node> nodes;
+	for (const auto& node : device.nodes) {
+		nodes.emplace_back(NodeDescriptor{ node.concept, node.name, node.id });
+		for (const auto& region : node.regions) {
+			assocs.push_back(DefaultBodygraph::association{ region, node.id });
+		}
+	}
+	resources->discoverer = std::make_unique<DefaultNodeDiscoverer>(nodes);
+	resources->id = DeviceId<local>(0);
+	resources->waveformHaptics = std::make_unique<DefaultWaveform>();
+	resources->bufferedHaptics = std::make_unique<DefaultBuffered>();
+
+
+	resources->bodygraph = std::make_unique<DefaultBodygraph>(assocs);
+
+	PluginInstance* virtualHost = this->MakeVirtualPlugin();
+	virtualHost->addDeviceResources(std::move(resources));
 
 }
 

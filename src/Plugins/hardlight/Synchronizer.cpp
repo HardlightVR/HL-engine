@@ -2,24 +2,51 @@
 #include "Synchronizer.h"
 #include <iostream>
 #include "logger.h"
-bool Synchronizer::Synchronized()
+#include "PacketDispatcher.h"
+
+const int BAD_SYNC_LIMIT = 2;
+
+
+Synchronizer::Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service& io) :
+	m_dispatcher(dispatcher),
+	m_incomingData(dataStream),
+	m_delimeter('$'),
+	m_syncState(Synchronizer::State::SearchingForSync),
+	m_badSyncCounter(0),
+	m_footer{ 0x0D, 0x0A, },
+	m_syncInterval(10),
+	m_syncTimer(io),
+	m_estimatedBytesRead(0)
 {
-	return this->syncState == Synchronizer::State::Synchronized;
 }
 
-Synchronizer::State Synchronizer::SyncState()
+void Synchronizer::BeginSync()
 {
-	return this->syncState;
+	scheduleSync();
 }
 
-void Synchronizer::TryReadPacket()
+
+void Synchronizer::scheduleSync()
 {
-	if (_dataStream.read_available() < PACKET_LENGTH){
+	m_syncTimer.expires_from_now(m_syncInterval);
+	m_syncTimer.async_wait([&](const boost::system::error_code& ec) {
+		//Seemingly innocent addition of this line
+		//The intent is to return if the io service tells this handler to stop because we are shutting down
+		if (ec) { return; }
+		tryReadPacket();
+		scheduleSync();
+	});
+}
+
+
+void Synchronizer::tryReadPacket()
+{
+	if (m_incomingData.read_available() < PACKET_LENGTH){
 		return;
 	}
 	
 
-	switch (this->syncState)
+	switch (this->m_syncState)
 	{
 	case Synchronizer::State::SearchingForSync:
 		this->searchForSync();
@@ -38,141 +65,126 @@ void Synchronizer::TryReadPacket()
 	}
 }
 
-void Synchronizer::BeginSync()
-{
-	scheduleSync();
-}
-void Synchronizer::scheduleSync()
-{
-	_syncTimer.expires_from_now(_syncInterval);
-	_syncTimer.async_wait([&](const boost::system::error_code& ec) {
-		handleReadPacket(ec);
-	});
-}
-void Synchronizer::handleReadPacket(const boost::system::error_code& ec) {
-	this->TryReadPacket();
-	scheduleSync();
-}
-
-
-std::size_t Synchronizer::PossiblePacketsAvailable()
-{
-	return _dataStream.read_available() / PACKET_LENGTH;
-}
-
-
-
-Synchronizer::Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service& io) :
-	_dispatcher(dispatcher),
-	_dataStream(dataStream),
-	packetDelimiter('$'),
-	syncState(Synchronizer::State::SearchingForSync),
-	badSyncCounter(0),
-	packetFooter{ 0x0D, 0x0A, },
-	_syncInterval(10),
-	_syncTimer(io)
-{
-}
-
-
 
 void Synchronizer::searchForSync()
 {
-	//this->dataStream.Length < this->packetLength * 2
-	if (_dataStream.read_available() < PACKET_LENGTH * 2) {
+	if (m_incomingData.read_available() < PACKET_LENGTH * 2) {
 		return;
 	}
 
-	packet possiblePacket = dequeuePacket();
+	auto possiblePacket = dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
-		this->syncState = Synchronizer::State::ConfirmingSync;
+		this->m_syncState = Synchronizer::State::ConfirmingSync;
 		return;
 	}
 
 	//find offset 
+	const auto& realPacket = *possiblePacket;
+	
 	for (std::size_t offset = 1; offset < PACKET_LENGTH; ++offset) {
-		if (possiblePacket.raw[offset] == this->packetDelimiter) {
+		if (realPacket[offset] == m_delimeter) {
 			std::size_t howMuchLeft = offset;
 			for (std::size_t i = 0; i < howMuchLeft; ++i)
 			{
-				_dataStream.pop();
+				m_incomingData.pop();
 			}
-			this->syncState = State::ConfirmingSync;
+			this->m_syncState = State::ConfirmingSync;
 			return;
 		}
 	}
 }
 
+
+boost::optional<Packet> Synchronizer::dequeuePacket()
+{
+	try
+	{
+		Packet p;
+		int numPopped = m_incomingData.pop(p.data(), PACKET_LENGTH);
+		assert(numPopped == PACKET_LENGTH);
+		m_estimatedBytesRead += numPopped;
+		return p;
+
+	}
+	catch (const std::exception& e) {
+		core_log(nsvr_severity_error, "Synchronizer", std::string("Tried to read from the data stream, but there wasn't enough data!" + std::string(e.what())));
+	}
+	
+	return boost::none;
+
+}
+
 void Synchronizer::confirmSync()
 {
-	packet possiblePacket = this->dequeuePacket();
+	auto possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
-		this->syncState = State::Synchronized;
+		this->m_syncState = State::Synchronized;
 		core_log("Synchronizer", "Stream synced");
 	}
 	else {
-		this->syncState = State::SearchingForSync;
+		this->m_syncState = State::SearchingForSync;
 	}
 }
 
 void Synchronizer::monitorSync()
 {
-	packet possiblePacket = this->dequeuePacket();
+	auto possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
-		_dispatcher.Dispatch(possiblePacket);
+		m_dispatcher.Dispatch(*possiblePacket);
 
 	}
 	else {
-		this->badSyncCounter = 1;
-		this->syncState = Synchronizer::State::ConfirmingSyncLoss;
+		this->m_badSyncCounter = 1;
+		this->m_syncState = Synchronizer::State::ConfirmingSyncLoss;
 		core_log("Synchronizer", "Confirming sync loss..");
 	}
 }
 
 void Synchronizer::confirmSyncLoss()
 {
-	
-	packet possiblePacket = this->dequeuePacket();
+
+	auto possiblePacket = this->dequeuePacket();
 	if (!this->packetIsWellFormed(possiblePacket)) {
-		this->badSyncCounter++;
-		if (this->badSyncCounter >= BAD_SYNC_LIMIT) {
+		this->m_badSyncCounter++;
+		if (this->m_badSyncCounter >= BAD_SYNC_LIMIT) {
 			core_log("Synchronizer", "Sync loss confirmed, searching for sync..");
 
-			this->syncState = Synchronizer::State::SearchingForSync;
+			this->m_syncState = Synchronizer::State::SearchingForSync;
 		}
 	}
 	else {
 		core_log("Synchronizer", "Sync achieved.");
-
-		this->syncState = Synchronizer::State::Synchronized;
-	//	this->_dispatcher.Dispatch(possiblePacket);
+		this->m_syncState = Synchronizer::State::Synchronized;
 	}
 }
 
-packet Synchronizer::dequeuePacket() const
+
+Synchronizer::State Synchronizer::SyncState() const
 {
-	packet p;
-
-
-	try
-	{
-		int numPopped = _dataStream.pop(p.raw, PACKET_LENGTH);
-		assert(numPopped == PACKET_LENGTH);
-	
-	}
-	catch (const std::exception& e) {
-		core_log(nsvr_severity_error, "Synchronizer", std::string("Tried to read from the data stream, but there wasn't enough data!" + std::string(e.what())));
-	}
-	return p;
-
+	return this->m_syncState;
 }
 
-bool Synchronizer::packetIsWellFormed(const packet& possiblePacket) const
+
+std::size_t Synchronizer::GetTotalBytesRead() const
 {
-	return possiblePacket.raw[0] == packetDelimiter &&
-		possiblePacket.raw[14] == packetFooter[0] &&
-		possiblePacket.raw[15] == packetFooter[1];
+	return m_estimatedBytesRead;
 }
 
 
+bool Synchronizer::packetIsWellFormed(const boost::optional<Packet>& possiblePacket) const
+{
+	if (!possiblePacket) {
+		return false;
+	}
 
+	auto& actualPacket = *possiblePacket;
+
+	return  actualPacket[0] == m_delimeter &&
+			actualPacket[14] == m_footer[0] &&
+			actualPacket[15] == m_footer[1];
+	}
+
+bool IsSynchronized(const Synchronizer & s)
+{
+	return s.SyncState() == Synchronizer::State::Synchronized;
+}

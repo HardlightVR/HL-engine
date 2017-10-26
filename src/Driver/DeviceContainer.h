@@ -10,7 +10,7 @@
 #include "PluginInstance.h"
 #include "PluginAPI.h"
 #include "DeviceIds.h"
-
+#include "IdentificationService.h"
 class Device;
 class PluginApis;
 
@@ -18,13 +18,13 @@ class DeviceContainer {
 public:
 	using DeviceEvent = boost::signals2::signal<void(Device*)>;
 	using DeviceFn = std::function<void(Device*)>;
-
+	~DeviceContainer();
 	DeviceContainer();
-	void AddDevice(nsvr_device_id id, PluginApis& apis, std::string originatingPlugin, PluginInstance::DeviceResourceBundle& resources);
+	void AddDevice(nsvr_device_id id, PluginApis& apis, std::string originatingPlugin, PluginInstance::DeviceResources* resources);
 	void RemoveDevice(DeviceId<local> id, std::string pluginName);
 	void EachDevice(DeviceFn action);
 
-	Device* Get(std::string pluginName, DeviceId<local> id);
+	Device* Get(LocalDevice deviceId);
 
 	//these functions should be very short as a lock is held during them
 	void OnDeviceAdded(DeviceEvent::slot_type slot);

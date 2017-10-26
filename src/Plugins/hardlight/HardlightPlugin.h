@@ -1,20 +1,19 @@
 #pragma once
-#include "PluginAPI.h"
-#include <stdint.h>
-#include "PacketDispatcher.h"
+#include <cstdint>
 #include <memory>
-#include "KeepaliveMonitor.h"
-#include "BoostSerialAdapter.h"
-#include "Synchronizer.h"
-#include <thread>
+
+#include "PluginAPI.h"
+#include "PacketDispatcher.h"
 #include "FirmwareInterface.h"
-#include "IoService.h"
+#include "ImuConsumer.h"
 #include "zone_logic/hardlightdevice.h"
 #include "ScheduledEvent.h"
-#include <functional>
-#include "ImuConsumer.h"
 
 
+class IoService;
+class BoostSerialAdapter;
+class Heartbeat;
+class Synchronizer;
 
 class HardlightPlugin {
 public:
@@ -32,24 +31,24 @@ public:
 
 	void Render(nsvr_diagnostics_ui* ui);
 private:
+	nsvr_core* m_core;
+
+
 	std::shared_ptr<IoService> m_io;
 	PacketDispatcher m_dispatcher;
 	std::unique_ptr<BoostSerialAdapter> m_adapter;
 	FirmwareInterface m_firmware;
 
 	HardlightDevice m_device;
-	std::shared_ptr<KeepaliveMonitor> m_monitor;
+	std::shared_ptr<Heartbeat> m_monitor;
 
 	std::unique_ptr<Synchronizer> m_synchronizer;
 
 	ScheduledEvent m_eventPull;
-	nsvr_core* m_core;
-	nsvr_tracking_stream* m_trackingStream;
 	bool m_running;
 
 	ImuConsumer m_imus;
 
-	ScheduledEvent m_mockTracking;
 
 
 	

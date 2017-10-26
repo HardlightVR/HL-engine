@@ -7,42 +7,41 @@
 #include "DeviceContainer.h"
 
 
-PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName, uint32_t id) :
-	m_fileName(fileName), 
-	m_loaded{ false },
-	m_pluginFunctions{},
-	m_pluginRegisterFunction{},
-	m_apis(),
-	m_eventHandler(),
-	m_io(io),
-	m_id(id),
-	m_logger(boost::log::keywords::channel = "plugin")
+PluginInstance::~PluginInstance()
+{
+	{
+		std::cout << "PL INSTANCE DESTRUCTOR\n";
+
+	}
+
+	
+}
+
+PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName, uint32_t id) 
+	: m_fileName(fileName)
+	, m_loaded{false}
+	, m_id(id)
+	, m_io(io)
+	, m_logger(std::make_shared<my_logger>(boost::log::keywords::channel = "plugin"))
+	, m_resources(std::make_unique<DeviceResources>())
+	, m_pluginFunctions{}
+	, m_pluginPointer(nullptr)
+	, m_eventHandler()
+	, m_apis()
+	, m_pluginRegisterFunction{}
+	, m_dll()
+
+	
 	
 {
 	boost::filesystem::path pluginPath(m_fileName);
 	
 
-	m_logger.add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
+	m_logger->add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
 
-	m_resources = std::make_unique<DeviceResources>();
-	/*auto il = {
-		0,
-	std::make_unique<FakeBodygraph>(),
-	std::make_unique<FakeNodeDiscoverer>(),
-	std::make_unique<FakeTracking>()
-	std::make_unique<FakePlayback>()
-	std::make_unique<FakeWaveformHaptics>()
-	std::make_unique<FakeBufferedHaptics> bufferedHaptics;
-	}*/
 
 }
 
-
-
-
-PluginInstance::~PluginInstance()
-{
-}
 
 
 
@@ -88,7 +87,7 @@ bool PluginInstance::tick_once(uint64_t dt)
 			api->submit_update(dt);
 		}
 		catch (const std::runtime_error& err) {
-			LOG_ERROR() << "Runtime error in plugin " << m_displayName << ": " << err.what();
+			LOG_ERROR() << "Runtime error in plugin " << m_fileName << ": " << err.what();
 			return false;
 		}
 	}
@@ -152,10 +151,7 @@ std::string PluginInstance::GetFileName() const
 	return m_fileName;
 }
 
-std::string PluginInstance::GetDisplayName() const
-{
-	return m_displayName;
-}
+
 
 
 uint32_t PluginInstance::GetId() const
@@ -172,14 +168,29 @@ void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
 {
 	m_eventHandler->Raise(type, id, this);
 }
-
+void PluginInstance::LogNow(nsvr_severity level, const std::string& component, const std::string& message)
+{
+	m_logger->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(component));
+	BOOST_LOG_SEV(*m_logger, level) << message;
+}
 void PluginInstance::Log(nsvr_severity level, const char * component, const char * message)
 {
-	m_io.post([&lg = m_logger, level, cmp = std::string(component), msg = std::string(message)]() {
-		//plogger::get().add_attribute("Component", boost::log::attributes::constant<std::string>(cmp));
-		lg.add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(cmp));
+	//Problem: when the handler is invoked, the plugin may be destroyed (in the case of shutting down the app)
+	//Tentative solution: make the PluginManager store shared_ptrs of each PluginInstance. Use enable_shared_from_this.
+	//Then, when the handler is invoked, attempt to lock a weak_ptr which was created when the handler was created. 
+	//If that works, then we can assume the plugin is still alive. (?)
 
-		BOOST_LOG_SEV(lg, level) << msg;
+	m_io.post([weak_plugin = std::weak_ptr<PluginInstance>(shared_from_this()), level, cmp = std::string(component), msg = std::string(message)]() {
+		
+
+		if (auto plugin = weak_plugin.lock()) {
+			plugin->LogNow(level, cmp, msg);
+		}
+		else {
+			//If you see this assert trigger, don't fear. Instead, delete the assert and the else statement, and add a note to the comment above
+			//with the date, and that you observed the assert. If we stop getting crashes, and we see this a few times, I'd say the bug is solved..
+			assert(false);
+		}
 	});
 }
 
@@ -197,9 +208,9 @@ void PluginInstance::addDeviceResources(DeviceResourceBundle resources)
 }
 
 //see if this can be const ref
-PluginInstance::DeviceResourceBundle & PluginInstance::resources()
+PluginInstance::DeviceResources* PluginInstance::resources()
 {
-	return m_resources;
+	return m_resources.get();
 }
 
 int PluginInstance::GetWorkingDirectory(nsvr_directory* outDir)

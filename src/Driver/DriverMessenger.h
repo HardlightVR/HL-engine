@@ -19,6 +19,7 @@
 
 using namespace NullSpace::SharedMemory;
 
+
 class DriverMessenger
 {
 public:
@@ -51,11 +52,8 @@ private:
 
 	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
 
-
-	//Write a timestamp here every so often to signify that this driver is alive
 	std::unique_ptr<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>> m_sentinel;
 
-	//Read commands from here, such as ENABLE_TRACKING, DISABLE_TRACKING
 	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
 	std::unique_ptr<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>> m_tracking;

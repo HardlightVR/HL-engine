@@ -96,10 +96,18 @@ void initialize_logging() {
 	boost::shared_ptr<text_sink> sink = boost::make_shared<text_sink>();
 	sink->locked_backend()->add_stream(stream);
 	sink->set_formatter(fmt);
+
+#ifdef DEBUG
 	sink->set_filter(
-		(severity >= nsvr_severity_warning && channel == "plugin") || 
+		(severity >= nsvr_severity_trace && channel == "plugin") || 
 		(severity >= nsvr_severity_info && channel == "core")
 	);
+#else 
+	sink->set_filter(
+		(severity >= nsvr_severity_warning && channel == "plugin") ||
+		(severity >= nsvr_severity_info && channel == "core")
+	);
+#endif
 
 	logging::core::get()->add_sink(sink);
 

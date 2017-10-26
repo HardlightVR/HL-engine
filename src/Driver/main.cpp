@@ -1,7 +1,7 @@
 
 #include "stdafx.h"
 #include <conio.h>
-#include "NSDriverApi.h"
+#include "runtime_include/NSDriverApi.h"
 #include <memory>
 #include <boost/dll.hpp>
 #include <functional>
@@ -68,8 +68,7 @@ int main()
 		std::cout << "Couldn't find NSVR_Driver_DrawDiagnostics()\n";
 	}
 
-	unsigned int version = driver_getversion();
-	std::cout << "========= NSVREngine Version " << (version >> 16) << "." << ((version << 16) >> 16) << " =========\n";
+	std::cout << "========= NSVREngine Version " << HVR_VERSION_STRING << " =========\n";
 	hvr_platform* context = nullptr;
 	driver_create(&context);
 	driver_start(context);

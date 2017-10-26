@@ -3,18 +3,15 @@
 #include <unordered_map>
 #include <functional>
 
-using namespace std;
 
 class PacketDispatcher
 {
 public:
-	typedef std::function<void(packet)> OnReceivePacketFunc;
+	using OnReceivePacketFunc = std::function<void(Packet)>;
 	PacketDispatcher();
-	~PacketDispatcher();
-	void Dispatch(packet packet);
-	void AddConsumer(SuitPacket::PacketType ptype, OnReceivePacketFunc packetFunc);
+	void Dispatch(Packet packet);
+	void AddConsumer(PacketType ptype, OnReceivePacketFunc packetFunc);
 private:
-	unsigned int _dispatchLimit;
-	std::unordered_map<SuitPacket::PacketType, std::vector<OnReceivePacketFunc>> _consumers;
+	std::unordered_map<PacketType, std::vector<OnReceivePacketFunc>> m_consumers;
 };
 

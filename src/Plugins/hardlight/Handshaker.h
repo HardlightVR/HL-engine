@@ -2,6 +2,7 @@
 #include <boost/asio/serial_port.hpp>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/deadline_timer.hpp>
+#include "PacketVersion.h"
 class Handshaker {
 public:
 	enum class Status {
@@ -22,6 +23,7 @@ public:
 	void set_finish_callback(FinishHandler onFinish);
 	Status status() const;
 	void cancel_timers_close_port();
+	virtual PacketVersion packet_version() const = 0;
 	bool is_finished() const;
 	std::unique_ptr<boost::asio::serial_port> release();
 private:
@@ -39,7 +41,7 @@ private:
 	std::unique_ptr<boost::asio::serial_port> m_port;
 	boost::asio::io_service& m_io;
 
-	boost::asio::deadline_timer m_writeTimer;
+	boost::asio::deadline_timer m_heartbeatTimer;
 	boost::asio::deadline_timer m_readTimer;
 
 

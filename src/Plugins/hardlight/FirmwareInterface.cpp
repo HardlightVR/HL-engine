@@ -4,23 +4,30 @@
 #include "InstructionSet.h"
 #include "HardwareCommandVisitor.h"
 #include "logger.h"
-FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter>& adapter, boost::asio::io_service& io):
-m_instructionSet(std::make_shared<InstructionSet>(data_dir)),
-_adapter(adapter),
-_builder(m_instructionSet),
-_writeTimer(io),
-_batchingDeadline(io),
-_writeInterval(20),
-_batchingTimeout(20),
-BATCH_SIZE(192),
-_lfQueue(10240),
-_isBatching(false),
-m_totalBytesSent(0)
+#include "Instructions.h"
+#include "IMU_ID.h"
+constexpr unsigned int BATCH_SIZE = 192;
+
+FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io)
+	: m_queue()
+	, m_instructionSet(std::make_shared<InstructionSet>(data_dir))
+	, m_instructionBuilder(m_instructionSet)
+	, m_serial(adapter)
+	, m_packetVersion()
+	, m_isBatching(false)
+	, m_totalBytesSent(0)
+	, m_writeInterval(20)
+	, m_writeTimer(io)
+	, m_batchingTimeout(20)
+	, m_batchingDeadline(io)
 
 {
+	m_serial->OnPacketVersionChange([this](PacketVersion version) { 
+		m_packetVersion = version;  
+	});
 
-	_writeTimer.expires_from_now(_writeInterval);
-	_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+	m_writeTimer.expires_from_now(m_writeInterval);
+	m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
 
 }
 
@@ -28,31 +35,32 @@ m_totalBytesSent(0)
 
 
 
+
 void FirmwareInterface::writeBuffer() {
-	const std::size_t avail = _lfQueue.read_available();
+	const std::size_t avail = m_queue.read_available();
 	if (avail == 0) {
 
-		_writeTimer.expires_from_now(_writeInterval);
-		_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+		m_writeTimer.expires_from_now(m_writeInterval);
+		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
 	}
 	else if (avail > 0 && avail < BATCH_SIZE) {
-		if (_isBatching) {
+		if (m_isBatching) {
 
 		
-			_writeTimer.expires_from_now(_writeInterval);
-			_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+			m_writeTimer.expires_from_now(m_writeInterval);
+			m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
 			return;
 		}
 
 
-		_isBatching = true;
-		_batchingDeadline.expires_from_now(_batchingTimeout);
-		_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
+		m_isBatching = true;
+		m_batchingDeadline.expires_from_now(m_batchingTimeout);
+		m_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
 			if (!ec) {
 				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
-				const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
+				const int actualLen = m_queue.pop(*a, BATCH_SIZE);
 
-				this->_adapter->Write(a, actualLen, [this](const boost::system::error_code& e, std::size_t bytes_t) {
+				this->m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& e, std::size_t bytes_t) {
 					if (e) {
 						core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while batching");
 					}
@@ -61,19 +69,19 @@ void FirmwareInterface::writeBuffer() {
 					}
 				}
 				);
-				_writeTimer.expires_from_now(_writeInterval);
-				_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
-				_isBatching = false;
+				m_writeTimer.expires_from_now(m_writeInterval);
+				m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+				m_isBatching = false;
 			}
 		});
 	}
 	else {
-		_isBatching = false;
-		_batchingDeadline.cancel();
+		m_isBatching = false;
+		m_batchingDeadline.cancel();
 		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
-		const int actualLen = _lfQueue.pop(*a, BATCH_SIZE);
-
-		_adapter->Write(a, actualLen, [this](const boost::system::error_code& ec, std::size_t bytes_t) {
+		const int actualLen = m_queue.pop(*a, BATCH_SIZE);
+		
+		m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& ec, std::size_t bytes_t) {
 
 			if (ec) {
 				core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");
@@ -84,32 +92,42 @@ void FirmwareInterface::writeBuffer() {
 			}
 		}
 		);
-		_writeTimer.expires_from_now(_writeInterval);
-		_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+		m_writeTimer.expires_from_now(m_writeInterval);
+		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+	}
+
+}
+
+void FirmwareInterface::RequestTrackingStatus()
+{
+	auto sensors = { 0x3c, 0x3a };
+	for (auto sensor : sensors) {
+		verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_TRACK_STATUS, m_packetVersion, { {"sensor", sensor } }));
 	}
 
 }
 
 void FirmwareInterface::EnableTracking()
 {
-	VerifyThenExecute(_builder.UseInstruction("IMU_ENABLE"));
+
+	verifyThenQueue(m_instructionBuilder.UseInstruction("IMU_ENABLE"), nsvr::config::Instruction(nsvr::config::InstructionId::IMU_ENABLE, m_packetVersion, {}));
 }
 
 void FirmwareInterface::DisableTracking()
 {
-	VerifyThenExecute(_builder.UseInstruction("IMU_DISABLE"));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::IMU_DISABLE, m_packetVersion, {}));
 }
 
 void FirmwareInterface::RequestSuitVersion()
 {
-	VerifyThenExecute(_builder.UseInstruction("GET_VERSION"));
+	verifyThenQueue(m_instructionBuilder.UseInstruction("GET_VERSION"));
 }
 
-//Todo: update all to VerifyThenExecute
+//Todo: update all to verifyThenQueue
 void FirmwareInterface::ReadDriverData(Location loc, Register reg)
 {
-	VerifyThenExecute(
-		_builder.UseInstruction("READ_DATA")
+	verifyThenQueue(
+		m_instructionBuilder.UseInstruction("READ_DATA")
 		.WithParam("zone", Locator::Translator().ToString(loc))
 		.WithParam("register", static_cast<int>(reg))
 	); 
@@ -117,23 +135,49 @@ void FirmwareInterface::ReadDriverData(Location loc, Register reg)
 
 void FirmwareInterface::ResetDrivers()
 {
-	VerifyThenExecute(_builder.UseInstruction("RESET_DRIVERS"));
+	verifyThenQueue(m_instructionBuilder.UseInstruction("RESET_DRIVERS"));
 }
 
-void FirmwareInterface::VerifyThenExecute(InstructionBuilder& builder) {
+void FirmwareInterface::verifyThenQueue(InstructionBuilder& builder) {
 	if (builder.Verify()) {
-		queue_packet(builder.Build());
+		queuePacket(builder.Build());
 	}
 	else {
 		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
 	}
 }
 
+void FirmwareInterface::verifyThenQueue(const nsvr::config::Instruction& inst) {
+	bool alternateVerify = nsvr::config::Verify(inst, m_instructionSet.get());
+	if (alternateVerify) {
+		queuePacket(nsvr::config::Build(inst));
+	}
+	else {
+		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + nsvr::config::HumanReadable(inst)));
+	}
+}
+void FirmwareInterface::verifyThenQueue(InstructionBuilder& builder, const nsvr::config::Instruction& alternateInst) {
+	//bool normalVerify = builder.Verify();
+	bool alternateVerify = nsvr::config::Verify(alternateInst, m_instructionSet.get());
 
+	//assert(normalVerify == alternateVerify);
+
+//	auto normalPacket = builder.Build();
+	auto alternatePacket = nsvr::config::Build(alternateInst);
+
+//	assert(normalPacket == alternatePacket);
+
+	if (alternateVerify) {
+		queuePacket(alternatePacket);
+	}
+	else {
+		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
+	}
+}
 void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& opts)
 {
-	VerifyThenExecute(
-		_builder.UseInstruction("AUDIO_MODE_ENABLE")
+	verifyThenQueue(
+		m_instructionBuilder.UseInstruction("AUDIO_MODE_ENABLE")
 		.WithParam("zone", Locator::Translator().ToString(pad))
 		.WithParam("audio_max", opts.AudioMax) // 0 -255
 		.WithParam("audio_min", opts.AudioMin)// 0-255
@@ -144,24 +188,24 @@ void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::A
 
 void FirmwareInterface::EnableIntrigMode(Location pad)
 {
-	VerifyThenExecute(
-		_builder.UseInstruction("INTRIG_MODE_ENABLE")
+	verifyThenQueue(
+		m_instructionBuilder.UseInstruction("INTRIG_MODE_ENABLE")
 		.WithParam("zone", Locator::Translator().ToString(pad))
 	);
 }
 
 void FirmwareInterface::EnableRtpMode(Location pad)
 {
-	VerifyThenExecute(
-		_builder.UseInstruction("RTP_MODE_ENABLE")
+	verifyThenQueue(
+		m_instructionBuilder.UseInstruction("RTP_MODE_ENABLE")
 		.WithParam("zone", Locator::Translator().ToString(pad))
 	);
 }
 
 void FirmwareInterface::PlayRtp(Location location, int strength)
 {
-	VerifyThenExecute(
-		_builder.UseInstruction("PLAY_RTP")
+	verifyThenQueue(
+		m_instructionBuilder.UseInstruction("PLAY_RTP")
 		.WithParam("zone", Locator::Translator().ToString(location))
 		.WithParam("volume", strength)
 	);
@@ -169,12 +213,13 @@ void FirmwareInterface::PlayRtp(Location location, int strength)
 
 void FirmwareInterface::Ping()
 {
-	queue_packet({ 0x24, 0x02, 0x02, 0x07, 0xFF, 0xFF, 0x0A });
+	verifyThenQueue(m_instructionBuilder.UseInstruction("STATUS_PING"), nsvr::config::Instruction(nsvr::config::InstructionId::STATUS_PING, m_packetVersion, {}));
+
 }
 
 void FirmwareInterface::RawCommand(const uint8_t * bytes, std::size_t length)
 {
-	_lfQueue.push(bytes, length);
+	m_queue.push(bytes, length);
 
 }
 
@@ -204,8 +249,8 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 
 	auto actualEffect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 
-
-	VerifyThenExecute(_builder.UseInstruction("PLAY_EFFECT")
+	
+	verifyThenQueue(m_instructionBuilder.UseInstruction("PLAY_EFFECT")
 		.WithParam("zone", Locator::Translator().ToString(location))
 		.WithParam("effect", Locator::Translator().ToString(actualEffect)));
 
@@ -213,6 +258,9 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 
 void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
+
+
+
 	std::string effectString = Locator::Translator().ToString(effect);
 	if (m_instructionSet->Atoms().find(effectString) == m_instructionSet->Atoms().end()) {
 		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to find atom'" + effectString + "' in the instruction set"));
@@ -221,20 +269,21 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 
 	auto actualEffect = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 	
-	VerifyThenExecute(_builder.UseInstruction("PLAY_CONTINUOUS")
+	verifyThenQueue(m_instructionBuilder.UseInstruction("PLAY_CONTINUOUS")
 		.WithParam("effect", Locator::Translator().ToString(actualEffect))
 		.WithParam("zone", Locator::Translator().ToString(location)));
 }
 
-void FirmwareInterface::queue_packet(const std::vector<uint8_t>& packet)
+void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
 {
-	_lfQueue.push(packet.data(), packet.size());
-
+		m_queue.push(packet.data(), packet.size());
 }
 
 
 void FirmwareInterface::HaltEffect(Location location)
 {
-	VerifyThenExecute(_builder.UseInstruction("HALT_SINGLE")
+	
+
+	verifyThenQueue(m_instructionBuilder.UseInstruction("HALT_SINGLE")
 		.WithParam("zone", Locator::Translator().ToString(location)));
 }

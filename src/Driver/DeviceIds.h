@@ -27,6 +27,11 @@ bool operator<(const NodeId<T>& lhs, const NodeId<T>&rhs) noexcept {
 }
 
 template<typename T>
+bool operator<(const DeviceId<T>& lhs, const DeviceId<T>&rhs) noexcept {
+	return lhs.value < rhs.value;
+}
+
+template<typename T>
 bool operator==(const NodeId<T>& lhs, const NodeId<T>& rhs) noexcept {
 	return lhs.value == rhs.value;
 }
