@@ -103,6 +103,8 @@ struct DefaultTracking : public FakeInterface<tracking_api> {
 	std::chrono::high_resolution_clock::time_point m_beginningOfTime;
 };
 
+
+
 struct DefaultNodeDiscoverer : public FakeInterface<device_api> {
 	DefaultNodeDiscoverer(const std::vector<Node>& nodes = {}) {
 		for (const auto& node : nodes) {
@@ -111,36 +113,26 @@ struct DefaultNodeDiscoverer : public FakeInterface<device_api> {
 	}
 	void Augment(device_api* api) override {
 
-		api->submit_enumeratenodes.handler = [](nsvr_device_id id, nsvr_node_ids* ids, void* ud) {
-			static_cast<DefaultNodeDiscoverer*>(ud)->enumerate(ids);
+		api->submit_enumeratenodes.cpp_fn = [this](nsvr_device_id id, nsvr_node_ids* ids) {
+			std::size_t index = 0;
+			for (const auto& kvp : m_nodes) {
+				ids->ids[index] = kvp.first.value;
+				index++;
+			}
 
+			ids->node_count = m_nodes.size();
 		};
-		api->submit_enumeratenodes.user_data = this;
 
-		api->submit_getnodeinfo.handler = [](nsvr_node_id id, nsvr_node_info* info, void* ud) {
-			static_cast<DefaultNodeDiscoverer*>(ud)->info(id, info);
+		api->submit_getnodeinfo.cpp_fn = [this](nsvr_node_id id, nsvr_node_info* info) {
+			auto node = m_nodes.at(NodeId<local>{id});
+			std::string name = node.name();
+			std::copy(name.begin(), name.end(), info->name);
+			info->concept = node.type();
 		};
-		api->submit_getnodeinfo.user_data = this;
 	}
 
-	void enumerate(nsvr_node_ids* ids) {
-		std::size_t index = 0;
-		for (const auto& kvp : m_nodes) {
-			ids->ids[index] = kvp.first.value;
-			index++;
-		}
 
-		ids->node_count = m_nodes.size();
-	}
 	std::unordered_map<NodeId<local>, Node> m_nodes;
-
-	void info(nsvr_node_id id, nsvr_node_info* info)
-	{
-		auto node = m_nodes.at(NodeId<local>{id});
-		std::string name = node.name();
-		std::copy(name.begin(), name.end(), info->name);
-		info->concept= node.type();
-	}
 
 
 };

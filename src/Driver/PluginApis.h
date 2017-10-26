@@ -22,10 +22,15 @@ struct callback {
 		handler = [](auto...) {
 		};
 
-		instrumentation = [](auto...) {
+		spy = [](auto...) {
+		};
+
+		cpp_fn = [](auto...) {
+
 		};
 	}
-	std::function<void(Arguments...)> instrumentation;
+	std::function<void(Arguments...)> spy;
+	std::function<void(Arguments...)> cpp_fn;
 
 	callback(FnPtr handler, void* ud);
 
@@ -37,10 +42,11 @@ struct callback {
 
 // Constructor takes the function pointer and a user_data void pointer.
 template<typename FnPtr, typename ...Arguments>
-inline callback<FnPtr, Arguments...>::callback(FnPtr handler, void * ud) 
+inline callback<FnPtr, Arguments...>::callback(FnPtr handler, void * ud)
 	: handler(handler)
 	, user_data(ud)
-	, instrumentation([](Arguments...) {}) {}
+	, cpp_fn([](Arguments...) {}) 
+	, spy([](Arguments...) {}) {}
 
 
 // Here's where we pass in the user_data
@@ -48,7 +54,8 @@ template<typename FnPtr, typename ...Arguments>
 inline void callback<FnPtr, Arguments...>::operator()(Arguments ...argument)
 {
 	handler(std::forward<Arguments>(argument)..., user_data);
-	instrumentation(std::forward<Arguments>(argument)...);
+	spy(std::forward<Arguments>(argument)...);
+	cpp_fn(std::forward<Arguments>(argument)...);
 }
 
 
