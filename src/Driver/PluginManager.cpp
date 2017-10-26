@@ -348,7 +348,6 @@ void PluginManager::instantiateVirtualDevice(const std::string& plugin, const Pa
 	resources->id = DeviceId<local>(0);
 	resources->waveformHaptics = std::make_unique<DefaultWaveform>();
 	resources->bufferedHaptics = std::make_unique<DefaultBuffered>();
-	
 
 
 	resources->bodygraph = std::make_unique<DefaultBodygraph>(assocs);

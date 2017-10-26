@@ -7,32 +7,21 @@
 #include <chrono>
 #include "ScheduledEvent.h"
 #include "runtime_include/NSDriverApi.h"
-#define DECLARE_FAKE_INTERFACE(name, api) \
-struct name { \
-virtual ~##name##() {}; \
-virtual void Augment(##api##*) {} \
-}; 
 
 
-DECLARE_FAKE_INTERFACE(FakeWaveformHaptics, waveform_api)
-DECLARE_FAKE_INTERFACE(FakeBufferedHaptics, buffered_api)
-DECLARE_FAKE_INTERFACE(FakeNodeDiscoverer, device_api)
-DECLARE_FAKE_INTERFACE(FakeBodygraph, bodygraph_api)
-DECLARE_FAKE_INTERFACE(FakePlayback, playback_api)
-DECLARE_FAKE_INTERFACE(FakeTracking, tracking_api)
+template<typename Api>
+struct FakeInterface {
+	virtual void Augment(Api* api) {}
+};
 
 
-//This is just an idea
-
-
-
-struct DefaultWaveform : public FakeWaveformHaptics {
+struct DefaultWaveform : public FakeInterface<waveform_api> {
 	void Augment(waveform_api* api) override {
 		api->submit_activate.handler = [](auto...){};
 	}
 };
 
-struct DefaultBuffered : public FakeBufferedHaptics {
+struct DefaultBuffered : public FakeInterface<buffered_api> {
 	void Augment(buffered_api* api) override {
 		api->submit_buffer.handler = [](auto...) {};
 		api->submit_getmaxsamples.handler = [](uint32_t* outMaxSamples, void* ud) { *outMaxSamples = 256; };
@@ -41,7 +30,7 @@ struct DefaultBuffered : public FakeBufferedHaptics {
 };
 
 
-struct DefaultBodygraph : public FakeBodygraph {
+struct DefaultBodygraph : public FakeInterface<bodygraph_api> {
 
 	struct association {
 		std::string node;
@@ -64,7 +53,7 @@ struct DefaultBodygraph : public FakeBodygraph {
 	std::vector<association> m_assocs;
 
 };
-struct DefaultTracking : public FakeTracking {
+struct DefaultTracking : public FakeInterface<tracking_api> {
 	DefaultTracking() : m_timers() {}
 	DefaultTracking(boost::asio::io_service& io, std::vector<nsvr_node_id> tracked_nodes = {}) : m_timers(), m_streams() {
 		for (nsvr_node_id id : tracked_nodes) {
@@ -114,7 +103,7 @@ struct DefaultTracking : public FakeTracking {
 	std::chrono::high_resolution_clock::time_point m_beginningOfTime;
 };
 
-struct DefaultNodeDiscoverer : public FakeNodeDiscoverer {
+struct DefaultNodeDiscoverer : public FakeInterface<device_api> {
 	DefaultNodeDiscoverer(const std::vector<Node>& nodes = {}) {
 		for (const auto& node : nodes) {
 			m_nodes[node.id()] = node;

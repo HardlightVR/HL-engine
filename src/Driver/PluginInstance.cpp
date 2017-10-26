@@ -39,15 +39,6 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 
 	m_logger->add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
 
-	/*auto il = {
-		0,
-	std::make_unique<FakeBodygraph>(),
-	std::make_unique<FakeNodeDiscoverer>(),
-	std::make_unique<FakeTracking>()
-	std::make_unique<FakePlayback>()
-	std::make_unique<FakeWaveformHaptics>()
-	std::make_unique<FakeBufferedHaptics> bufferedHaptics;
-	}*/
 
 }
 

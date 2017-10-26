@@ -24,12 +24,12 @@ public:
 		DeviceId<local> id; //why using this??
 		boost::optional<DeviceDescriptor> deviceDescriptor;
 		boost::optional<Parsing::BodyGraphDescriptor> bodygraphDescriptor;
-		std::unique_ptr<FakeBodygraph> bodygraph;
-		std::unique_ptr<FakeNodeDiscoverer> discoverer;
-		std::unique_ptr<FakeTracking> tracking;
-		std::unique_ptr<FakePlayback> playback;
-		std::unique_ptr<FakeWaveformHaptics> waveformHaptics;
-		std::unique_ptr<FakeBufferedHaptics> bufferedHaptics;
+		std::unique_ptr<FakeInterface<bodygraph_api>> bodygraph;
+		std::unique_ptr<FakeInterface<device_api>> discoverer;
+		std::unique_ptr<FakeInterface<tracking_api>> tracking;
+		std::unique_ptr<FakeInterface<playback_api>> playback;
+		std::unique_ptr<FakeInterface<waveform_api>> waveformHaptics;
+		std::unique_ptr<FakeInterface<buffered_api>> bufferedHaptics;
 	};
 
 	~PluginInstance();

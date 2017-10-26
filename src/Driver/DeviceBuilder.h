@@ -24,8 +24,8 @@ private:
 	nsvr_device_id m_id;
 	template<typename Api, typename HardwareBinding, typename FakeApi>
 	std::unique_ptr<HardwareBinding> bind_component(std::unique_ptr<FakeApi>& fake);
-	template<typename HardwareApi, typename FakeApi>
-	bool augment_with_fake(std::unique_ptr<FakeApi>& fake);
+	template<typename HardwareApi>
+	bool augment_with_fake(std::unique_ptr<FakeInterface<HardwareApi>>& fake);
 	PluginApis* m_apis;
 	
 	PluginInstance::DeviceResources* m_resources;
@@ -55,8 +55,8 @@ inline std::unique_ptr<HardwareBinding> DeviceBuilder::bind_component(std::uniqu
 }
 
 //Returns true if there is an implementation available, whether fake or real
-template<typename HardwareApi, typename FakeApi>
-inline bool DeviceBuilder::augment_with_fake(std::unique_ptr<FakeApi>& fake) {
+template<typename HardwareApi>
+inline bool DeviceBuilder::augment_with_fake(std::unique_ptr<FakeInterface<HardwareApi>>& fake) {
 	bool has_implementation = true;
 
 	auto api_ptr = m_apis->GetApi<HardwareApi>();
