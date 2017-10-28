@@ -179,8 +179,11 @@ void PluginInstance::LogAsync(nsvr_severity level, const char * component, const
 	//Tentative solution: make the PluginManager store shared_ptrs of each PluginInstance. Use enable_shared_from_this.
 	//Then, when the handler is invoked, attempt to lock a weak_ptr which was created when the handler was created. 
 	//If that works, then we can assume the plugin is still alive. (?)
-	//void Widget::doThing() { io_service.post([weak_obj = std::weak_ptr<Widget>(shared_from_this())]() { //lock the weak_ptr };); }
-	m_io.post([weak_plugin = std::weak_ptr<PluginInstance>(shared_from_this()), level, cmp = std::string(component), msg = std::string(message)]() {
+
+	//10/27/3017 11:05am not working. I think the logging might be async in the plugin..? The call to enable_shared_from_this doesn't succeed.
+	std::weak_ptr<PluginInstance> weak_plugin(shared_from_this());
+
+	m_io.post([weak_plugin, level, cmp = std::string(component), msg = std::string(message)]() {
 		
 
 		if (auto plugin = weak_plugin.lock()) {

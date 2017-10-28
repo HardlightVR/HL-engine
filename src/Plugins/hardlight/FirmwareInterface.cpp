@@ -110,7 +110,7 @@ void FirmwareInterface::RequestTrackingStatus()
 void FirmwareInterface::EnableTracking()
 {
 
-	verifyThenQueue(m_instructionBuilder.UseInstruction("IMU_ENABLE"), nsvr::config::Instruction(nsvr::config::InstructionId::IMU_ENABLE, m_packetVersion, {}));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::IMU_ENABLE, m_packetVersion, {}));
 }
 
 void FirmwareInterface::DisableTracking()
@@ -120,7 +120,7 @@ void FirmwareInterface::DisableTracking()
 
 void FirmwareInterface::RequestSuitVersion()
 {
-	verifyThenQueue(m_instructionBuilder.UseInstruction("GET_VERSION"));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_VERSION, m_packetVersion, {}));
 }
 
 //Todo: update all to verifyThenQueue
@@ -188,32 +188,29 @@ void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::A
 
 void FirmwareInterface::EnableIntrigMode(Location pad)
 {
-	verifyThenQueue(
-		m_instructionBuilder.UseInstruction("INTRIG_MODE_ENABLE")
-		.WithParam("zone", Locator::Translator().ToString(pad))
-	);
+	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::INTRIG_MODE_ENABLE, m_packetVersion, { { "zone", actualZone } }));
 }
 
 void FirmwareInterface::EnableRtpMode(Location pad)
 {
-	verifyThenQueue(
-		m_instructionBuilder.UseInstruction("RTP_MODE_ENABLE")
-		.WithParam("zone", Locator::Translator().ToString(pad))
-	);
+
+	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::RTP_MODE_ENABLE, m_packetVersion, { {"zone", actualZone} }));
+	
 }
 
 void FirmwareInterface::PlayRtp(Location location, int strength)
 {
-	verifyThenQueue(
-		m_instructionBuilder.UseInstruction("PLAY_RTP")
-		.WithParam("zone", Locator::Translator().ToString(location))
-		.WithParam("volume", strength)
-	);
+
+	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::PLAY_RTP, m_packetVersion, { { "zone", actualZone }, {"volume", strength} }));
+	
 }
 
 void FirmwareInterface::Ping()
 {
-	verifyThenQueue(m_instructionBuilder.UseInstruction("STATUS_PING"), nsvr::config::Instruction(nsvr::config::InstructionId::STATUS_PING, m_packetVersion, {}));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::STATUS_PING, m_packetVersion, {}));
 
 }
 
@@ -248,11 +245,14 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 	}
 
 	auto actualEffect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
+	uint8_t actualId  = m_instructionSet->ParamDict().at("effect").at(Locator::Translator().ToString(actualEffect));
+	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::PLAY_EFFECT, m_packetVersion, { { "zone", actualZone } , {"effect", actualId} }));
 
 	
-	verifyThenQueue(m_instructionBuilder.UseInstruction("PLAY_EFFECT")
+	/*verifyThenQueue(m_instructionBuilder.UseInstruction("PLAY_EFFECT")
 		.WithParam("zone", Locator::Translator().ToString(location))
-		.WithParam("effect", Locator::Translator().ToString(actualEffect)));
+		.WithParam("effect", Locator::Translator().ToString(actualEffect)));*/
 
 }
 
@@ -268,10 +268,9 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 	}
 
 	auto actualEffect = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
-	
-	verifyThenQueue(m_instructionBuilder.UseInstruction("PLAY_CONTINUOUS")
-		.WithParam("effect", Locator::Translator().ToString(actualEffect))
-		.WithParam("zone", Locator::Translator().ToString(location)));
+	uint8_t actualId = m_instructionSet->ParamDict().at("effect").at(Locator::Translator().ToString(actualEffect));
+	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::PLAY_CONTINUOUS, m_packetVersion, { { "zone", actualZone } ,{ "effect", actualId } }));
 }
 
 void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
@@ -282,8 +281,9 @@ void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
 
 void FirmwareInterface::HaltEffect(Location location)
 {
-	
 
-	verifyThenQueue(m_instructionBuilder.UseInstruction("HALT_SINGLE")
-		.WithParam("zone", Locator::Translator().ToString(location)));
+	auto actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
+
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::HALT_SINGLE, m_packetVersion, { { "zone", actualZone} }));
+
 }

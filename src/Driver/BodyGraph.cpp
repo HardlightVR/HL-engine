@@ -10,6 +10,7 @@
 #include "nsvr_core_errors.h"
 
 
+
 const segment_range segment_range::full = { 0, 1 };
 const segment_range segment_range::lower_half = { 0, 0.5 };
 const segment_range segment_range::upper_half = { 0.5, 1.0 };

@@ -62,7 +62,7 @@
                         "bodypart": "torso",
                         "location_start": {
                               "height": 0.9,
-                              "rotation": 180
+                              "rotation": 190
                         },
                         "location_end": {
                               "height": 0.9,

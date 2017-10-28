@@ -125,6 +125,13 @@ void HardlightDevice::GetNodeInfo(nsvr_node_id id, nsvr_node_info* info) {
 		return;
 	}
 
+	if (id == NODE_IMU_LEFT_UPPER_ARM) {
+		info->concept = nsvr_node_concept_inertial_tracker;
+		std::string outStr = "Hardlight Left Upper Arm IMU ";
+		std::copy(outStr.begin(), outStr.end(), info->name);
+		return;
+	}
+
 	const auto& t = Locator::Translator();
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [id = id](const auto& driver) {
 		return driver.second->GetId() == id;
@@ -169,7 +176,9 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 	nsvr_bodygraph_associate(g, "upperBackActuators:1", m_drivers[Location::Upper_Back_Right]->GetId());
 
 	nsvr_bodygraph_associate(g, "chestCenter", NODE_IMU_CHEST);
+	nsvr_bodygraph_associate(g, "rightUpperArmActuator", NODE_IMU_RIGHT_UPPER_ARM);
 	nsvr_bodygraph_associate(g, "leftUpperArmActuator", NODE_IMU_LEFT_UPPER_ARM);
+
 
 
 
