@@ -24,10 +24,16 @@ void Heartbeat::BeginListening()
 	schedulePingTimer();
 }
 
+void Heartbeat::EndListening()
+{
+	m_responseTimer.cancel();
+	m_heartbeatTimer.cancel();
+}
+
 void Heartbeat::schedulePingTimer()
 {
 	m_heartbeatTimer.expires_from_now(m_heartbeatInterval);
-	m_heartbeatTimer.async_wait([&](auto& ec) { doHeartbeat(); });
+	m_heartbeatTimer.async_wait([&](auto& ec) { if (ec) { return; } doHeartbeat(); });
 }
 
 

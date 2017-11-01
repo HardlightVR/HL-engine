@@ -13,12 +13,13 @@ public:
 	Heartbeat(boost::asio::io_service& io, FirmwareInterface& fi);
 	
 	void BeginListening();
-
+	void EndListening();
 	// Called to let the Heartbeat know that it has received a response (a ping or potentially any other data that 
 	// implies the hardware is connected.)
 	void ReceiveResponse();
 
 	bool IsConnected() const;
+
 
 	using ConnectionHandler = boost::signals2::signal<void()>;
 

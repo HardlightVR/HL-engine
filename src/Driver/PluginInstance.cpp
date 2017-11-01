@@ -180,7 +180,9 @@ void PluginInstance::LogAsync(nsvr_severity level, const char * component, const
 	//Then, when the handler is invoked, attempt to lock a weak_ptr which was created when the handler was created. 
 	//If that works, then we can assume the plugin is still alive. (?)
 
-	//10/27/3017 11:05am not working. I think the logging might be async in the plugin..? The call to enable_shared_from_this doesn't succeed.
+	//10/27/2017 11:05am not working. I think the logging might be async in the plugin..? The call to enable_shared_from_this doesn't succeed.
+	//10/31/2017 11:44am not working. 
+
 	std::weak_ptr<PluginInstance> weak_plugin(shared_from_this());
 
 	m_io.post([weak_plugin, level, cmp = std::string(component), msg = std::string(message)]() {

@@ -217,6 +217,7 @@ void BoostSerialAdapter::OnPacketVersionChange(std::function<void(PacketVersion)
 
 BoostSerialAdapter::~BoostSerialAdapter()
 {
+	m_heartbeat->EndListening();
 	Disconnect();
 }
 

@@ -6,10 +6,10 @@
 
 Device::Device(
 	std::string parentPlugin,
-	DeviceDescriptor descriptor, 
+	DeviceDescriptor descriptor,
 	std::unique_ptr<DeviceVisualizer> visualizer,
 	std::unique_ptr<HardwareBodygraphCreator> bodygraph,
-	std::unique_ptr<HardwareNodeEnumerator> discoverer, 
+	std::unique_ptr<HardwareNodeEnumerator> discoverer,
 	std::unique_ptr<HardwarePlaybackController> playback,
 	std::unique_ptr<HardwareHapticInterface> haptics,
 	std::unique_ptr<HardwareTracking> tracking
@@ -26,7 +26,7 @@ Device::Device(
 	m_discoverer->Discover();
 	m_bodygraph->fetchDynamically();
 
-	
+
 	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
 	for (auto imu : imus) {
 		m_trackingProvider->BeginStreaming(NodeId<local>{imu});

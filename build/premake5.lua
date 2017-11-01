@@ -14,6 +14,67 @@ workspace "Driver"
 	
 	
 
+project "Serial" 
+	targetdir "bin/%{cfg.buildcfg}/%{cfg.platform}"
+	targetname "Serial"
+	boost_incl_dir = "D:/Libraries/boost/boost_1_61_0"
+
+	includedirs {
+		boost_incl_dir,
+		"../src/Serial"
+	}
+
+
+	flags {
+		"MultiProcessorCompile",
+		"C++11"
+	}
+
+	files {
+		"../src/Serial/**.cpp",
+		"../src/Serial/**.h"
+	}
+
+	boost_win32_dir = "D:/Libraries/boost/boost_1_61_0/stage/win32/lib"
+	boost_win64_dir = "D:/Libraries/boost/boost_1_61_0/stage/x64/lib"
+
+
+	pchheader "stdafx.h"
+	pchsource "../src/Serial/stdafx.cpp"
+
+
+	defines {"BOOST_THREAD_USE_LIB"}
+
+	filter {"platforms:Win32 or platforms:Win64"}
+		kind "SharedLib"
+
+	filter{"platforms:UnitTestWin32"}
+		kind "ConsoleApp"
+
+	filter "platforms:*Win32*" 
+		system "Windows"
+		architecture "x86"
+		libdirs {
+			boost_win32_dir
+		}
+		defines {"WIN32", "_WIN32_WINNT=0x0A00"}
+		
+	filter "configurations:Debug"
+		defines {"DEBUG", "_DEBUG"}
+		symbols "On"
+		optimize "Off"
+		
+	filter "configurations:Release"
+		defines {"NDEBUG"}
+		optimize "On" 
+
+	filter {"system:Windows"}
+		defines {"_WINDOWS", "_USRDLL"}
+		-- not sure if this is actually setting sdl checks. We should be sure to work without them
+		buildoptions {"-sdl"}
+
+	filter {"system:Windows", "configurations:Debug"}
+		buildoptions {"-D_SCL_SECURE_NO_WARNINGS"}
 
 project "Driver" 
 	

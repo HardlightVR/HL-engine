@@ -33,6 +33,8 @@ BOOST_LOG_ATTRIBUTE_KEYWORD(plugin_name, "Plugin", std::string)
 BOOST_LOG_ATTRIBUTE_KEYWORD(component, "Component", std::string)
 BOOST_LOG_ATTRIBUTE_KEYWORD(channel, "Channel", std::string)
 
+#define VERBOSE_CONSOLE_LOGGING
+
 std::ostream& operator<< (std::ostream& strm, nsvr_severity level)
 {
 	static const char* strings[] =
@@ -97,7 +99,7 @@ void initialize_logging() {
 	sink->locked_backend()->add_stream(stream);
 	sink->set_formatter(fmt);
 
-#ifdef DEBUG
+#ifdef VERBOSE_CONSOLE_LOGGING
 	sink->set_filter(
 		(severity >= nsvr_severity_trace && channel == "plugin") || 
 		(severity >= nsvr_severity_info && channel == "core")
