@@ -10,7 +10,7 @@ class serial_connection_manager;
 class serial_connection : public std::enable_shared_from_this<serial_connection> {
 
 public:
-	serial_connection(boost::asio::serial_port port, std::string portName, device_profile* profile, serial_connection_manager& manager);
+	serial_connection(boost::asio::serial_port port, std::string portName, const device_profile* profile, serial_connection_manager& manager);
 	void start();
 	void stop();
 
@@ -18,7 +18,7 @@ private:
 	bool m_connected;
 	void do_read();
 	void do_write();
-	device_profile* m_profile;
+	const device_profile* m_profile;
 	std::string m_portName;
 	std::array<uint8_t, 128> m_buffer;
 	std::array<uint8_t, 16> m_ping;

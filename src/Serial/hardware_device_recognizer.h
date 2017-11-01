@@ -9,15 +9,27 @@ class mark3 : public device_profile {
 public:
 	mark3();
 	void set_options(boost::asio::serial_port* port) const override;
-	const std::vector<boost::asio::const_buffer>get_ping_data() const override;
 private:
+	const boost::asio::const_buffer do_get_ping_data() const override;
 	const std::array<uint8_t, 16> m_pingData;
 };
+
+class mark2 : public device_profile {
+public:
+	mark2();
+	void set_options(boost::asio::serial_port* port) const override;
+private:
+	const boost::asio::const_buffer do_get_ping_data() const override;
+	const std::array<uint8_t, 7> m_pingData;
+};
+
+
 class hardware_device_recognizer {
 public:
 	hardware_device_recognizer(boost::asio::io_service& io);
 
-	void scan_once();
+	void start();
+	void stop();
 private:
 	void do_port_scan();
 

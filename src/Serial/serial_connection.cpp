@@ -6,7 +6,7 @@
 #include <iostream>
 #include "device_profile.h"
 #include <sstream>
-serial_connection::serial_connection(boost::asio::serial_port port, std::string portName, device_profile* profile, serial_connection_manager& manager)
+serial_connection::serial_connection(boost::asio::serial_port port, std::string portName, const device_profile* profile, serial_connection_manager& manager)
 	: m_port(std::move(port))
 	, m_connected(false)
 	, m_profile(profile)

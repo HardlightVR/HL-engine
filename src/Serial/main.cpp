@@ -8,7 +8,7 @@ int main() {
 	hardware_device_recognizer recog(io);
 
 
-	recog.scan_once();
+	recog.start();
 
 	io.run();
 	return 0;

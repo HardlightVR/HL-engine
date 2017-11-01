@@ -269,6 +269,7 @@
     <ClInclude Include="..\src\Serial\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Serial\device_profile.cpp" />
     <ClCompile Include="..\src\Serial\enumser.cpp" />
     <ClCompile Include="..\src\Serial\hardware_device_recognizer.cpp" />
     <ClCompile Include="..\src\Serial\main.cpp" />
