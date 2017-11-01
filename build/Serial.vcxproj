@@ -177,7 +177,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>BOOST_ASIO_ENABLE_HANDLER_TRACKING;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\Serial;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -261,9 +261,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Serial\connection_info.h" />
     <ClInclude Include="..\src\Serial\device_profile.h" />
     <ClInclude Include="..\src\Serial\enumser.h" />
     <ClInclude Include="..\src\Serial\hardware_device_recognizer.h" />
+    <ClInclude Include="..\src\Serial\mark3.h" />
     <ClInclude Include="..\src\Serial\serial_connection.h" />
     <ClInclude Include="..\src\Serial\serial_connection_manager.h" />
     <ClInclude Include="..\src\Serial\stdafx.h" />
@@ -273,6 +275,7 @@
     <ClCompile Include="..\src\Serial\enumser.cpp" />
     <ClCompile Include="..\src\Serial\hardware_device_recognizer.cpp" />
     <ClCompile Include="..\src\Serial\main.cpp" />
+    <ClCompile Include="..\src\Serial\mark3.cpp" />
     <ClCompile Include="..\src\Serial\serial_connection.cpp" />
     <ClCompile Include="..\src\Serial\serial_connection_manager.cpp" />
     <ClCompile Include="..\src\Serial\stdafx.cpp">

@@ -16,6 +16,9 @@
     <Filter Include="plugins\hardlight\Json">
       <UniqueIdentifier>{56A3CC43-429D-F595-2B0A-8CA617A35B02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="plugins\hardlight\serial">
+      <UniqueIdentifier>{5C982AC8-48BD-7948-7108-5FD85D8C7866}</UniqueIdentifier>
+    </Filter>
     <Filter Include="plugins\hardlight\zone_logic">
       <UniqueIdentifier>{A5D20152-918D-F1FD-3A45-6A4826DF3B8E}</UniqueIdentifier>
     </Filter>
@@ -150,6 +153,24 @@
     <ClInclude Include="..\src\plugins\hardlight\logger.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\serial\connection_info.h">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\serial\device_profile.h">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.h">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\serial\mark3.h">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\serial\serial_connection.h">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\serial\serial_connection_manager.h">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -271,6 +292,21 @@
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp">
       <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.cpp">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\serial\mark3.cpp">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\serial\serial_connection.cpp">
+      <Filter>plugins\hardlight\serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\serial\serial_connection_manager.cpp">
+      <Filter>plugins\hardlight\serial</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
       <Filter>plugins\hardlight</Filter>

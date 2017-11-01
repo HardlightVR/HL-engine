@@ -345,6 +345,12 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\better_enum.h" />
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
     <ClInclude Include="..\src\plugins\hardlight\logger.h" />
+    <ClInclude Include="..\src\plugins\hardlight\serial\connection_info.h" />
+    <ClInclude Include="..\src\plugins\hardlight\serial\device_profile.h" />
+    <ClInclude Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.h" />
+    <ClInclude Include="..\src\plugins\hardlight\serial\mark3.h" />
+    <ClInclude Include="..\src\plugins\hardlight\serial\serial_connection.h" />
+    <ClInclude Include="..\src\plugins\hardlight\serial\serial_connection_manager.h" />
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h" />
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.h" />
@@ -387,6 +393,11 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\serial\mark3.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\serial\serial_connection.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\serial\serial_connection_manager.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">Create</PrecompiledHeader>
