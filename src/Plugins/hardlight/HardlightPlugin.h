@@ -30,6 +30,8 @@ public:
 	void SetupBodygraph(nsvr_bodygraph* graph);
 
 	void Render(nsvr_diagnostics_ui* ui);
+
+	void PollEvents();
 private:
 	nsvr_core* m_core;
 
@@ -45,7 +47,6 @@ private:
 
 	std::shared_ptr<synchronizer2> m_synchronizer;
 
-	ScheduledEvent m_eventPull;
 	bool m_running;
 
 	ImuConsumer m_imus;

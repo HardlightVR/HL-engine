@@ -319,6 +319,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h" />
     <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h" />
     <ClInclude Include="..\src\plugins\hardlight\HexUtils.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\IdPool.h" />
     <ClInclude Include="..\src\plugins\hardlight\ILogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\IMU_ID.h" />
     <ClInclude Include="..\src\plugins\hardlight\ImuConsumer.h" />
@@ -376,6 +377,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\IdPool.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ImuConsumer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp" />

@@ -32,7 +32,7 @@ public:
 	void PlayEffect(Location location, uint32_t effect, float strength);
 	void HaltEffect(Location location);
 	void PlayEffectContinuous(Location location, uint32_t effect, float strength);
-
+	void RequestUuid();
 	void RequestTrackingStatus();
 	void EnableTracking();
 	void DisableTracking();

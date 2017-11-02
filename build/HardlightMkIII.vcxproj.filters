@@ -207,6 +207,9 @@
     <ClInclude Include="..\src\Plugins\hardlight\synchronizer2.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Plugins\hardlight\IdPool.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -340,5 +343,6 @@
     </ClCompile>
     <ClCompile Include="..\src\Plugins\hardlight\DeviceManager.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\synchronizer2.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\IdPool.cpp" />
   </ItemGroup>
 </Project>

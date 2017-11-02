@@ -10,6 +10,8 @@
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "synchronizer2.h"
+
+#include "IdPool.h"
 class HardlightPlugin;
 struct PotentialDevice {
 	std::unique_ptr<BoostSerialAdapter> adapter;
@@ -38,19 +40,24 @@ private:
 	
 
 	void handle_connect(std::string portName, Packet packet);
+	void device_update();
 	nsvr_core* m_core;
 	IoService m_ioService;
 	std::string m_path;
 	hardware_device_recognizer m_recognizer;
 	//map portname -> product
 
-	std::size_t m_currentId;
 	std::unordered_map<std::size_t, std::string> m_deviceIds;
 	std::unordered_map<std::string, std::unique_ptr<HardlightPlugin>> m_devices;
 	std::unordered_map<std::string, std::unique_ptr<PotentialDevice>> m_potentials;
 
-	boost::asio::deadline_timer m_requestVersionTimer;
 	boost::posix_time::milliseconds m_requestVersionTimeout;
+	boost::asio::deadline_timer m_requestVersionTimer;
+
+	boost::posix_time::millisec m_devicePollTimeout;
+	boost::asio::deadline_timer m_devicePollTimer;
+
+	IdPool m_idPool;
 
 	void send_version_requests();
 };

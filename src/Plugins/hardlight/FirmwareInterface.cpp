@@ -304,6 +304,11 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::PLAY_CONTINUOUS, m_packetVersion, { { "zone", actualZone } ,{ "effect", actualId } }));
 }
 
+void FirmwareInterface::RequestUuid()
+{
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_UUID, m_packetVersion, {}));
+}
+
 void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
 {
 		m_queue.push(packet.data(), packet.size());

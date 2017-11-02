@@ -24,7 +24,6 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
 	m_synchronizer(device->synchronizer),
 	m_device(),
-	m_eventPull(m_io, boost::posix_time::milliseconds(5)),
 	m_imus(*m_dispatcher)
 
 {
@@ -44,30 +43,12 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 	
 	
-	//m_synchronizer->BeginSync();
 
 	m_dispatcher->AddConsumer(PacketType::Ping, [this](const auto&) { m_monitor->ReceiveResponse(); });
 	m_dispatcher->AddConsumer(PacketType::ImuData, [this](const auto&) { m_monitor->ReceiveResponse(); });
-	m_dispatcher->AddConsumer(PacketType::SuitVersion, [this](const auto&) { 
-	//parse version info
-		//give to firmware 
 	
-	});
-	m_eventPull.SetEvent([&]() {
-		constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
-		auto dt = 5 * ms_fraction_of_second;
 
-	
-		auto commands = m_device.GenerateHardwareCommands(dt);
-		m_firmware.Execute(commands);
 
-	
-		
-	});
-
-	m_eventPull.Start();
-
-	
 
 	
 	m_imus.AssignMapping(0x3c, Imu::Chest, NODE_IMU_CHEST); 
@@ -83,7 +64,6 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 HardlightPlugin::~HardlightPlugin()
 {
 	m_synchronizer->stop();
-	m_eventPull.Stop();
 	
 
 }
@@ -243,5 +223,15 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	ui->keyval("Total bytes sent", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
 	ui->keyval("Total bytes rec'd", std::to_string(m_synchronizer->total_bytes_read()).c_str());
 	
+}
+
+void HardlightPlugin::PollEvents()
+{
+	constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
+	auto dt = 5 * ms_fraction_of_second;
+
+
+	auto commands = m_device.GenerateHardwareCommands(dt);
+	m_firmware.Execute(commands);
 }
 
