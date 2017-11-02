@@ -15,8 +15,9 @@
 class HardlightPlugin;
 struct PotentialDevice {
 	std::unique_ptr<BoostSerialAdapter> adapter;
-	std::shared_ptr<synchronizer2> synchronizer;
 	std::unique_ptr<PacketDispatcher> dispatcher;
+
+	std::shared_ptr<synchronizer2> synchronizer;
 
 	PotentialDevice(boost::asio::io_service& io) {
 		dispatcher = std::make_unique<PacketDispatcher>();
