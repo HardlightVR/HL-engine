@@ -80,7 +80,8 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 HardlightPlugin::~HardlightPlugin()
 {
-	m_eventPull.Stop();
+	//m_synchronizer->StopSync();
+//	m_eventPull.Stop();
 	
 
 }

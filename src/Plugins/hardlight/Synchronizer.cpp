@@ -20,6 +20,11 @@ Synchronizer::Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boo
 {
 }
 
+Synchronizer::~Synchronizer()
+{
+	m_syncTimer.cancel();
+}
+
 void Synchronizer::BeginSync()
 {
 	scheduleSync();
@@ -108,10 +113,7 @@ boost::optional<Packet> Synchronizer::dequeuePacket()
 		assert(numPopped == PACKET_LENGTH);
 		m_estimatedBytesRead += numPopped;
 
-		for (int i = 0; i < p.size(); i++) {
-			std::cout << std::to_string(p[i] )<< " ";
-		}
-		std::cout << '\n';
+	
 		return p;
 
 	}

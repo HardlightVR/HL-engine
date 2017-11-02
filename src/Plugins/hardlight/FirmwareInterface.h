@@ -26,7 +26,7 @@ public:
 		int Filter;
 	};
 	FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io);
-
+	~FirmwareInterface();
 
 	void Execute(const CommandBuffer& buffer);
 	void PlayEffect(Location location, uint32_t effect, float strength);

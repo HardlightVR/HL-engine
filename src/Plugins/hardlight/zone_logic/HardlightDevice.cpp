@@ -7,7 +7,7 @@
 #include "IMU_ID.h"
 
 
-HardlightDevice::HardlightDevice() 
+HardlightDevice::HardlightDevice() : m_drivers()
 {
 	auto& translator = Locator::Translator();
 

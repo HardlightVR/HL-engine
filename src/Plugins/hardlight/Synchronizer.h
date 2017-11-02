@@ -13,6 +13,7 @@ class Synchronizer
 {
 public:
 	Synchronizer(Buffer& dataStream, PacketDispatcher& dispatcher, boost::asio::io_service&);
+	~Synchronizer();
 	enum class State {
 		Synchronized,
 		SearchingForSync,

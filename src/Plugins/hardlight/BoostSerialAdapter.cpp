@@ -153,7 +153,6 @@ void BoostSerialAdapter::Connect(connection_info info)
 
 void BoostSerialAdapter::Write(uint8_t* bytes, std::size_t length, WriteHandler&& write_handler)
 {
-	std::cout << "Writing stuff\n";
 			if (this->m_port && this->m_port->is_open()) {
 		this->m_port->async_write_some(boost::asio::buffer(bytes, length), std::move(write_handler));
 	}

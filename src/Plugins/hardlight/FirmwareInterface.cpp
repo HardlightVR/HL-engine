@@ -31,6 +31,12 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAda
 
 }
 
+FirmwareInterface::~FirmwareInterface()
+{
+	m_writeTimer.cancel();
+	m_batchingDeadline.cancel();
+}
+
 
 
 

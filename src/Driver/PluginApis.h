@@ -309,7 +309,8 @@ template<typename InternalApi, typename ExternalApi>
 inline void PluginApis::Register(ExternalApi * api)
 {
 	auto x = std::unique_ptr<plugin_api>(new InternalApi(api));
-	m_apis.emplace(std::make_pair(InternalApi::getApiType(), std::move(x)));
+	//m_apis.emplace(std::make_pair(InternalApi::getApiType(), std::move(x)));
+	m_apis[InternalApi::getApiType()] = std::move(x);
 }
 
 // Returns nullptr if the api identified by name is not found, or if the api is 

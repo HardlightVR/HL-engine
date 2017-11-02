@@ -32,6 +32,10 @@ DeviceManager::DeviceManager(std::string path)
 			handle_connect(port, packet);
 		});
 		requestSuitVersion(potentialDevice->adapter);
+		requestSuitVersion(potentialDevice->adapter);
+		requestSuitVersion(potentialDevice->adapter);
+		requestSuitVersion(potentialDevice->adapter);
+
 		m_potentials.insert(std::make_pair(info.port, std::move(potentialDevice)));
 	});
 
