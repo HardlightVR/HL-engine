@@ -27,10 +27,10 @@ Device::Device(
 	m_bodygraph->fetchDynamically();
 
 	int a = 3;
-	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
-	for (auto imu : imus) {
-		m_trackingProvider->BeginStreaming(NodeId<local>{imu});
-	}
+//	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
+//	for (auto imu : imus) {
+	//	m_trackingProvider->BeginStreaming(NodeId<local>{imu});
+	//}
 
 }
 

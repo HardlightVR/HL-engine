@@ -11,6 +11,8 @@
 #include "IMU_ID.h"
 #include "DeviceManager.h"
 
+#include "synchronizer2.h"
+
 nsvr_core* global_core = nullptr;
 
 HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device) :
@@ -20,7 +22,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 	m_adapter(std::move(device->adapter)),
 	m_firmware(data_dir, m_adapter.get(), m_io),
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
-	m_synchronizer(std::move(device->synchronizer)),
+	m_synchronizer(device->synchronizer),
 	m_device(),
 	m_eventPull(m_io, boost::posix_time::milliseconds(5)),
 	m_imus(*m_dispatcher)
@@ -80,8 +82,8 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 HardlightPlugin::~HardlightPlugin()
 {
-	//m_synchronizer->StopSync();
-//	m_eventPull.Stop();
+	m_synchronizer->stop();
+	m_eventPull.Stop();
 	
 
 }
@@ -140,13 +142,7 @@ int HardlightPlugin::Configure(nsvr_core* core)
 	nsvr_register_bodygraph_api(core, &body_api);
 
 
-	nsvr_plugin_diagnostics_api diagnostics_api;
-	diagnostics_api.client_data = this;
-	diagnostics_api.updatemenu_handler = [](nsvr_diagnostics_ui* ui, void* cd) {
-		AS_TYPE(HardlightPlugin,cd)->Render(ui);
-	};
-
-	nsvr_register_diagnostics_api(core, &diagnostics_api);
+	
 	
 	return 1;
 }
@@ -219,9 +215,8 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		"ConfirmingSyncLoss"
 	};
 	ui->keyval("Serial port open", m_adapter->IsConnected() ? "true" : "false");
-	ui->keyval("Confirmed connection to device", m_monitor->IsConnected()? "true" : "false");
 
-	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->SyncState()].c_str());
+	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->state()].c_str());
 	
 	
 	if (ui->button("TRACKING_ENABLE")) {
@@ -246,7 +241,7 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 
 
 	ui->keyval("Total bytes sent", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
-	ui->keyval("Total bytes rec'd", std::to_string(m_synchronizer->GetTotalBytesRead()).c_str());
+	ui->keyval("Total bytes rec'd", std::to_string(m_synchronizer->total_bytes_read()).c_str());
 	
 }
 

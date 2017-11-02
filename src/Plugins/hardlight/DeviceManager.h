@@ -9,17 +9,17 @@
 #include "Heartbeat.h"
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-
+#include "synchronizer2.h"
 class HardlightPlugin;
 struct PotentialDevice {
 	std::unique_ptr<BoostSerialAdapter> adapter;
-	std::unique_ptr<Synchronizer> synchronizer;
+	std::shared_ptr<synchronizer2> synchronizer;
 	std::unique_ptr<PacketDispatcher> dispatcher;
 
 	PotentialDevice(boost::asio::io_service& io) {
 		dispatcher = std::make_unique<PacketDispatcher>();
 		adapter = std::make_unique<BoostSerialAdapter>(io);
-		synchronizer = std::make_unique<Synchronizer>(adapter->GetDataStream(), *dispatcher, io);
+		synchronizer = std::make_shared<synchronizer2>(io, adapter->GetDataStream());
 	}
 };
 class DeviceManager {
@@ -33,7 +33,7 @@ public:
 	void EnumerateDevices(nsvr_device_ids* ids);
 	void GetDeviceInfo(nsvr_device_id id, nsvr_device_info* info);
 	void GetNodeInfo(nsvr_device_id device_id, nsvr_node_id id, nsvr_node_info* info);
-
+	void Render(nsvr_diagnostics_ui* ui);
 private:
 	
 

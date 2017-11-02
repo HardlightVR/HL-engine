@@ -139,7 +139,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>BOOST_ASIO_ENABLE_HANDLER_TRACKING;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -354,6 +354,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\serial\serial_connection_manager.h" />
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h" />
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\synchronizer2.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardwareCommands.h" />
@@ -408,6 +409,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\src\Plugins\hardlight\synchronizer2.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightDevice.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.cpp" />

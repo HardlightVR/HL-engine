@@ -27,9 +27,13 @@ DeviceManager::DeviceManager(std::string path)
 		
 		auto potentialDevice = std::make_unique<PotentialDevice>(m_ioService.GetIOService());
 		potentialDevice->adapter->Connect(info);
-		potentialDevice->synchronizer->BeginSync();
+		potentialDevice->synchronizer->start();
 		potentialDevice->dispatcher->AddConsumer(PacketType::SuitVersion, [this, port = info.port](auto packet) {
 			handle_connect(port, packet);
+		});
+		//makes the lifetime requirements clear: synchronizer must not outlive the dispatcher
+		potentialDevice->synchronizer->on_packet([dispatcher = potentialDevice->dispatcher.get()](auto packet) {
+			dispatcher->Dispatch(std::move(packet)); 
 		});
 		requestSuitVersion(potentialDevice->adapter);
 		requestSuitVersion(potentialDevice->adapter);
@@ -66,6 +70,7 @@ void DeviceManager::handle_connect(std::string portName, Packet packet) {
 
 	m_potentials.erase(portName);
 
+	potential->dispatcher->ClearConsumers();
 	
 	auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential));
 	real->Configure(m_core);
@@ -116,11 +121,22 @@ int DeviceManager::configure(nsvr_core * core)
 	};
 	nsvr_register_device_api(core, &device_api);
 
+	nsvr_plugin_diagnostics_api diagnostics_api;
+	diagnostics_api.client_data = this;
+	diagnostics_api.updatemenu_handler = [](nsvr_diagnostics_ui* ui, void* cd) {
+		AS_TYPE(DeviceManager, cd)->Render(ui);
+	};
 
+	nsvr_register_diagnostics_api(core, &diagnostics_api);
 
 	return 1;
 }
 
+void DeviceManager::Render(nsvr_diagnostics_ui* ui) {
+	for (auto& device : m_devices) {
+		device.second->Render(ui);
+	}
+}
 void DeviceManager::EnumerateNodesForDevice(nsvr_device_id id, nsvr_node_ids * ids)
 {
 	auto portName = m_deviceIds.at(id);

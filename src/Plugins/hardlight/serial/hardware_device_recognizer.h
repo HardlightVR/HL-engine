@@ -12,7 +12,7 @@
 #include "serial_connection_manager.h"
 #include "device_profile.h"
 
-
+#include "logger.h"
 class hardware_device_recognizer {
 public:
 	using recognized_event = boost::signals2::signal<void(connection_info)>;

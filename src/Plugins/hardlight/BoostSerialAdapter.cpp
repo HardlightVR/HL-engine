@@ -242,6 +242,7 @@ void BoostSerialAdapter::OnPacketVersionChange(std::function<void(PacketVersion)
 
 BoostSerialAdapter::~BoostSerialAdapter()
 {
+	std::cout << "ADAPTER DESTRUCTOR\n";
 	Disconnect();
 }
 

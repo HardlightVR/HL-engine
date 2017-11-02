@@ -67,10 +67,9 @@ void hardware_device_recognizer::on_unrecognize(unrecognized_event::slot_type ha
 bool open_port(boost::asio::serial_port* port, const std::string& device_name) {
 	boost::system::error_code ec;
 
-	//note: this can take a second or so depending on lower level drivers! This is synchronous!
 	port->open(device_name, ec);
 	if (ec) {
-		std::cout << "Error opening " << device_name << ": " << ec.message() << '\n';
+		core_log(nsvr_severity_error, "DeviceRecognizer", "Error opening" + device_name + ": " + ec.message());
 	}
 	return !ec;
 }

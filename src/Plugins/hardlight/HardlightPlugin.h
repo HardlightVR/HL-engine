@@ -9,6 +9,7 @@
 #include "zone_logic/hardlightdevice.h"
 #include "ScheduledEvent.h"
 
+class synchronizer2;
 struct PotentialDevice;
 class BoostSerialAdapter;
 class Heartbeat;
@@ -42,7 +43,7 @@ private:
 	HardlightDevice m_device;
 	std::shared_ptr<Heartbeat> m_monitor;
 
-	std::unique_ptr<Synchronizer> m_synchronizer;
+	std::shared_ptr<synchronizer2> m_synchronizer;
 
 	ScheduledEvent m_eventPull;
 	bool m_running;
