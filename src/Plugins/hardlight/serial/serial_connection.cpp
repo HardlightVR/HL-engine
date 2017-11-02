@@ -53,13 +53,13 @@ void serial_connection::do_read()
 		}
 
 		if (!ec) {
-			//stand-in for an actual packet parser
-			if (bytes_transferred == 16) {
-				//std::cout << "Got a packet response on " << m_portName << "\n";
 
-				m_connectionInfo = connection_info{m_portName,  m_buffer[3], m_buffer[4], m_buffer[5], m_buffer[6] };
-				
+			
+			if (m_profile->is_valid_response(m_buffer, bytes_transferred)) {
+				m_connectionInfo = connection_info{ m_portName };
 			}
+			
+			//stand-in for an actual packet parser
 			else {
 				//todo: log (there is tracking data being returned, firmware must be fixed for this)
 				std::cout << "Got an unknown packet response [" << bytes_transferred << " bytes] on " << m_portName << "\n";
@@ -72,6 +72,8 @@ void serial_connection::do_read()
 
 
 			}
+
+
 			m_manager.stop(shared_from_this());
 
 			

@@ -107,6 +107,7 @@ void hardware_device_recognizer::do_port_scan()
 
 		auto port = m_manager.make_port();
 		if (open_port(&port, portName)) {
+			std::cout << portName << " was opened.\n";
 			(*m_currentProfile)->set_options(&port);
 			m_manager.start(std::make_shared<serial_connection>(std::move(port), portName, (*m_currentProfile).get(), m_manager));
 		}

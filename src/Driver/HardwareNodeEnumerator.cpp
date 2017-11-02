@@ -73,7 +73,7 @@ void HardwareNodeEnumerator::fetchNodeInfo(nsvr_node_id node_id)
 {
 	nsvr_node_info info{ {0}, nsvr_node_concept_unknown, nsvr_api_support_none};
 
-	m_api->submit_getnodeinfo(node_id, &info);
+	m_api->submit_getnodeinfo(m_id, node_id, &info);
 
 	NodeDescriptor desc;
 	desc.displayName = std::string(info.name);

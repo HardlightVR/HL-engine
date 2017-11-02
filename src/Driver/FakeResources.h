@@ -110,7 +110,7 @@ struct DefaultNodeDiscoverer : public FakeInterface<device_api> {
 			ids->node_count = m_nodes.size();
 		};
 
-		api->submit_getnodeinfo.cpp_fn = [this](nsvr_node_id id, nsvr_node_info* info) {
+		api->submit_getnodeinfo.cpp_fn = [this](nsvr_device_id did, nsvr_node_id id, nsvr_node_info* info) {
 			auto node = m_nodes.at(NodeId<local>{id});
 			std::string name = node.name();
 			std::copy(name.begin(), name.end(), info->name);

@@ -48,14 +48,14 @@ void serial_connection::do_read()
 	m_port.async_read_some(boost::asio::buffer(m_buffer), [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
 
 		if (ec == boost::asio::error::operation_aborted) {
-		//	std::cout << "Write operation on " << m_portName << " aborted due to timeout\n";
+			std::cout << "Write operation on " << m_portName << " aborted due to timeout\n";
 
 		}
 
 		if (!ec) {
 			//stand-in for an actual packet parser
 			if (bytes_transferred == 16) {
-				//std::cout << "Got a packet response on " << m_portName << "\n";
+				std::cout << "Got a packet response on " << m_portName << "\n";
 
 				m_connectionInfo = connection_info{m_portName,  m_buffer[3], m_buffer[4], m_buffer[5], m_buffer[6] };
 				

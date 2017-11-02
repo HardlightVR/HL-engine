@@ -186,6 +186,7 @@ struct device_api : public plugin_api {
 	//note: should probably also take the device id
 	callback<
 		nsvr_plugin_device_api::nsvr_device_getnodeinfo,
+		nsvr_device_id,
 		nsvr_node_id,
 		nsvr_node_info*
 	> submit_getnodeinfo;

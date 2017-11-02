@@ -28,7 +28,7 @@ void serial_connection_manager::reset_io() {
 		m_thread.join();
 	}
 	m_io = std::make_unique<boost::asio::io_service>();
-//	std::cout << "IO Service was destroyed completely and remade\n";
+	std::cout << "IO Service was destroyed completely and remade\n";
 	m_work = std::make_unique<boost::asio::io_service::work>(*m_io);
 	m_thread = std::thread([this]() {
 		m_io->run();

@@ -7,7 +7,7 @@
 #include "SerialPort.h"
 #include "SequentialHandshaker.h"
 #include "PacketVersion.h"
-
+#include "serial/connection_info.h"
 
 
 class BoostSerialAdapter
@@ -21,6 +21,7 @@ public:
 	void ConnectAsync();
 	void Disconnect();
 
+	void Connect(connection_info info);
 
 	void Write(uint8_t* bytes, std::size_t length, WriteHandler&&);
 

@@ -139,9 +139,22 @@ void BoostSerialAdapter::Disconnect()
 	}
 }
 
+void BoostSerialAdapter::Connect(connection_info info)
+{
+	m_port = std::make_unique<boost::asio::serial_port>(m_io);
+	boost::system::error_code ec;
+	m_port->open(info.port, ec); 
+
+	kickoffSuitReading();
+
+
+
+}
+
 void BoostSerialAdapter::Write(uint8_t* bytes, std::size_t length, WriteHandler&& write_handler)
 {
-	if (this->m_port && this->m_port->is_open()) {
+	std::cout << "Writing stuff\n";
+			if (this->m_port && this->m_port->is_open()) {
 		this->m_port->async_write_some(boost::asio::buffer(bytes, length), std::move(write_handler));
 	}
 }

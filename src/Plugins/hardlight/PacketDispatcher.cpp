@@ -9,20 +9,32 @@ void PacketDispatcher::Dispatch(Packet Packet)
 {
 	PacketType packetType = GetType(Packet);
 	
-	if (m_consumers.find(packetType) != m_consumers.end())
+	auto it = m_consumers.find(packetType);
+
+	if (it != m_consumers.end())
 	{
-		for (const auto& consumer : m_consumers.at(packetType))
-		{
-			consumer(Packet);
-		}
+		it->second->operator()(Packet);
 	}
 	else {
 		core_log(nsvr_severity_info, "Dispatcher", "Packet type wasn't found: " + std::to_string((int)packetType));
 	}
 }
 
-void PacketDispatcher::AddConsumer(PacketType ptype, OnReceivePacketFunc packetFunc)
+void PacketDispatcher::ClearConsumers()
 {
-	m_consumers[ptype].push_back(packetFunc);
+	m_consumers.clear();
+}
+
+void PacketDispatcher::AddConsumer(PacketType ptype, PacketDispatcher::PacketEvent::slot_type packetFunc)
+{
+	auto it = m_consumers.find(ptype);
+	if (it != m_consumers.end()) {
+		it->second->connect(packetFunc);
+	}
+	else {
+		m_consumers.insert(std::make_pair(ptype, std::make_unique<PacketEvent>()));
+		m_consumers.at(ptype)->connect(packetFunc);
+
+	}
 }
 

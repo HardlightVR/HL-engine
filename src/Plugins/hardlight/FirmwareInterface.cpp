@@ -41,14 +41,14 @@ void FirmwareInterface::writeBuffer() {
 	if (avail == 0) {
 
 		m_writeTimer.expires_from_now(m_writeInterval);
-		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
 	}
 	else if (avail > 0 && avail < BATCH_SIZE) {
 		if (m_isBatching) {
 
 		
 			m_writeTimer.expires_from_now(m_writeInterval);
-			m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+			m_writeTimer.async_wait([&](const boost::system::error_code& ec) {if (ec) { return; }  writeBuffer(); });
 			return;
 		}
 
@@ -93,7 +93,7 @@ void FirmwareInterface::writeBuffer() {
 		}
 		);
 		m_writeTimer.expires_from_now(m_writeInterval);
-		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
 	}
 
 }
@@ -120,7 +120,7 @@ void FirmwareInterface::DisableTracking()
 
 void FirmwareInterface::RequestSuitVersion()
 {
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_VERSION, m_packetVersion, {}));
+	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_VERSION, PacketVersion::MarkIII, {}));
 }
 
 //Todo: update all to verifyThenQueue

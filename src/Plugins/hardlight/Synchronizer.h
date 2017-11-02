@@ -21,6 +21,7 @@ public:
 	};
 	State SyncState() const;
 	void BeginSync();
+	void StopSync();
 	std::size_t	GetTotalBytesRead() const;
 private:
 	std::size_t m_estimatedBytesRead;

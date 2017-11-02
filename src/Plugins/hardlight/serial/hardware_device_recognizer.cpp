@@ -83,7 +83,7 @@ void hardware_device_recognizer::remove_unrecognized_devices(const std::set<std:
 
 	for (auto portName : toBeRemoved) {
 		m_recognizedPorts.erase(portName);
-		m_onUnrecognize(portName);
+		m_onUnrecognize(connection_info{ portName });
 	}
 }
 

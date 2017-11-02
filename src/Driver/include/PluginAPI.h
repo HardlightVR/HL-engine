@@ -162,7 +162,7 @@ extern "C" {
 	typedef struct nsvr_plugin_device_api {
 		typedef void(*nsvr_device_enumeratedevices)(nsvr_device_ids*, void*);
 		typedef void(*nsvr_device_enumeratenodes)(nsvr_device_id device_id, nsvr_node_ids*, void*);
-		typedef void(*nsvr_device_getnodeinfo)(nsvr_node_id node_id, nsvr_node_info* info, void*);
+		typedef void(*nsvr_device_getnodeinfo)(nsvr_device_id device_id, nsvr_node_id node_id, nsvr_node_info* info, void*);
 		typedef void(*nsvr_device_getdeviceinfo)(nsvr_device_id device_id, nsvr_device_info* info, void*);
 
 		nsvr_device_enumeratenodes enumeratenodes_handler;
@@ -278,6 +278,7 @@ extern "C" {
 	} nsvr_quaternion;
 
 	typedef struct nsvr_plugin_tracking_api {
+		//todo: must take device id as well
 		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_node_id node_id, void* client_data);
 		typedef void(*nsvr_tracking_endstreaming)(nsvr_node_id node_id, void* client_data);
 

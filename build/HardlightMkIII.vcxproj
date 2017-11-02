@@ -308,6 +308,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h" />
     <ClInclude Include="..\src\plugins\hardlight\Atom.h" />
     <ClInclude Include="..\src\plugins\hardlight\BoostSerialAdapter.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\DeviceManager.h" />
     <ClInclude Include="..\src\plugins\hardlight\Effects.h" />
     <ClInclude Include="..\src\plugins\hardlight\EnumTranslator.h" />
     <ClInclude Include="..\src\plugins\hardlight\Enums.h" />
@@ -366,6 +367,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Atom.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\BoostSerialAdapter.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\DeviceManager.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\EnumTranslator.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\FirmwareInterface.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Handshaker.cpp" />

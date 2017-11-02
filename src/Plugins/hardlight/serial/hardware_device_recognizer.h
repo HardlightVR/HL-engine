@@ -16,7 +16,7 @@
 class hardware_device_recognizer {
 public:
 	using recognized_event = boost::signals2::signal<void(connection_info)>;
-	using unrecognized_event = boost::signals2::signal<void(std::string)>;
+	using unrecognized_event = boost::signals2::signal<void(connection_info)>;
 
 	hardware_device_recognizer(boost::asio::io_service& io);
 	

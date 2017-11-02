@@ -37,14 +37,7 @@ Device::Device(
 Device::~Device()
 {
 	std::cout << "DEVICE DESTRUCTOR\n";
-	//Need to think carefully about destruction here. 
-	//This will not work if the underlying apis are ripped out beforehand (which they appear to be)
-	//Todo: Fix all of the shutdown stuff that is currently broken. Such as this and also WriteTracking will sometimes trigger after stuff
-	//is destroyed. 
-	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
-	for (auto imu : imus) {
-		m_trackingProvider->EndStreaming(NodeId<local>{imu});
-	}
+
 }
 
 //void Device::DispatchEvent(uint64_t event_id, const NullSpaceIPC::SimpleHaptic & simple, const std::vector<nsvr_region>& regions)

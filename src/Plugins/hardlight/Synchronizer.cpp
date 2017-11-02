@@ -25,6 +25,10 @@ void Synchronizer::BeginSync()
 	scheduleSync();
 }
 
+void Synchronizer::StopSync() {
+	m_syncTimer.cancel();
+}
+
 
 void Synchronizer::scheduleSync()
 {
@@ -65,7 +69,7 @@ void Synchronizer::tryReadPacket()
 	}
 }
 
-
+//AHHH the bug is that the sync can't sync unless PACKET_LENGTH * 2 has been rec'd. todo: fix.
 void Synchronizer::searchForSync()
 {
 	if (m_incomingData.read_available() < PACKET_LENGTH * 2) {
@@ -103,6 +107,11 @@ boost::optional<Packet> Synchronizer::dequeuePacket()
 		int numPopped = m_incomingData.pop(p.data(), PACKET_LENGTH);
 		assert(numPopped == PACKET_LENGTH);
 		m_estimatedBytesRead += numPopped;
+
+		for (int i = 0; i < p.size(); i++) {
+			std::cout << std::to_string(p[i] )<< " ";
+		}
+		std::cout << '\n';
 		return p;
 
 	}
@@ -119,6 +128,7 @@ void Synchronizer::confirmSync()
 	auto possiblePacket = this->dequeuePacket();
 	if (this->packetIsWellFormed(possiblePacket)) {
 		this->m_syncState = State::Synchronized;
+		m_dispatcher.Dispatch(*possiblePacket);
 		core_log("Synchronizer", "Stream synced");
 	}
 	else {

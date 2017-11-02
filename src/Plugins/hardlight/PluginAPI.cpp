@@ -8,6 +8,8 @@
 #include <iostream>
 
 #include "Instructions.h"
+
+
 NSVR_PLUGIN_RETURN(int) nsvr_plugin_register(nsvr_plugin_api * api)
 {
 	
