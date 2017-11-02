@@ -11,7 +11,7 @@ class Heartbeat
 {
 public:
 	Heartbeat(boost::asio::io_service& io, FirmwareInterface& fi);
-	
+	~Heartbeat();
 	void BeginListening();
 	void EndListening();
 	// Called to let the Heartbeat know that it has received a response (a ping or potentially any other data that 

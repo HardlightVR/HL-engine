@@ -27,7 +27,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 {
 	
-
+	
 	m_adapter->SetConnectionMonitor(m_monitor);
 
 	m_monitor->OnReconnect([&]() {

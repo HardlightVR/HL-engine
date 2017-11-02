@@ -6,14 +6,14 @@
 #include "logger.h"
 #include "Instructions.h"
 #include "IMU_ID.h"
-constexpr unsigned int BATCH_SIZE = 192;
+constexpr unsigned int BATCH_SIZE = 16;
 
 FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io)
 	: m_queue()
 	, m_instructionSet(std::make_shared<InstructionSet>(data_dir))
 	, m_instructionBuilder(m_instructionSet)
 	, m_serial(adapter)
-	, m_packetVersion()
+	, m_packetVersion(PacketVersion::MarkIII)
 	, m_isBatching(false)
 	, m_totalBytesSent(0)
 	, m_writeInterval(20)
@@ -44,7 +44,32 @@ FirmwareInterface::~FirmwareInterface()
 
 void FirmwareInterface::writeBuffer() {
 	const std::size_t avail = m_queue.read_available();
-	if (avail == 0) {
+
+	if (avail > 0) {
+		assert(avail % 16 == 0);
+
+
+		std::size_t max_read = std::min<std::size_t>(64, avail);
+
+		std::shared_ptr<std::vector<uint8_t>> toBePopped = std::make_shared<std::vector<uint8_t>>();
+		toBePopped->resize(max_read);
+
+		//	auto a = std::make_shared<uint8_t*>(new uint8_t[max_read]);
+		const int actualLen = m_queue.pop(toBePopped->data(), max_read);
+		toBePopped->resize(actualLen);
+		assert(toBePopped->size() == actualLen);
+		m_serial->Write(toBePopped->data(), toBePopped->size(), [toBePopped, this](auto ec, std::size_t bytes_transferred) {
+			if (!ec) {
+				m_totalBytesSent += bytes_transferred;
+			}
+		});
+	}
+
+	m_writeTimer.expires_from_now(m_writeInterval);
+	m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
+
+
+	/*if (avail == 0) {
 
 		m_writeTimer.expires_from_now(m_writeInterval);
 		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
@@ -100,7 +125,7 @@ void FirmwareInterface::writeBuffer() {
 		);
 		m_writeTimer.expires_from_now(m_writeInterval);
 		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
-	}
+	}*/
 
 }
 

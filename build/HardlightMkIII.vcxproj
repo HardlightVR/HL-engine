@@ -139,7 +139,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_ASIO_ENABLE_HANDLER_TRACKING;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\Libraries\boost\boost_1_61_0;..\src\plugins\hardlight;..\src\Driver\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>

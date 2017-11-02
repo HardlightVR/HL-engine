@@ -153,6 +153,7 @@ void BoostSerialAdapter::Connect(connection_info info)
 
 void BoostSerialAdapter::Write(uint8_t* bytes, std::size_t length, WriteHandler&& write_handler)
 {
+	std::cout << "writing " << length << " bytes to suit\n";
 			if (this->m_port && this->m_port->is_open()) {
 		this->m_port->async_write_some(boost::asio::buffer(bytes, length), std::move(write_handler));
 	}
@@ -184,13 +185,22 @@ void BoostSerialAdapter::endReconnectionProcess()
 
 void BoostSerialAdapter::kickoffSuitReading()
 {
+	std::cout << "Ckicking of suit read\n";
 
-	if (!IsConnected()) { return;  }
+	if (!IsConnected()) { 
+		return; 
+	}
+
+	std::cout << "Ckicking of suit read2\n";
+
 
 	m_port->async_read_some(boost::asio::buffer(m_suitReadBuffer, INCOMING_DATA_BUFFER_SIZE), [this]
 		(const auto& error, auto bytes_transferred) {
+		std::cout << "Read handl;er\n";
 
 			if (!error) {
+				std::cout << "No read error\n";
+
 				m_incomingSuitData.push(m_suitReadBuffer, bytes_transferred);
 				std::fill(m_suitReadBuffer, m_suitReadBuffer + INCOMING_DATA_BUFFER_SIZE, 0);
 		
@@ -198,6 +208,9 @@ void BoostSerialAdapter::kickoffSuitReading()
 			}	
 		}
 	);
+
+	std::cout << "Posted async\n";
+
 }
 
 
@@ -229,7 +242,6 @@ void BoostSerialAdapter::OnPacketVersionChange(std::function<void(PacketVersion)
 
 BoostSerialAdapter::~BoostSerialAdapter()
 {
-	m_heartbeat->EndListening();
 	Disconnect();
 }
 

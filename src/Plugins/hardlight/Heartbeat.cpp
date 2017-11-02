@@ -19,6 +19,11 @@ Heartbeat::Heartbeat(boost::asio::io_service& io, FirmwareInterface& fi)
 }
 
 
+Heartbeat::~Heartbeat()
+{
+	EndListening();
+}
+
 void Heartbeat::BeginListening()
 {
 	schedulePingTimer();
