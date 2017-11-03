@@ -15,6 +15,9 @@ public:
 	void start();
 	void stop();
 
+	std::size_t bytes_read() const;
+	std::size_t bytes_written() const;
+
 private:
 	std::unique_ptr<boost::asio::serial_port> m_port;
 

@@ -37,3 +37,13 @@ void HardwareIO::stop()
 	m_port->close(ignored);
 
 }
+
+std::size_t HardwareIO::bytes_read() const
+{
+	return m_reader->total_bytes_read();
+}
+
+std::size_t HardwareIO::bytes_written() const
+{
+	return m_writer->total_bytes_written();
+}

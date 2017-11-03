@@ -221,8 +221,8 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	}
 
 
-	ui->keyval("Total bytes sent", std::to_string(m_firmware->GetTotalBytesSent()).c_str());
-	ui->keyval("Total bytes rec'd", std::to_string(m_synchronizer->total_bytes_read()).c_str());
+	ui->keyval("Total bytes sent", std::to_string(m_hwIO->bytes_written()).c_str());
+	ui->keyval("Total bytes rec'd", std::to_string(m_hwIO->bytes_read()).c_str());
 	
 }
 

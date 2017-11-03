@@ -5,6 +5,7 @@ WriterAdapter::WriterAdapter(std::shared_ptr<boost::lockfree::spsc_queue<uint8_t
 	: m_outgoing(outgoing)
 	, m_port(port)
 	, m_stopped(false)
+	, m_totalBytes(0)
 {
 }
 
@@ -16,6 +17,11 @@ void WriterAdapter::start()
 void WriterAdapter::stop()
 {
 	m_stopped = true;
+}
+
+std::size_t WriterAdapter::total_bytes_written() const
+{
+	return m_totalBytes;
 }
 
 void WriterAdapter::do_write()
@@ -36,6 +42,7 @@ void WriterAdapter::do_write()
 			return;
 		}
 		if (!ec) {
+			m_totalBytes += bytes_transferred;
 			do_write();
 		}
 	});
