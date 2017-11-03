@@ -52,9 +52,9 @@ DeviceManager::DeviceManager(std::string path)
 			dispatcher->Dispatch(std::move(packet)); 
 		});
 
-		requestSuitVersion(potentialDevice->io->outgoing_queue());
-		requestSuitVersion(potentialDevice->io->outgoing_queue());
-		requestUuid(potentialDevice->io->outgoing_queue());
+		requestSuitVersion(*potentialDevice->io->outgoing_queue());
+		requestSuitVersion(*potentialDevice->io->outgoing_queue());
+		requestUuid(*potentialDevice->io->outgoing_queue());
 
 		m_potentials.insert(std::make_pair(info.port_name, std::move(potentialDevice)));
 	});

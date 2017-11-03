@@ -27,7 +27,6 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 {
 	
-	m_firmware->start();
 
 
 	
@@ -54,7 +53,6 @@ HardlightPlugin::~HardlightPlugin()
 {
 	std::cout << "HardlightPlugin destructor\n";
 	m_synchronizer->stop();
-	m_firmware->stop();
 	m_hwIO->stop();
 
 }

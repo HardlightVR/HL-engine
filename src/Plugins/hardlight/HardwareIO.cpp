@@ -5,20 +5,20 @@
 
 HardwareIO::HardwareIO(std::unique_ptr<boost::asio::serial_port> port)
 	: m_port(std::move(port))
-	, m_incoming(4096)
-	, m_outgoing(4096)
+	, m_incoming(std::make_shared<boost::lockfree::spsc_queue<uint8_t>>(4096))
+	, m_outgoing(std::make_shared<boost::lockfree::spsc_queue<uint8_t>>(4096))
 	, m_reader(std::make_shared<ReaderAdapter>(m_incoming, *m_port))
 	, m_writer(std::make_shared<WriterAdapter>(m_outgoing, *m_port))
 {
 	
 }
 
-boost::lockfree::spsc_queue<uint8_t>& HardwareIO::incoming_queue()
+std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> HardwareIO::incoming_queue()
 {
 	return m_incoming;
 }
 
-boost::lockfree::spsc_queue<uint8_t>& HardwareIO::outgoing_queue()
+std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> HardwareIO::outgoing_queue()
 {
 	return m_outgoing;
 }

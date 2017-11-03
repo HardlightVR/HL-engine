@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ReaderAdapter.h"
 
-ReaderAdapter::ReaderAdapter(boost::lockfree::spsc_queue<uint8_t>& incoming,boost::asio::serial_port& port)
+ReaderAdapter::ReaderAdapter(std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> incoming,boost::asio::serial_port& port)
 	: m_incoming(incoming)
 	, m_port(port)
 	, m_stopped(false)
@@ -27,7 +27,7 @@ void ReaderAdapter::do_read()
 			return;
 		}
 		if (!ec) {
-			m_incoming.push(m_tempBuffer.data(), bytes_transferred);
+			m_incoming->push(m_tempBuffer.data(), bytes_transferred);
 			do_read();
 		}
 	});

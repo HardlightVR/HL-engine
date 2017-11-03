@@ -21,7 +21,7 @@ synchronizer2::State synchronizer2::state() const
 	return m_state;
 }
 
-synchronizer2::synchronizer2(boost::asio::io_service& io, boost::lockfree::spsc_queue<uint8_t>& data)
+synchronizer2::synchronizer2(boost::asio::io_service& io, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> data)
 	: m_dispatcher()
 	, m_data(data)
 	, m_badSyncLimit(2)
@@ -153,7 +153,7 @@ bool synchronizer2::seek_offset(const Packet& realPacket)
 			std::size_t howMuchLeft = offset;
 			for (std::size_t i = 0; i < howMuchLeft; ++i)
 			{
-				m_data.pop();
+				m_data->pop();
 			}
 			return true;
 		}
@@ -194,14 +194,14 @@ boost::optional<Packet> synchronizer2::dequeuePacket()
 {
 	try
 	{
-		auto avail = m_data.read_available();
+		auto avail = m_data->read_available();
 		if (avail < PACKET_LENGTH) {
 			return boost::none;
 		}
 
 
 		Packet p;
-		int numPopped = m_data.pop(p.data(), PACKET_LENGTH);
+		int numPopped = m_data->pop(p.data(), PACKET_LENGTH);
 		assert(numPopped == PACKET_LENGTH);
 		m_totalBytesRead += numPopped;
 

@@ -24,7 +24,7 @@ public:
 		int PeakTime;
 		int Filter;
 	};
-	FirmwareInterface(const std::string& data_dir, boost::lockfree::spsc_queue<uint8_t>& outgoing, boost::asio::io_service& io);
+	FirmwareInterface(const std::string& data_dir, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::io_service& io);
 	~FirmwareInterface();
 
 	void start();
@@ -47,19 +47,16 @@ public:
 	void EnableRtpMode(Location pad);
 	void PlayRtp(Location location, int strength);
 	void Ping();
-	void RawCommand(const uint8_t* bytes, std::size_t length);
 
 	std::size_t GetTotalBytesSent() const;
 private:
-	//So as far as I can tell.. the queue is written to from the IO thread, and then read from the IO thread, all using boost::asio.
-	//So the handlers will run synchronously, therefore we don't need a lock-free queue in the first place. 
-	boost::lockfree::spsc_queue<uint8_t, boost::lockfree::capacity<10240>> m_queue;
+
 
 	std::shared_ptr<InstructionSet> m_instructionSet;
 
 	InstructionBuilder m_instructionBuilder;
 
-	boost::lockfree::spsc_queue<uint8_t>& m_outgoing;
+	std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> m_outgoing;
 
 	PacketVersion m_packetVersion;
 
@@ -67,15 +64,10 @@ private:
 
 	std::size_t m_totalBytesSent;
 
-	boost::posix_time::milliseconds m_writeInterval;
-	boost::asio::deadline_timer m_writeTimer;
-	boost::posix_time::milliseconds m_batchingTimeout;
-	boost::asio::deadline_timer m_batchingDeadline;
 	void verifyThenQueue(const nsvr::config::Instruction& inst);
 	void verifyThenQueue(InstructionBuilder& builder);
 	void verifyThenQueue(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
 	void queuePacket(const std::vector<uint8_t>& packet);
-	void writeBuffer();
 	
 	
 	
