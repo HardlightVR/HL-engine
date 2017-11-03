@@ -10,7 +10,7 @@ class FirmwareInterface;
 class Heartbeat
 {
 public:
-	Heartbeat(boost::asio::io_service& io, FirmwareInterface& fi);
+	Heartbeat(boost::asio::io_service& io, std::weak_ptr<FirmwareInterface> fi);
 	~Heartbeat();
 	void BeginListening();
 	void EndListening();
@@ -27,7 +27,7 @@ public:
 	void OnDisconnect(ConnectionHandler::slot_type);
 	void OnReconnect(ConnectionHandler::slot_type);
 private:
-	FirmwareInterface& m_firmware;
+	std::weak_ptr<FirmwareInterface> m_firmware;
 	
 	bool m_isConnected;
 

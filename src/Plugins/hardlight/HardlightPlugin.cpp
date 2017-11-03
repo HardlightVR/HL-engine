@@ -19,8 +19,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 	m_core{ nullptr },
 	m_io(io),
 	m_dispatcher(std::move(device->dispatcher)),
-	m_adapter(std::move(device->adapter)),
-	m_firmware(data_dir, m_adapter.get(), m_io),
+	m_firmware(std::make_shared<FirmwareInterface>(data_dir, std::move(device->adapter), m_io)),
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
 	m_synchronizer(device->synchronizer),
 	m_device(),
@@ -28,18 +27,8 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 {
 	
-	
-	m_adapter->SetConnectionMonitor(m_monitor);
+	m_firmware->start();
 
-	m_monitor->OnReconnect([&]() {
-		nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, 0);
-	});
-
-	m_monitor->OnDisconnect([&]() {
-	//	m_imus.RemoveStream(50);//chest_imu;
-
-		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, 0);
-	});
 
 	
 	
@@ -64,7 +53,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 HardlightPlugin::~HardlightPlugin()
 {
 	m_synchronizer->stop();
-	
+	m_firmware->stop();
 
 }
 
@@ -130,13 +119,13 @@ int HardlightPlugin::Configure(nsvr_core* core)
 void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id id)
 {
 	m_imus.AssignStream(stream, id);
-	m_firmware.EnableTracking();
+	m_firmware->EnableTracking();
 }
 
 void HardlightPlugin::EndTracking(nsvr_node_id id)
 {
 	m_imus.RemoveStream(id);
-	m_firmware.DisableTracking();
+	m_firmware->DisableTracking();
 }
 
 void HardlightPlugin::EnumerateNodesForDevice(nsvr_node_ids * ids)
@@ -194,20 +183,20 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		"ConfirmingSync",
 		"ConfirmingSyncLoss"
 	};
-	ui->keyval("Serial port open", m_adapter->IsConnected() ? "true" : "false");
+	
 
 	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->state()].c_str());
 	
 	
 	if (ui->button("TRACKING_ENABLE")) {
-		m_firmware.EnableTracking();
+		m_firmware->EnableTracking();
 	}
 	if (ui->button("TRACKING_DISABLE")) {
-		m_firmware.DisableTracking();
+		m_firmware->DisableTracking();
 	}
 
 	if (ui->button("GET_TRACK_STATUS")) {
-		m_firmware.RequestTrackingStatus();
+		m_firmware->RequestTrackingStatus();
 	}
 
 
@@ -220,7 +209,7 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	}
 
 
-	ui->keyval("Total bytes sent", std::to_string(m_firmware.GetTotalBytesSent()).c_str());
+	ui->keyval("Total bytes sent", std::to_string(m_firmware->GetTotalBytesSent()).c_str());
 	ui->keyval("Total bytes rec'd", std::to_string(m_synchronizer->total_bytes_read()).c_str());
 	
 }
@@ -232,6 +221,6 @@ void HardlightPlugin::PollEvents()
 
 
 	auto commands = m_device.GenerateHardwareCommands(dt);
-	m_firmware.Execute(commands);
+	m_firmware->Execute(commands);
 }
 

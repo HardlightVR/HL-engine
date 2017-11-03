@@ -3,7 +3,7 @@
 #include "FirmwareInterface.h"
 #include "logger.h"
 
-Heartbeat::Heartbeat(boost::asio::io_service& io, FirmwareInterface& fi)
+Heartbeat::Heartbeat(boost::asio::io_service& io, std::weak_ptr<FirmwareInterface> fi)
 	: m_firmware(fi)
 	, m_isConnected(false)
 	, m_latestResponseTime(0)
@@ -44,9 +44,11 @@ void Heartbeat::schedulePingTimer()
 
 void Heartbeat::doHeartbeat()
 {
-	m_firmware.Ping();
-	int a = 9;
-	scheduleResponseTimer();
+	if (auto f = m_firmware.lock()) {
+		f->Ping();
+		int a = 9;
+		scheduleResponseTimer();
+	}
 }
 
 

@@ -22,7 +22,7 @@ public:
 
 	using PacketEvent = boost::signals2::signal<void(Packet)>;
 
-	synchronizer2(boost::asio::io_service& io, boost::lockfree::spsc_queue<uint8_t>& data);
+	synchronizer2(boost::asio::io_service& io, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> data);
 	void start();
 	void stop();
 
@@ -41,7 +41,7 @@ private:
 
 	PacketEvent m_dispatcher;
 
-	boost::lockfree::spsc_queue<uint8_t>& m_data;
+	std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> m_data;
 
 	const std::size_t m_badSyncLimit;
 

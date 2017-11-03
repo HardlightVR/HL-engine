@@ -39,8 +39,8 @@ private:
 	boost::asio::io_service& m_io;
 
 	std::unique_ptr<PacketDispatcher> m_dispatcher;
-	std::unique_ptr<BoostSerialAdapter> m_adapter;
-	FirmwareInterface m_firmware;
+
+	std::shared_ptr<FirmwareInterface> m_firmware;
 
 	HardlightDevice m_device;
 	std::shared_ptr<Heartbeat> m_monitor;

@@ -13,7 +13,7 @@ namespace nsvr {
 	}
 }
 
-class FirmwareInterface
+class FirmwareInterface  : public std::enable_shared_from_this<FirmwareInterface>
 {
 	
 public:
@@ -25,8 +25,11 @@ public:
 		int PeakTime;
 		int Filter;
 	};
-	FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io);
+	FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter> adapter, boost::asio::io_service& io);
 	~FirmwareInterface();
+
+	void start();
+	void stop();
 
 	void Execute(const CommandBuffer& buffer);
 	void PlayEffect(Location location, uint32_t effect, float strength);
@@ -57,7 +60,7 @@ private:
 
 	InstructionBuilder m_instructionBuilder;
 
-	BoostSerialAdapter* m_serial;
+	std::unique_ptr<BoostSerialAdapter> m_serial;
 
 	PacketVersion m_packetVersion;
 

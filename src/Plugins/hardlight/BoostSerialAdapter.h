@@ -25,7 +25,7 @@ public:
 
 	void Write(uint8_t* bytes, std::size_t length, WriteHandler&&);
 
-	Buffer& GetDataStream();
+	std::shared_ptr<Buffer> GetDataStream();
 
 	bool IsConnected() const;
 
@@ -46,7 +46,7 @@ private:
 
 	uint8_t m_suitReadBuffer[INCOMING_DATA_BUFFER_SIZE];
 	
-	Buffer m_incomingSuitData;
+	std::shared_ptr<Buffer> m_incomingSuitData;
 
 	bool m_isReconnecting = false;
 

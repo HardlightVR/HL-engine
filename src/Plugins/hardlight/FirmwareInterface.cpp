@@ -8,11 +8,11 @@
 #include "IMU_ID.h"
 constexpr unsigned int BATCH_SIZE = 16;
 
-FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAdapter* adapter, boost::asio::io_service& io)
+FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter> adapter, boost::asio::io_service& io)
 	: m_queue()
 	, m_instructionSet(std::make_shared<InstructionSet>(data_dir))
 	, m_instructionBuilder(m_instructionSet)
-	, m_serial(adapter)
+	, m_serial(std::move(adapter))
 	, m_packetVersion(PacketVersion::MarkIII)
 	, m_isBatching(false)
 	, m_totalBytesSent(0)
@@ -26,8 +26,7 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, BoostSerialAda
 		m_packetVersion = version;  
 	});
 
-	m_writeTimer.expires_from_now(m_writeInterval);
-	m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+	
 
 }
 
@@ -35,6 +34,23 @@ FirmwareInterface::~FirmwareInterface()
 {
 	m_writeTimer.cancel();
 	m_batchingDeadline.cancel();
+}
+
+void FirmwareInterface::start()
+{
+	auto self(shared_from_this());
+	m_writeTimer.expires_from_now(m_writeInterval);
+	m_writeTimer.async_wait([this, self](const boost::system::error_code& ec) { 
+		if (ec) { 
+			return; 
+		} 
+		writeBuffer(); 
+	});
+}
+
+void FirmwareInterface::stop()
+{
+	m_writeTimer.cancel();
 }
 
 
@@ -65,8 +81,7 @@ void FirmwareInterface::writeBuffer() {
 		});
 	}
 
-	m_writeTimer.expires_from_now(m_writeInterval);
-	m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
+	start();
 
 
 	/*if (avail == 0) {
