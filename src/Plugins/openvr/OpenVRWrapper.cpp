@@ -63,7 +63,7 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 		return wrapper->getDeviceInfo(id, info);
 	};
 
-	devices.getnodeinfo_handler = [](nsvr_node_id node_id, nsvr_node_info* info, void *ud) {
+	devices.getnodeinfo_handler = [](nsvr_device_id device, nsvr_node_id node_id, nsvr_node_info* info, void *ud) {
 		OpenVRWrapper* wrapper = static_cast<OpenVRWrapper*>(ud);
 		return wrapper->getNodeInfo(node_id, info);
 	};

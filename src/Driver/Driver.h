@@ -16,7 +16,6 @@ class Driver {
 public:
 	
 	Driver();
-	~Driver();
 	bool StartThread();
 	bool Shutdown();
 	void DrawDiagnostics(uint32_t id);

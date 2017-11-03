@@ -96,11 +96,7 @@ Driver::Driver() :
 	
 }
 
-Driver::~Driver()
-{
-	std::cout << "DRIVER DESTRUCTOR\n";
 
-}
 
 bool Driver::StartThread()
 {

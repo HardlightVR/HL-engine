@@ -13,9 +13,7 @@ public:
 	void BeginStreaming(NodeId<local> whichNode) override;
 	void EndStreaming(NodeId<local> whichNode) override;
 	void OnUpdate(std::function<void(NodeId<local>, nsvr_quaternion *)> handler) override;
-	~HardwareTracking() {
-		std::cout << "TRACKING DESTRUCTOR\n";
-	}
+
 private:
 	tracking_api* m_api;
 	std::function<void(NodeId<local>, nsvr_quaternion*)> m_callback;

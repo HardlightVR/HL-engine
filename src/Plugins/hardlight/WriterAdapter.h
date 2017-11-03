@@ -8,7 +8,6 @@
 class WriterAdapter : public std::enable_shared_from_this<WriterAdapter> {
 public:
 	WriterAdapter(std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::serial_port& port);
-	~WriterAdapter() { std::cout << "Writerdapter destructor\n"; }
 	void start();
 	void stop();
 private:

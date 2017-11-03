@@ -7,15 +7,6 @@
 #include "DeviceContainer.h"
 
 
-PluginInstance::~PluginInstance()
-{
-	{
-		std::cout << "PL INSTANCE DESTRUCTOR\n";
-
-	}
-
-	
-}
 
 PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileName, uint32_t id) 
 	: m_fileName(fileName)

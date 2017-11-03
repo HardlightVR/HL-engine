@@ -18,7 +18,6 @@ public:
 		ConfirmingSyncLoss
 	};
 	State state() const;
-	~synchronizer2() { std::cout << "SYNCRO2 DESTRUCTOR\n"; }
 
 	using PacketEvent = boost::signals2::signal<void(Packet)>;
 

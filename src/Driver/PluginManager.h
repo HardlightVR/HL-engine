@@ -19,10 +19,7 @@ public:
 	PluginManager(boost::asio::io_service& io);
 	PluginManager(const PluginManager&) = delete;
 	const PluginManager& operator=(const PluginManager&) = delete;
-	~PluginManager() {
-		std::cout << "PLUGIN MANAGER DESTRUCTOR\n";
-
-	}
+	
 	//Look for any manifest files present and attempt to parse them, figuring out the .dll name, etc.
 	void Discover();
 

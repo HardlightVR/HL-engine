@@ -32,7 +32,6 @@ public:
 		std::unique_ptr<FakeInterface<buffered_api>> bufferedHaptics;
 	};
 
-	~PluginInstance();
 
 	using DeviceResourceBundle = std::unique_ptr<DeviceResources>;
 
