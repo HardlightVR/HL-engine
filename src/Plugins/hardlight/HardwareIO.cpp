@@ -31,6 +31,7 @@ void HardwareIO::start()
 
 void HardwareIO::stop()
 {
+	m_reader->stop();
 	m_writer->stop();
 	std::cout << "They called stop on HWIo\n";
 	boost::system::error_code ignored;
