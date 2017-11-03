@@ -14,7 +14,7 @@
 
 nsvr_core* global_core = nullptr;
 //note: can make firmware unique
-HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device) :
+HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version) :
 	m_core{ nullptr },
 	m_io(io),
 	m_hwIO(std::move(device->io)),
@@ -23,7 +23,8 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
 	m_synchronizer(device->synchronizer),
 	m_device(),
-	m_imus(*m_dispatcher)
+	m_imus(*m_dispatcher),
+	m_version(version)
 
 {
 	
@@ -146,8 +147,14 @@ void HardlightPlugin::EnumerateDevices(nsvr_device_ids* ids)
 
 void HardlightPlugin::GetDeviceInfo(nsvr_device_info * info)
 {
-	
-	std::string device_name("Hardlight Suit");
+	static std::unordered_map<int, std::string> products = {{2, "MarkII"}, {3, "MarkIII" }};
+
+	std::string mark = "(Unknown Version)";
+	if (products.find(m_version.product) != products.end()) {
+		mark = products.at(m_version.product);
+	}
+
+	std::string device_name("Hardlight Suit " + mark);
 	std::copy(device_name.begin(), device_name.end(), info->name);
 	info->concept = nsvr_device_concept_suit;
 	
@@ -184,6 +191,11 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		"ConfirmingSyncLoss"
 	};
 	
+	ui->keyval("Product version", std::to_string(m_version.product).c_str());
+	ui->keyval("Product revision", std::to_string(m_version.revision).c_str());
+	ui->keyval("Firmware major", std::to_string(m_version.firmware_a).c_str());
+	ui->keyval("Firmware minor", std::to_string(m_version.firmware_b).c_str());
+
 
 	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->state()].c_str());
 	

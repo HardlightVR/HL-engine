@@ -9,6 +9,7 @@
 #include "zone_logic/hardlightdevice.h"
 #include "ScheduledEvent.h"
 #include "HardwareIO.h"
+#include "hardlight_device_version.h"
 class synchronizer2;
 struct PotentialDevice;
 class BoostSerialAdapter;
@@ -17,7 +18,7 @@ class Synchronizer;
 
 class HardlightPlugin {
 public:
-	HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device);
+	HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version);
 	~HardlightPlugin();
 
 	int Configure(nsvr_core* ctx);
@@ -50,6 +51,8 @@ private:
 	bool m_running;
 
 	ImuConsumer m_imus;
+
+	hardlight_device_version m_version;
 
 
 

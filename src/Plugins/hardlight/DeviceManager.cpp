@@ -2,7 +2,7 @@
 #include "DeviceManager.h"
 #include <iostream>
 #include "HardlightPlugin.h"
-
+#include "hardlight_device_version.h"
 static std::array<uint8_t, 16> version_packet = { 0x24,0x02,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 static std::array<uint8_t, 16> uuid_packet = { 0x24,0x02,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 
@@ -84,11 +84,13 @@ DeviceManager::DeviceManager(std::string path)
 	});
 }
 
-void DeviceManager::handle_connect(std::string portName, Packet packet) {
+void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
 	if (m_potentials.find(portName) == m_potentials.end()) {
 		return;
 	}
+
+	auto version = parse_version(versionPacket);
 
 	auto potential = std::move(m_potentials.at(portName));
 
@@ -96,7 +98,7 @@ void DeviceManager::handle_connect(std::string portName, Packet packet) {
 
 	potential->dispatcher->ClearConsumers();
 	
-	auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential));
+	auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential), version);
 	real->Configure(m_core);
 
 	m_devices.insert(std::make_pair(portName, std::move(real)));

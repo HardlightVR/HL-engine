@@ -136,6 +136,7 @@ void synchronizer2::search_for_sync()
 	}
 
 	if (packetIsWellFormed(*possiblePacket) || seek_offset(*possiblePacket)) {
+		m_dispatcher(*possiblePacket);
 		m_syncTimer.expires_from_now(m_syncInterval);
 		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; } confirm_sync(); });
 		return;
