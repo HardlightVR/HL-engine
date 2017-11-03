@@ -307,8 +307,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h" />
     <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h" />
     <ClInclude Include="..\src\plugins\hardlight\Atom.h" />
-    <ClInclude Include="..\src\plugins\hardlight\BoostSerialAdapter.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\DeviceManager.h" />
+    <ClInclude Include="..\src\plugins\hardlight\DeviceManager.h" />
     <ClInclude Include="..\src\plugins\hardlight\Effects.h" />
     <ClInclude Include="..\src\plugins\hardlight\EnumTranslator.h" />
     <ClInclude Include="..\src\plugins\hardlight\Enums.h" />
@@ -317,11 +316,12 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h" />
     <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h" />
+    <ClInclude Include="..\src\plugins\hardlight\HardwareIO.h" />
     <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h" />
     <ClInclude Include="..\src\plugins\hardlight\HexUtils.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\IdPool.h" />
     <ClInclude Include="..\src\plugins\hardlight\ILogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\IMU_ID.h" />
+    <ClInclude Include="..\src\plugins\hardlight\IdPool.h" />
     <ClInclude Include="..\src\plugins\hardlight\ImuConsumer.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h" />
@@ -339,11 +339,13 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketVersion.h" />
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h" />
+    <ClInclude Include="..\src\plugins\hardlight\ReaderAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\SequentialHandshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\SerialPort.h" />
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
     <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h" />
+    <ClInclude Include="..\src\plugins\hardlight\WriterAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\better_enum.h" />
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
     <ClInclude Include="..\src\plugins\hardlight\logger.h" />
@@ -355,7 +357,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\serial\serial_connection_manager.h" />
     <ClInclude Include="..\src\plugins\hardlight\stdafx.h" />
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\synchronizer2.h" />
+    <ClInclude Include="..\src\plugins\hardlight\synchronizer2.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\HardwareCommands.h" />
@@ -368,16 +370,16 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Atom.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\BoostSerialAdapter.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\DeviceManager.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\DeviceManager.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\EnumTranslator.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\FirmwareInterface.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Handshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\HardwareIO.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\IdPool.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\IdPool.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ImuConsumer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp" />
@@ -392,11 +394,13 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\ReaderAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SequentialHandshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.cpp" />
@@ -411,7 +415,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\src\Plugins\hardlight\synchronizer2.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\synchronizer2.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightDevice.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.cpp" />

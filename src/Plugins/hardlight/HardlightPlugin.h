@@ -8,7 +8,7 @@
 #include "ImuConsumer.h"
 #include "zone_logic/hardlightdevice.h"
 #include "ScheduledEvent.h"
-
+#include "HardwareIO.h"
 class synchronizer2;
 struct PotentialDevice;
 class BoostSerialAdapter;
@@ -41,7 +41,7 @@ private:
 	std::unique_ptr<PacketDispatcher> m_dispatcher;
 
 	std::shared_ptr<FirmwareInterface> m_firmware;
-
+	std::unique_ptr<HardwareIO> m_hwIO;
 	HardlightDevice m_device;
 	std::shared_ptr<Heartbeat> m_monitor;
 

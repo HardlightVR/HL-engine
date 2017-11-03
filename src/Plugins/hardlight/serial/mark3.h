@@ -10,7 +10,7 @@
 class mark3 : public device_profile {
 public:
 	mark3();
-	void set_options(boost::asio::serial_port* port) const override;
+	void set_options(boost::asio::serial_port& port) const override;
 	bool is_valid_response(const std::array<uint8_t, 128>& buffer, std::size_t length) const override;
 private:
 	const boost::asio::const_buffer do_get_ping_data() const override;

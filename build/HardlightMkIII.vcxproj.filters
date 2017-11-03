@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Driver">
@@ -39,7 +39,7 @@
     <ClInclude Include="..\src\plugins\hardlight\Atom.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\BoostSerialAdapter.h">
+    <ClInclude Include="..\src\plugins\hardlight\DeviceManager.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Effects.h">
@@ -66,6 +66,9 @@
     <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\HardwareIO.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Heartbeat.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -76,6 +79,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\IMU_ID.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\IdPool.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\ImuConsumer.h">
@@ -129,6 +135,9 @@
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\ReaderAdapter.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -142,6 +151,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\WriterAdapter.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\better_enum.h">
@@ -177,6 +189,9 @@
     <ClInclude Include="..\src\plugins\hardlight\suit_packet.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\synchronizer2.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
@@ -201,15 +216,6 @@
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Plugins\hardlight\DeviceManager.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Plugins\hardlight\synchronizer2.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Plugins\hardlight\IdPool.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -218,7 +224,7 @@
     <ClCompile Include="..\src\plugins\hardlight\Atom.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\BoostSerialAdapter.cpp">
+    <ClCompile Include="..\src\plugins\hardlight\DeviceManager.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\EnumTranslator.cpp">
@@ -236,10 +242,16 @@
     <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\HardwareIO.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Heartbeat.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HexUtils.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\IdPool.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\ImuConsumer.cpp">
@@ -284,6 +296,9 @@
     <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\ReaderAdapter.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
@@ -297,6 +312,9 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp">
@@ -320,6 +338,9 @@
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\synchronizer2.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
@@ -341,8 +362,5 @@
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Plugins\hardlight\DeviceManager.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\synchronizer2.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\IdPool.cpp" />
   </ItemGroup>
 </Project>

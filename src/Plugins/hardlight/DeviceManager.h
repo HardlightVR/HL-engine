@@ -2,7 +2,6 @@
 
 #include "serial/hardware_device_recognizer.h"
 
-#include "BoostSerialAdapter.h"
 #include "Synchronizer.h"
 #include "PacketDispatcher.h"
 #include "IoService.h"
@@ -10,19 +9,20 @@
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "synchronizer2.h"
+#include "HardwareIO.h"
 
 #include "IdPool.h"
 class HardlightPlugin;
 struct PotentialDevice {
-	std::unique_ptr<BoostSerialAdapter> adapter;
+	std::unique_ptr<HardwareIO> io;
 	std::unique_ptr<PacketDispatcher> dispatcher;
-
 	std::shared_ptr<synchronizer2> synchronizer;
 
-	PotentialDevice(boost::asio::io_service& io) {
+	PotentialDevice(std::unique_ptr<boost::asio::serial_port> port) {
+		boost::asio::io_service& io_service = port->get_io_service();
+		io = std::make_unique<HardwareIO>(std::move(port));
 		dispatcher = std::make_unique<PacketDispatcher>();
-		adapter = std::make_unique<BoostSerialAdapter>(io);
-		synchronizer = std::make_shared<synchronizer2>(io, adapter->GetDataStream());
+		synchronizer = std::make_shared<synchronizer2>(io_service, io->incoming_queue());
 	}
 };
 class DeviceManager {
@@ -59,6 +59,4 @@ private:
 	boost::asio::deadline_timer m_devicePollTimer;
 
 	IdPool m_idPool;
-
-	void send_version_requests();
 };

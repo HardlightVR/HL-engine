@@ -1,8 +1,7 @@
 #pragma once
 #include <queue>
 #include "Enums.h"
-
-#include "BoostSerialAdapter.h"
+#include <boost/lockfree/spsc_queue.hpp>
 #include "InstructionBuilder.h"
 #include <boost/asio/io_service.hpp>
 #include "zone_logic/HardwareCommands.h"
@@ -25,7 +24,7 @@ public:
 		int PeakTime;
 		int Filter;
 	};
-	FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter> adapter, boost::asio::io_service& io);
+	FirmwareInterface(const std::string& data_dir, boost::lockfree::spsc_queue<uint8_t>& outgoing, boost::asio::io_service& io);
 	~FirmwareInterface();
 
 	void start();
@@ -60,7 +59,7 @@ private:
 
 	InstructionBuilder m_instructionBuilder;
 
-	std::unique_ptr<BoostSerialAdapter> m_serial;
+	boost::lockfree::spsc_queue<uint8_t>& m_outgoing;
 
 	PacketVersion m_packetVersion;
 

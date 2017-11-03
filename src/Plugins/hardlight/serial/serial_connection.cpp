@@ -6,7 +6,7 @@
 #include <iostream>
 #include "device_profile.h"
 #include <sstream>
-serial_connection::serial_connection(boost::asio::serial_port port, std::string portName, const device_profile* profile, serial_connection_manager& manager)
+serial_connection::serial_connection(std::unique_ptr<boost::asio::serial_port> port, std::string portName, const device_profile* profile, serial_connection_manager& manager)
 	: m_manager(manager)
 	, m_buffer()
 	, m_port(std::move(port))
@@ -24,28 +24,34 @@ void serial_connection::start()
 void serial_connection::stop()
 {
 	boost::system::error_code ignored;
-	m_port.close(ignored);
+	m_port->close(ignored);
 
 	if (ignored) {
 		std::cout << "Fatal error trying to close  " << m_portName << ": " << ignored.message() << '\n';
 
 	}
-	if (m_port.is_open()) {
+	if (m_port->is_open()) {
 		std::cout << "Fatal error on " << m_portName << ": the port is still open after closing\n";
 	}
 }
 
-boost::optional<connection_info> serial_connection::get_detected_info() const
+std::unique_ptr<boost::asio::serial_port> serial_connection::steal_port()
 {
-	return m_connectionInfo;
+	return std::move(m_port);
 }
+
+std::string serial_connection::port_name() const
+{
+	return m_portName;
+}
+
 
 void serial_connection::do_read()
 {
 	std::fill(m_buffer.begin(), m_buffer.end(), 0);
 
 	auto self(shared_from_this());
-	m_port.async_read_some(boost::asio::buffer(m_buffer), [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
+	m_port->async_read_some(boost::asio::buffer(m_buffer), [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
 
 		if (ec == boost::asio::error::operation_aborted) {
 		//	std::cout << "Write operation on " << m_portName << " aborted due to timeout\n";
@@ -56,7 +62,7 @@ void serial_connection::do_read()
 
 			
 			if (m_profile->is_valid_response(m_buffer, bytes_transferred)) {
-				m_connectionInfo = connection_info{ m_portName };
+				m_manager.raise_connect(shared_from_this());
 			}
 			
 			//stand-in for an actual packet parser
@@ -69,12 +75,11 @@ void serial_connection::do_read()
 
 				}
 				std::cout << "	" << ss.str() << '\n';
-
+				m_manager.stop(shared_from_this());
 
 			}
 
 
-			m_manager.stop(shared_from_this());
 
 			
 		}
@@ -88,7 +93,7 @@ void serial_connection::do_write()
 {
 	auto self(shared_from_this());
 
-	m_port.async_write_some(m_profile->get_ping_data(), [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
+	m_port->async_write_some(m_profile->get_ping_data(), [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
 		//if there's no errors, proceed to reading from the port
 		if (!ec) {
 			do_read();

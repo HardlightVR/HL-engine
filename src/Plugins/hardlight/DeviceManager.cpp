@@ -6,14 +6,14 @@
 static std::array<uint8_t, 16> version_packet = { 0x24,0x02,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 static std::array<uint8_t, 16> uuid_packet = { 0x24,0x02,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 
-void requestSuitVersion(std::unique_ptr<BoostSerialAdapter>& adapter)
+void requestSuitVersion(boost::lockfree::spsc_queue<uint8_t>& output)
 {
-	adapter->Write(version_packet.data(), version_packet.size(), [](auto ec, std::size_t) { if (ec) { std::cout << "Error writing suit version\n"; } });
+	output.push(version_packet.data(), version_packet.size());
 }
 
-void requestUuid(std::unique_ptr<BoostSerialAdapter>& adapter)
+void requestUuid(boost::lockfree::spsc_queue<uint8_t>& output)
 {
-	adapter->Write(version_packet.data(), version_packet.size(), [](auto ec, std::size_t) { if (ec) { std::cout << "Error writing uuid packet\n"; } });
+	output.push(uuid_packet.data(), uuid_packet.size());
 }
 
 DeviceManager::DeviceManager(std::string path)
@@ -31,27 +31,37 @@ DeviceManager::DeviceManager(std::string path)
 
 	m_recognizer.on_recognize([this](connection_info info) {
 
-		
-		auto potentialDevice = std::make_unique<PotentialDevice>(m_ioService.GetIOService());
-		potentialDevice->adapter->Connect(info);
+		auto port = std::make_unique<boost::asio::serial_port>(m_ioService.GetIOService());
+		boost::system::error_code ec;
+		port->open(info.port_name, ec);
+		if (!port->is_open()) {
+			std::cout << "The port didn't re open\n";
+			return;
+		}
+		//we are re-opening the port on our io_service, instead of the recognizer's io_service
+
+		auto potentialDevice = std::make_unique<PotentialDevice>(std::move(port));
+		potentialDevice->io->start();
 		potentialDevice->synchronizer->start();
-		potentialDevice->dispatcher->AddConsumer(PacketType::SuitVersion, [this, port = info.port](auto packet) {
-			handle_connect(port, packet);
+
+		potentialDevice->dispatcher->AddConsumer(PacketType::SuitVersion, [this, portName = info.port_name](auto packet) {
+			handle_connect(portName, packet);
 		});
 		//makes the lifetime requirements clear: synchronizer must not outlive the dispatcher
 		potentialDevice->synchronizer->on_packet([dispatcher = potentialDevice->dispatcher.get()](auto packet) {
 			dispatcher->Dispatch(std::move(packet)); 
 		});
-		requestSuitVersion(potentialDevice->adapter);
-		requestSuitVersion(potentialDevice->adapter);
-		requestUuid(potentialDevice->adapter);
 
-		m_potentials.insert(std::make_pair(info.port, std::move(potentialDevice)));
+		requestSuitVersion(potentialDevice->io->outgoing_queue());
+		requestSuitVersion(potentialDevice->io->outgoing_queue());
+		requestUuid(potentialDevice->io->outgoing_queue());
+
+		m_potentials.insert(std::make_pair(info.port_name, std::move(potentialDevice)));
 	});
 
 	m_recognizer.on_unrecognize([this](connection_info info) {
 
-		auto it = std::find_if(m_deviceIds.begin(), m_deviceIds.end(), [port = info.port](const auto& kvp) { return kvp.second == port; });
+		auto it = std::find_if(m_deviceIds.begin(), m_deviceIds.end(), [port = info.port_name](const auto& kvp) { return kvp.second == port; });
 
 		if (it != m_deviceIds.end()) {
 			nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, it->first);
@@ -80,10 +90,6 @@ void DeviceManager::handle_connect(std::string portName, Packet packet) {
 		return;
 	}
 
-	/*
-		//if suit version is mark2, then create 
-	
-	*/
 	auto potential = std::move(m_potentials.at(portName));
 
 	m_potentials.erase(portName);
@@ -115,16 +121,6 @@ void DeviceManager::device_update()
 	});
 }
 
-void DeviceManager::send_version_requests()
-{
-	for (auto& kvp : m_potentials) {
-		requestSuitVersion(kvp.second->adapter);
-	}
-
-	m_requestVersionTimer.expires_from_now(m_requestVersionTimeout);
-	m_requestVersionTimer.async_wait([this](auto ec) { if (ec) { return; } send_version_requests(); });
-
-}
 
 DeviceManager::~DeviceManager()
 {

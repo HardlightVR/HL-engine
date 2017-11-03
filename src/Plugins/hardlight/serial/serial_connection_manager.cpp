@@ -35,15 +35,17 @@ void serial_connection_manager::reset_io() {
 	});
 	
 }
+void serial_connection_manager::raise_connect(serial_connection_ptr s) {
+	m_connections.erase(s);
+	s->stop();
+	m_onConnect({ s->port_name() });
+}
 void serial_connection_manager::stop(serial_connection_ptr s)
 {
 
 	m_connections.erase(s);
 	s->stop();
 
-	if (auto deviceInfo = s->get_detected_info()) {
-		m_onConnect(*deviceInfo);
-	}
 }
 
 void serial_connection_manager::stop_all()
@@ -55,12 +57,12 @@ void serial_connection_manager::stop_all()
 	m_connections.clear();
 }
 
-boost::asio::serial_port serial_connection_manager::make_port() {
-	return boost::asio::serial_port(*m_io);
+std::unique_ptr<boost::asio::serial_port> serial_connection_manager::make_port() {
+	return std::make_unique<boost::asio::serial_port>(*m_io);
 }
 
-void serial_connection_manager::on_connect(connection_event::slot_type slot)
+void serial_connection_manager::on_connect(connection_event slot)
 {
-	m_onConnect.connect(slot);
+	m_onConnect = slot;
 }
 

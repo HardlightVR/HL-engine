@@ -8,18 +8,19 @@
 #include "connection_info.h"
 class serial_connection_manager {
 public:
-	using connection_event = boost::signals2::signal<void(connection_info)>;
+	using connection_event = std::function<void(connection_info)>;
 
 	serial_connection_manager();
 	void start(serial_connection_ptr s);
 	void stop(serial_connection_ptr s);
 	void reset_io();
 	void stop_all();
+	void raise_connect(serial_connection_ptr s);
 
+	std::unique_ptr<boost::asio::serial_port> make_port();
 
-	boost::asio::serial_port make_port();
-
-	void on_connect(connection_event::slot_type);
+	//This event can only have one consumer
+	void on_connect(connection_event);
 private:
 	std::thread m_thread;
 	std::unique_ptr<boost::asio::io_service> m_io;

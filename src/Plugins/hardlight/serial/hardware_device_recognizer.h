@@ -15,16 +15,19 @@
 #include "logger.h"
 class hardware_device_recognizer {
 public:
-	using recognized_event = boost::signals2::signal<void(connection_info)>;
-	using unrecognized_event = boost::signals2::signal<void(connection_info)>;
+	using recognized_event = std::function<void(connection_info)>;
+	using unrecognized_event = std::function<void(connection_info)>;
 
 	hardware_device_recognizer(boost::asio::io_service& io);
 	
 	void start();
 	void stop();
 
-	void on_recognize(recognized_event::slot_type handler);
-	void on_unrecognize(unrecognized_event::slot_type handler);
+	//This event can only have one consumer
+	void on_recognize(recognized_event handler);
+
+	//This event can only have one consumer
+	void on_unrecognize(unrecognized_event handler);
 
 private:
 	void do_port_scan();

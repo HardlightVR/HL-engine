@@ -1,9 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <boost/asio/serial_port.hpp>
 struct connection_info {
-	std::string port;
-//	uint8_t product;
-	//uint8_t revision;
-//	uint8_t firmware_a;
-//	uint8_t firmware_b;
+	std::string port_name;
 };

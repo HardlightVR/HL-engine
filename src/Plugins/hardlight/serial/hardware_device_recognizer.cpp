@@ -39,7 +39,7 @@ hardware_device_recognizer::hardware_device_recognizer(boost::asio::io_service& 
 	
 	m_currentProfile = m_profiles.begin();
 	
-	m_manager.on_connect([this](connection_info info) { this->handle_recognize(info); });
+	m_manager.on_connect([this](connection_info info) { this->handle_recognize(std::move(info)); });
 
 }
 
@@ -53,21 +53,21 @@ void hardware_device_recognizer::stop()
 	m_scanDeadline.cancel();
 }
 
-void hardware_device_recognizer::on_recognize(recognized_event::slot_type handler)
+void hardware_device_recognizer::on_recognize(recognized_event handler)
 {
-	m_onRecognize.connect(handler);
+	m_onRecognize = handler;
 }
 
-void hardware_device_recognizer::on_unrecognize(unrecognized_event::slot_type handler)
+void hardware_device_recognizer::on_unrecognize(unrecognized_event handler)
 {
-	m_onUnrecognize.connect(handler);
+	m_onUnrecognize =handler;
 }
 
 
-bool open_port(boost::asio::serial_port* port, const std::string& device_name) {
+bool open_port(boost::asio::serial_port& port, const std::string& device_name) {
 	boost::system::error_code ec;
 
-	port->open(device_name, ec);
+	port.open(device_name, ec);
 	if (ec) {
 		core_log(nsvr_severity_error, "DeviceRecognizer", "Error opening" + device_name + ": " + ec.message());
 	}
@@ -82,7 +82,7 @@ void hardware_device_recognizer::remove_unrecognized_devices(const std::set<std:
 
 	for (auto portName : toBeRemoved) {
 		m_recognizedPorts.erase(portName);
-		m_onUnrecognize(connection_info{ portName });
+		m_onUnrecognize(connection_info{ portName});
 	}
 }
 
@@ -105,8 +105,8 @@ void hardware_device_recognizer::do_port_scan()
 		}
 
 		auto port = m_manager.make_port();
-		if (open_port(&port, portName)) {
-			(*m_currentProfile)->set_options(&port);
+		if (open_port(*port, portName)) {
+			(*m_currentProfile)->set_options(*port);
 			m_manager.start(std::make_shared<serial_connection>(std::move(port), portName, (*m_currentProfile).get(), m_manager));
 		}
 	}
@@ -142,8 +142,8 @@ void hardware_device_recognizer::schedule_port_scan()
 
 void hardware_device_recognizer::handle_recognize(connection_info info)
 {
-	m_recognizedPorts.insert(info.port);
+	m_recognizedPorts.insert(info.port_name);
 
-	m_onRecognize(info);
+	m_onRecognize(std::move(info));
 }
 

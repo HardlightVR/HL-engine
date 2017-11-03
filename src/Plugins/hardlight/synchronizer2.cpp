@@ -21,7 +21,7 @@ synchronizer2::State synchronizer2::state() const
 	return m_state;
 }
 
-synchronizer2::synchronizer2(boost::asio::io_service& io, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> data)
+synchronizer2::synchronizer2(boost::asio::io_service& io, boost::lockfree::spsc_queue<uint8_t>& data)
 	: m_dispatcher()
 	, m_data(data)
 	, m_badSyncLimit(2)

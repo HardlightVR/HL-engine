@@ -3,7 +3,6 @@
 
 #include "IoService.h"
 #include "Heartbeat.h"
-#include "BoostSerialAdapter.h"
 #include "Synchronizer.h"
 
 #include <typeinfo>
@@ -14,12 +13,13 @@
 #include "synchronizer2.h"
 
 nsvr_core* global_core = nullptr;
-
+//note: can make firmware unique
 HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device) :
 	m_core{ nullptr },
 	m_io(io),
+	m_hwIO(std::move(device->io)),
 	m_dispatcher(std::move(device->dispatcher)),
-	m_firmware(std::make_shared<FirmwareInterface>(data_dir, std::move(device->adapter), m_io)),
+	m_firmware(std::make_shared<FirmwareInterface>(data_dir, device->io->outgoing_queue(), m_io)),
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
 	m_synchronizer(device->synchronizer),
 	m_device(),
@@ -52,8 +52,10 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 HardlightPlugin::~HardlightPlugin()
 {
+	std::cout << "HardlightPlugin destructor\n";
 	m_synchronizer->stop();
 	m_firmware->stop();
+	m_hwIO->stop();
 
 }
 

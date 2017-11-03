@@ -8,11 +8,11 @@
 #include "IMU_ID.h"
 constexpr unsigned int BATCH_SIZE = 16;
 
-FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::unique_ptr<BoostSerialAdapter> adapter, boost::asio::io_service& io)
+FirmwareInterface::FirmwareInterface(const std::string& data_dir, boost::lockfree::spsc_queue<uint8_t>& outgoing, boost::asio::io_service& io)
 	: m_queue()
 	, m_instructionSet(std::make_shared<InstructionSet>(data_dir))
 	, m_instructionBuilder(m_instructionSet)
-	, m_serial(std::move(adapter))
+	, m_outgoing(outgoing)
 	, m_packetVersion(PacketVersion::MarkIII)
 	, m_isBatching(false)
 	, m_totalBytesSent(0)
@@ -22,9 +22,9 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::unique_pt
 	, m_batchingDeadline(io)
 
 {
-	m_serial->OnPacketVersionChange([this](PacketVersion version) { 
+	/*m_serial->OnPacketVersionChange([this](PacketVersion version) { 
 		m_packetVersion = version;  
-	});
+	});*/
 
 	
 
@@ -32,25 +32,25 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::unique_pt
 
 FirmwareInterface::~FirmwareInterface()
 {
-	m_writeTimer.cancel();
-	m_batchingDeadline.cancel();
+	//m_writeTimer.cancel();
+//	m_batchingDeadline.cancel();
 }
 
 void FirmwareInterface::start()
 {
-	auto self(shared_from_this());
-	m_writeTimer.expires_from_now(m_writeInterval);
-	m_writeTimer.async_wait([this, self](const boost::system::error_code& ec) { 
-		if (ec) { 
-			return; 
-		} 
-		writeBuffer(); 
-	});
+//	auto self(shared_from_this());
+	//m_writeTimer.expires_from_now(m_writeInterval);
+	//m_writeTimer.async_wait([this, self](const boost::system::error_code& ec) { 
+	//	if (ec) { 
+	//		return; 
+	//	} 
+	//	writeBuffer(); 
+	//});
 }
 
 void FirmwareInterface::stop()
 {
-	m_writeTimer.cancel();
+	//m_writeTimer.cancel();
 }
 
 
@@ -58,91 +58,91 @@ void FirmwareInterface::stop()
 
 
 
-void FirmwareInterface::writeBuffer() {
-	const std::size_t avail = m_queue.read_available();
-
-	if (avail > 0) {
-		assert(avail % 16 == 0);
-
-
-		std::size_t max_read = std::min<std::size_t>(64, avail);
-
-		std::shared_ptr<std::vector<uint8_t>> toBePopped = std::make_shared<std::vector<uint8_t>>();
-		toBePopped->resize(max_read);
-
-		//	auto a = std::make_shared<uint8_t*>(new uint8_t[max_read]);
-		const int actualLen = m_queue.pop(toBePopped->data(), max_read);
-		toBePopped->resize(actualLen);
-		assert(toBePopped->size() == actualLen);
-		m_serial->Write(toBePopped->data(), toBePopped->size(), [toBePopped, this](auto ec, std::size_t bytes_transferred) {
-			if (!ec) {
-				m_totalBytesSent += bytes_transferred;
-			}
-		});
-	}
-
-	start();
-
-
-	/*if (avail == 0) {
-
-		m_writeTimer.expires_from_now(m_writeInterval);
-		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
-	}
-	else if (avail > 0 && avail < BATCH_SIZE) {
-		if (m_isBatching) {
-
-		
-			m_writeTimer.expires_from_now(m_writeInterval);
-			m_writeTimer.async_wait([&](const boost::system::error_code& ec) {if (ec) { return; }  writeBuffer(); });
-			return;
-		}
-
-
-		m_isBatching = true;
-		m_batchingDeadline.expires_from_now(m_batchingTimeout);
-		m_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
-			if (!ec) {
-				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
-				const int actualLen = m_queue.pop(*a, BATCH_SIZE);
-
-				this->m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& e, std::size_t bytes_t) {
-					if (e) {
-						core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while batching");
-					}
-					else {
-						m_totalBytesSent += bytes_t;
-					}
-				}
-				);
-				m_writeTimer.expires_from_now(m_writeInterval);
-				m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
-				m_isBatching = false;
-			}
-		});
-	}
-	else {
-		m_isBatching = false;
-		m_batchingDeadline.cancel();
-		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
-		const int actualLen = m_queue.pop(*a, BATCH_SIZE);
-		
-		m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& ec, std::size_t bytes_t) {
-
-			if (ec) {
-				core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");
-
-			}
-			else {
-				m_totalBytesSent += bytes_t;
-			}
-		}
-		);
-		m_writeTimer.expires_from_now(m_writeInterval);
-		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
-	}*/
-
-}
+//void FirmwareInterface::writeBuffer() {
+//	const std::size_t avail = m_queue.read_available();
+//
+//	if (avail > 0) {
+//		assert(avail % 16 == 0);
+//
+//
+//		std::size_t max_read = std::min<std::size_t>(64, avail);
+//
+//		std::shared_ptr<std::vector<uint8_t>> toBePopped = std::make_shared<std::vector<uint8_t>>();
+//		toBePopped->resize(max_read);
+//
+//		//	auto a = std::make_shared<uint8_t*>(new uint8_t[max_read]);
+//		const int actualLen = m_queue.pop(toBePopped->data(), max_read);
+//		toBePopped->resize(actualLen);
+//		assert(toBePopped->size() == actualLen);
+//		m_serial->Write(toBePopped->data(), toBePopped->size(), [toBePopped, this](auto ec, std::size_t bytes_transferred) {
+//			if (!ec) {
+//				m_totalBytesSent += bytes_transferred;
+//			}
+//		});
+//	}
+//
+//	start();
+//
+//
+//	/*if (avail == 0) {
+//
+//		m_writeTimer.expires_from_now(m_writeInterval);
+//		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
+//	}
+//	else if (avail > 0 && avail < BATCH_SIZE) {
+//		if (m_isBatching) {
+//
+//		
+//			m_writeTimer.expires_from_now(m_writeInterval);
+//			m_writeTimer.async_wait([&](const boost::system::error_code& ec) {if (ec) { return; }  writeBuffer(); });
+//			return;
+//		}
+//
+//
+//		m_isBatching = true;
+//		m_batchingDeadline.expires_from_now(m_batchingTimeout);
+//		m_batchingDeadline.async_wait([&](const boost::system::error_code& ec) {
+//			if (!ec) {
+//				auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
+//				const int actualLen = m_queue.pop(*a, BATCH_SIZE);
+//
+//				this->m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& e, std::size_t bytes_t) {
+//					if (e) {
+//						core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while batching");
+//					}
+//					else {
+//						m_totalBytesSent += bytes_t;
+//					}
+//				}
+//				);
+//				m_writeTimer.expires_from_now(m_writeInterval);
+//				m_writeTimer.async_wait([&](const boost::system::error_code& ec) { writeBuffer(); });
+//				m_isBatching = false;
+//			}
+//		});
+//	}
+//	else {
+//		m_isBatching = false;
+//		m_batchingDeadline.cancel();
+//		auto a = std::make_shared<uint8_t*>(new uint8_t[BATCH_SIZE]);
+//		const int actualLen = m_queue.pop(*a, BATCH_SIZE);
+//		
+//		m_serial->Write(*a, actualLen, [this, a](const boost::system::error_code& ec, std::size_t bytes_t) {
+//
+//			if (ec) {
+//				core_log(nsvr_severity_warning, "FirmwareInterface", "Failed to write to suit while writing a full batch");
+//
+//			}
+//			else {
+//				m_totalBytesSent += bytes_t;
+//			}
+//		}
+//		);
+//		m_writeTimer.expires_from_now(m_writeInterval);
+//		m_writeTimer.async_wait([&](const boost::system::error_code& ec) { if (ec) { return; } writeBuffer(); });
+//	}*/
+//
+//}
 
 void FirmwareInterface::RequestTrackingStatus()
 {
@@ -326,7 +326,7 @@ void FirmwareInterface::RequestUuid()
 
 void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
 {
-		m_queue.push(packet.data(), packet.size());
+	m_outgoing.push(packet.data(), packet.size());
 }
 
 
