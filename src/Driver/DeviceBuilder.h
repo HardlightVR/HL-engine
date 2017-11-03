@@ -6,9 +6,9 @@
 #include "PluginAPI.h" //needed for nsvr_device_id
 #include "PluginInstance.h"
 #include "logger.h"
+#include "Device.h"
 
 class PluginApis;
-class Device;
 class DeviceVisualizer;
 
 class DeviceBuilder {

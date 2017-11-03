@@ -9,7 +9,6 @@
 class HardwareIO {
 public:
 	HardwareIO(std::unique_ptr<boost::asio::serial_port> port);
-	~HardwareIO() { std::cout << "destroying HWIo\n"; }
 	std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> incoming_queue();
 	std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing_queue();
 

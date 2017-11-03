@@ -11,7 +11,7 @@
 #include "PluginAPI.h"
 #include "DeviceIds.h"
 #include "IdentificationService.h"
-class Device;
+#include "Device.h"
 class PluginApis;
 
 class DeviceContainer {

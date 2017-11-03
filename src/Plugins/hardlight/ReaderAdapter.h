@@ -7,7 +7,6 @@
 class ReaderAdapter : public std::enable_shared_from_this<ReaderAdapter>{
 public:
 	ReaderAdapter(std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> incoming, boost::asio::serial_port& port);
-	~ReaderAdapter() { std::cout << "Destroying readeradapter\n"; }
 	void start();
 	void stop();
 private:

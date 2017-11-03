@@ -4,14 +4,19 @@
 #include "PacketDispatcher.h"
 ImuConsumer::ImuConsumer(PacketDispatcher &dispatcher):
 	m_quaternions(),
-	m_mapping()
+	m_mapping(),
+	m_stopped(false)
 {
 	dispatcher.AddConsumer(PacketType::ImuData, [&](Packet p) {
-		this->consumeDataPacket(p);
+		if (!m_stopped) {
+			this->consumeDataPacket(p);
+		}
 	});
 
 	dispatcher.AddConsumer(PacketType::ImuStatus, [&](Packet p) {
-		this->consumeStatusPacket(p);
+		if (!m_stopped) {
+			this->consumeStatusPacket(p);
+		}
 	});
 
 
@@ -23,6 +28,11 @@ void ImuConsumer::AssignStream(nsvr_tracking_stream* stream, nsvr_node_id id) {
 			kvp.second.stream = stream;
 		}
 	}
+}
+
+void ImuConsumer::stop()
+{
+	m_stopped = true;
 }
 
 void ImuConsumer::RemoveStream(nsvr_node_id id) {

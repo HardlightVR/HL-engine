@@ -49,6 +49,9 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	});
 
 	m_devices.OnDeviceRemoved([this](Device* device) {
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_info) << "Device " << device->name() << " removed";
+
+
 		m_messenger.UpdateDeviceStatus(m_idService.FromLocal(device->parentPlugin(), device->id()).value, DeviceStatus::Disconnected);
 		device->ForEachNode([this, device](Node* node) {
 

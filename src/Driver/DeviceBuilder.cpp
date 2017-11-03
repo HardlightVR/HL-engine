@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include "DeviceBuilder.h"
 #include "PluginApis.h"
-#include "Device.h"
 #include "DeviceVisualizer.h"
 
-
+#include "HardwareHapticInterface.h"
+#include "HardwarePlaybackController.h"
+#include "HardwareNodeEnumerator.h"
+#include "HardwareBodygraphCreator.h"
+#include "HardwareTracking.h"
 
 //Either we are provided a set of apis from the plugin (which we copy)
 DeviceBuilder::DeviceBuilder(PluginApis* apis, PluginInstance::DeviceResources* resources, nsvr_device_id id) : m_id(id), m_apis(apis), m_resources(resources)

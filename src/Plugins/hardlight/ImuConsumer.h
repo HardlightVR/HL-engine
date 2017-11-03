@@ -28,7 +28,7 @@ public:
 	ImuConsumer(PacketDispatcher&);
 	void AssignMapping(uint32_t key, Imu id, nsvr_node_id node_id);
 	void AssignStream(nsvr_tracking_stream* stream, nsvr_node_id id);
-
+	void stop();
 	void RemoveStream(nsvr_node_id id);
 
 	std::vector<ImuInfo> GetInfo() const;
@@ -38,5 +38,6 @@ private:
 	std::unordered_map<Imu, nsvr_quaternion> m_quaternions;
 	nsvr_quaternion parseQuaternion(const uint8_t* rec) const;
 	std::unordered_map<uint32_t, Mapping> m_mapping;
+	bool m_stopped;
 };
 

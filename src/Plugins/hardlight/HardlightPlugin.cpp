@@ -52,6 +52,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 HardlightPlugin::~HardlightPlugin()
 {
+	m_imus.stop();
 	m_synchronizer->stop();
 	m_hwIO->stop();
 
