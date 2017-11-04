@@ -92,6 +92,12 @@
 		"parameters": ["zone", "audio_max", "audio_min", "peak_time", "filter"]
 	},
 	{
+		"id": "0x22",
+		"name": "AUDIO_MODE_DISABLE",
+		"purpose": "Disables audio mode on pad",
+		"parameters": ["zone", "audio_max", "audio_min", "peak_time", "filter"]
+	},
+	{
 		"id": "0x1B",
 		"name": "INTRIG_MODE_ENABLE",
 		"purpose": "Enables trigger mode on pad",

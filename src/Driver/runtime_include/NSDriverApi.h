@@ -40,12 +40,14 @@ extern "C" {
 
 	struct hvr_diagnostics_ui {
 		typedef void(*make_keyval)(const char* key, const char* val);
+		typedef bool(*make_slider_int)(const char* key, int* v, int min, int max);
 		typedef bool(*make_button)(const char* label);
 		typedef void(*push_log)(const char* msg);
 
 		make_keyval keyval;
 		make_button button;
 		push_log log;
+		make_slider_int slider_int;
 
 	};
 

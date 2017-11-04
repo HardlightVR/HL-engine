@@ -19,16 +19,16 @@ public:
 	
 
 	struct AudioOptions {
-		int AudioMax;
+		int VibeCtrl;
 		int AudioMin;
-		int PeakTime;
-		int Filter;
+		int AudioMax;
+		int MinDrv;
+		int MaxDrv;
 	};
 	FirmwareInterface(const std::string& data_dir, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::io_service& io);
 	~FirmwareInterface();
 
-	void start();
-	void stop();
+	
 
 	void Execute(const CommandBuffer& buffer);
 	void PlayEffect(Location location, uint32_t effect, float strength);
@@ -39,8 +39,8 @@ public:
 	void EnableTracking();
 	void DisableTracking();
 	void RequestSuitVersion();
-	void ReadDriverData(Location loc, Register reg);
-	void ResetDrivers();
+
+
 
 	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions&);
 	void EnableIntrigMode(Location pad);

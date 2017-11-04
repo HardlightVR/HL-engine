@@ -210,7 +210,39 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	if (ui->button("GET_TRACK_STATUS")) {
 		m_firmware->RequestTrackingStatus();
 	}
+	
 
+	static FirmwareInterface::AudioOptions opts{ 0x00, 0x01, 0x40, 0x00, 0x7F };
+
+	if (ui->slider_int("VibeCtrl", &opts.VibeCtrl, 0, 5)	||
+		ui->slider_int("AudioMin", &opts.AudioMin, 0, 255)	||
+		ui->slider_int("AudioMax", &opts.AudioMax, 0, 255)	||
+		ui->slider_int("MinDrv", &opts.MinDrv, 0, 125)		||
+		ui->slider_int("MaxDrv", &opts.MaxDrv, 0, 125))	
+	{
+		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+			m_firmware->EnableAudioMode(static_cast<Location>(i), opts);
+		}
+	}
+	
+
+	if (ui->button("Disable audio on all")) {
+		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+			m_firmware->EnableIntrigMode(static_cast<Location>(i));
+		}
+	}
+
+	static int rtpVol = 0;
+	if (ui->button("Enable RTP Mode on all")) {
+		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+			m_firmware->EnableRtpMode(static_cast<Location>(i));
+		}
+	}
+	if (ui->slider_int("RTP", &rtpVol, 0, 127)) {
+		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+			m_firmware->PlayRtp(static_cast<Location>(i), rtpVol);
+		}
+	}
 
 	auto imuInfo = m_imus.GetInfo();
 	for (const auto& imu : imuInfo) {

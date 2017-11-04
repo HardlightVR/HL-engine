@@ -145,7 +145,7 @@ void Driver::DrawDiagnostics(uint32_t id)
 	nsvr_diagnostics_ui ui;
 	ui.button = m_renderingApi.button;
 	ui.keyval = m_renderingApi.keyval;
-
+	ui.slider_int = m_renderingApi.slider_int;
 	m_pluginManager.DrawDiagnostics(id, &ui);
 
 }
