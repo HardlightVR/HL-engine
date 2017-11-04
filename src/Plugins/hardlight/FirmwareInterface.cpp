@@ -15,6 +15,7 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::shared_pt
 	, m_packetVersion(PacketVersion::MarkIII)
 	, m_isBatching(false)
 	, m_totalBytesSent(0)
+	, m_packetLock()
 
 {
 	/*m_serial->OnPacketVersionChange([this](PacketVersion version) { 
@@ -186,6 +187,7 @@ void FirmwareInterface::RequestUuid()
 
 void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
 {
+	std::lock_guard<std::mutex> guard(m_packetLock);
 	m_outgoing->push(packet.data(), packet.size());
 }
 

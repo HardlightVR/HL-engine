@@ -69,7 +69,7 @@ private:
 	void verifyThenQueue(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
 	void queuePacket(const std::vector<uint8_t>& packet);
 	
-	
+	std::mutex m_packetLock;
 	
 	
 };
