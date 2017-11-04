@@ -13,6 +13,7 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 	, m_loaded{false}
 	, m_id(id)
 	, m_io(io)
+	, m_logComponent("Unknown")
 	, m_logger(std::make_shared<my_logger>(boost::log::keywords::channel = "plugin"))
 	, m_resources(std::make_unique<DeviceResources>())
 	, m_pluginFunctions{}
@@ -29,6 +30,7 @@ PluginInstance::PluginInstance(boost::asio::io_service& io,  std::string fileNam
 	
 
 	m_logger->add_attribute("Plugin", boost::log::attributes::constant<std::string>(pluginPath.filename().string()));
+	m_logger->add_attribute("Component", m_logComponent);
 
 
 }
@@ -161,7 +163,7 @@ void PluginInstance::RaiseEvent(nsvr_device_event_type type, nsvr_device_id id)
 }
 void PluginInstance::LogNow(nsvr_severity level, const std::string& component, const std::string& message)
 {
-	m_logger->add_attribute("Component", boost::log::attributes::mutable_constant<std::string>(component));
+	m_logComponent.set(component);
 	BOOST_LOG_SEV(*m_logger, level) << message;
 }
 void PluginInstance::LogAsync(nsvr_severity level, const char * component, const char * message)

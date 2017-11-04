@@ -41,8 +41,8 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 	
 	m_imus.AssignMapping(0x3c, Imu::Chest, NODE_IMU_CHEST); 
-	m_imus.AssignMapping(0x3a, Imu::Right_Upper_Arm, NODE_IMU_RIGHT_UPPER_ARM);
-	m_imus.AssignMapping(0x39, Imu::Left_Upper_Arm, NODE_IMU_LEFT_UPPER_ARM);
+	m_imus.AssignMapping(0x39, Imu::Right_Upper_Arm, NODE_IMU_RIGHT_UPPER_ARM);
+	m_imus.AssignMapping(0x3a, Imu::Left_Upper_Arm, NODE_IMU_LEFT_UPPER_ARM);
 
 	
 

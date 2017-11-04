@@ -71,6 +71,10 @@ bool open_port(boost::asio::serial_port& port, const std::string& device_name) {
 	if (ec) {
 		core_log(nsvr_severity_error, "DeviceRecognizer", "Error opening" + device_name + ": " + ec.message());
 	}
+	else {
+		core_log(nsvr_severity_trace, "DeviceRecognizer", "Port " + device_name + " was opened for writing");
+
+	}
 	return !ec;
 }
 

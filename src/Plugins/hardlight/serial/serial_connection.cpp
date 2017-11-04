@@ -6,6 +6,7 @@
 #include <iostream>
 #include "device_profile.h"
 #include <sstream>
+#include "logger.h"
 serial_connection::serial_connection(std::unique_ptr<boost::asio::serial_port> port, std::string portName, const device_profile* profile, serial_connection_manager& manager)
 	: m_manager(manager)
 	, m_buffer()
@@ -27,11 +28,11 @@ void serial_connection::stop()
 	m_port->close(ignored);
 
 	if (ignored) {
-		std::cout << "Fatal error trying to close  " << m_portName << ": " << ignored.message() << '\n';
+		core_log(nsvr_severity_error, "SerialConnection", "Fatal error trying to close  " + m_portName + ": " + ignored.message());
 
 	}
 	if (m_port->is_open()) {
-		std::cout << "Fatal error on " << m_portName << ": the port is still open after closing\n";
+		core_log(nsvr_severity_error, "SerialConnection", "Port " + m_portName + " is still open after closing?");
 	}
 }
 
@@ -54,7 +55,7 @@ void serial_connection::do_read()
 	m_port->async_read_some(boost::asio::buffer(m_buffer), [this, self](boost::system::error_code ec, std::size_t bytes_transferred) {
 
 		if (ec == boost::asio::error::operation_aborted) {
-		//	std::cout << "Write operation on " << m_portName << " aborted due to timeout\n";
+			core_log(nsvr_severity_trace, "SerialConnection", "Read operation on " + m_portName + " aborted due to timeout");
 
 		}
 
@@ -68,13 +69,14 @@ void serial_connection::do_read()
 			//stand-in for an actual packet parser
 			else {
 				//todo: log (there is tracking data being returned, firmware must be fixed for this)
-				std::cout << "Got an unknown packet response [" << bytes_transferred << " bytes] on " << m_portName << "\n";
+				core_log(nsvr_severity_trace, "SerialConnection", "Got an unknown packet response [" + std::to_string(bytes_transferred) + " bytes] on " + m_portName);
 				std::stringstream ss;
 				for (int i = 0;i < 128; i++) {
 					ss << std::to_string(m_buffer[i]) << ", ";
 
 				}
-				std::cout << "	" << ss.str() << '\n';
+			
+				core_log(nsvr_severity_trace, "SerialConnection", ss.str());
 				m_manager.stop(shared_from_this());
 
 			}
@@ -100,6 +102,9 @@ void serial_connection::do_write()
 			return;
 		}
 
+		if (ec == boost::asio::error::operation_aborted) {
+			core_log(nsvr_severity_trace, "SerialConnection", "Write operation on " + m_portName + " aborted due to timeout");
+		}
 	
 		if (ec != boost::asio::error::operation_aborted) {
 			m_manager.stop(shared_from_this());

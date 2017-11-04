@@ -73,6 +73,7 @@ private:
 	uint32_t m_id;
 
 	boost::asio::io_service& m_io;
+	boost::log::attributes::mutable_constant<std::string> m_logComponent;
 	std::shared_ptr<my_logger> m_logger;
 	DeviceResourceBundle m_resources;
 	nsvr_plugin_api m_pluginFunctions;

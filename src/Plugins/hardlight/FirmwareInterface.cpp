@@ -39,7 +39,7 @@ FirmwareInterface::~FirmwareInterface()
 
 void FirmwareInterface::RequestTrackingStatus()
 {
-	auto sensors = { 0x3c, 0x3a };
+	auto sensors = { 0x3c, 0x3a, 0x39 };
 	for (auto sensor : sensors) {
 		verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_TRACK_STATUS, m_packetVersion, { {"sensor", sensor } }));
 	}

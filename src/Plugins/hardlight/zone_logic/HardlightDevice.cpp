@@ -97,6 +97,7 @@ void HardlightDevice::EnumerateNodesForDevice(nsvr_node_ids* ids)
 	
 	found_ids.push_back(NODE_IMU_CHEST);
 	found_ids.push_back(NODE_IMU_RIGHT_UPPER_ARM);
+	found_ids.push_back(NODE_IMU_LEFT_UPPER_ARM);
 
 	for (std::size_t i = 0; i < found_ids.size(); i++) {
 		ids->ids[i] = found_ids[i];
