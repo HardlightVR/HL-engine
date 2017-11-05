@@ -226,6 +226,8 @@ project "HardlightMkIII"
 	files {
 		"../src/plugins/hardlight/**.cpp",
 		"../src/plugins/hardlight/**.h",
+		"../src/plugins/hardlight/**.hpp",
+
 		"../src/Driver/include/**.h",
 		"../src/plugins/hardlight/zone_log/**.cpp",
 		"../src/plugins/hardlight/zone_log/**.h",
@@ -260,11 +262,11 @@ project "HardlightMkIII"
 
 	defines {"BOOST_THREAD_USE_LIB"}
 
-	filter {"files:**.pb.cc"}
+	filter {"files:**.pb.cc or files:main.cpp"}
 		flags {'NoPCH'}
 	
 
-
+	
 	filter {"platforms:Win32 or platforms:Win64"}
 		kind "SharedLib"
 

@@ -6,6 +6,7 @@
 #include <boost/asio/io_service.hpp>
 #include "zone_logic/HardwareCommands.h"
 #include "PacketVersion.h"
+#include <mutex>
 namespace nsvr {
 	namespace config {
 		struct Instruction;
@@ -26,7 +27,6 @@ public:
 		int MaxDrv;
 	};
 	FirmwareInterface(const std::string& data_dir, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::io_service& io);
-	~FirmwareInterface();
 
 	
 
@@ -64,13 +64,20 @@ private:
 
 	std::size_t m_totalBytesSent;
 
-	void verifyThenQueue(const nsvr::config::Instruction& inst);
-	void verifyThenQueue(InstructionBuilder& builder);
-	void verifyThenQueue(InstructionBuilder& builder, const nsvr::config::Instruction& alternate);
 	void queuePacket(const std::vector<uint8_t>& packet);
-	
+	template<typename Instruction>
+	void queueInstruction(const Instruction& inst);
+
 	std::mutex m_packetLock;
 	
 	
 };
 
+template<typename Instruction>
+inline void FirmwareInterface::queueInstruction(const Instruction & inst)
+{
+	auto packet = inst::Build(inst);
+	std::lock_guard<std::mutex> guard(m_packetLock);
+	m_outgoing->push(packet.data(), packet.size());
+
+}

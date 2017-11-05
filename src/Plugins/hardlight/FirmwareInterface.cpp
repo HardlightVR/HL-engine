@@ -26,11 +26,6 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::shared_pt
 
 }
 
-FirmwareInterface::~FirmwareInterface()
-{
-	//m_writeTimer.cancel();
-//	m_batchingDeadline.cancel();
-}
 
 
 
@@ -39,91 +34,70 @@ FirmwareInterface::~FirmwareInterface()
 
 void FirmwareInterface::RequestTrackingStatus()
 {
-	auto sensors = { 0x3c, 0x3a, 0x39 };
+	std::vector<uint8_t> sensors = { 0x3c, 0x3a, 0x39 };
 	for (auto sensor : sensors) {
-		verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_TRACK_STATUS, m_packetVersion, { {"sensor", sensor } }));
+		queueInstruction(inst::get_track_status(inst::sensor(sensor)));
 	}
-
 }
 
 void FirmwareInterface::EnableTracking()
 {
-
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_TRACK_ENABLE, m_packetVersion, {}));
+	queueInstruction(inst::set_track_enable());
 }
 
 void FirmwareInterface::DisableTracking()
 {
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_TRACK_DISABLE, m_packetVersion, {}));
+	queueInstruction(inst::set_track_disable());
 }
 
 void FirmwareInterface::RequestSuitVersion()
 {
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_VERSION, PacketVersion::MarkIII, {}));
+	queueInstruction(inst::get_version());
 }
 
 
 
 
-void FirmwareInterface::verifyThenQueue(InstructionBuilder& builder) {
-	if (builder.Verify()) {
-		queuePacket(builder.Build());
-	}
-	else {
-		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + builder.GetDebugString()));
-	}
-}
 
-void FirmwareInterface::verifyThenQueue(const nsvr::config::Instruction& inst) {
-	bool alternateVerify = nsvr::config::Verify(inst, m_instructionSet.get());
-	if (alternateVerify) {
-		queuePacket(nsvr::config::Build(inst));
-	}
-	else {
-		core_log(nsvr_severity_error, "FirmwareInterface", std::string("Failed to build instruction: " + nsvr::config::HumanReadable(inst)));
-	}
-}
 
 void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& opts)
 {
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
-
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_MOTOR_PLAY_AUDIO, m_packetVersion, {
-		{"zone", actualZone},
-		{"vibectrl", opts.VibeCtrl},
-		{ "minlevel", opts.AudioMin },
-		{ "maxlevel", opts.AudioMax },
-		{ "mindrv", opts.MinDrv },
-		{"maxdrv", opts.MaxDrv}
-	}));
+	
+	queueInstruction(inst::set_motor_audiomode(
+		inst::motor(actualZone),
+		inst::audio_vibe(opts.VibeCtrl),
+		inst::audio_minlevel(opts.AudioMin),
+		inst::audio_maxlevel(opts.AudioMax),
+		inst::audio_mindrv(opts.MinDrv),
+		inst::audio_maxdrv(opts.MaxDrv)
+	));
 }
 
 void FirmwareInterface::EnableIntrigMode(Location pad)
 {
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_MOTOR_INTRIGMODE, m_packetVersion, { { "zone", actualZone } }));
+	queueInstruction(inst::set_motor_intrigmode(inst::motor(actualZone)));
 }
 
 void FirmwareInterface::EnableRtpMode(Location pad)
 {
 
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_MOTOR_RTPMODE, m_packetVersion, { {"zone", actualZone} }));
-	
+	queueInstruction(inst::set_motor_rtpmode(inst::motor(actualZone)));
 }
 
 void FirmwareInterface::PlayRtp(Location location, int strength)
 {
 
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_MOTOR_PLAY_RTP, m_packetVersion, { { "zone", actualZone }, {"volume", strength} }));
-	
+	assert(strength >= 0 && strength <= 255);
+	queueInstruction(inst::set_motor_play_rtp(inst::motor(actualZone), inst::volume(strength)));
 }
 
 void FirmwareInterface::Ping()
 {
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_PING, m_packetVersion, {}));
-
+	queueInstruction(inst::get_ping());
 }
 
 
@@ -154,12 +128,8 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 	auto actualEffect  = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 	uint8_t actualId  = m_instructionSet->ParamDict().at("effect").at(Locator::Translator().ToString(actualEffect));
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_MOTOR_PLAY_EFFECT, m_packetVersion, { { "zone", actualZone } , {"effect", actualId} }));
 
-	
-	/*verifyThenQueue(m_instructionBuilder.UseInstruction("PLAY_EFFECT")
-		.WithParam("zone", Locator::Translator().ToString(location))
-		.WithParam("effect", Locator::Translator().ToString(actualEffect)));*/
+	queueInstruction(inst::set_motor_play_effect(inst::motor(actualZone), inst::effect(actualId)));
 
 }
 
@@ -177,12 +147,13 @@ void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect,
 	auto actualEffect = m_instructionSet->Atoms().at(effectString).GetEffect(strength);
 	uint8_t actualId = m_instructionSet->ParamDict().at("effect").at(Locator::Translator().ToString(actualEffect));
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_MOTOR_PLAY_CONTINUOUS, m_packetVersion, { { "zone", actualZone } ,{ "effect", actualId } }));
+	
+	queueInstruction(inst::set_motor_play_continuous(inst::motor(actualZone), inst::effect(actualId)));
 }
 
 void FirmwareInterface::RequestUuid()
 {
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::GET_UUID, m_packetVersion, {}));
+	queueInstruction(inst::get_uuid());
 }
 
 void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
@@ -197,6 +168,6 @@ void FirmwareInterface::HaltEffect(Location location)
 
 	auto actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
 
-	verifyThenQueue(nsvr::config::Instruction(nsvr::config::InstructionId::SET_MOTOR_HALT_SINGLE, m_packetVersion, { { "zone", actualZone} }));
+	queueInstruction(inst::set_motor_halt_single(inst::motor(actualZone)));
 
 }

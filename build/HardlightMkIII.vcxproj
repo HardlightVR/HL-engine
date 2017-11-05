@@ -312,7 +312,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\EnumTranslator.h" />
     <ClInclude Include="..\src\plugins\hardlight\Enums.h" />
     <ClInclude Include="..\src\plugins\hardlight\FirmwareInterface.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\hardlight_device_version.h" />
     <ClInclude Include="..\src\plugins\hardlight\HL_Firmware_Defines.h" />
     <ClInclude Include="..\src\plugins\hardlight\Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h" />
@@ -348,7 +347,9 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h" />
     <ClInclude Include="..\src\plugins\hardlight\WriterAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\better_enum.h" />
+    <ClInclude Include="..\src\plugins\hardlight\catch.hpp" />
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
+    <ClInclude Include="..\src\plugins\hardlight\hardlight_device_version.h" />
     <ClInclude Include="..\src\plugins\hardlight\logger.h" />
     <ClInclude Include="..\src\plugins\hardlight\serial\connection_info.h" />
     <ClInclude Include="..\src\plugins\hardlight\serial\device_profile.h" />
@@ -403,6 +404,9 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\mark3.cpp" />

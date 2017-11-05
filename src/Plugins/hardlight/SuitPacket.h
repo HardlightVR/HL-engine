@@ -9,7 +9,7 @@ enum class PacketType {
 	ImuData = 0x33,
 	FifoOverflow = 0x34,
 	DummyTracking = 0x99,
-	ImuStatus = nsvr::config::InstructionId::GET_TRACK_STATUS,
+	ImuStatus = inst::Id::GET_TRACK_STATUS,
 	Undefined
 };
 
