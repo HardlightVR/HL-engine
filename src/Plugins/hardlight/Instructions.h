@@ -103,6 +103,7 @@ INST(Id::SET_MOTOR_PLAY_EFFECT, set_motor_play_effect, motor, effect);
 INST(Id::SET_MOTOR_HALT_SINGLE, set_motor_halt_single, motor);
 INST(Id::SET_MOTOR_PLAY_CONTINUOUS, set_motor_play_continuous, motor, effect);
 INST(Id::SET_MOTOR_PLAY_AUDIO, set_motor_audiomode, motor, audio_vibe, audio_minlevel, audio_maxlevel, audio_mindrv, audio_maxdrv);
+INST(Id::SET_MOTOR_STOP_AUDIO, set_motor_stop_audio, motor);
 INST(Id::SET_MOTOR_INTRIGMODE, set_motor_intrigmode, motor);
 INST(Id::SET_MOTOR_RTPMODE, set_motor_rtpmode, motor);
 INST(Id::SET_MOTOR_PLAY_RTP, set_motor_play_rtp, motor, volume);

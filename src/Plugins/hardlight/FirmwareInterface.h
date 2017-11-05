@@ -43,6 +43,7 @@ public:
 
 
 	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions&);
+	void DisableAudioMode(Location pad);
 	void EnableIntrigMode(Location pad);
 	void EnableRtpMode(Location pad);
 	void PlayRtp(Location location, int strength);
@@ -78,6 +79,7 @@ inline void FirmwareInterface::queueInstruction(const Instruction & inst)
 {
 	auto packet = inst::Build(inst);
 	std::lock_guard<std::mutex> guard(m_packetLock);
-	m_outgoing->push(packet.data(), packet.size());
+	int x = m_outgoing->push(packet.data(), packet.size());
+	assert(x == packet.size());
 
 }

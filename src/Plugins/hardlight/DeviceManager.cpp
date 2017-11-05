@@ -48,7 +48,7 @@ DeviceManager::DeviceManager(std::string path)
 			handle_connect(portName, packet);
 		});
 		potentialDevice->dispatcher->AddConsumer(PacketType::ImuData, [this, portName = info.port_name](auto packet) {
-			core_log(nsvr_severity_warning, "DeviceManager", "It seems that a device might be connected on " + portName + ", but can't confirm because a status packet is expected; this is a tracking packet");
+			core_log(nsvr_severity_warning, "DeviceManager", "It seems that a device might be connected on " + portName + ", but can't confirm because a status packet is expected; this is a tracking packet [zombie mode?]");
 		});
 		//makes the lifetime requirements clear: synchronizer must not outlive the dispatcher
 		potentialDevice->synchronizer->on_packet([dispatcher = potentialDevice->dispatcher.get()](auto packet) {

@@ -57,22 +57,21 @@ void ImuConsumer::AssignMapping(uint32_t key, Imu id, nsvr_node_id node_id)
 	m_mapping[key] = Mapping(id, node_id);
 }
 void ImuConsumer::consumeStatusPacket(Packet packet) {
-	auto& mapping = m_mapping[packet[4]];
-	Imu id = mapping.imu;
-	if (id != Imu::Unknown) {
-		mapping.status = static_cast<HL_Unit::_enumerated>(packet[3]);
+
+	auto iter = m_mapping.find(packet[4]);
+	if (iter != m_mapping.end()) {
+		iter->second.status = static_cast<HL_Unit::_enumerated>(packet[3]);
 	}
 }
-void ImuConsumer::consumeDataPacket(Packet Packet)
+void ImuConsumer::consumeDataPacket(Packet packet)
 {
 
-	const auto& mapping = m_mapping[Packet[11]];
-	Imu id = mapping.imu;
-	if (id != Imu::Unknown) {
-		m_quaternions[id] = parseQuaternion(Packet.data());
+	auto iter = m_mapping.find(packet[11]);
+	if (iter != m_mapping.end()) {
+		m_quaternions[iter->second.imu] = parseQuaternion(packet.data());
 
-		if (mapping.stream) {
-			nsvr_tracking_stream_push(mapping.stream, &m_quaternions.at(id));
+		if (iter->second.stream) {
+			nsvr_tracking_stream_push(iter->second.stream, &m_quaternions.at(iter->second.imu));
 		}
 	}
 }

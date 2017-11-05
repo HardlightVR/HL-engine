@@ -212,24 +212,39 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	}
 	
 
-	static FirmwareInterface::AudioOptions opts{ 0x00, 0x01, 0x40, 0x00, 0x7F };
+	static FirmwareInterface::AudioOptions opts{ 0x00, 0x00, 0x00,7, 38 };
 
-	if (ui->slider_int("VibeCtrl", &opts.VibeCtrl, 0, 5)	||
+	if (ui->slider_int("VibeCtrl", &opts.VibeCtrl, 0, 4)	||
 		ui->slider_int("AudioMin", &opts.AudioMin, 0, 255)	||
 		ui->slider_int("AudioMax", &opts.AudioMax, 0, 255)	||
-		ui->slider_int("MinDrv", &opts.MinDrv, 0, 125)		||
-		ui->slider_int("MaxDrv", &opts.MaxDrv, 0, 125))	
+		ui->slider_int("MinDrv", &opts.MinDrv, 0, 255)		||
+		ui->slider_int("MaxDrv", &opts.MaxDrv, 0, 255))	
 	{
-		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
-			m_firmware->EnableAudioMode(static_cast<Location>(i), opts);
-		}
+		
+	}
+
+	if (ui->button("Enable audio mode with given params chest_left")) {
+	
+			m_firmware->EnableAudioMode(Location::Chest_Left, opts);
+			m_firmware->EnableAudioMode(Location::Chest_Right, opts);
+			m_firmware->EnableAudioMode(Location::Forearm_Left, opts);
+			m_firmware->EnableAudioMode(Location::Forearm_Right, opts);
+
+
+		
+		
 	}
 	
 
-	if (ui->button("Disable audio on all")) {
-		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
-			m_firmware->EnableIntrigMode(static_cast<Location>(i));
-		}
+	if (ui->button("Disable audio on chest_left")) {
+		
+	
+			m_firmware->DisableAudioMode(Location::Chest_Left);
+			m_firmware->DisableAudioMode(Location::Chest_Right);
+			m_firmware->EnableAudioMode(Location::Forearm_Left, opts);
+			m_firmware->EnableAudioMode(Location::Forearm_Right, opts);
+		
+		
 	}
 
 	static int rtpVol = 0;
@@ -252,6 +267,20 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		ui->keyval("status", stringifyStatusBits(imu.status).c_str());
 	}
 
+
+	ui->keyval("Zombie mode test", "(drag slider to change # of clicks)");
+	if (ui->button("First enable intrig mode on chest_left")) {
+		m_firmware->EnableIntrigMode(Location::Chest_Left);
+	}
+	static int howmany = 0;
+	ui->slider_int("", &howmany, 0, 16);
+	
+	auto buttontext = std::string("Send " + std::to_string(howmany) + " clicks to chest_left");
+	if (ui->button(buttontext.c_str())) {
+		for (int i = 0; i < howmany; i++) {
+			m_firmware->PlayEffect(Location::Chest_Left, 3, 1.0);
+		}
+	}
 
 	ui->keyval("Total bytes sent", std::to_string(m_hwIO->bytes_written()).c_str());
 	ui->keyval("Total bytes rec'd", std::to_string(m_hwIO->bytes_read()).c_str());

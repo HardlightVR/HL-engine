@@ -74,6 +74,12 @@ void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::A
 	));
 }
 
+void FirmwareInterface::DisableAudioMode(Location pad)
+{
+	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
+	queueInstruction(inst::set_motor_stop_audio(inst::motor(actualZone)));
+}
+
 void FirmwareInterface::EnableIntrigMode(Location pad)
 {
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
@@ -132,6 +138,8 @@ void FirmwareInterface::PlayEffect(Location location, uint32_t effect, float str
 	queueInstruction(inst::set_motor_play_effect(inst::motor(actualZone), inst::effect(actualId)));
 
 }
+
+
 
 void FirmwareInterface::PlayEffectContinuous(Location location, uint32_t effect, float strength)
 {
