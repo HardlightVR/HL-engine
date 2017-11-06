@@ -226,9 +226,9 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	if (ui->button("Enable audio mode with given params chest_left")) {
 	
 			m_firmware->EnableAudioMode(Location::Chest_Left, opts);
-			m_firmware->EnableAudioMode(Location::Chest_Right, opts);
-			m_firmware->EnableAudioMode(Location::Forearm_Left, opts);
-			m_firmware->EnableAudioMode(Location::Forearm_Right, opts);
+		//	m_firmware->EnableAudioMode(Location::Chest_Right, opts);
+		//	m_firmware->EnableAudioMode(Location::Forearm_Left, opts);
+		//	m_firmware->EnableAudioMode(Location::Forearm_Right, opts);
 
 
 		
@@ -240,9 +240,9 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		
 	
 			m_firmware->DisableAudioMode(Location::Chest_Left);
-			m_firmware->DisableAudioMode(Location::Chest_Right);
-			m_firmware->EnableAudioMode(Location::Forearm_Left, opts);
-			m_firmware->EnableAudioMode(Location::Forearm_Right, opts);
+		//	m_firmware->DisableAudioMode(Location::Chest_Right);
+		//	m_firmware->DisableAudioMode(Location::Forearm_Left);
+		//	m_firmware->DisableAudioMode(Location::Forearm_Right);
 		
 		
 	}
