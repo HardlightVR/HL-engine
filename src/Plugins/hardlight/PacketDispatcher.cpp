@@ -4,9 +4,7 @@
 
 
 
-PacketDispatcher::PacketDispatcher() : m_consumers()
-{
-}
+
 void PacketDispatcher::Dispatch(Packet Packet)
 {
 	auto packetType = GetType(Packet);

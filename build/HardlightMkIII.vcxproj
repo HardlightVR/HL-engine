@@ -324,7 +324,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\IdPool.h" />
     <ClInclude Include="..\src\plugins\hardlight\ImuConsumer.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
-    <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instructions.h" />
     <ClInclude Include="..\src\plugins\hardlight\IoService.h" />
@@ -333,18 +332,14 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Json\json.h" />
     <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\Locator.h" />
-    <ClInclude Include="..\src\plugins\hardlight\Mark2Handshaker.h" />
-    <ClInclude Include="..\src\plugins\hardlight\Mark3Handshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketVersion.h" />
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h" />
     <ClInclude Include="..\src\plugins\hardlight\ReaderAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
-    <ClInclude Include="..\src\plugins\hardlight\SequentialHandshaker.h" />
     <ClInclude Include="..\src\plugins\hardlight\SerialPort.h" />
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
-    <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h" />
     <ClInclude Include="..\src\plugins\hardlight\WriterAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\better_enum.h" />
     <ClInclude Include="..\src\plugins\hardlight\catch.hpp" />
@@ -384,29 +379,28 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\IdPool.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ImuConsumer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Instructions.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\IoService.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\Mark2Handshaker.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\Mark3Handshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\NullLogger.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ReaderAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\SequentialHandshaker.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\main.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.cpp" />

@@ -32,20 +32,18 @@ TEST_CASE("The new instructions build correctly", "[instruction]") {
 		REQUIRE(packet == empty_packet);
 	}
 
-	SECTION("An inst") {
+	SECTION("A one argument instruction should serialize correctly") {
 		auto oneArg = instruction<25, motor>(motor{ 3 });
 		oneArg.serialize(packet.data());
 		REQUIRE(packet[0] == 3);
 
 	}
 	
-	SECTION("An inst") {
+	SECTION("A two argument instruction should serialize correctly") {
 		auto twoArgs = instruction<25, motor, effect>(motor{ 3 }, effect{ 12 });
 		twoArgs.serialize(packet.data());
 		REQUIRE(packet[0] == 3);
 		REQUIRE(packet[1] == 12);
-
-
 	}
 
 

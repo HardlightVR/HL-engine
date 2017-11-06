@@ -2,7 +2,6 @@
 
 #include "serial/hardware_device_recognizer.h"
 
-#include "Synchronizer.h"
 #include "PacketDispatcher.h"
 #include "IoService.h"
 #include "Heartbeat.h"

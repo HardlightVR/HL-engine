@@ -14,7 +14,7 @@ public:
 
 	}
 
-	virtual const char* what() const throw()
+	virtual const char* what() const throw() override
 	{
 		return _message.c_str();
 	}
@@ -26,9 +26,7 @@ class InstructionSet
 {
 public:
 	InstructionSet(const std::string& data_dir);
-	~InstructionSet(); 
 	bool LoadAll();
-	const std::unordered_map<std::string, Instruction>& Instructions() const;
 	const std::unordered_map<std::string, std::unordered_map<std::string, uint8_t>>&  ParamDict() const;
 	const std::unordered_map<std::string, Atom>& Atoms() const;
 
@@ -36,7 +34,6 @@ private:
 	std::string _dataDir;
 	std::unordered_map<std::string, Atom> _atoms;
 
-	std::unordered_map<std::string, Instruction> _instructions;
 	std::unordered_map<std::string, std::unordered_map<std::string, uint8_t>> _paramDict;
 
 

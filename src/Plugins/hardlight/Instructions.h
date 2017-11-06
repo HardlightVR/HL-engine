@@ -1,14 +1,16 @@
 #pragma once
 
-#include "better_enum.h"
+
 #include <cstdint>
 #include <vector>
-#include "FirmwareInterface.h"
-#include "PacketVersion.h"
 #include <tuple>
 
 
+#include "better_enum.h"
+
+
 namespace inst {
+
 
 BETTER_ENUM(Id, uint8_t,
 	GET_VERSION = 0x01,
@@ -86,7 +88,10 @@ template<std::size_t instruction_id, typename...Args>
 struct instruction {
 	std::tuple<Args...> args;
 	uint8_t id = instruction_id;
-	instruction(Args... args) : args(std::forward<Args>(args)...) {}
+	instruction(Args... args) : args(std::forward<Args>(args)...) {
+		static_assert(std::tuple_size<std::tuple<Args...>>::value <= 9, "cannot have more than 9 arguments");
+
+	}
 	void serialize(uint8_t* inputBuffer) const {
 		for_each(args, inputBuffer);
 	}

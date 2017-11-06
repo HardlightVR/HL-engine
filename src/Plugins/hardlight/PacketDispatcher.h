@@ -9,7 +9,6 @@ class PacketDispatcher
 {
 public:
 	using PacketEvent = boost::signals2::signal<void(Packet)>;
-	PacketDispatcher();
 
 	void Dispatch(Packet packet);
 	void ClearConsumers();

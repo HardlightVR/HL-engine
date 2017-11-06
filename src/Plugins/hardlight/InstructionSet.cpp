@@ -6,7 +6,7 @@
 
 #include "JsonKeyValueConfig.h"
 
-InstructionSet::InstructionSet(const std::string& data_dir) :_instructions(), _dataDir(data_dir)
+InstructionSet::InstructionSet(const std::string& data_dir) : _dataDir(data_dir)
 {
 	std::string validParams[4] = { "zone", "effect", "data", "register" };
 	for (std::string param : validParams) {
@@ -15,15 +15,8 @@ InstructionSet::InstructionSet(const std::string& data_dir) :_instructions(), _d
 }
 
 
-InstructionSet::~InstructionSet()
-{
-}
 
 
-const std::unordered_map<std::string, Instruction>& InstructionSet::Instructions() const
-{
-	return _instructions;
-}
 
 const std::unordered_map<std::string, std::unordered_map<std::string, uint8_t>>& InstructionSet::ParamDict() const
 {
@@ -58,14 +51,7 @@ bool InstructionSet::LoadAll() {
 		
 	
 	
-		//Instructions and atoms are more complex objects, so we deserialize them manually
-		_instructions = parseDictFromArray<std::string, Instruction>(_dataDir + "/Instructions.json",
-		[](auto value) {
-			Instruction inst;
-			inst.Deserialize(value);
-			return std::make_tuple(inst.Name, inst);
-		});
-
+		
 		_atoms = parseDictFromArray<std::string, Atom>(_dataDir + "/Atoms.json",
 		[](auto value) {
 			Atom atom;

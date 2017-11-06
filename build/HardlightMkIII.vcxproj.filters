@@ -90,9 +90,6 @@
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\InstructionBuilder.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -117,12 +114,6 @@
     <ClInclude Include="..\src\plugins\hardlight\Locator.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\Mark2Handshaker.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\Mark3Handshaker.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\NullLogger.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -141,16 +132,10 @@
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\SequentialHandshaker.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\SerialPort.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\Synchronizer.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\WriterAdapter.h">
@@ -266,9 +251,6 @@
     <ClCompile Include="..\src\plugins\hardlight\Instruction.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\InstructionBuilder.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\InstructionSet.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
@@ -282,12 +264,6 @@
       <Filter>plugins\hardlight\Json</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\Mark2Handshaker.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\Mark3Handshaker.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\NullLogger.cpp">
@@ -308,16 +284,10 @@
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\SequentialHandshaker.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\Synchronizer.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp">

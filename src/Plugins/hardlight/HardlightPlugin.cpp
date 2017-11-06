@@ -3,7 +3,6 @@
 
 #include "IoService.h"
 #include "Heartbeat.h"
-#include "Synchronizer.h"
 
 #include <typeinfo>
 #include "PluginAPIWrapper.h"

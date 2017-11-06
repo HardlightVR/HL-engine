@@ -10,7 +10,6 @@ constexpr unsigned int BATCH_SIZE = 16;
 
 FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::io_service& io)
 	: m_instructionSet(std::make_shared<InstructionSet>(data_dir))
-	, m_instructionBuilder(m_instructionSet)
 	, m_outgoing(outgoing)
 	, m_packetVersion(PacketVersion::MarkIII)
 	, m_isBatching(false)
@@ -18,11 +17,8 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::shared_pt
 	, m_packetLock()
 
 {
-	/*m_serial->OnPacketVersionChange([this](PacketVersion version) { 
-		m_packetVersion = version;  
-	});*/
 
-	
+	m_instructionSet->LoadAll();
 
 }
 

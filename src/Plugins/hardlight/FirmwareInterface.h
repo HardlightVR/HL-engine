@@ -2,11 +2,12 @@
 #include <queue>
 #include "Enums.h"
 #include <boost/lockfree/spsc_queue.hpp>
-#include "InstructionBuilder.h"
 #include <boost/asio/io_service.hpp>
 #include "zone_logic/HardwareCommands.h"
 #include "PacketVersion.h"
 #include <mutex>
+
+#include "InstructionSet.h"
 namespace nsvr {
 	namespace config {
 		struct Instruction;
@@ -57,7 +58,6 @@ private:
 
 	std::shared_ptr<InstructionSet> m_instructionSet;
 
-	InstructionBuilder m_instructionBuilder;
 
 	std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> m_outgoing;
 
@@ -67,7 +67,6 @@ private:
 
 	std::size_t m_totalBytesSent;
 
-	void queuePacket(const std::vector<uint8_t>& packet);
 	template<typename Instruction>
 	void queueInstruction(const Instruction& inst);
 
