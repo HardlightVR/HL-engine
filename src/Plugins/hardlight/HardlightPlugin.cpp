@@ -18,7 +18,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 	m_core{ nullptr },
 	m_io(io),
 	m_hwIO(std::move(device->io)),
-	m_dispatcher(std::move(device->dispatcher)),
+	m_dispatcher(device->dispatcher),
 	m_firmware(std::make_shared<FirmwareInterface>(data_dir, device->io->outgoing_queue(), m_io)),
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
 	m_synchronizer(device->synchronizer),
@@ -346,7 +346,7 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	
 }
 
-void HardlightPlugin::PollEvents()
+void HardlightPlugin::Update()
 {
 	constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
 	auto dt = 5 * ms_fraction_of_second;

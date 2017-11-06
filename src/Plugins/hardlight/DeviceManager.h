@@ -15,13 +15,13 @@
 class HardlightPlugin;
 struct PotentialDevice {
 	std::unique_ptr<HardwareIO> io;
-	std::unique_ptr<PacketDispatcher> dispatcher;
+	std::shared_ptr<PacketDispatcher> dispatcher;
 	std::shared_ptr<synchronizer2> synchronizer;
 
 	PotentialDevice(std::unique_ptr<boost::asio::serial_port> port) {
 		boost::asio::io_service& io_service = port->get_io_service();
 		io = std::make_unique<HardwareIO>(std::move(port));
-		dispatcher = std::make_unique<PacketDispatcher>();
+		dispatcher = std::make_shared<PacketDispatcher>();
 		synchronizer = std::make_shared<synchronizer2>(io_service, io->incoming_queue());
 	}
 };
@@ -42,6 +42,9 @@ private:
 
 	void handle_connect(std::string portName, Packet packet);
 	void device_update();
+	void handle_recognize(connection_info info);
+	void handle_unrecognize(connection_info info);
+
 	nsvr_core* m_core;
 	IoService m_ioService;
 	std::string m_path;

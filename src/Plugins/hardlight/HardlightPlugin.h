@@ -44,14 +44,14 @@ public:
 
 	void Render(nsvr_diagnostics_ui* ui);
 
-	void PollEvents();
+	void Update();
 private:
 	nsvr_core* m_core;
 
 
 	boost::asio::io_service& m_io;
 
-	std::unique_ptr<PacketDispatcher> m_dispatcher;
+	std::shared_ptr<PacketDispatcher> m_dispatcher;
 
 	std::shared_ptr<FirmwareInterface> m_firmware;
 	std::unique_ptr<HardwareIO> m_hwIO;

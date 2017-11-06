@@ -175,6 +175,8 @@ void PluginInstance::LogAsync(nsvr_severity level, const char * component, const
 
 	//10/27/2017 11:05am not working. I think the logging might be async in the plugin..? The call to enable_shared_from_this doesn't succeed.
 	//10/31/2017 11:44am not working. 
+	//11/6/2017 not working.
+
 
 	std::weak_ptr<PluginInstance> weak_plugin(shared_from_this());
 

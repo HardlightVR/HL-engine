@@ -31,56 +31,19 @@ DeviceManager::DeviceManager(std::string path)
 	
 
 	m_recognizer.on_recognize([this](connection_info info) {
-
-		auto port = std::make_unique<boost::asio::serial_port>(m_ioService.GetIOService());
-		boost::system::error_code ec;
-		port->open(info.port_name, ec);
-		if (!port->is_open()) {
-			std::cout << "The port didn't re open\n";
-			return;
-		}
-		//we are re-opening the port on our io_service, instead of the recognizer's io_service
-
-		auto potentialDevice = std::make_unique<PotentialDevice>(std::move(port));
-		potentialDevice->io->start();
-		potentialDevice->synchronizer->start();
-
-		potentialDevice->dispatcher->AddConsumer(inst::Id::GET_VERSION, [this, portName = info.port_name](auto packet) {
-			handle_connect(portName, packet);
+		//dispatch the event on our own IO service's thread (it came from the serial_connection_manager's thread)
+		m_ioService.GetIOService().post([this, info]() { 
+			handle_recognize(info);
 		});
-		potentialDevice->dispatcher->AddConsumer(inst::Id::GET_TRACK_DATA , [this, portName = info.port_name](auto packet) {
-			core_log(nsvr_severity_warning, "DeviceManager", "It seems that a device might be connected on " + portName + ", but can't confirm because a status packet is expected; this is a tracking packet [zombie mode?]");
-		});
-		//makes the lifetime requirements clear: synchronizer must not outlive the dispatcher
-		potentialDevice->synchronizer->on_packet([dispatcher = potentialDevice->dispatcher.get()](auto packet) {
-			dispatcher->Dispatch(std::move(packet)); 
-		});
-
-		requestSuitVersion(*potentialDevice->io->outgoing_queue());
-		requestSuitVersion(*potentialDevice->io->outgoing_queue());
-		requestUuid(*potentialDevice->io->outgoing_queue());
-
-		m_potentials.insert(std::make_pair(info.port_name, std::move(potentialDevice)));
 	});
 
 	m_recognizer.on_unrecognize([this](connection_info info) {
-
-		std::lock_guard<std::mutex> guard(m_deviceLock);
-
-		auto it = std::find_if(m_deviceIds.begin(), m_deviceIds.end(), [port = info.port_name](const auto& kvp) { return kvp.second == port; });
-
-		if (it != m_deviceIds.end()) {
-			nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, it->first);
-			m_idPool.Release(it->first);
-
-			m_devices.erase(it->second);
-			m_deviceIds.erase(it);
-		}
-
-
-
-	
+		//dispatch the event on our own IO service's thread (it came from the serial_connection_manager's thread)
+		m_ioService.GetIOService().post([this, info]() {
+			handle_unrecognize(info);
+		});
 	});
+	
 	m_recognizer.start();
 
 
@@ -89,6 +52,70 @@ DeviceManager::DeviceManager(std::string path)
 		device_update();
 	});
 }
+
+
+void DeviceManager::handle_recognize(connection_info info)
+{
+	auto port = std::make_unique<boost::asio::serial_port>(m_ioService.GetIOService());
+	
+	boost::system::error_code ec;
+	port->open(info.port_name, ec);
+	if (!port->is_open()) {
+		core_log(nsvr_severity_error, "DeviceManager", "Unable to re-open the previously detected port " + info.port_name);
+		return;
+	}
+
+	auto device = std::make_unique<PotentialDevice>(std::move(port));
+	
+	//begins reading and writing to port
+	device->io->start();
+
+	//begins synchronizing incoming packets from the device
+	device->synchronizer->start();
+
+	//in order for a device to move from "potential" to "actual", we need it to return its version
+	device->dispatcher->AddConsumer(inst::Id::GET_VERSION, [this, portName = info.port_name](auto packet) {
+		handle_connect(portName, packet);
+	});
+
+	//some suits, or a zombie suit, may end up streaming tracking data on connect. We should tell the user to reset the suit if this happens.
+	device->dispatcher->AddConsumer(inst::Id::GET_TRACK_DATA, [this, portName = info.port_name](auto packet) {
+		core_log(nsvr_severity_warning, "DeviceManager", "It seems that a device might be connected on " + portName + ", but can't confirm. Please power cycle the device.");
+	});
+
+
+	device->synchronizer->on_packet([weakDispatch = std::weak_ptr<PacketDispatcher>(device->dispatcher)](auto packet) {
+		if (auto dispatcher = weakDispatch.lock()) {
+			dispatcher->Dispatch(std::move(packet));
+		}
+	});
+
+	requestSuitVersion(*device->io->outgoing_queue());
+	requestSuitVersion(*device->io->outgoing_queue());
+	requestUuid(*device->io->outgoing_queue());
+
+	m_potentials.insert(std::make_pair(info.port_name, std::move(device)));
+}
+
+void DeviceManager::handle_unrecognize(connection_info info)
+{
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
+	auto it = std::find_if(m_deviceIds.begin(), m_deviceIds.end(), [port = info.port_name](const auto& kvp) { return kvp.second == port; });
+
+	if (it != m_deviceIds.end()) {
+		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, it->first);
+		m_idPool.Release(it->first);
+
+		m_devices.erase(it->second);
+		m_deviceIds.erase(it);
+	}
+
+
+
+
+}
+
 
 void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
@@ -125,7 +152,7 @@ void DeviceManager::device_update()
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
 	for (auto& kvp : m_devices) {
-		kvp.second->PollEvents();
+		kvp.second->Update();
 	}
 
 	m_devicePollTimer.expires_from_now(m_devicePollTimeout);
@@ -133,6 +160,7 @@ void DeviceManager::device_update()
 		device_update();
 	});
 }
+
 
 
 DeviceManager::~DeviceManager()

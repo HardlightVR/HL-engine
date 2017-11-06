@@ -5,6 +5,9 @@
 const uint8_t PACKET_DELIMETER = '$';
 const uint8_t PACKET_FOOTER[2] = { 0x0D, 0x0A };
 
+//this..should be rewritten to what it was before :(
+//we can still use deadline timer to drive it, but it was simpler as a state machine
+
 bool packetIsWellFormed(const Packet& actualPacket)
 {
 	
