@@ -119,6 +119,8 @@ void DeviceManager::handle_unrecognize(connection_info info)
 
 void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
 	if (m_potentials.find(portName) == m_potentials.end()) {
 		return;
 	}
@@ -134,14 +136,12 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 	auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential), version);
 	real->Configure(m_core);
 
-	m_deviceLock.lock();
 
 	m_devices.insert(std::make_pair(portName, std::move(real)));
 
 	auto id = m_idPool.Request();
 	m_deviceIds[id] = portName;
 
-	m_deviceLock.unlock();
 
 	nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, id);
 
