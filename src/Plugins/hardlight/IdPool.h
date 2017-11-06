@@ -2,6 +2,7 @@
 
 #include <array>
 #include <vector>
+#include <mutex>
 class IdPool {
 public:
 	IdPool();
@@ -10,4 +11,5 @@ public:
 private:
 	std::size_t m_upperBound;
 	std::vector<std::size_t> m_pool;
+	std::mutex m_lock;
 };

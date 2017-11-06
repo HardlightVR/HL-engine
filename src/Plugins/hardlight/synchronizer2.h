@@ -30,6 +30,7 @@ public:
 	std::size_t	total_bytes_read() const;
 
 private:
+	void transition_state();
 	void confirm_sync();
 	void confirm_sync_loss();
 	void search_for_sync();

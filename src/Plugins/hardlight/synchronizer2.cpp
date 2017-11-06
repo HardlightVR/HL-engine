@@ -39,7 +39,7 @@ synchronizer2::synchronizer2(boost::asio::io_service& io, std::shared_ptr<boost:
 
 void synchronizer2::start()
 {
-	search_for_sync();
+	transition_state();
 }
 
 void synchronizer2::stop()
@@ -57,96 +57,82 @@ std::size_t synchronizer2::total_bytes_read() const
 	return m_totalBytesRead;
 }
 
-void synchronizer2::confirm_sync()
+void synchronizer2::transition_state()
 {
-	m_state = State::ConfirmingSync;
-
+	switch (m_state)
+	{
+	case State::SearchingForSync:
+		search_for_sync();
+		break;
+	case State::ConfirmingSync:
+		confirm_sync();
+		break;
+	case State::Synchronized:
+		synchronized_read();
+		break;
+	case State::ConfirmingSyncLoss:
+		confirm_sync_loss();
+		break;
+	default:
+		break;
+	}
 
 	auto self(shared_from_this());
+	m_syncTimer.expires_from_now(m_syncInterval);
+	m_syncTimer.async_wait([this, self](const auto& ec) { if (ec) { return; } transition_state(); });
+}
 
+void synchronizer2::confirm_sync()
+{
 
 	auto possiblePacket = dequeuePacket();
 	if (!possiblePacket) {
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; } confirm_sync(); });
+		m_state = State::ConfirmingSync;
 		return;
 	}
 
 	if (packetIsWellFormed(*possiblePacket)) {
 		m_dispatcher(*possiblePacket);
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; } synchronized_read(); });
+		m_state = State::Synchronized;
 	}
 	else {
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  search_for_sync(); });
+		m_state = State::SearchingForSync;
 	}
 }
 
 void synchronizer2::confirm_sync_loss()
 {
-	m_state = State::ConfirmingSyncLoss;
-
-
-	auto self(shared_from_this());
 
 	auto possiblePacket = this->dequeuePacket();
 	if (!possiblePacket) {
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  confirm_sync_loss(); });
 		return;
 	}
 
 	if (!packetIsWellFormed(*possiblePacket)) {
 		m_badSyncCounter++;
 		if (m_badSyncCounter >= m_badSyncLimit) {
-			//core_log("Synchronizer", "Sync loss confirmed, searching for sync..");
-			m_syncTimer.expires_from_now(m_syncInterval);
-			m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  search_for_sync(); });
-		}
-		else {
-			m_syncTimer.expires_from_now(m_syncInterval);
-			m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  confirm_sync_loss(); });
+			m_state = State::SearchingForSync;
 		}
 	}
 	else {
 		m_dispatcher(*possiblePacket);
-		//core_log("Synchronizer", "Sync achieved.");
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  synchronized_read(); });
+		m_state = State::Synchronized;
 	}
-
-	
 }
 
 void synchronizer2::search_for_sync()
 {
-	m_state = State::SearchingForSync;
 
-	auto self(shared_from_this());
-
-	/*if (m_data.read_available() < PACKET_LENGTH * 2) {
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  search_for_sync(); });
-		return;
-	}*/
 	
 	auto possiblePacket = dequeuePacket();
 	if (!possiblePacket) {
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  search_for_sync(); });
 		return;
 	}
 
 	if (packetIsWellFormed(*possiblePacket) || seek_offset(*possiblePacket)) {
 		m_dispatcher(*possiblePacket);
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; } confirm_sync(); });
-		return;
+		m_state = State::ConfirmingSync;
 	}
-
-	m_syncTimer.expires_from_now(m_syncInterval);
-	m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; }  search_for_sync(); });
 }
 
 bool synchronizer2::seek_offset(const Packet& realPacket)
@@ -168,27 +154,19 @@ bool synchronizer2::seek_offset(const Packet& realPacket)
 
 void synchronizer2::synchronized_read()
 {
-	m_state = State::Synchronized;
-
-	auto self(shared_from_this());
 
 	auto possiblePacket = this->dequeuePacket();
 
 	if (!possiblePacket) {
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; } synchronized_read(); });
 		return;
 	}
 
 	if (packetIsWellFormed(*possiblePacket)) {
 		m_dispatcher(*possiblePacket);
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; } synchronized_read(); });
 	}
 	else {
 		m_badSyncCounter = 1;
-		m_syncTimer.expires_from_now(m_syncInterval);
-		m_syncTimer.async_wait([self, this](auto ec) { if (ec) { return; } confirm_sync_loss(); });
+		m_state = State::ConfirmingSyncLoss;
 	}
 }
 

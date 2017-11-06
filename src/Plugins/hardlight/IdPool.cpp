@@ -7,14 +7,18 @@
 IdPool::IdPool()
 	: m_pool(10, 0)
 	, m_upperBound(10)
+	, m_lock()
 {
 	std::iota(m_pool.begin(), m_pool.end(), 0);
 	std::reverse(m_pool.begin(), m_pool.end());
 
 }
 
+//thread safe
 std::size_t IdPool::Request()
 {
+	std::lock_guard<std::mutex> guard(m_lock);
+
 	if (m_pool.empty()) {
 		m_pool.push_back(m_upperBound);
 		m_upperBound++;
@@ -25,7 +29,10 @@ std::size_t IdPool::Request()
 	return id;
 }
 
+//thread safe
 void IdPool::Release(std::size_t val)
 {
+	std::lock_guard<std::mutex> guard(m_lock);
+
 	m_pool.push_back(val);
 }

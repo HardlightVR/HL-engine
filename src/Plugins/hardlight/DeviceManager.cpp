@@ -119,29 +119,30 @@ void DeviceManager::handle_unrecognize(connection_info info)
 
 void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
-	std::lock_guard<std::mutex> guard(m_deviceLock);
+	{
+		std::lock_guard<std::mutex> guard(m_deviceLock);
 
-	if (m_potentials.find(portName) == m_potentials.end()) {
-		return;
+		if (m_potentials.find(portName) == m_potentials.end()) {
+			return;
+		}
+
+		auto version = parse_version(versionPacket);
+
+		auto potential = std::move(m_potentials.at(portName));
+
+		m_potentials.erase(portName);
+
+		potential->dispatcher->ClearConsumers();
+
+		auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential), version);
+		real->Configure(m_core);
+
+
+		m_devices.insert(std::make_pair(portName, std::move(real)));
 	}
-
-	auto version = parse_version(versionPacket);
-
-	auto potential = std::move(m_potentials.at(portName));
-
-	m_potentials.erase(portName);
-
-	potential->dispatcher->ClearConsumers();
-	
-	auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential), version);
-	real->Configure(m_core);
-
-
-	m_devices.insert(std::make_pair(portName, std::move(real)));
 
 	auto id = m_idPool.Request();
 	m_deviceIds[id] = portName;
-
 
 	nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, id);
 
