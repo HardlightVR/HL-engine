@@ -2,12 +2,14 @@
 #include "PacketDispatcher.h"
 #include "logger.h"
 
+
+
 PacketDispatcher::PacketDispatcher() : m_consumers()
 {
 }
 void PacketDispatcher::Dispatch(Packet Packet)
 {
-	PacketType packetType = GetType(Packet);
+	auto packetType = GetType(Packet);
 	
 	auto it = m_consumers.find(packetType);
 
@@ -16,7 +18,13 @@ void PacketDispatcher::Dispatch(Packet Packet)
 		it->second->operator()(Packet);
 	}
 	else {
-		core_log(nsvr_severity_info, "Dispatcher", "Packet type wasn't found: " + std::to_string((int)packetType));
+		if (inst::Id::_is_valid(packetType)) {
+			core_log(nsvr_severity_info, "Dispatcher", "No consumers for packet type " + std::string(packetType._to_string()));
+		}
+		else {
+			core_log(nsvr_severity_info, "Dispatcher", "No consumers for packet type " + std::to_string(packetType));
+
+		}
 	}
 }
 
@@ -25,7 +33,7 @@ void PacketDispatcher::ClearConsumers()
 	m_consumers.clear();
 }
 
-void PacketDispatcher::AddConsumer(PacketType ptype, PacketDispatcher::PacketEvent::slot_type packetFunc)
+void PacketDispatcher::AddConsumer(inst::Id ptype, PacketDispatcher::PacketEvent::slot_type packetFunc)
 {
 	auto it = m_consumers.find(ptype);
 	if (it != m_consumers.end()) {

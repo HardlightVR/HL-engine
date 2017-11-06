@@ -11,7 +11,7 @@ typedef bimap<Effect, std::string> EffectMap;
 typedef bimap<Location, std::string> LocationMap;
 typedef bimap<Side, std::string> SideMap;
 typedef bimap<JsonLocation, std::string> JsonLocationMap;
-typedef bimap<Imu, std::string> ImuMap;
+typedef bimap<std::string, Imu> ImuMap;
 typedef bimap<AreaFlag, std::string> AreaMap;
 typedef bimap<std::string, uint8_t> EffectFamilyMap;
 typedef bimap<Location, nsvr_region> RegionMap;

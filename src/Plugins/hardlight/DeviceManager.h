@@ -10,7 +10,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "synchronizer2.h"
 #include "HardwareIO.h"
-
+#include <mutex>
 #include "IdPool.h"
 class HardlightPlugin;
 struct PotentialDevice {
@@ -59,4 +59,6 @@ private:
 	boost::asio::deadline_timer m_devicePollTimer;
 
 	IdPool m_idPool;
+
+	std::mutex m_deviceLock;
 };

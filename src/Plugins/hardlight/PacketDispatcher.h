@@ -4,6 +4,7 @@
 #include <functional>
 
 #include <boost/signals2.hpp>
+#include "Instructions.h"
 class PacketDispatcher
 {
 public:
@@ -12,8 +13,8 @@ public:
 
 	void Dispatch(Packet packet);
 	void ClearConsumers();
-	void AddConsumer(PacketType ptype, PacketEvent::slot_type packetFunc);
+	void AddConsumer(inst::Id, PacketEvent::slot_type packetFunc);
 private:
-	std::unordered_map<PacketType, std::unique_ptr<PacketEvent>> m_consumers;
+	std::unordered_map<inst::Id::_enumerated, std::unique_ptr<PacketEvent>> m_consumers;
 };
 

@@ -26,6 +26,7 @@ DeviceManager::DeviceManager(std::string path)
 	, m_idPool()
 	, m_devicePollTimeout(boost::posix_time::millisec(5))
 	, m_devicePollTimer(m_ioService.GetIOService())
+	, m_deviceLock()
 {
 	
 
@@ -44,10 +45,10 @@ DeviceManager::DeviceManager(std::string path)
 		potentialDevice->io->start();
 		potentialDevice->synchronizer->start();
 
-		potentialDevice->dispatcher->AddConsumer(PacketType::SuitVersion, [this, portName = info.port_name](auto packet) {
+		potentialDevice->dispatcher->AddConsumer(inst::Id::GET_VERSION, [this, portName = info.port_name](auto packet) {
 			handle_connect(portName, packet);
 		});
-		potentialDevice->dispatcher->AddConsumer(PacketType::ImuData, [this, portName = info.port_name](auto packet) {
+		potentialDevice->dispatcher->AddConsumer(inst::Id::GET_TRACK_DATA , [this, portName = info.port_name](auto packet) {
 			core_log(nsvr_severity_warning, "DeviceManager", "It seems that a device might be connected on " + portName + ", but can't confirm because a status packet is expected; this is a tracking packet [zombie mode?]");
 		});
 		//makes the lifetime requirements clear: synchronizer must not outlive the dispatcher
@@ -63,6 +64,8 @@ DeviceManager::DeviceManager(std::string path)
 	});
 
 	m_recognizer.on_unrecognize([this](connection_info info) {
+
+		std::lock_guard<std::mutex> guard(m_deviceLock);
 
 		auto it = std::find_if(m_deviceIds.begin(), m_deviceIds.end(), [port = info.port_name](const auto& kvp) { return kvp.second == port; });
 
@@ -104,10 +107,14 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 	auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential), version);
 	real->Configure(m_core);
 
+	m_deviceLock.lock();
+
 	m_devices.insert(std::make_pair(portName, std::move(real)));
 
 	auto id = m_idPool.Request();
 	m_deviceIds[id] = portName;
+
+	m_deviceLock.unlock();
 
 	nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, id);
 
@@ -116,6 +123,7 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
 void DeviceManager::device_update()
 {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
 	for (auto& kvp : m_devices) {
 		kvp.second->PollEvents();
 	}
@@ -166,18 +174,27 @@ int DeviceManager::configure(nsvr_core * core)
 }
 
 void DeviceManager::Render(nsvr_diagnostics_ui* ui) {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
+
 	for (auto& device : m_devices) {
 		device.second->Render(ui);
 	}
 }
 void DeviceManager::EnumerateNodesForDevice(nsvr_device_id id, nsvr_node_ids * ids)
 {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
+
 	auto portName = m_deviceIds.at(id);
 	m_devices.at(portName)->EnumerateNodesForDevice(ids);
 }
 
 void DeviceManager::EnumerateDevices(nsvr_device_ids * ids)
 {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
+
 	ids->device_count = m_deviceIds.size();
 
 	std::size_t index = 0;
@@ -188,6 +205,8 @@ void DeviceManager::EnumerateDevices(nsvr_device_ids * ids)
 
 void DeviceManager::GetDeviceInfo(nsvr_device_id id, nsvr_device_info * info)
 {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
 
 	auto portName = m_deviceIds.at(id);
 	m_devices.at(portName)->GetDeviceInfo(info);
@@ -195,6 +214,8 @@ void DeviceManager::GetDeviceInfo(nsvr_device_id id, nsvr_device_info * info)
 
 void DeviceManager::GetNodeInfo(nsvr_device_id device_id, nsvr_node_id node_id, nsvr_node_info * info)
 {
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+
 	auto portName = m_deviceIds.at(device_id);
 	m_devices.at(portName)->GetNodeInfo(node_id, info);
 }

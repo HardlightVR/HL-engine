@@ -10,12 +10,22 @@
 #include "ScheduledEvent.h"
 #include "HardwareIO.h"
 #include "hardlight_device_version.h"
+
+#include "HL_Firmware_Defines.h"
+
 class synchronizer2;
 struct PotentialDevice;
 class BoostSerialAdapter;
 class Heartbeat;
 class Synchronizer;
 
+
+struct MotorStatus {
+	uint8_t MotorId;
+	HL_Unit Status;
+	MotorStatus(uint8_t id, HL_Unit status) : MotorId(id), Status(status) {}
+	MotorStatus() : MotorId(0), Status(HL_Unit::_enumerated::None) {}
+};
 class HardlightPlugin {
 public:
 	HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version);
@@ -29,6 +39,8 @@ public:
 	void GetDeviceInfo(nsvr_device_info* info);
 	void GetNodeInfo(nsvr_node_id id, nsvr_node_info* info);
 	void SetupBodygraph(nsvr_bodygraph* graph);
+
+	std::vector<MotorStatus> GetMotorStatus() const;
 
 	void Render(nsvr_diagnostics_ui* ui);
 
@@ -53,6 +65,8 @@ private:
 	ImuConsumer m_imus;
 
 	hardlight_device_version m_version;
+
+	std::unordered_map<uint8_t, MotorStatus> m_motors;
 
 
 

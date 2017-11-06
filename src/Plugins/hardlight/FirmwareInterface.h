@@ -40,7 +40,7 @@ public:
 	void DisableTracking();
 	void RequestSuitVersion();
 
-
+	void GetMotorStatus(Location location);
 
 	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions&);
 	void DisableAudioMode(Location pad);
@@ -50,6 +50,8 @@ public:
 	void Ping();
 
 	std::size_t GetTotalBytesSent() const;
+
+	const InstructionSet* GetInstructions() const;
 private:
 
 

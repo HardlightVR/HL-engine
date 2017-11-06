@@ -55,6 +55,13 @@ void FirmwareInterface::RequestSuitVersion()
 	queueInstruction(inst::get_version());
 }
 
+void FirmwareInterface::GetMotorStatus(Location location)
+{
+	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(location));
+
+	queueInstruction(inst::get_motor_status(inst::motor(actualZone)));
+}
+
 
 
 
@@ -112,6 +119,11 @@ void FirmwareInterface::Ping()
 std::size_t FirmwareInterface::GetTotalBytesSent() const
 {
 	return m_totalBytesSent;
+}
+
+const InstructionSet * FirmwareInterface::GetInstructions() const
+{
+	return m_instructionSet.get();
 }
 
 void FirmwareInterface::Execute(const CommandBuffer & buffer)

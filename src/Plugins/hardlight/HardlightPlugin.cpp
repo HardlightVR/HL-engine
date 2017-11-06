@@ -11,7 +11,7 @@
 #include "DeviceManager.h"
 
 #include "synchronizer2.h"
-
+#include "Instructions.h"
 nsvr_core* global_core = nullptr;
 //note: can make firmware unique
 HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version) :
@@ -24,7 +24,8 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 	m_synchronizer(device->synchronizer),
 	m_device(),
 	m_imus(*m_dispatcher),
-	m_version(version)
+	m_version(version),
+	m_motors()
 
 {
 	
@@ -33,10 +34,17 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 	
 	
 
-	m_dispatcher->AddConsumer(PacketType::Ping, [this](const auto&) { m_monitor->ReceiveResponse(); });
-	m_dispatcher->AddConsumer(PacketType::ImuData, [this](const auto&) { m_monitor->ReceiveResponse(); });
+	m_dispatcher->AddConsumer(inst::Id::GET_PING, [this](const auto&) { m_monitor->ReceiveResponse(); });
+	m_dispatcher->AddConsumer(inst::Id::GET_TRACK_DATA, [this](const auto&) { m_monitor->ReceiveResponse(); });
+	
+	m_dispatcher->AddConsumer(inst::Id::GET_MOTOR_STATUS, [this](const Packet& packet) {
+		auto status = packet[3];
+		auto motor = packet[4];
+		m_motors[motor] = MotorStatus(motor, static_cast<HL_Unit::_enumerated>(status));
 	
 
+		core_log(nsvr_severity_info, "HardlightPlugin", "Got motor status update");
+	});
 
 
 	
@@ -52,7 +60,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 HardlightPlugin::~HardlightPlugin()
 {
-	m_imus.stop();
+	m_dispatcher->ClearConsumers();
 	m_synchronizer->stop();
 	m_hwIO->stop();
 
@@ -172,6 +180,14 @@ void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
 	m_device.SetupDeviceAssociations(g);
 	
 }
+std::vector<MotorStatus> HardlightPlugin::GetMotorStatus() const
+{
+	std::vector<MotorStatus> statuses;
+	for (const auto& kvp : m_motors) {
+		statuses.push_back(kvp.second);
+	}
+	return statuses;
+}
 std::string stringifyStatusBits(HL_Unit status) {
 	std::stringstream ss;
 	for (auto val : HL_Unit::_values()) {
@@ -211,6 +227,71 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		m_firmware->RequestTrackingStatus();
 	}
 	
+	auto imuInfo = m_imus.GetInfo();
+
+	bool all_imu_good = std::all_of(imuInfo.begin(), imuInfo.end(), [](const ImuInfo& info) { return info.status == 141; });
+
+	ui->keyval("All imus okay?" , all_imu_good ? "true" : "false");
+	for (const auto& imu : imuInfo) {
+
+		std::string imuStr = Locator::Translator().ToString(static_cast<Imu>(imu.friendlyName));
+
+		std::string imuId("Imu " + std::to_string((int)imu.firmwareId));
+		std::string friendlyId("(" + imuStr + ")");
+		ui->keyval(imuId.c_str(), friendlyId.c_str());
+		ui->keyval("status", stringifyStatusBits(imu.status).c_str());
+	}
+
+	if (ui->button("GET_MOTOR_STATUS")) {
+		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+			m_firmware->GetMotorStatus(static_cast<Location>(i));
+		}
+	}
+	
+	std::vector<bool> statuses;
+	for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+
+		std::string pad = Locator::Translator().ToString(static_cast<Location>(i));
+		uint8_t actualZone = m_firmware->GetInstructions()->ParamDict().at("zone").at(pad);
+		auto it = m_motors.find(actualZone);
+		if (it != m_motors.end()) {
+			if (it->second.Status == 141) {
+				statuses.push_back(true);
+			}
+			else {
+				statuses.push_back(false);
+			}
+		}
+		else {
+			statuses.push_back(false);
+		}
+	}
+
+	bool all_good = std::all_of(statuses.begin(), statuses.end(), [](bool a) { return a; });
+	ui->keyval("All motors okay?", all_good ? "true" : "false");
+
+
+	for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+		std::string pad = Locator::Translator().ToString(static_cast<Location>(i));
+		std::string status = "[no data]";
+
+		uint8_t actualZone = m_firmware->GetInstructions()->ParamDict().at("zone").at(pad);
+		std::string motorName = "Motor " + std::to_string(actualZone);
+
+		
+		auto it = m_motors.find(actualZone);
+
+		if (it != m_motors.end()) {
+			status = stringifyStatusBits(it->second.Status);
+			
+		}
+
+		std::string friendly("(" + pad + ")");
+		ui->keyval(motorName.c_str(), friendly.c_str());
+		ui->keyval("status", status.c_str());
+	}
+
+
 
 	static FirmwareInterface::AudioOptions opts{ 0x00, 0x00, 0x00,7, 38 };
 
@@ -224,27 +305,12 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	}
 
 	if (ui->button("Enable audio mode with given params chest_left")) {
-	
-			m_firmware->EnableAudioMode(Location::Chest_Left, opts);
-		//	m_firmware->EnableAudioMode(Location::Chest_Right, opts);
-		//	m_firmware->EnableAudioMode(Location::Forearm_Left, opts);
-		//	m_firmware->EnableAudioMode(Location::Forearm_Right, opts);
-
-
-		
-		
+		m_firmware->EnableAudioMode(Location::Chest_Right, opts);
 	}
 	
 
 	if (ui->button("Disable audio on chest_left")) {
-		
-	
-			m_firmware->DisableAudioMode(Location::Chest_Left);
-		//	m_firmware->DisableAudioMode(Location::Chest_Right);
-		//	m_firmware->DisableAudioMode(Location::Forearm_Left);
-		//	m_firmware->DisableAudioMode(Location::Forearm_Right);
-		
-		
+		m_firmware->DisableAudioMode(Location::Chest_Right);
 	}
 
 	static int rtpVol = 0;
@@ -259,14 +325,7 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 		}
 	}
 
-	auto imuInfo = m_imus.GetInfo();
-	for (const auto& imu : imuInfo) {
-		std::string imuId("Imu " + std::to_string((int)imu.firmwareId));
-		std::string friendlyId("(friendly = " + std::to_string((int)imu.friendlyName) + ")");
-		ui->keyval(imuId.c_str(), friendlyId.c_str());
-		ui->keyval("status", stringifyStatusBits(imu.status).c_str());
-	}
-
+	
 
 	ui->keyval("Zombie mode test", "(drag slider to change # of clicks)");
 	if (ui->button("First enable intrig mode on chest_left")) {

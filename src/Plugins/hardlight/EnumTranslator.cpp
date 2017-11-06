@@ -71,6 +71,7 @@ EnumTranslator::EnumTranslator() {
 	init_effects();
 	init_familymap();
 	init_regions();
+	init_imus();
 	
 }
 
@@ -172,6 +173,16 @@ nsvr_region EnumTranslator::ToRegionFromLocation(Location loc) const {
 	return _regionMap.left.at(loc);
 }
 
+void EnumTranslator::init_imus()
+{
+	boost::assign::insert(_imuMap)
+		("chest", Imu::Chest)
+		("left_upper_arm", Imu::Left_Upper_Arm)
+		("right_upper_arm", Imu::Right_Upper_Arm)
+		("left_forearm", Imu::Left_Forearm)
+		("right_forearm", Imu::Right_Forearm);
+}
+
 void EnumTranslator::init_familymap()
 {
 	boost::assign::insert(_effectFamilyMap)
@@ -239,4 +250,9 @@ void EnumTranslator::init_locations() {
 	(Location::Upper_Back_Left, "Upper_Back_Left")
 	(Location::Upper_Back_Right, "Upper_Back_Right")
 		;
+}
+
+std::string EnumTranslator::ToString(Imu imu) const
+{
+	return _imuMap.right.at(imu);
 }
