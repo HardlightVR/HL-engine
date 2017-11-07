@@ -17,11 +17,12 @@ Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::un
 	m_core{ nullptr },
 	m_io(io),
 	m_hwIO(std::move(device->io)),
-	m_dispatcher(device->dispatcher),
-	m_firmware(std::make_shared<FirmwareInterface>(data_dir, device->io->outgoing_queue(), m_io)),
+	m_firmware(std::make_shared<FirmwareInterface>(data_dir, m_hwIO->outgoing_queue(), m_io)),
+	m_device(),
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
 	m_synchronizer(device->synchronizer),
-	m_device(),
+	m_dispatcher(device->dispatcher),
+	m_running(),
 	m_imus(*m_dispatcher),
 	m_version(version),
 	m_motors()
@@ -59,6 +60,7 @@ Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::un
 
 Device::~Device()
 {
+	std::cout << "DESTROYING HARDLIGHT DEVICE\n";
 	m_dispatcher->ClearConsumers();
 	m_synchronizer->stop();
 	m_hwIO->stop();
@@ -346,6 +348,16 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 	if (ui->button(buttontext.c_str())) {
 		for (int i = 0; i < howmany; i++) {
 			m_firmware->PlayEffect(Location::Chest_Left, 3, 1.0);
+		}
+	}
+
+	for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+		if (ui->button(std::string("Location" + std::to_string(i)).c_str())) {
+			m_firmware->HaltEffect(static_cast<Location>(i));
+			m_firmware->EnableIntrigMode(static_cast<Location>(i));
+
+			m_firmware->PlayEffect(static_cast<Location>(i), 3, 1.0);
+
 		}
 	}
 

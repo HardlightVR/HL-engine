@@ -394,7 +394,9 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\main.cpp" />
+    <ClCompile Include="..\src\plugins\hardlight\main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\mark3.cpp" />

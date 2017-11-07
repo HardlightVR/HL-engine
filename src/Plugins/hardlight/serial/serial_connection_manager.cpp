@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ #include "stdafx.h"
 #include "serial_connection_manager.h"
 #include <iostream>
 serial_connection_manager::serial_connection_manager() 
@@ -40,6 +40,7 @@ void serial_connection_manager::raise_connect(serial_connection_ptr s) {
 	s->stop();
 	m_onConnect({ s->port_name() });
 }
+
 void serial_connection_manager::stop(serial_connection_ptr s)
 {
 

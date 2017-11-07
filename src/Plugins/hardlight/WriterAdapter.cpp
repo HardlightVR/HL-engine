@@ -37,11 +37,18 @@ void WriterAdapter::do_write()
 
 	const int actual_popped = m_outgoing->pop(m_tempBuffer.data(), amount_to_write);
 	assert(actual_popped <= 64);
-	m_port.async_write_some(boost::asio::buffer(m_tempBuffer.data(),actual_popped), [this, self](auto ec, std::size_t bytes_transferred) {
+	m_port.async_write_some(boost::asio::buffer(m_tempBuffer.data(),actual_popped), [this, self, actual_popped](auto ec, std::size_t bytes_transferred) {
 		if (m_stopped) {
 			return;
 		}
 		if (!ec) {
+			if (actual_popped > 0) {
+				std::stringstream ss;
+				for (int i = 0; i < actual_popped; i++) {
+					ss << std::to_string(m_tempBuffer[i]) << ", ";
+				}
+				std::cout << "wrote " << ss.str() << '\n';
+			}
 			m_totalBytes += bytes_transferred;
 			do_write();
 		}

@@ -16,7 +16,6 @@ public:
 	void reset_io();
 	void stop_all();
 	void raise_connect(serial_connection_ptr s);
-
 	std::unique_ptr<boost::asio::serial_port> make_port();
 
 	//This event can only have one consumer

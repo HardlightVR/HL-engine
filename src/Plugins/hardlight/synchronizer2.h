@@ -20,7 +20,7 @@ public:
 	State state() const;
 
 	using PacketEvent = boost::signals2::signal<void(Packet)>;
-
+	~synchronizer2() { std::cout << "DESTROYING SYNC\n"; }
 	synchronizer2(boost::asio::io_service& io, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> data);
 	void start();
 	void stop();

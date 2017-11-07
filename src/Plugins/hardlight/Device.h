@@ -55,14 +55,16 @@ private:
 
 	boost::asio::io_service& m_io;
 
-	std::shared_ptr<PacketDispatcher> m_dispatcher;
+	std::unique_ptr<HardwareIO> m_hwIO;
 
 	std::shared_ptr<FirmwareInterface> m_firmware;
-	std::unique_ptr<HardwareIO> m_hwIO;
 	HardlightDevice m_device;
 	std::shared_ptr<Heartbeat> m_monitor;
 
 	std::shared_ptr<synchronizer2> m_synchronizer;
+
+	std::shared_ptr<PacketDispatcher> m_dispatcher;
+
 
 	bool m_running;
 

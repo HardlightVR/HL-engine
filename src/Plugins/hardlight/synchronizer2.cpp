@@ -44,6 +44,7 @@ void synchronizer2::start()
 
 void synchronizer2::stop()
 {
+	std::cout << "STOPPING SYNC\n";
 	m_syncTimer.cancel();
 }
 

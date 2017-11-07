@@ -9,7 +9,7 @@ class PacketDispatcher
 {
 public:
 	using PacketEvent = boost::signals2::signal<void(Packet)>;
-
+	~PacketDispatcher() { std::cout << "DESTROYING PACKETDISPATCHER\n"; }
 	void Dispatch(Packet packet);
 	void ClearConsumers();
 	void AddConsumer(inst::Id, PacketEvent::slot_type packetFunc);

@@ -28,6 +28,7 @@ void PacketDispatcher::Dispatch(Packet Packet)
 
 void PacketDispatcher::ClearConsumers()
 {
+	std::cout << "CLEARING PACKETDISPATCHER CONSUMERS\n";
 	m_consumers.clear();
 }
 
