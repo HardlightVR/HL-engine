@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "HardlightPlugin.h"
+#include "Device.h"
 
 #include "IoService.h"
 #include "Heartbeat.h"
@@ -13,7 +13,7 @@
 #include "Instructions.h"
 nsvr_core* global_core = nullptr;
 //note: can make firmware unique
-HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version) :
+Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version) :
 	m_core{ nullptr },
 	m_io(io),
 	m_hwIO(std::move(device->io)),
@@ -42,7 +42,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 		m_motors[motor] = MotorStatus(motor, static_cast<HL_Unit::_enumerated>(status));
 	
 
-		core_log(nsvr_severity_info, "HardlightPlugin", "Got motor status update");
+		core_log(nsvr_severity_info, "Device", "Got motor status update");
 	});
 
 
@@ -57,7 +57,7 @@ HardlightPlugin::HardlightPlugin(boost::asio::io_service& io, const std::string&
 
 }
 
-HardlightPlugin::~HardlightPlugin()
+Device::~Device()
 {
 	m_dispatcher->ClearConsumers();
 	m_synchronizer->stop();
@@ -89,7 +89,7 @@ struct bodygraph_region {
 	}
 };
 
-int HardlightPlugin::Configure(nsvr_core* core)
+int Device::Configure(nsvr_core* core)
 {
 
 	
@@ -101,10 +101,10 @@ int HardlightPlugin::Configure(nsvr_core* core)
 
 	nsvr_plugin_tracking_api tracking_api;
 	tracking_api.beginstreaming_handler = [](nsvr_tracking_stream* stream, nsvr_node_id region, void* client_data) {
-		AS_TYPE(HardlightPlugin, client_data)->BeginTracking(stream, region);
+		AS_TYPE(Device, client_data)->BeginTracking(stream, region);
 	};
 	tracking_api.endstreaming_handler = [](nsvr_node_id region, void* client_data) {
-		AS_TYPE(HardlightPlugin, client_data)->EndTracking(region);
+		AS_TYPE(Device, client_data)->EndTracking(region);
 	};
 	tracking_api.client_data = this;
 	nsvr_register_tracking_api(core, &tracking_api);
@@ -112,36 +112,45 @@ int HardlightPlugin::Configure(nsvr_core* core)
 
 	nsvr_plugin_bodygraph_api body_api;
 	body_api.setup_handler = [](nsvr_bodygraph* g, void* cd) {
-		AS_TYPE(HardlightPlugin, cd)->SetupBodygraph(g);
+		AS_TYPE(Device, cd)->SetupBodygraph(g);
 	
 	};
 	body_api.client_data = this;
 	nsvr_register_bodygraph_api(core, &body_api);
 
 
-	
+	nsvr_plugin_analogaudio_api analog;
+	analog.client_data = this;
+	analog.open_handler = [](nsvr_node_id node, void* cd) {
+		AS_TYPE(Device, cd)->EnableAudio(node);
+	};
+	analog.close_handler = [](nsvr_node_id node, void* cd) {
+		AS_TYPE(Device, cd)->DisableAudio(node);
+	};
+
+	nsvr_register_analogaudio_api(core, &analog);
 	
 	return 1;
 }
 
-void HardlightPlugin::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id id)
+void Device::BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id id)
 {
 	m_imus.AssignStream(stream, id);
 	m_firmware->EnableTracking();
 }
 
-void HardlightPlugin::EndTracking(nsvr_node_id id)
+void Device::EndTracking(nsvr_node_id id)
 {
 	m_imus.RemoveStream(id);
 	m_firmware->DisableTracking();
 }
 
-void HardlightPlugin::EnumerateNodesForDevice(nsvr_node_ids * ids)
+void Device::EnumerateNodesForDevice(nsvr_node_ids * ids)
 {
 	m_device.EnumerateNodesForDevice(ids);
 }
 
-void HardlightPlugin::EnumerateDevices(nsvr_device_ids* ids)
+void Device::EnumerateDevices(nsvr_device_ids* ids)
 {
 	if (m_monitor->IsConnected()) {
 		ids->device_count = 1;
@@ -152,7 +161,7 @@ void HardlightPlugin::EnumerateDevices(nsvr_device_ids* ids)
 	}
 }
 
-void HardlightPlugin::GetDeviceInfo(nsvr_device_info * info)
+void Device::GetDeviceInfo(nsvr_device_info * info)
 {
 	static std::unordered_map<int, std::string> products = {{2, "MarkII"}, {3, "MarkIII" }};
 
@@ -167,19 +176,19 @@ void HardlightPlugin::GetDeviceInfo(nsvr_device_info * info)
 	
 }
 
-void HardlightPlugin::GetNodeInfo(nsvr_node_id id, nsvr_node_info* info)
+void Device::GetNodeInfo(nsvr_node_id id, nsvr_node_info* info)
 {
 
 	m_device.GetNodeInfo(id, info);
 }
 
-void HardlightPlugin::SetupBodygraph(nsvr_bodygraph * g)
+void Device::SetupBodygraph(nsvr_bodygraph * g)
 {
 
 	m_device.SetupDeviceAssociations(g);
 	
 }
-std::vector<MotorStatus> HardlightPlugin::GetMotorStatus() const
+std::vector<MotorStatus> Device::GetMotorStatus() const
 {
 	std::vector<MotorStatus> statuses;
 	for (const auto& kvp : m_motors) {
@@ -197,7 +206,7 @@ std::string stringifyStatusBits(HL_Unit status) {
 	return ss.str();
 }
 
-void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
+void Device::Render(nsvr_diagnostics_ui * ui)
 {
 	static const std::vector<std::string> syncStates = {
 		"Synchronized",
@@ -345,7 +354,7 @@ void HardlightPlugin::Render(nsvr_diagnostics_ui * ui)
 	
 }
 
-void HardlightPlugin::Update()
+void Device::Update()
 {
 	constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
 	auto dt = 5 * ms_fraction_of_second;
@@ -353,5 +362,20 @@ void HardlightPlugin::Update()
 
 	auto commands = m_device.GenerateHardwareCommands(dt);
 	m_firmware->Execute(commands);
+}
+
+void Device::EnableAudio(nsvr_node_id id)
+{
+	static FirmwareInterface::AudioOptions opts{ 0x00, 0x00, 0x00,7, 38 };
+
+	m_firmware->EnableAudioMode(static_cast<Location>(id), opts);
+
+}
+
+
+void Device::DisableAudio(nsvr_node_id id)
+{
+	m_firmware->DisableAudioMode(static_cast<Location>(id));
+
 }
 

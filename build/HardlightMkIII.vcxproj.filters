@@ -39,6 +39,9 @@
     <ClInclude Include="..\src\plugins\hardlight\Atom.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\Device.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\DeviceManager.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
@@ -58,9 +61,6 @@
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\Handshaker.h">
-      <Filter>plugins\hardlight</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\HardlightPlugin.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\HardwareCommandVisitor.h">
@@ -215,6 +215,9 @@
     <ClCompile Include="..\src\plugins\hardlight\Atom.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\Device.cpp">
+      <Filter>plugins\hardlight</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\DeviceManager.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
@@ -225,9 +228,6 @@
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\Handshaker.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\HardlightPlugin.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\HardwareCommandVisitor.cpp">

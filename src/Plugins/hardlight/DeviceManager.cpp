@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DeviceManager.h"
 #include <iostream>
-#include "HardlightPlugin.h"
+#include "Device.h "
 #include "hardlight_device_version.h"
 static std::array<uint8_t, 16> version_packet = { 0x24,0x02,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 static std::array<uint8_t, 16> uuid_packet = { 0x24,0x02,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
@@ -134,7 +134,7 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
 		potential->dispatcher->ClearConsumers();
 
-		auto real = std::make_unique<HardlightPlugin>(m_ioService.GetIOService(), m_path, std::move(potential), version);
+		auto real = std::make_unique<Device>(m_ioService.GetIOService(), m_path, std::move(potential), version);
 		real->Configure(m_core);
 
 

@@ -26,10 +26,10 @@ struct MotorStatus {
 	MotorStatus(uint8_t id, HL_Unit status) : MotorId(id), Status(status) {}
 	MotorStatus() : MotorId(0), Status(HL_Unit::_enumerated::None) {}
 };
-class HardlightPlugin {
+class Device {
 public:
-	HardlightPlugin(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version);
-	~HardlightPlugin();
+	Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version);
+	~Device();
 
 	int Configure(nsvr_core* ctx);
 	void BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id region);
@@ -46,6 +46,10 @@ public:
 
 	void Update();
 private:
+
+	void EnableAudio(nsvr_node_id id);
+	void DisableAudio(nsvr_node_id id);
+
 	nsvr_core* m_core;
 
 
@@ -68,8 +72,5 @@ private:
 
 	std::unordered_map<uint8_t, MotorStatus> m_motors;
 
-
-
-	
 
 };

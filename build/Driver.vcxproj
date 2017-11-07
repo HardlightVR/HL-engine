@@ -305,6 +305,7 @@
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
     <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
     <ClInclude Include="..\src\Driver\FakeResources.h" />
+    <ClInclude Include="..\src\Driver\HardwareAnalogAudioInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareEventDispatcher.h" />
@@ -390,6 +391,7 @@
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
     <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareAnalogAudioInterface.cpp" />
     <ClCompile Include="..\src\Driver\HardwareBodygraphCreator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareEventDispatcher.cpp" />

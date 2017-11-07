@@ -234,3 +234,4 @@ REGISTER_API(updateloop_api)
 REGISTER_API(diagnostics_api)
 
 
+REGISTER_API(analogaudio_api)

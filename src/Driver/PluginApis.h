@@ -18,13 +18,16 @@ struct callback {
 	void* user_data;
 	
 	callback() : user_data(nullptr) {
-	
+		//plugin hooks into this
 		handler = [](auto...) {
 		};
 
+		//some kind of instrumentation can hook into this
 		spy = [](auto...) {
 		};
 
+
+		//plugin-host side simulators can hook into this for convenience
 		cpp_fn = [](auto...) {
 
 		};
@@ -63,7 +66,7 @@ inline void callback<FnPtr, Arguments...>::operator()(Arguments ...argument)
 // Please, do replace with a better solution if found
 class plugin_api {
 public:
-	virtual ~plugin_api() {}
+	virtual ~plugin_api() = default;
 };
 
 // Each time you add a new API, add a new entry to the enum
@@ -80,7 +83,8 @@ BETTER_ENUM(Apis, uint32_t,
 	BodyGraph,
 	Waveform,
 	Updateloop,
-	Diagnostics
+	Diagnostics,
+	AnalogAudio
 );
 
 
@@ -115,6 +119,24 @@ struct buffered_api : public plugin_api {
 	static Apis getApiType() { return Apis::Buffered; }
 };
 
+
+struct analogaudio_api : public plugin_api {
+
+	analogaudio_api(nsvr_plugin_analogaudio_api* api)
+		: submit_open{ api->open_handler, api->client_data }
+		, submit_close{ api->close_handler, api->client_data } {}
+	analogaudio_api() = default;
+	callback<
+		nsvr_plugin_analogaudio_api::nsvr_analogaudio_open,
+		nsvr_node_id
+	> submit_open;
+	callback<
+		nsvr_plugin_analogaudio_api::nsvr_analogaudio_close,
+		nsvr_node_id
+	> submit_close;
+
+	static Apis getApiType() { return Apis::AnalogAudio; }
+};
 
 struct playback_api : public plugin_api {
 	playback_api(nsvr_plugin_playback_api* api)

@@ -51,6 +51,13 @@ message RealtimeHaptic {
 
 }
 
+message BeginAnalogAudio {
+
+}
+
+message EndAnalogAudio {
+
+}
 
 message PlaybackEvent {
 	enum Command {
@@ -68,6 +75,8 @@ message LocationalEvent {
 	oneof events {
 		SimpleHaptic simple_haptic = 2;
 		ContinuousHaptic continuous_haptic = 3;
+		BeginAnalogAudio begin_analog_audio = 16;
+		EndAnalogAudio end_analog_audio = 17;
 	}
 }
 message HighLevelEvent {

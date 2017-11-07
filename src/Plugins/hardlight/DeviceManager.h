@@ -11,7 +11,8 @@
 #include "HardwareIO.h"
 #include <mutex>
 #include "IdPool.h"
-class HardlightPlugin;
+class Device;
+
 struct PotentialDevice {
 	std::unique_ptr<HardwareIO> io;
 	std::shared_ptr<PacketDispatcher> dispatcher;
@@ -51,7 +52,7 @@ private:
 	//map portname -> product
 
 	std::unordered_map<std::size_t, std::string> m_deviceIds;
-	std::unordered_map<std::string, std::unique_ptr<HardlightPlugin>> m_devices;
+	std::unordered_map<std::string, std::unique_ptr<Device>> m_devices;
 	std::unordered_map<std::string, std::unique_ptr<PotentialDevice>> m_potentials;
 
 	boost::posix_time::milliseconds m_requestVersionTimeout;

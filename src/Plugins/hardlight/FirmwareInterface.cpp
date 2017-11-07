@@ -172,11 +172,6 @@ void FirmwareInterface::RequestUuid()
 	queueInstruction(inst::get_uuid());
 }
 
-void FirmwareInterface::queuePacket(const std::vector<uint8_t>& packet)
-{
-	std::lock_guard<std::mutex> guard(m_packetLock);
-	m_outgoing->push(packet.data(), packet.size());
-}
 
 
 void FirmwareInterface::HaltEffect(Location location)

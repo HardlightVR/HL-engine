@@ -8,6 +8,7 @@
 #include "HardwareNodeEnumerator.h"
 #include "HardwareBodygraphCreator.h"
 #include "HardwareTracking.h"
+#include "HardwareAnalogAudioInterface.h"
 
 //Either we are provided a set of apis from the plugin (which we copy)
 DeviceBuilder::DeviceBuilder(PluginApis* apis, PluginInstance::DeviceResources* resources, nsvr_device_id id) : m_id(id), m_apis(apis), m_resources(resources)
@@ -77,20 +78,27 @@ std::unique_ptr<Device> DeviceBuilder::Build()
 	m_visualizer->provideApi(m_apis->GetApi<playback_api>());
 	m_visualizer->provideApi(m_apis->GetApi<waveform_api>());
 
-
+	//todo: provide visualizer with audio mode so we can do a sine wave or something
 	//need to provide buffered api
 
 
-	return std::make_unique<Device>(
+	auto device =  std::make_unique<Device>(
 		*m_originatingPlugin,
 		*m_description,
 		std::move(m_visualizer),
 		std::move(bodygraph),
-		std::move(discovery),
-		std::move(playback),
-		std::move(hapticInterface),
-		std::move(tracking)
-		);
+		std::move(discovery)
+	);
 
+	device->SetHaptics(std::move(hapticInterface));
+	device->SetPlayback(std::move(playback));
+	device->SetTracking(std::move(tracking));
+
+	//vvv this is how it should be done
+	if (m_apis->GetApi<analogaudio_api>()) {
+		device->SetAnalogAudio(std::make_unique<HardwareAnalogAudioInterface>(m_apis->GetApi<analogaudio_api>()));
+	}
+
+	return device;
 	
 }

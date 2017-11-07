@@ -9,28 +9,48 @@ Device::Device(
 	DeviceDescriptor descriptor,
 	std::unique_ptr<DeviceVisualizer> visualizer,
 	std::unique_ptr<HardwareBodygraphCreator> bodygraph,
-	std::unique_ptr<HardwareNodeEnumerator> discoverer,
-	std::unique_ptr<HardwarePlaybackController> playback,
-	std::unique_ptr<HardwareHapticInterface> haptics,
-	std::unique_ptr<HardwareTracking> tracking
+	std::unique_ptr<HardwareNodeEnumerator> discoverer
 )
 	: m_description(descriptor)
 	, m_visualizer(std::move(visualizer))
 	, m_bodygraph(std::move(bodygraph))
 	, m_discoverer(std::move(discoverer))
-	, m_playback(std::move(playback))
-	, m_haptics(std::move(haptics))
 	, m_originator(parentPlugin)
-	, m_trackingProvider(std::move(tracking))
+	, m_playback()
+	, m_haptics()
+	, m_trackingProvider()
+	, m_analogAudio()
 {
 	m_discoverer->Discover();
 	m_bodygraph->fetchDynamically();
 
+
+	
+
+}
+
+void Device::SetTracking(std::unique_ptr<HardwareTracking> tracking)
+{
+	m_trackingProvider = std::move(tracking);
 	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
 	for (auto imu : imus) {
 		m_trackingProvider->BeginStreaming(NodeId<local>{imu});
 	}
+}
 
+void Device::SetHaptics(std::unique_ptr<HardwareHapticInterface> haptics)
+{
+	m_haptics = std::move(haptics);
+}
+
+void Device::SetPlayback(std::unique_ptr<HardwarePlaybackController> playback)
+{
+	m_playback = std::move(playback);
+}
+
+void Device::SetAnalogAudio(std::unique_ptr<HardwareAnalogAudioInterface> analogAudio)
+{
+	m_analogAudio = std::move(analogAudio);
 }
 
 
@@ -110,6 +130,12 @@ void Device::Deliver(uint64_t eventId, const NullSpaceIPC::LocationalEvent &even
 	case NullSpaceIPC::LocationalEvent::kContinuousHaptic:
 		handle(eventId, event.continuous_haptic(), nodes);
 		break;
+	case NullSpaceIPC::LocationalEvent::kBeginAnalogAudio:
+		handle(eventId, event.begin_analog_audio(), nodes);
+		break;
+	case NullSpaceIPC::LocationalEvent::kEndAnalogAudio:
+		handle(eventId, event.end_analog_audio(), nodes);
+		break;
 	default:
 		BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "Unknown 'event' case: " << event.events_case();
 	}
@@ -180,15 +206,6 @@ std::vector<nsvr_node_id> toRawNodeIds(const std::vector<NodeId<local>>& targetN
 	return nodes;
 }
 
-void Device::handle(uint64_t eventId, const NullSpaceIPC::ContinuousHaptic & event, const std::vector<NodeId<local>>& targetNodes)
-{
-	handle(eventId, event, toRawNodeIds(targetNodes));
-}
-
-void Device::handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic & event, const std::vector<NodeId<local>>& targetNodes)
-{
-	handle(eventId, event, toRawNodeIds(targetNodes));
-}
 
 
 
@@ -213,6 +230,29 @@ void Device::handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic& event, c
 	}
 	m_playback->CreateEventRecord(eventId, onlyHaptic); 
 
+}
+
+void Device::handle(uint64_t event_id, const NullSpaceIPC::BeginAnalogAudio & event, const std::vector<nsvr_node_id>& targetNodes)
+{
+
+	if (m_analogAudio) {
+		auto hapticNodes = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
+		for (const auto& node : hapticNodes) {
+			m_analogAudio->open(node);
+		}
+	}
+
+}
+
+void Device::handle(uint64_t event_id, const NullSpaceIPC::EndAnalogAudio & event, const std::vector<nsvr_node_id>& targetNodes)
+{
+	if (m_analogAudio) {
+		auto hapticNodes = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
+		for (const auto& node : hapticNodes) {
+
+			m_analogAudio->close(node);
+		}
+	}
 }
 
 

@@ -37,9 +37,11 @@ void protobuf_AddDesc_HighLevelEvent_2eproto();
 void protobuf_AssignDesc_HighLevelEvent_2eproto();
 void protobuf_ShutdownFile_HighLevelEvent_2eproto();
 
+class BeginAnalogAudio;
 class ContinuousHaptic;
 class CurveHaptic;
 class CurveHaptic_Sample;
+class EndAnalogAudio;
 class HighLevelEvent;
 class Location;
 class LocationalEvent;
@@ -916,6 +918,156 @@ class RealtimeHaptic : public ::google::protobuf::Message /* @@protoc_insertion_
 };
 // -------------------------------------------------------------------
 
+class BeginAnalogAudio : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.BeginAnalogAudio) */ {
+ public:
+  BeginAnalogAudio();
+  virtual ~BeginAnalogAudio();
+
+  BeginAnalogAudio(const BeginAnalogAudio& from);
+
+  inline BeginAnalogAudio& operator=(const BeginAnalogAudio& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const BeginAnalogAudio& default_instance();
+
+  void Swap(BeginAnalogAudio* other);
+
+  // implements Message ----------------------------------------------
+
+  inline BeginAnalogAudio* New() const { return New(NULL); }
+
+  BeginAnalogAudio* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const BeginAnalogAudio& from);
+  void MergeFrom(const BeginAnalogAudio& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(BeginAnalogAudio* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.BeginAnalogAudio)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static BeginAnalogAudio* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class EndAnalogAudio : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.EndAnalogAudio) */ {
+ public:
+  EndAnalogAudio();
+  virtual ~EndAnalogAudio();
+
+  EndAnalogAudio(const EndAnalogAudio& from);
+
+  inline EndAnalogAudio& operator=(const EndAnalogAudio& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const EndAnalogAudio& default_instance();
+
+  void Swap(EndAnalogAudio* other);
+
+  // implements Message ----------------------------------------------
+
+  inline EndAnalogAudio* New() const { return New(NULL); }
+
+  EndAnalogAudio* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const EndAnalogAudio& from);
+  void MergeFrom(const EndAnalogAudio& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(EndAnalogAudio* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.EndAnalogAudio)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static EndAnalogAudio* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class PlaybackEvent : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.PlaybackEvent) */ {
  public:
   PlaybackEvent();
@@ -1046,6 +1198,8 @@ class LocationalEvent : public ::google::protobuf::Message /* @@protoc_insertion
   enum EventsCase {
     kSimpleHaptic = 2,
     kContinuousHaptic = 3,
+    kBeginAnalogAudio = 16,
+    kEndAnalogAudio = 17,
     EVENTS_NOT_SET = 0,
   };
 
@@ -1121,11 +1275,31 @@ class LocationalEvent : public ::google::protobuf::Message /* @@protoc_insertion
   ::NullSpaceIPC::ContinuousHaptic* release_continuous_haptic();
   void set_allocated_continuous_haptic(::NullSpaceIPC::ContinuousHaptic* continuous_haptic);
 
+  // optional .NullSpaceIPC.BeginAnalogAudio begin_analog_audio = 16;
+  bool has_begin_analog_audio() const;
+  void clear_begin_analog_audio();
+  static const int kBeginAnalogAudioFieldNumber = 16;
+  const ::NullSpaceIPC::BeginAnalogAudio& begin_analog_audio() const;
+  ::NullSpaceIPC::BeginAnalogAudio* mutable_begin_analog_audio();
+  ::NullSpaceIPC::BeginAnalogAudio* release_begin_analog_audio();
+  void set_allocated_begin_analog_audio(::NullSpaceIPC::BeginAnalogAudio* begin_analog_audio);
+
+  // optional .NullSpaceIPC.EndAnalogAudio end_analog_audio = 17;
+  bool has_end_analog_audio() const;
+  void clear_end_analog_audio();
+  static const int kEndAnalogAudioFieldNumber = 17;
+  const ::NullSpaceIPC::EndAnalogAudio& end_analog_audio() const;
+  ::NullSpaceIPC::EndAnalogAudio* mutable_end_analog_audio();
+  ::NullSpaceIPC::EndAnalogAudio* release_end_analog_audio();
+  void set_allocated_end_analog_audio(::NullSpaceIPC::EndAnalogAudio* end_analog_audio);
+
   EventsCase events_case() const;
   // @@protoc_insertion_point(class_scope:NullSpaceIPC.LocationalEvent)
  private:
   inline void set_has_simple_haptic();
   inline void set_has_continuous_haptic();
+  inline void set_has_begin_analog_audio();
+  inline void set_has_end_analog_audio();
 
   inline bool has_events() const;
   void clear_events();
@@ -1138,6 +1312,8 @@ class LocationalEvent : public ::google::protobuf::Message /* @@protoc_insertion
     EventsUnion() {}
     ::NullSpaceIPC::SimpleHaptic* simple_haptic_;
     ::NullSpaceIPC::ContinuousHaptic* continuous_haptic_;
+    ::NullSpaceIPC::BeginAnalogAudio* begin_analog_audio_;
+    ::NullSpaceIPC::EndAnalogAudio* end_analog_audio_;
   } events_;
   mutable int _cached_size_;
   ::google::protobuf::uint32 _oneof_case_[1];
@@ -1678,6 +1854,14 @@ RealtimeHaptic::magnitudes() const {
 
 // -------------------------------------------------------------------
 
+// BeginAnalogAudio
+
+// -------------------------------------------------------------------
+
+// EndAnalogAudio
+
+// -------------------------------------------------------------------
+
 // PlaybackEvent
 
 // optional .NullSpaceIPC.PlaybackEvent.Command command = 1;
@@ -1832,6 +2016,102 @@ inline void LocationalEvent::set_allocated_continuous_haptic(::NullSpaceIPC::Con
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.LocationalEvent.continuous_haptic)
 }
 
+// optional .NullSpaceIPC.BeginAnalogAudio begin_analog_audio = 16;
+inline bool LocationalEvent::has_begin_analog_audio() const {
+  return events_case() == kBeginAnalogAudio;
+}
+inline void LocationalEvent::set_has_begin_analog_audio() {
+  _oneof_case_[0] = kBeginAnalogAudio;
+}
+inline void LocationalEvent::clear_begin_analog_audio() {
+  if (has_begin_analog_audio()) {
+    delete events_.begin_analog_audio_;
+    clear_has_events();
+  }
+}
+inline  const ::NullSpaceIPC::BeginAnalogAudio& LocationalEvent::begin_analog_audio() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.LocationalEvent.begin_analog_audio)
+  return has_begin_analog_audio()
+      ? *events_.begin_analog_audio_
+      : ::NullSpaceIPC::BeginAnalogAudio::default_instance();
+}
+inline ::NullSpaceIPC::BeginAnalogAudio* LocationalEvent::mutable_begin_analog_audio() {
+  if (!has_begin_analog_audio()) {
+    clear_events();
+    set_has_begin_analog_audio();
+    events_.begin_analog_audio_ = new ::NullSpaceIPC::BeginAnalogAudio;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.LocationalEvent.begin_analog_audio)
+  return events_.begin_analog_audio_;
+}
+inline ::NullSpaceIPC::BeginAnalogAudio* LocationalEvent::release_begin_analog_audio() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.LocationalEvent.begin_analog_audio)
+  if (has_begin_analog_audio()) {
+    clear_has_events();
+    ::NullSpaceIPC::BeginAnalogAudio* temp = events_.begin_analog_audio_;
+    events_.begin_analog_audio_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void LocationalEvent::set_allocated_begin_analog_audio(::NullSpaceIPC::BeginAnalogAudio* begin_analog_audio) {
+  clear_events();
+  if (begin_analog_audio) {
+    set_has_begin_analog_audio();
+    events_.begin_analog_audio_ = begin_analog_audio;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.LocationalEvent.begin_analog_audio)
+}
+
+// optional .NullSpaceIPC.EndAnalogAudio end_analog_audio = 17;
+inline bool LocationalEvent::has_end_analog_audio() const {
+  return events_case() == kEndAnalogAudio;
+}
+inline void LocationalEvent::set_has_end_analog_audio() {
+  _oneof_case_[0] = kEndAnalogAudio;
+}
+inline void LocationalEvent::clear_end_analog_audio() {
+  if (has_end_analog_audio()) {
+    delete events_.end_analog_audio_;
+    clear_has_events();
+  }
+}
+inline  const ::NullSpaceIPC::EndAnalogAudio& LocationalEvent::end_analog_audio() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.LocationalEvent.end_analog_audio)
+  return has_end_analog_audio()
+      ? *events_.end_analog_audio_
+      : ::NullSpaceIPC::EndAnalogAudio::default_instance();
+}
+inline ::NullSpaceIPC::EndAnalogAudio* LocationalEvent::mutable_end_analog_audio() {
+  if (!has_end_analog_audio()) {
+    clear_events();
+    set_has_end_analog_audio();
+    events_.end_analog_audio_ = new ::NullSpaceIPC::EndAnalogAudio;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.LocationalEvent.end_analog_audio)
+  return events_.end_analog_audio_;
+}
+inline ::NullSpaceIPC::EndAnalogAudio* LocationalEvent::release_end_analog_audio() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.LocationalEvent.end_analog_audio)
+  if (has_end_analog_audio()) {
+    clear_has_events();
+    ::NullSpaceIPC::EndAnalogAudio* temp = events_.end_analog_audio_;
+    events_.end_analog_audio_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void LocationalEvent::set_allocated_end_analog_audio(::NullSpaceIPC::EndAnalogAudio* end_analog_audio) {
+  clear_events();
+  if (end_analog_audio) {
+    set_has_end_analog_audio();
+    events_.end_analog_audio_ = end_analog_audio;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.LocationalEvent.end_analog_audio)
+}
+
 inline bool LocationalEvent::has_events() const {
   return events_case() != EVENTS_NOT_SET;
 }
@@ -1965,6 +2245,10 @@ inline HighLevelEvent::EventsCase HighLevelEvent::events_case() const {
   return HighLevelEvent::EventsCase(_oneof_case_[0]);
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

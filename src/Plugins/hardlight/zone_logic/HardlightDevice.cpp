@@ -63,6 +63,8 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 	nsvr_register_buffered_api(ctx, &buffered_api);
 
 	
+
+
 	
 	
 }

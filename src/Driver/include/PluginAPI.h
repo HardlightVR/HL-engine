@@ -370,8 +370,16 @@ extern "C" {
 
 	NSVR_CORE_RETURN(int) nsvr_register_diagnostics_api(nsvr_core* core, nsvr_plugin_diagnostics_api* api);
 
-;
 
+	typedef struct nsvr_plugin_analogaudio_api {
+		typedef void(*nsvr_analogaudio_open)(nsvr_node_id, void* cd);
+		typedef void(*nsvr_analogaudio_close)(nsvr_node_id, void* cd);
+		nsvr_analogaudio_open open_handler;
+		nsvr_analogaudio_close close_handler;
+		void* client_data;
+	} nsvr_plugin_analogaudio_api;
+
+	NSVR_CORE_RETURN(int) nsvr_register_analogaudio_api(nsvr_core* core, nsvr_plugin_analogaudio_api* api);
 
 	/*
 	
