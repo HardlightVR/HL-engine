@@ -375,7 +375,8 @@ void Device::EnableAudio(nsvr_node_id id)
 
 void Device::DisableAudio(nsvr_node_id id)
 {
-	m_firmware->DisableAudioMode(static_cast<Location>(id));
+	m_firmware->EnableIntrigMode(static_cast<Location>(id));
+	m_firmware->PlayEffect(static_cast<Location>(id), 3, 0.0f);
 
 }
 
