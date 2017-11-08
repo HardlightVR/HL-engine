@@ -63,7 +63,7 @@ void FirmwareInterface::GetMotorStatus(Location location)
 
 
 
-void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions& opts)
+void FirmwareInterface::EnableAudioMode(Location pad, const AudioOptions& opts)
 {
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
 	
@@ -80,7 +80,13 @@ void FirmwareInterface::EnableAudioMode(Location pad, const FirmwareInterface::A
 void FirmwareInterface::DisableAudioMode(Location pad)
 {
 	uint8_t actualZone = m_instructionSet->ParamDict().at("zone").at(Locator::Translator().ToString(pad));
-	queueInstruction(inst::set_motor_stop_audio(inst::motor(actualZone)));
+
+
+	//queueInstruction(inst::set_motor_stop_audio(inst::motor(actualZone)));
+	// ^^^ doesn't work
+
+	queueInstruction(inst::set_motor_intrigmode(inst::motor(actualZone)));
+	queueInstruction(inst::set_motor_play_effect(inst::motor(actualZone), inst::effect(1)));
 }
 
 void FirmwareInterface::EnableIntrigMode(Location pad)

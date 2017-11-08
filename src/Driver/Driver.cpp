@@ -134,7 +134,6 @@ bool Driver::Shutdown()
 	m_commandPull.Stop();
 	m_trackingPush.Stop();
 	m_messenger.Disconnect();
-	m_pluginManager.UnloadAll();
 	m_ioService.Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	return true;

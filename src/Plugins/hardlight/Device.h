@@ -48,11 +48,13 @@ public:
 	void Update();
 private:
 
-	void EnableAudio(nsvr_node_id id);
-	void DisableAudio(nsvr_node_id id);
+	void PushDeferred(FirmwareCommand command);
+
+	
 
 	nsvr_core* m_core;
 
+	boost::lockfree::spsc_queue<FirmwareCommand> m_deferredCommands;
 
 	boost::asio::io_service& m_io;
 

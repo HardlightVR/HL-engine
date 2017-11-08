@@ -40,9 +40,7 @@ void WriterAdapter::do_write()
 	const auto actual_popped = m_outgoing->pop(m_tempBuffer.data(), amount_to_write);
 	assert(actual_popped <= m_tempBuffer.size());
 	m_port.async_write_some(boost::asio::buffer(m_tempBuffer.data(),actual_popped), [this, self, actual_popped](auto ec, std::size_t bytes_transferred) {
-		if (m_stopped) {
-			return;
-		}
+		
 		if (!ec) {
 			/*if (actual_popped > 0) {
 				std::stringstream ss;

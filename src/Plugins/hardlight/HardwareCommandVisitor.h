@@ -14,6 +14,8 @@ class HardwareCommandVisitor : public boost::static_visitor<void> {
 		void operator()(const Halt& Halt);
 		void operator()(const EnableIntrig& intrig);
 		void operator()(const EnableRtp& rtp);
+		void operator()(const EnableAudio& audio);
+		void operator()(const DisableAudio& audio);
 
 	
 };

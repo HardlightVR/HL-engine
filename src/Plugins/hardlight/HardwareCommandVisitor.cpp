@@ -31,6 +31,16 @@ void HardwareCommandVisitor::operator()(const EnableRtp & rtp)
 	firmware.EnableRtpMode(rtp.Area);
 }
 
+void HardwareCommandVisitor::operator()(const EnableAudio & audio)
+{
+	firmware.EnableAudioMode(audio.Area, audio.Opts);
+}
+
+void HardwareCommandVisitor::operator()(const DisableAudio & audio)
+{
+	firmware.DisableAudioMode(audio.Area);
+}
+
 void HardwareCommandVisitor::operator()(const Halt& halt)
 {
 	firmware.HaltEffect(halt.Area);

@@ -3,10 +3,20 @@
 #include "Enums.h"
 #include <boost/variant/variant.hpp>
 
+
+struct AudioOptions {
+	int VibeCtrl;
+	int AudioMin;
+	int AudioMax;
+	int MinDrv;
+	int MaxDrv;
+};
+
 struct PlaySingle {
 	Location Area;
 	uint32_t Effect;
 	float Strength;
+	PlaySingle() = default;
 	PlaySingle(Location area, uint32_t eff, float strength) : 
 		Area(area), 
 		Effect(eff), 
@@ -52,6 +62,15 @@ struct EnableRtp {
 		Area(area) {}
 };
 
+struct EnableAudio {
+	Location Area;
+	AudioOptions Opts;
+};
+
+struct DisableAudio {
+	Location Area;
+};
+
 using FirmwareCommand = 
 boost::variant<
 	PlaySingle, 
@@ -59,7 +78,9 @@ boost::variant<
 	PlayVol, 
 	Halt, 
 	EnableIntrig, 
-	EnableRtp
+	EnableRtp,
+	EnableAudio,
+	DisableAudio
 >;
 
 using CommandBuffer = std::vector<FirmwareCommand>;
