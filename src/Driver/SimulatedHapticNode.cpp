@@ -4,13 +4,17 @@
 #include "WaveformGenerators.h"
 
 //Right now, nothing specific for click, hum, etc. Just a quarter second sample at the given strength
-Waveform::Waveform(SimulatedHapticNode::Id id, nsvr_default_waveform waveform, double strength, double duration)
+Waveform::Waveform(SimulatedHapticNode::Id id, nsvr_default_waveform waveform, double strength, unsigned int repetitions)
 	: m_sampleDuration(0.01)
 	, m_samples(nsvr::waveforms::generateWaveform(static_cast<float>(strength), waveform))
 	, m_elapsed(0)
 	, m_id(id)
 	, m_playbackState(PlaybackState::Playing)
 {
+	//auto samples = nsvr::waveforms::generateWaveform(static_cast<float>(strength), waveform);
+	//for (int i = 0; i < repetitions; i++) {
+//		m_samples.insert(m_samples.end(), samples.begin(), samples.end());
+	//}
 }
 
 Waveform::Waveform(SimulatedHapticNode::Id id, double * samples, double sampleDuration, std::size_t length)

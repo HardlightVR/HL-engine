@@ -17,7 +17,9 @@ CommandBuffer MotorStateChanger::transitionTo(const LiveBasicHapticEvent & event
 {
 	CommandBuffer commands;
 	if (event == previousContinuous) {
-		commands = CommandBuffer();
+		//commands = CommandBuffer();
+		const auto& data = event.Data();
+		commands.push_back(PlaySingle(static_cast<Location>(data.area), data.effect, data.strength));
 	}
 	else if (event.isOneshot()) {
 
@@ -64,8 +66,11 @@ CommandBuffer MotorStateChanger::transitionToOneshot(BasicHapticEventData data)
 	switch (currentState) {
 	case MotorFirmwareState::Idle:
 		/* fall through */
+		requiredCmds.push_back(PlaySingle(area, data.effect, data.strength));
+		break;
 	case MotorFirmwareState::PlayingOneshot:
-		/* fall through */
+		requiredCmds.push_back(PlaySingle(area, data.effect, data.strength));
+		break;
 	case MotorFirmwareState::PlayingContinuous:
 		requiredCmds.push_back(Halt(area));
 		requiredCmds.push_back(PlaySingle(area, data.effect, data.strength));
@@ -89,7 +94,7 @@ CommandBuffer MotorStateChanger::transitionToContinuous(BasicHapticEventData dat
 	case MotorFirmwareState::PlayingOneshot:
 		/* fall through */
 	case MotorFirmwareState::PlayingContinuous:
-		requiredCmds.push_back(PlayCont(area, data.effect, data.strength, data.duration));
+		requiredCmds.push_back(PlaySingle(area, data.effect, data.strength));
 		break;
 	}
 

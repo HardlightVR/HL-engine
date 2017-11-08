@@ -15,6 +15,8 @@ public:
 	void start();
 	void stop();
 
+	std::size_t outgoing_queue_capacity() const;
+	std::size_t outgoing_queue_size() const;
 	std::size_t bytes_read() const;
 	std::size_t bytes_written() const;
 

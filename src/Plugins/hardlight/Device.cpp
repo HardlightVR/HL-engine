@@ -91,6 +91,11 @@ struct bodygraph_region {
 	}
 };
 
+float Device::GetIoUtilizationRatio() const
+{
+	return (float) m_hwIO->outgoing_queue_size() / (float) m_hwIO->outgoing_queue_capacity();
+}
+
 int Device::Configure(nsvr_core* core)
 {
 
@@ -351,15 +356,8 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 		}
 	}
 
-	for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
-		if (ui->button(std::string("Location" + std::to_string(i)).c_str())) {
-			m_firmware->HaltEffect(static_cast<Location>(i));
-			m_firmware->EnableIntrigMode(static_cast<Location>(i));
-
-			m_firmware->PlayEffect(static_cast<Location>(i), 3, 1.0);
-
-		}
-	}
+	 int queue_size = m_hwIO->outgoing_queue_size();
+	ui->slider_int("Outgoing queue", &queue_size, 0, m_hwIO->outgoing_queue_capacity());
 
 	ui->keyval("Total bytes sent", std::to_string(m_hwIO->bytes_written()).c_str());
 	ui->keyval("Total bytes rec'd", std::to_string(m_hwIO->bytes_read()).c_str());
@@ -369,9 +367,9 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 void Device::Update()
 {
 	constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
-	auto dt = 5 * ms_fraction_of_second;
+	auto dt = 20 * ms_fraction_of_second;
 
-
+	
 	auto commands = m_device.GenerateHardwareCommands(dt);
 	m_firmware->Execute(commands);
 }

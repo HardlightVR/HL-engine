@@ -2,11 +2,13 @@
 #include "HardwareIO.h"
 
 
+constexpr std::size_t INCOMING_CAPACITY = 4096;
+constexpr std::size_t OUTGOING_CAPACITY = 4096 * 3 ;
 
 HardwareIO::HardwareIO(std::unique_ptr<boost::asio::serial_port> port)
 	: m_port(std::move(port))
-	, m_incoming(std::make_shared<boost::lockfree::spsc_queue<uint8_t>>(4096))
-	, m_outgoing(std::make_shared<boost::lockfree::spsc_queue<uint8_t>>(4096))
+	, m_incoming(std::make_shared<boost::lockfree::spsc_queue<uint8_t>>(INCOMING_CAPACITY))
+	, m_outgoing(std::make_shared<boost::lockfree::spsc_queue<uint8_t>>(OUTGOING_CAPACITY))
 	, m_reader(std::make_shared<ReaderAdapter>(m_incoming, *m_port))
 	, m_writer(std::make_shared<WriterAdapter>(m_outgoing, *m_port))
 {
@@ -36,6 +38,16 @@ void HardwareIO::stop()
 	boost::system::error_code ignored;
 	m_port->close(ignored);
 
+}
+
+std::size_t HardwareIO::outgoing_queue_capacity() const
+{
+	return OUTGOING_CAPACITY;
+}
+
+std::size_t HardwareIO::outgoing_queue_size() const
+{
+	return m_outgoing->read_available();
 }
 
 std::size_t HardwareIO::bytes_read() const

@@ -32,7 +32,7 @@ CommandBuffer Hardlight_Mk3_ZoneDriver::update(float dt)
 
 Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area) :
 	m_area(area),
-	m_currentMode(Mode::Retained),
+	m_currentMode(Mode::Continuous),
 	m_commands(),
 	m_rtpModel(m_area),
 	m_retainedModel(m_area),
@@ -50,7 +50,7 @@ Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area) :
 
 bool Hardlight_Mk3_ZoneDriver::IsPlaying()
 {
-	if (m_currentMode == Mode::Retained) {
+	if (m_currentMode == Mode::Continuous) {
 		if (auto event = m_retainedModel.GetCurrentlyPlayingEvent()) {
 			return true;
 		}
@@ -107,8 +107,23 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 {
 	std::lock_guard<std::mutex> guard(m_mutex);
 
-	if (mode == Mode::Retained) {
-		m_currentMode = Mode::Retained;
+	if (m_currentMode == Mode::Continuous) {
+		if (mode == Mode::Realtime) {
+			m_currentMode = Mode::Realtime;
+			m_commands.push_back(EnableRtp(m_area));
+		}
+	}
+	else if (m_currentMode == Mode::Realtime) {
+		if (mode == Mode::Continuous) {
+			m_currentMode = Mode::Continuous;
+			m_commands.push_back(EnableIntrig(m_area));
+		}
+	}
+	else {
+		//unknown mode..?
+	}
+	/*if (mode == Mode::Continuous) {
+		m_currentMode = Mode::Continuous;
 
 		m_commands.push_back(EnableIntrig(m_area));
 	}
@@ -116,7 +131,7 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 		m_currentMode = Mode::Realtime;
 		m_commands.push_back(EnableRtp(m_area));
 		
-	}
+	}*/
 }
 
 
@@ -125,7 +140,7 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 
 void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data,ParentId id) {
 	data.area = static_cast<uint32_t>(m_area);
-	transitionInto(Mode::Retained);
+	transitionInto(Mode::Continuous);
 
 	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data)));
 }
