@@ -152,9 +152,15 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 void DeviceManager::device_update()
 {
 	std::lock_guard<std::mutex> guard(m_deviceLock);
+
+	float util_ratio = 0.0;
 	for (auto& kvp : m_devices) {
+		//kvp
 		kvp.second->Update();
+		util_ratio = std::max(util_ratio, kvp.second->GetIoUtilizationRatio());
 	}
+
+	m_devicePollTimeout = boost::posix_time::millisec((45 * std::pow(util_ratio, 2.71f)) + 10);
 
 	m_devicePollTimer.expires_from_now(m_devicePollTimeout);
 	m_devicePollTimer.async_wait([this](auto ec) { if (ec) { return; }

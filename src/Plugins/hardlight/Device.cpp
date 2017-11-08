@@ -11,6 +11,7 @@
 
 #include "synchronizer2.h"
 #include "Instructions.h"
+#include "zone_logic/HardwareCommands.h"
 nsvr_core* global_core = nullptr;
 //note: can make firmware unique
 Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version) :
@@ -25,7 +26,8 @@ Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::un
 	m_running(),
 	m_imus(*m_dispatcher),
 	m_version(version),
-	m_motors()
+	m_motors(),
+	m_deferredCommands(512)
 
 {
 	
@@ -91,6 +93,11 @@ struct bodygraph_region {
 	}
 };
 
+float Device::GetIoUtilizationRatio() const
+{
+	return (float) m_hwIO->outgoing_queue_size() / (float) m_hwIO->outgoing_queue_capacity();
+}
+
 int Device::Configure(nsvr_core* core)
 {
 
@@ -124,10 +131,10 @@ int Device::Configure(nsvr_core* core)
 	nsvr_plugin_analogaudio_api analog;
 	analog.client_data = this;
 	analog.open_handler = [](nsvr_node_id node, void* cd) {
-		AS_TYPE(Device, cd)->EnableAudio(node);
+		AS_TYPE(Device, cd)->PushDeferred(EnableAudio{ static_cast<Location>(node), { 0x00, 0x00, 0x00,7, 38 } });
 	};
 	analog.close_handler = [](nsvr_node_id node, void* cd) {
-		AS_TYPE(Device, cd)->DisableAudio(node);
+		AS_TYPE(Device, cd)->PushDeferred(DisableAudio{ static_cast<Location>(node) });
 	};
 
 	nsvr_register_analogaudio_api(core, &analog);
@@ -303,7 +310,7 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 
 
 
-	static FirmwareInterface::AudioOptions opts{ 0x00, 0x00, 0x00,7, 38 };
+	/*static AudioOptions opts{ 0x00, 0x00, 0x00,7, 38 };
 
 	if (ui->slider_int("VibeCtrl", &opts.VibeCtrl, 0, 4)	||
 		ui->slider_int("AudioMin", &opts.AudioMin, 0, 255)	||
@@ -313,20 +320,21 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 	{
 		
 	}
-
-	if (ui->button("Enable audio mode with given params chest_left")) {
-		m_firmware->EnableAudioMode(Location::Chest_Right, opts);
-	}
+*/
+	
 	
 
-	if (ui->button("Disable audio on chest_left")) {
-		m_firmware->DisableAudioMode(Location::Chest_Right);
-	}
 
 	static int rtpVol = 0;
 	if (ui->button("Enable RTP Mode on all")) {
 		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
 			m_firmware->EnableRtpMode(static_cast<Location>(i));
+		}
+	}
+
+	if (ui->button("Disable RTP Mode on all")) {
+		for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+			m_firmware->EnableIntrigMode(static_cast<Location>(i));
 		}
 	}
 	if (ui->slider_int("RTP", &rtpVol, 0, 127)) {
@@ -351,15 +359,8 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 		}
 	}
 
-	for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
-		if (ui->button(std::string("Location" + std::to_string(i)).c_str())) {
-			m_firmware->HaltEffect(static_cast<Location>(i));
-			m_firmware->EnableIntrigMode(static_cast<Location>(i));
-
-			m_firmware->PlayEffect(static_cast<Location>(i), 3, 1.0);
-
-		}
-	}
+	 int queue_size = m_hwIO->outgoing_queue_size();
+	ui->slider_int("Outgoing queue", &queue_size, 0, m_hwIO->outgoing_queue_capacity());
 
 	ui->keyval("Total bytes sent", std::to_string(m_hwIO->bytes_written()).c_str());
 	ui->keyval("Total bytes rec'd", std::to_string(m_hwIO->bytes_read()).c_str());
@@ -369,26 +370,26 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 void Device::Update()
 {
 	constexpr auto ms_fraction_of_second = (1.0f / 1000.f);
-	auto dt = 5 * ms_fraction_of_second;
+	auto dt = 20 * ms_fraction_of_second;
 
-
+	
 	auto commands = m_device.GenerateHardwareCommands(dt);
 	m_firmware->Execute(commands);
+
+
+	CommandBuffer singleDeferredCommand;
+	m_deferredCommands.consume_one([&](auto cmd) {
+		singleDeferredCommand.push_back(cmd);
+	});
+
+	m_firmware->Execute(singleDeferredCommand);
+
 }
 
-void Device::EnableAudio(nsvr_node_id id)
+void Device::PushDeferred(FirmwareCommand command)
 {
-	static FirmwareInterface::AudioOptions opts{ 0x00, 0x00, 0x00,7, 38 };
-
-	m_firmware->EnableAudioMode(static_cast<Location>(id), opts);
-
+	m_deferredCommands.push(command);
 }
 
 
-void Device::DisableAudio(nsvr_node_id id)
-{
-	m_firmware->EnableIntrigMode(static_cast<Location>(id));
-	m_firmware->PlayEffect(static_cast<Location>(id), 3, 0.0f);
-
-}
 

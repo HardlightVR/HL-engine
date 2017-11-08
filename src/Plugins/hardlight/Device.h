@@ -31,6 +31,7 @@ public:
 	Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version);
 	~Device();
 
+	float GetIoUtilizationRatio() const;
 	int Configure(nsvr_core* ctx);
 	void BeginTracking(nsvr_tracking_stream* stream, nsvr_node_id region);
 	void EndTracking(nsvr_node_id region);
@@ -47,11 +48,13 @@ public:
 	void Update();
 private:
 
-	void EnableAudio(nsvr_node_id id);
-	void DisableAudio(nsvr_node_id id);
+	void PushDeferred(FirmwareCommand command);
+
+	
 
 	nsvr_core* m_core;
 
+	boost::lockfree::spsc_queue<FirmwareCommand> m_deferredCommands;
 
 	boost::asio::io_service& m_io;
 

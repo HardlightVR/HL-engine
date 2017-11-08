@@ -20,13 +20,7 @@ class FirmwareInterface  : public std::enable_shared_from_this<FirmwareInterface
 public:
 	
 
-	struct AudioOptions {
-		int VibeCtrl;
-		int AudioMin;
-		int AudioMax;
-		int MinDrv;
-		int MaxDrv;
-	};
+	
 	FirmwareInterface(const std::string& data_dir, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::io_service& io);
 
 	
@@ -43,7 +37,7 @@ public:
 
 	void GetMotorStatus(Location location);
 
-	void EnableAudioMode(Location pad, const FirmwareInterface::AudioOptions&);
+	void EnableAudioMode(Location pad, const AudioOptions&);
 	void DisableAudioMode(Location pad);
 	void EnableIntrigMode(Location pad);
 	void EnableRtpMode(Location pad);
@@ -80,7 +74,14 @@ inline void FirmwareInterface::queueInstruction(const Instruction & inst)
 {
 	auto packet = inst::Build(inst);
 	std::lock_guard<std::mutex> guard(m_packetLock);
-	int x = m_outgoing->push(packet.data(), packet.size());
-	assert(x == packet.size());
+
+	if (m_outgoing->write_available() >= packet.size()) {
+		int x = m_outgoing->push(packet.data(), packet.size());
+		assert(x == packet.size());
+	}
+	else {
+		//drop packet
+	}
+	
 
 }

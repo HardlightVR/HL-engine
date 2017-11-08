@@ -6,6 +6,8 @@ WriterAdapter::WriterAdapter(std::shared_ptr<boost::lockfree::spsc_queue<uint8_t
 	, m_port(port)
 	, m_stopped(false)
 	, m_totalBytes(0)
+	, m_delay(boost::posix_time::millisec(5))
+	, m_timer(port.get_io_service())
 {
 }
 
@@ -30,27 +32,27 @@ void WriterAdapter::do_write()
 	
 	auto available_bytes = m_outgoing->read_available();
 
-	std::size_t amount_to_write = std::min<std::size_t>(64, available_bytes);
+	std::size_t amount_to_write = std::min<std::size_t>(m_tempBuffer.size(), available_bytes);
 
 	assert(available_bytes % 16 == 0);
 
 
-	const int actual_popped = m_outgoing->pop(m_tempBuffer.data(), amount_to_write);
-	assert(actual_popped <= 64);
+	const auto actual_popped = m_outgoing->pop(m_tempBuffer.data(), amount_to_write);
+	assert(actual_popped <= m_tempBuffer.size());
 	m_port.async_write_some(boost::asio::buffer(m_tempBuffer.data(),actual_popped), [this, self, actual_popped](auto ec, std::size_t bytes_transferred) {
-		if (m_stopped) {
-			return;
-		}
+		
 		if (!ec) {
-			if (actual_popped > 0) {
+			/*if (actual_popped > 0) {
 				std::stringstream ss;
 				for (int i = 0; i < actual_popped; i++) {
 					ss << std::to_string(m_tempBuffer[i]) << ", ";
 				}
 				std::cout << "wrote " << ss.str() << '\n';
-			}
+			}*/
 			m_totalBytes += bytes_transferred;
-			do_write();
+
+			m_timer.expires_from_now(m_delay);
+			m_timer.async_wait([this, self](auto ec) { if (ec) { return; } if (m_stopped) { return; } do_write(); });
 		}
 	});
 }

@@ -31,7 +31,7 @@ private:
 	RtpModel m_rtpModel;
 	
 	boost::uuids::random_generator m_gen;
-	enum class Mode {Retained, Realtime};
+	enum class Mode {Continuous, Realtime};
 	void transitionInto(Mode mode);
 	Mode m_currentMode;
 	std::mutex m_mutex;
