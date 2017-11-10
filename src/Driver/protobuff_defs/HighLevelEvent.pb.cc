@@ -40,18 +40,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* ContinuousHaptic_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   ContinuousHaptic_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CurveHaptic_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* BufferedHaptic_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  CurveHaptic_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CurveHaptic_Sample_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  CurveHaptic_Sample_reflection_ = NULL;
-const ::google::protobuf::Descriptor* RealtimeHaptic_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  RealtimeHaptic_reflection_ = NULL;
-const ::google::protobuf::Descriptor* RealtimeHaptic_Magnitude_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  RealtimeHaptic_Magnitude_reflection_ = NULL;
+  BufferedHaptic_reflection_ = NULL;
 const ::google::protobuf::Descriptor* BeginAnalogAudio_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   BeginAnalogAudio_reflection_ = NULL;
@@ -68,6 +59,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 struct LocationalEventOneofInstance {
   const ::NullSpaceIPC::SimpleHaptic* simple_haptic_;
   const ::NullSpaceIPC::ContinuousHaptic* continuous_haptic_;
+  const ::NullSpaceIPC::BufferedHaptic* buffered_haptic_;
   const ::NullSpaceIPC::BeginAnalogAudio* begin_analog_audio_;
   const ::NullSpaceIPC::EndAnalogAudio* end_analog_audio_;
 }* LocationalEvent_default_oneof_instance_ = NULL;
@@ -170,70 +162,23 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(ContinuousHaptic),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ContinuousHaptic, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ContinuousHaptic, _is_default_instance_));
-  CurveHaptic_descriptor_ = file->message_type(5);
-  static const int CurveHaptic_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, regions_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, samples_),
+  BufferedHaptic_descriptor_ = file->message_type(5);
+  static const int BufferedHaptic_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, samples_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, frequency_),
   };
-  CurveHaptic_reflection_ =
+  BufferedHaptic_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      CurveHaptic_descriptor_,
-      CurveHaptic::default_instance_,
-      CurveHaptic_offsets_,
+      BufferedHaptic_descriptor_,
+      BufferedHaptic::default_instance_,
+      BufferedHaptic_offsets_,
       -1,
       -1,
       -1,
-      sizeof(CurveHaptic),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic, _is_default_instance_));
-  CurveHaptic_Sample_descriptor_ = CurveHaptic_descriptor_->nested_type(0);
-  static const int CurveHaptic_Sample_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, time_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, magnitude_),
-  };
-  CurveHaptic_Sample_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      CurveHaptic_Sample_descriptor_,
-      CurveHaptic_Sample::default_instance_,
-      CurveHaptic_Sample_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(CurveHaptic_Sample),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CurveHaptic_Sample, _is_default_instance_));
-  RealtimeHaptic_descriptor_ = file->message_type(6);
-  static const int RealtimeHaptic_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic, magnitudes_),
-  };
-  RealtimeHaptic_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      RealtimeHaptic_descriptor_,
-      RealtimeHaptic::default_instance_,
-      RealtimeHaptic_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(RealtimeHaptic),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic, _is_default_instance_));
-  RealtimeHaptic_Magnitude_descriptor_ = RealtimeHaptic_descriptor_->nested_type(0);
-  static const int RealtimeHaptic_Magnitude_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic_Magnitude, region_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic_Magnitude, strength_),
-  };
-  RealtimeHaptic_Magnitude_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      RealtimeHaptic_Magnitude_descriptor_,
-      RealtimeHaptic_Magnitude::default_instance_,
-      RealtimeHaptic_Magnitude_offsets_,
-      -1,
-      -1,
-      -1,
-      sizeof(RealtimeHaptic_Magnitude),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic_Magnitude, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RealtimeHaptic_Magnitude, _is_default_instance_));
-  BeginAnalogAudio_descriptor_ = file->message_type(7);
+      sizeof(BufferedHaptic),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, _is_default_instance_));
+  BeginAnalogAudio_descriptor_ = file->message_type(6);
   static const int BeginAnalogAudio_offsets_[1] = {
   };
   BeginAnalogAudio_reflection_ =
@@ -247,7 +192,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(BeginAnalogAudio),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BeginAnalogAudio, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BeginAnalogAudio, _is_default_instance_));
-  EndAnalogAudio_descriptor_ = file->message_type(8);
+  EndAnalogAudio_descriptor_ = file->message_type(7);
   static const int EndAnalogAudio_offsets_[1] = {
   };
   EndAnalogAudio_reflection_ =
@@ -261,7 +206,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(EndAnalogAudio),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EndAnalogAudio, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EndAnalogAudio, _is_default_instance_));
-  PlaybackEvent_descriptor_ = file->message_type(9);
+  PlaybackEvent_descriptor_ = file->message_type(8);
   static const int PlaybackEvent_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, command_),
   };
@@ -277,11 +222,12 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _is_default_instance_));
   PlaybackEvent_Command_descriptor_ = PlaybackEvent_descriptor_->enum_type(0);
-  LocationalEvent_descriptor_ = file->message_type(10);
-  static const int LocationalEvent_offsets_[6] = {
+  LocationalEvent_descriptor_ = file->message_type(9);
+  static const int LocationalEvent_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, location_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(LocationalEvent_default_oneof_instance_, simple_haptic_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(LocationalEvent_default_oneof_instance_, continuous_haptic_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(LocationalEvent_default_oneof_instance_, buffered_haptic_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(LocationalEvent_default_oneof_instance_, begin_analog_audio_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(LocationalEvent_default_oneof_instance_, end_analog_audio_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, events_),
@@ -299,7 +245,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(LocationalEvent),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, _is_default_instance_));
-  HighLevelEvent_descriptor_ = file->message_type(11);
+  HighLevelEvent_descriptor_ = file->message_type(10);
   static const int HighLevelEvent_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, parent_id_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, playback_event_),
@@ -343,13 +289,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       ContinuousHaptic_descriptor_, &ContinuousHaptic::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      CurveHaptic_descriptor_, &CurveHaptic::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      CurveHaptic_Sample_descriptor_, &CurveHaptic_Sample::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      RealtimeHaptic_descriptor_, &RealtimeHaptic::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      RealtimeHaptic_Magnitude_descriptor_, &RealtimeHaptic_Magnitude::default_instance());
+      BufferedHaptic_descriptor_, &BufferedHaptic::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       BeginAnalogAudio_descriptor_, &BeginAnalogAudio::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -376,14 +316,8 @@ void protobuf_ShutdownFile_HighLevelEvent_2eproto() {
   delete SimpleHaptic_reflection_;
   delete ContinuousHaptic::default_instance_;
   delete ContinuousHaptic_reflection_;
-  delete CurveHaptic::default_instance_;
-  delete CurveHaptic_reflection_;
-  delete CurveHaptic_Sample::default_instance_;
-  delete CurveHaptic_Sample_reflection_;
-  delete RealtimeHaptic::default_instance_;
-  delete RealtimeHaptic_reflection_;
-  delete RealtimeHaptic_Magnitude::default_instance_;
-  delete RealtimeHaptic_Magnitude_reflection_;
+  delete BufferedHaptic::default_instance_;
+  delete BufferedHaptic_reflection_;
   delete BeginAnalogAudio::default_instance_;
   delete BeginAnalogAudio_reflection_;
   delete EndAnalogAudio::default_instance_;
@@ -413,30 +347,26 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
     "\030\002 \001(\0132\026.NullSpaceIPC.NodeListH\000B\007\n\005wher"
     "e\"B\n\014SimpleHaptic\022\016\n\006effect\030\003 \001(\r\022\020\n\010str"
     "ength\030\004 \001(\002\022\020\n\010duration\030\005 \001(\002\"$\n\020Continu"
-    "ousHaptic\022\020\n\010strength\030\001 \001(\002\"|\n\013CurveHapt"
-    "ic\022\017\n\007regions\030\001 \003(\r\0221\n\007samples\030\002 \003(\0132 .N"
-    "ullSpaceIPC.CurveHaptic.Sample\032)\n\006Sample"
-    "\022\014\n\004time\030\001 \001(\002\022\021\n\tmagnitude\030\002 \001(\002\"{\n\016Rea"
-    "ltimeHaptic\022:\n\nmagnitudes\030\001 \003(\0132&.NullSp"
-    "aceIPC.RealtimeHaptic.Magnitude\032-\n\tMagni"
-    "tude\022\016\n\006region\030\001 \001(\r\022\020\n\010strength\030\002 \001(\002\"\022"
-    "\n\020BeginAnalogAudio\"\020\n\016EndAnalogAudio\"\201\001\n"
-    "\rPlaybackEvent\0224\n\007command\030\001 \001(\0162#.NullSp"
-    "aceIPC.PlaybackEvent.Command\":\n\007Command\022"
-    "\013\n\007UNKNOWN\020\000\022\t\n\005PAUSE\020\001\022\013\n\007UNPAUSE\020\002\022\n\n\006"
-    "CANCEL\020\003\"\257\002\n\017LocationalEvent\022(\n\010location"
-    "\030\001 \001(\0132\026.NullSpaceIPC.Location\0223\n\rsimple"
-    "_haptic\030\002 \001(\0132\032.NullSpaceIPC.SimpleHapti"
-    "cH\000\022;\n\021continuous_haptic\030\003 \001(\0132\036.NullSpa"
-    "ceIPC.ContinuousHapticH\000\022<\n\022begin_analog"
-    "_audio\030\020 \001(\0132\036.NullSpaceIPC.BeginAnalogA"
-    "udioH\000\0228\n\020end_analog_audio\030\021 \001(\0132\034.NullS"
-    "paceIPC.EndAnalogAudioH\000B\010\n\006events\"\237\001\n\016H"
-    "ighLevelEvent\022\021\n\tparent_id\030\001 \001(\004\0225\n\016play"
-    "back_event\030\002 \001(\0132\033.NullSpaceIPC.Playback"
-    "EventH\000\0229\n\020locational_event\030\003 \001(\0132\035.Null"
-    "SpaceIPC.LocationalEventH\000B\010\n\006eventsb\006pr"
-    "oto3", 1204);
+    "ousHaptic\022\020\n\010strength\030\001 \001(\002\"4\n\016BufferedH"
+    "aptic\022\017\n\007samples\030\001 \003(\002\022\021\n\tfrequency\030\002 \001("
+    "\002\"\022\n\020BeginAnalogAudio\"\020\n\016EndAnalogAudio\""
+    "\201\001\n\rPlaybackEvent\0224\n\007command\030\001 \001(\0162#.Nul"
+    "lSpaceIPC.PlaybackEvent.Command\":\n\007Comma"
+    "nd\022\013\n\007UNKNOWN\020\000\022\t\n\005PAUSE\020\001\022\013\n\007UNPAUSE\020\002\022"
+    "\n\n\006CANCEL\020\003\"\350\002\n\017LocationalEvent\022(\n\010locat"
+    "ion\030\001 \001(\0132\026.NullSpaceIPC.Location\0223\n\rsim"
+    "ple_haptic\030\002 \001(\0132\032.NullSpaceIPC.SimpleHa"
+    "pticH\000\022;\n\021continuous_haptic\030\003 \001(\0132\036.Null"
+    "SpaceIPC.ContinuousHapticH\000\0227\n\017buffered_"
+    "haptic\030\004 \001(\0132\034.NullSpaceIPC.BufferedHapt"
+    "icH\000\022<\n\022begin_analog_audio\030\020 \001(\0132\036.NullS"
+    "paceIPC.BeginAnalogAudioH\000\0228\n\020end_analog"
+    "_audio\030\021 \001(\0132\034.NullSpaceIPC.EndAnalogAud"
+    "ioH\000B\010\n\006events\"\237\001\n\016HighLevelEvent\022\021\n\tpar"
+    "ent_id\030\001 \001(\004\0225\n\016playback_event\030\002 \001(\0132\033.N"
+    "ullSpaceIPC.PlaybackEventH\000\0229\n\020locationa"
+    "l_event\030\003 \001(\0132\035.NullSpaceIPC.LocationalE"
+    "ventH\000B\010\n\006eventsb\006proto3", 1064);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "HighLevelEvent.proto", &protobuf_RegisterTypes);
   RegionList::default_instance_ = new RegionList();
@@ -445,10 +375,7 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   Location_default_oneof_instance_ = new LocationOneofInstance();
   SimpleHaptic::default_instance_ = new SimpleHaptic();
   ContinuousHaptic::default_instance_ = new ContinuousHaptic();
-  CurveHaptic::default_instance_ = new CurveHaptic();
-  CurveHaptic_Sample::default_instance_ = new CurveHaptic_Sample();
-  RealtimeHaptic::default_instance_ = new RealtimeHaptic();
-  RealtimeHaptic_Magnitude::default_instance_ = new RealtimeHaptic_Magnitude();
+  BufferedHaptic::default_instance_ = new BufferedHaptic();
   BeginAnalogAudio::default_instance_ = new BeginAnalogAudio();
   EndAnalogAudio::default_instance_ = new EndAnalogAudio();
   PlaybackEvent::default_instance_ = new PlaybackEvent();
@@ -461,10 +388,7 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   Location::default_instance_->InitAsDefaultInstance();
   SimpleHaptic::default_instance_->InitAsDefaultInstance();
   ContinuousHaptic::default_instance_->InitAsDefaultInstance();
-  CurveHaptic::default_instance_->InitAsDefaultInstance();
-  CurveHaptic_Sample::default_instance_->InitAsDefaultInstance();
-  RealtimeHaptic::default_instance_->InitAsDefaultInstance();
-  RealtimeHaptic_Magnitude::default_instance_->InitAsDefaultInstance();
+  BufferedHaptic::default_instance_->InitAsDefaultInstance();
   BeginAnalogAudio::default_instance_->InitAsDefaultInstance();
   EndAnalogAudio::default_instance_->InitAsDefaultInstance();
   PlaybackEvent::default_instance_->InitAsDefaultInstance();
@@ -2037,388 +1961,113 @@ void ContinuousHaptic::clear_strength() {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CurveHaptic_Sample::kTimeFieldNumber;
-const int CurveHaptic_Sample::kMagnitudeFieldNumber;
+const int BufferedHaptic::kSamplesFieldNumber;
+const int BufferedHaptic::kFrequencyFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-CurveHaptic_Sample::CurveHaptic_Sample()
+BufferedHaptic::BufferedHaptic()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceIPC.CurveHaptic.Sample)
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.BufferedHaptic)
 }
 
-void CurveHaptic_Sample::InitAsDefaultInstance() {
+void BufferedHaptic::InitAsDefaultInstance() {
   _is_default_instance_ = true;
 }
 
-CurveHaptic_Sample::CurveHaptic_Sample(const CurveHaptic_Sample& from)
+BufferedHaptic::BufferedHaptic(const BufferedHaptic& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.CurveHaptic.Sample)
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.BufferedHaptic)
 }
 
-void CurveHaptic_Sample::SharedCtor() {
+void BufferedHaptic::SharedCtor() {
     _is_default_instance_ = false;
   _cached_size_ = 0;
-  time_ = 0;
-  magnitude_ = 0;
+  frequency_ = 0;
 }
 
-CurveHaptic_Sample::~CurveHaptic_Sample() {
-  // @@protoc_insertion_point(destructor:NullSpaceIPC.CurveHaptic.Sample)
+BufferedHaptic::~BufferedHaptic() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.BufferedHaptic)
   SharedDtor();
 }
 
-void CurveHaptic_Sample::SharedDtor() {
+void BufferedHaptic::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void CurveHaptic_Sample::SetCachedSize(int size) const {
+void BufferedHaptic::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* CurveHaptic_Sample::descriptor() {
+const ::google::protobuf::Descriptor* BufferedHaptic::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return CurveHaptic_Sample_descriptor_;
+  return BufferedHaptic_descriptor_;
 }
 
-const CurveHaptic_Sample& CurveHaptic_Sample::default_instance() {
+const BufferedHaptic& BufferedHaptic::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
   return *default_instance_;
 }
 
-CurveHaptic_Sample* CurveHaptic_Sample::default_instance_ = NULL;
+BufferedHaptic* BufferedHaptic::default_instance_ = NULL;
 
-CurveHaptic_Sample* CurveHaptic_Sample::New(::google::protobuf::Arena* arena) const {
-  CurveHaptic_Sample* n = new CurveHaptic_Sample;
+BufferedHaptic* BufferedHaptic::New(::google::protobuf::Arena* arena) const {
+  BufferedHaptic* n = new BufferedHaptic;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void CurveHaptic_Sample::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.CurveHaptic.Sample)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(CurveHaptic_Sample, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<CurveHaptic_Sample*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&first, 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(time_, magnitude_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
-}
-
-bool CurveHaptic_Sample::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceIPC.CurveHaptic.Sample)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional float time = 1;
-      case 1: {
-        if (tag == 13) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &time_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(21)) goto parse_magnitude;
-        break;
-      }
-
-      // optional float magnitude = 2;
-      case 2: {
-        if (tag == 21) {
-         parse_magnitude:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &magnitude_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:NullSpaceIPC.CurveHaptic.Sample)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.CurveHaptic.Sample)
-  return false;
-#undef DO_
-}
-
-void CurveHaptic_Sample::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.CurveHaptic.Sample)
-  // optional float time = 1;
-  if (this->time() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->time(), output);
-  }
-
-  // optional float magnitude = 2;
-  if (this->magnitude() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->magnitude(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.CurveHaptic.Sample)
-}
-
-::google::protobuf::uint8* CurveHaptic_Sample::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.CurveHaptic.Sample)
-  // optional float time = 1;
-  if (this->time() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->time(), target);
-  }
-
-  // optional float magnitude = 2;
-  if (this->magnitude() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->magnitude(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.CurveHaptic.Sample)
-  return target;
-}
-
-int CurveHaptic_Sample::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.CurveHaptic.Sample)
-  int total_size = 0;
-
-  // optional float time = 1;
-  if (this->time() != 0) {
-    total_size += 1 + 4;
-  }
-
-  // optional float magnitude = 2;
-  if (this->magnitude() != 0) {
-    total_size += 1 + 4;
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void CurveHaptic_Sample::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.CurveHaptic.Sample)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const CurveHaptic_Sample* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const CurveHaptic_Sample>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.CurveHaptic.Sample)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.CurveHaptic.Sample)
-    MergeFrom(*source);
-  }
-}
-
-void CurveHaptic_Sample::MergeFrom(const CurveHaptic_Sample& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.CurveHaptic.Sample)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.time() != 0) {
-    set_time(from.time());
-  }
-  if (from.magnitude() != 0) {
-    set_magnitude(from.magnitude());
-  }
-}
-
-void CurveHaptic_Sample::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.CurveHaptic.Sample)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void CurveHaptic_Sample::CopyFrom(const CurveHaptic_Sample& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.CurveHaptic.Sample)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CurveHaptic_Sample::IsInitialized() const {
-
-  return true;
-}
-
-void CurveHaptic_Sample::Swap(CurveHaptic_Sample* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void CurveHaptic_Sample::InternalSwap(CurveHaptic_Sample* other) {
-  std::swap(time_, other->time_);
-  std::swap(magnitude_, other->magnitude_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata CurveHaptic_Sample::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CurveHaptic_Sample_descriptor_;
-  metadata.reflection = CurveHaptic_Sample_reflection_;
-  return metadata;
-}
-
-
-// -------------------------------------------------------------------
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CurveHaptic::kRegionsFieldNumber;
-const int CurveHaptic::kSamplesFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-CurveHaptic::CurveHaptic()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceIPC.CurveHaptic)
-}
-
-void CurveHaptic::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-CurveHaptic::CurveHaptic(const CurveHaptic& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.CurveHaptic)
-}
-
-void CurveHaptic::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
-}
-
-CurveHaptic::~CurveHaptic() {
-  // @@protoc_insertion_point(destructor:NullSpaceIPC.CurveHaptic)
-  SharedDtor();
-}
-
-void CurveHaptic::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void CurveHaptic::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* CurveHaptic::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return CurveHaptic_descriptor_;
-}
-
-const CurveHaptic& CurveHaptic::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
-  return *default_instance_;
-}
-
-CurveHaptic* CurveHaptic::default_instance_ = NULL;
-
-CurveHaptic* CurveHaptic::New(::google::protobuf::Arena* arena) const {
-  CurveHaptic* n = new CurveHaptic;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void CurveHaptic::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.CurveHaptic)
-  regions_.Clear();
+void BufferedHaptic::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.BufferedHaptic)
+  frequency_ = 0;
   samples_.Clear();
 }
 
-bool CurveHaptic::MergePartialFromCodedStream(
+bool BufferedHaptic::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceIPC.CurveHaptic)
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.BufferedHaptic)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated uint32 regions = 1;
+      // repeated float samples = 1;
       case 1: {
         if (tag == 10) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, this->mutable_regions())));
-        } else if (tag == 8) {
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, this->mutable_samples())));
+        } else if (tag == 13) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 1, 10, input, this->mutable_regions())));
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 1, 10, input, this->mutable_samples())));
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_samples;
+        if (input->ExpectTag(21)) goto parse_frequency;
         break;
       }
 
-      // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
+      // optional float frequency = 2;
       case 2: {
-        if (tag == 18) {
-         parse_samples:
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_samples:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
-                input, add_samples()));
+        if (tag == 21) {
+         parse_frequency:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &frequency_)));
+
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(18)) goto parse_loop_samples;
-        input->UnsafeDecrementRecursionDepth();
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -2436,821 +2085,201 @@ bool CurveHaptic::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:NullSpaceIPC.CurveHaptic)
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.BufferedHaptic)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.CurveHaptic)
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.BufferedHaptic)
   return false;
 #undef DO_
 }
 
-void CurveHaptic::SerializeWithCachedSizes(
+void BufferedHaptic::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.CurveHaptic)
-  // repeated uint32 regions = 1;
-  if (this->regions_size() > 0) {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.BufferedHaptic)
+  // repeated float samples = 1;
+  if (this->samples_size() > 0) {
     ::google::protobuf::internal::WireFormatLite::WriteTag(1, ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED, output);
-    output->WriteVarint32(_regions_cached_byte_size_);
+    output->WriteVarint32(_samples_cached_byte_size_);
   }
-  for (int i = 0; i < this->regions_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32NoTag(
-      this->regions(i), output);
-  }
-
-  // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
-  for (unsigned int i = 0, n = this->samples_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2, this->samples(i), output);
+  for (int i = 0; i < this->samples_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloatNoTag(
+      this->samples(i), output);
   }
 
-  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.CurveHaptic)
+  // optional float frequency = 2;
+  if (this->frequency() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->frequency(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.BufferedHaptic)
 }
 
-::google::protobuf::uint8* CurveHaptic::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* BufferedHaptic::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.CurveHaptic)
-  // repeated uint32 regions = 1;
-  if (this->regions_size() > 0) {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.BufferedHaptic)
+  // repeated float samples = 1;
+  if (this->samples_size() > 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteTagToArray(
       1,
       ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED,
       target);
     target = ::google::protobuf::io::CodedOutputStream::WriteVarint32ToArray(
-      _regions_cached_byte_size_, target);
+      _samples_cached_byte_size_, target);
   }
-  for (int i = 0; i < this->regions_size(); i++) {
+  for (int i = 0; i < this->samples_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteUInt32NoTagToArray(this->regions(i), target);
+      WriteFloatNoTagToArray(this->samples(i), target);
   }
 
-  // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
-  for (unsigned int i = 0, n = this->samples_size(); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        2, this->samples(i), false, target);
+  // optional float frequency = 2;
+  if (this->frequency() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->frequency(), target);
   }
 
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.CurveHaptic)
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.BufferedHaptic)
   return target;
 }
 
-int CurveHaptic::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.CurveHaptic)
+int BufferedHaptic::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.BufferedHaptic)
   int total_size = 0;
 
-  // repeated uint32 regions = 1;
+  // optional float frequency = 2;
+  if (this->frequency() != 0) {
+    total_size += 1 + 4;
+  }
+
+  // repeated float samples = 1;
   {
     int data_size = 0;
-    for (int i = 0; i < this->regions_size(); i++) {
-      data_size += ::google::protobuf::internal::WireFormatLite::
-        UInt32Size(this->regions(i));
-    }
+    data_size = 4 * this->samples_size();
     if (data_size > 0) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(data_size);
     }
     GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-    _regions_cached_byte_size_ = data_size;
+    _samples_cached_byte_size_ = data_size;
     GOOGLE_SAFE_CONCURRENT_WRITES_END();
     total_size += data_size;
   }
 
-  // repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
-  total_size += 1 * this->samples_size();
-  for (int i = 0; i < this->samples_size(); i++) {
-    total_size +=
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        this->samples(i));
-  }
-
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = total_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
-void CurveHaptic::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.CurveHaptic)
+void BufferedHaptic::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.BufferedHaptic)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  const CurveHaptic* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const CurveHaptic>(
+  const BufferedHaptic* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const BufferedHaptic>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.CurveHaptic)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.BufferedHaptic)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.CurveHaptic)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.BufferedHaptic)
     MergeFrom(*source);
   }
 }
 
-void CurveHaptic::MergeFrom(const CurveHaptic& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.CurveHaptic)
+void BufferedHaptic::MergeFrom(const BufferedHaptic& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.BufferedHaptic)
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
-  regions_.MergeFrom(from.regions_);
   samples_.MergeFrom(from.samples_);
+  if (from.frequency() != 0) {
+    set_frequency(from.frequency());
+  }
 }
 
-void CurveHaptic::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.CurveHaptic)
+void BufferedHaptic::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.BufferedHaptic)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void CurveHaptic::CopyFrom(const CurveHaptic& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.CurveHaptic)
+void BufferedHaptic::CopyFrom(const BufferedHaptic& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.BufferedHaptic)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CurveHaptic::IsInitialized() const {
+bool BufferedHaptic::IsInitialized() const {
 
   return true;
 }
 
-void CurveHaptic::Swap(CurveHaptic* other) {
+void BufferedHaptic::Swap(BufferedHaptic* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void CurveHaptic::InternalSwap(CurveHaptic* other) {
-  regions_.UnsafeArenaSwap(&other->regions_);
+void BufferedHaptic::InternalSwap(BufferedHaptic* other) {
   samples_.UnsafeArenaSwap(&other->samples_);
+  std::swap(frequency_, other->frequency_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata CurveHaptic::GetMetadata() const {
+::google::protobuf::Metadata BufferedHaptic::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CurveHaptic_descriptor_;
-  metadata.reflection = CurveHaptic_reflection_;
+  metadata.descriptor = BufferedHaptic_descriptor_;
+  metadata.reflection = BufferedHaptic_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// CurveHaptic_Sample
+// BufferedHaptic
 
-// optional float time = 1;
-void CurveHaptic_Sample::clear_time() {
-  time_ = 0;
-}
- float CurveHaptic_Sample::time() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.Sample.time)
-  return time_;
-}
- void CurveHaptic_Sample::set_time(float value) {
-  
-  time_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.Sample.time)
-}
-
-// optional float magnitude = 2;
-void CurveHaptic_Sample::clear_magnitude() {
-  magnitude_ = 0;
-}
- float CurveHaptic_Sample::magnitude() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.Sample.magnitude)
-  return magnitude_;
-}
- void CurveHaptic_Sample::set_magnitude(float value) {
-  
-  magnitude_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.Sample.magnitude)
-}
-
-// -------------------------------------------------------------------
-
-// CurveHaptic
-
-// repeated uint32 regions = 1;
-int CurveHaptic::regions_size() const {
-  return regions_.size();
-}
-void CurveHaptic::clear_regions() {
-  regions_.Clear();
-}
- ::google::protobuf::uint32 CurveHaptic::regions(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.regions)
-  return regions_.Get(index);
-}
- void CurveHaptic::set_regions(int index, ::google::protobuf::uint32 value) {
-  regions_.Set(index, value);
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.CurveHaptic.regions)
-}
- void CurveHaptic::add_regions(::google::protobuf::uint32 value) {
-  regions_.Add(value);
-  // @@protoc_insertion_point(field_add:NullSpaceIPC.CurveHaptic.regions)
-}
- const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
-CurveHaptic::regions() const {
-  // @@protoc_insertion_point(field_list:NullSpaceIPC.CurveHaptic.regions)
-  return regions_;
-}
- ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
-CurveHaptic::mutable_regions() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.CurveHaptic.regions)
-  return &regions_;
-}
-
-// repeated .NullSpaceIPC.CurveHaptic.Sample samples = 2;
-int CurveHaptic::samples_size() const {
+// repeated float samples = 1;
+int BufferedHaptic::samples_size() const {
   return samples_.size();
 }
-void CurveHaptic::clear_samples() {
+void BufferedHaptic::clear_samples() {
   samples_.Clear();
 }
-const ::NullSpaceIPC::CurveHaptic_Sample& CurveHaptic::samples(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.CurveHaptic.samples)
+ float BufferedHaptic::samples(int index) const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.BufferedHaptic.samples)
   return samples_.Get(index);
 }
-::NullSpaceIPC::CurveHaptic_Sample* CurveHaptic::mutable_samples(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.CurveHaptic.samples)
-  return samples_.Mutable(index);
+ void BufferedHaptic::set_samples(int index, float value) {
+  samples_.Set(index, value);
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.BufferedHaptic.samples)
 }
-::NullSpaceIPC::CurveHaptic_Sample* CurveHaptic::add_samples() {
-  // @@protoc_insertion_point(field_add:NullSpaceIPC.CurveHaptic.samples)
-  return samples_.Add();
+ void BufferedHaptic::add_samples(float value) {
+  samples_.Add(value);
+  // @@protoc_insertion_point(field_add:NullSpaceIPC.BufferedHaptic.samples)
 }
-::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::CurveHaptic_Sample >*
-CurveHaptic::mutable_samples() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.CurveHaptic.samples)
-  return &samples_;
-}
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::CurveHaptic_Sample >&
-CurveHaptic::samples() const {
-  // @@protoc_insertion_point(field_list:NullSpaceIPC.CurveHaptic.samples)
+ const ::google::protobuf::RepeatedField< float >&
+BufferedHaptic::samples() const {
+  // @@protoc_insertion_point(field_list:NullSpaceIPC.BufferedHaptic.samples)
   return samples_;
 }
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int RealtimeHaptic_Magnitude::kRegionFieldNumber;
-const int RealtimeHaptic_Magnitude::kStrengthFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-RealtimeHaptic_Magnitude::RealtimeHaptic_Magnitude()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceIPC.RealtimeHaptic.Magnitude)
+ ::google::protobuf::RepeatedField< float >*
+BufferedHaptic::mutable_samples() {
+  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.BufferedHaptic.samples)
+  return &samples_;
 }
 
-void RealtimeHaptic_Magnitude::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
+// optional float frequency = 2;
+void BufferedHaptic::clear_frequency() {
+  frequency_ = 0;
 }
-
-RealtimeHaptic_Magnitude::RealtimeHaptic_Magnitude(const RealtimeHaptic_Magnitude& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.RealtimeHaptic.Magnitude)
+ float BufferedHaptic::frequency() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.BufferedHaptic.frequency)
+  return frequency_;
 }
-
-void RealtimeHaptic_Magnitude::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
-  region_ = 0u;
-  strength_ = 0;
-}
-
-RealtimeHaptic_Magnitude::~RealtimeHaptic_Magnitude() {
-  // @@protoc_insertion_point(destructor:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  SharedDtor();
-}
-
-void RealtimeHaptic_Magnitude::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void RealtimeHaptic_Magnitude::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* RealtimeHaptic_Magnitude::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return RealtimeHaptic_Magnitude_descriptor_;
-}
-
-const RealtimeHaptic_Magnitude& RealtimeHaptic_Magnitude::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
-  return *default_instance_;
-}
-
-RealtimeHaptic_Magnitude* RealtimeHaptic_Magnitude::default_instance_ = NULL;
-
-RealtimeHaptic_Magnitude* RealtimeHaptic_Magnitude::New(::google::protobuf::Arena* arena) const {
-  RealtimeHaptic_Magnitude* n = new RealtimeHaptic_Magnitude;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void RealtimeHaptic_Magnitude::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-#if defined(__clang__)
-#define ZR_HELPER_(f) \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
-  __builtin_offsetof(RealtimeHaptic_Magnitude, f) \
-  _Pragma("clang diagnostic pop")
-#else
-#define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<RealtimeHaptic_Magnitude*>(16)->f)
-#endif
-
-#define ZR_(first, last) do {\
-  ::memset(&first, 0,\
-           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
-} while (0)
-
-  ZR_(region_, strength_);
-
-#undef ZR_HELPER_
-#undef ZR_
-
-}
-
-bool RealtimeHaptic_Magnitude::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 region = 1;
-      case 1: {
-        if (tag == 8) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &region_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(21)) goto parse_strength;
-        break;
-      }
-
-      // optional float strength = 2;
-      case 2: {
-        if (tag == 21) {
-         parse_strength:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &strength_)));
-
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  return false;
-#undef DO_
-}
-
-void RealtimeHaptic_Magnitude::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  // optional uint32 region = 1;
-  if (this->region() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->region(), output);
-  }
-
-  // optional float strength = 2;
-  if (this->strength() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->strength(), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.RealtimeHaptic.Magnitude)
-}
-
-::google::protobuf::uint8* RealtimeHaptic_Magnitude::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  // optional uint32 region = 1;
-  if (this->region() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->region(), target);
-  }
-
-  // optional float strength = 2;
-  if (this->strength() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->strength(), target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  return target;
-}
-
-int RealtimeHaptic_Magnitude::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  int total_size = 0;
-
-  // optional uint32 region = 1;
-  if (this->region() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
-        this->region());
-  }
-
-  // optional float strength = 2;
-  if (this->strength() != 0) {
-    total_size += 1 + 4;
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void RealtimeHaptic_Magnitude::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const RealtimeHaptic_Magnitude* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const RealtimeHaptic_Magnitude>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.RealtimeHaptic.Magnitude)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.RealtimeHaptic.Magnitude)
-    MergeFrom(*source);
-  }
-}
-
-void RealtimeHaptic_Magnitude::MergeFrom(const RealtimeHaptic_Magnitude& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from.region() != 0) {
-    set_region(from.region());
-  }
-  if (from.strength() != 0) {
-    set_strength(from.strength());
-  }
-}
-
-void RealtimeHaptic_Magnitude::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void RealtimeHaptic_Magnitude::CopyFrom(const RealtimeHaptic_Magnitude& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.RealtimeHaptic.Magnitude)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool RealtimeHaptic_Magnitude::IsInitialized() const {
-
-  return true;
-}
-
-void RealtimeHaptic_Magnitude::Swap(RealtimeHaptic_Magnitude* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void RealtimeHaptic_Magnitude::InternalSwap(RealtimeHaptic_Magnitude* other) {
-  std::swap(region_, other->region_);
-  std::swap(strength_, other->strength_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata RealtimeHaptic_Magnitude::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = RealtimeHaptic_Magnitude_descriptor_;
-  metadata.reflection = RealtimeHaptic_Magnitude_reflection_;
-  return metadata;
-}
-
-
-// -------------------------------------------------------------------
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int RealtimeHaptic::kMagnitudesFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-RealtimeHaptic::RealtimeHaptic()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:NullSpaceIPC.RealtimeHaptic)
-}
-
-void RealtimeHaptic::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-}
-
-RealtimeHaptic::RealtimeHaptic(const RealtimeHaptic& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.RealtimeHaptic)
-}
-
-void RealtimeHaptic::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
-}
-
-RealtimeHaptic::~RealtimeHaptic() {
-  // @@protoc_insertion_point(destructor:NullSpaceIPC.RealtimeHaptic)
-  SharedDtor();
-}
-
-void RealtimeHaptic::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void RealtimeHaptic::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* RealtimeHaptic::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return RealtimeHaptic_descriptor_;
-}
-
-const RealtimeHaptic& RealtimeHaptic::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
-  return *default_instance_;
-}
-
-RealtimeHaptic* RealtimeHaptic::default_instance_ = NULL;
-
-RealtimeHaptic* RealtimeHaptic::New(::google::protobuf::Arena* arena) const {
-  RealtimeHaptic* n = new RealtimeHaptic;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void RealtimeHaptic::Clear() {
-// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.RealtimeHaptic)
-  magnitudes_.Clear();
-}
-
-bool RealtimeHaptic::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:NullSpaceIPC.RealtimeHaptic)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .NullSpaceIPC.RealtimeHaptic.Magnitude magnitudes = 1;
-      case 1: {
-        if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_magnitudes:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
-                input, add_magnitudes()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(10)) goto parse_loop_magnitudes;
-        input->UnsafeDecrementRecursionDepth();
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:NullSpaceIPC.RealtimeHaptic)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.RealtimeHaptic)
-  return false;
-#undef DO_
-}
-
-void RealtimeHaptic::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.RealtimeHaptic)
-  // repeated .NullSpaceIPC.RealtimeHaptic.Magnitude magnitudes = 1;
-  for (unsigned int i = 0, n = this->magnitudes_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->magnitudes(i), output);
-  }
-
-  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.RealtimeHaptic)
-}
-
-::google::protobuf::uint8* RealtimeHaptic::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.RealtimeHaptic)
-  // repeated .NullSpaceIPC.RealtimeHaptic.Magnitude magnitudes = 1;
-  for (unsigned int i = 0, n = this->magnitudes_size(); i < n; i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        1, this->magnitudes(i), false, target);
-  }
-
-  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.RealtimeHaptic)
-  return target;
-}
-
-int RealtimeHaptic::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.RealtimeHaptic)
-  int total_size = 0;
-
-  // repeated .NullSpaceIPC.RealtimeHaptic.Magnitude magnitudes = 1;
-  total_size += 1 * this->magnitudes_size();
-  for (int i = 0; i < this->magnitudes_size(); i++) {
-    total_size +=
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        this->magnitudes(i));
-  }
-
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void RealtimeHaptic::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.RealtimeHaptic)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const RealtimeHaptic* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const RealtimeHaptic>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.RealtimeHaptic)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.RealtimeHaptic)
-    MergeFrom(*source);
-  }
-}
-
-void RealtimeHaptic::MergeFrom(const RealtimeHaptic& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.RealtimeHaptic)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  magnitudes_.MergeFrom(from.magnitudes_);
-}
-
-void RealtimeHaptic::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.RealtimeHaptic)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void RealtimeHaptic::CopyFrom(const RealtimeHaptic& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.RealtimeHaptic)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool RealtimeHaptic::IsInitialized() const {
-
-  return true;
-}
-
-void RealtimeHaptic::Swap(RealtimeHaptic* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void RealtimeHaptic::InternalSwap(RealtimeHaptic* other) {
-  magnitudes_.UnsafeArenaSwap(&other->magnitudes_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata RealtimeHaptic::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = RealtimeHaptic_descriptor_;
-  metadata.reflection = RealtimeHaptic_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// RealtimeHaptic_Magnitude
-
-// optional uint32 region = 1;
-void RealtimeHaptic_Magnitude::clear_region() {
-  region_ = 0u;
-}
- ::google::protobuf::uint32 RealtimeHaptic_Magnitude::region() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-  return region_;
-}
- void RealtimeHaptic_Magnitude::set_region(::google::protobuf::uint32 value) {
+ void BufferedHaptic::set_frequency(float value) {
   
-  region_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.RealtimeHaptic.Magnitude.region)
-}
-
-// optional float strength = 2;
-void RealtimeHaptic_Magnitude::clear_strength() {
-  strength_ = 0;
-}
- float RealtimeHaptic_Magnitude::strength() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.RealtimeHaptic.Magnitude.strength)
-  return strength_;
-}
- void RealtimeHaptic_Magnitude::set_strength(float value) {
-  
-  strength_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.RealtimeHaptic.Magnitude.strength)
-}
-
-// -------------------------------------------------------------------
-
-// RealtimeHaptic
-
-// repeated .NullSpaceIPC.RealtimeHaptic.Magnitude magnitudes = 1;
-int RealtimeHaptic::magnitudes_size() const {
-  return magnitudes_.size();
-}
-void RealtimeHaptic::clear_magnitudes() {
-  magnitudes_.Clear();
-}
-const ::NullSpaceIPC::RealtimeHaptic_Magnitude& RealtimeHaptic::magnitudes(int index) const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.RealtimeHaptic.magnitudes)
-  return magnitudes_.Get(index);
-}
-::NullSpaceIPC::RealtimeHaptic_Magnitude* RealtimeHaptic::mutable_magnitudes(int index) {
-  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.RealtimeHaptic.magnitudes)
-  return magnitudes_.Mutable(index);
-}
-::NullSpaceIPC::RealtimeHaptic_Magnitude* RealtimeHaptic::add_magnitudes() {
-  // @@protoc_insertion_point(field_add:NullSpaceIPC.RealtimeHaptic.magnitudes)
-  return magnitudes_.Add();
-}
-::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::RealtimeHaptic_Magnitude >*
-RealtimeHaptic::mutable_magnitudes() {
-  // @@protoc_insertion_point(field_mutable_list:NullSpaceIPC.RealtimeHaptic.magnitudes)
-  return &magnitudes_;
-}
-const ::google::protobuf::RepeatedPtrField< ::NullSpaceIPC::RealtimeHaptic_Magnitude >&
-RealtimeHaptic::magnitudes() const {
-  // @@protoc_insertion_point(field_list:NullSpaceIPC.RealtimeHaptic.magnitudes)
-  return magnitudes_;
+  frequency_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.BufferedHaptic.frequency)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -3888,6 +2917,7 @@ void PlaybackEvent::clear_command() {
 const int LocationalEvent::kLocationFieldNumber;
 const int LocationalEvent::kSimpleHapticFieldNumber;
 const int LocationalEvent::kContinuousHapticFieldNumber;
+const int LocationalEvent::kBufferedHapticFieldNumber;
 const int LocationalEvent::kBeginAnalogAudioFieldNumber;
 const int LocationalEvent::kEndAnalogAudioFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
@@ -3903,6 +2933,7 @@ void LocationalEvent::InitAsDefaultInstance() {
   location_ = const_cast< ::NullSpaceIPC::Location*>(&::NullSpaceIPC::Location::default_instance());
   LocationalEvent_default_oneof_instance_->simple_haptic_ = const_cast< ::NullSpaceIPC::SimpleHaptic*>(&::NullSpaceIPC::SimpleHaptic::default_instance());
   LocationalEvent_default_oneof_instance_->continuous_haptic_ = const_cast< ::NullSpaceIPC::ContinuousHaptic*>(&::NullSpaceIPC::ContinuousHaptic::default_instance());
+  LocationalEvent_default_oneof_instance_->buffered_haptic_ = const_cast< ::NullSpaceIPC::BufferedHaptic*>(&::NullSpaceIPC::BufferedHaptic::default_instance());
   LocationalEvent_default_oneof_instance_->begin_analog_audio_ = const_cast< ::NullSpaceIPC::BeginAnalogAudio*>(&::NullSpaceIPC::BeginAnalogAudio::default_instance());
   LocationalEvent_default_oneof_instance_->end_analog_audio_ = const_cast< ::NullSpaceIPC::EndAnalogAudio*>(&::NullSpaceIPC::EndAnalogAudio::default_instance());
 }
@@ -3972,6 +3003,10 @@ void LocationalEvent::clear_events() {
       delete events_.continuous_haptic_;
       break;
     }
+    case kBufferedHaptic: {
+      delete events_.buffered_haptic_;
+      break;
+    }
     case kBeginAnalogAudio: {
       delete events_.begin_analog_audio_;
       break;
@@ -4036,6 +3071,19 @@ bool LocationalEvent::MergePartialFromCodedStream(
          parse_continuous_haptic:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_continuous_haptic()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_buffered_haptic;
+        break;
+      }
+
+      // optional .NullSpaceIPC.BufferedHaptic buffered_haptic = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_buffered_haptic:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_buffered_haptic()));
         } else {
           goto handle_unusual;
         }
@@ -4111,6 +3159,12 @@ void LocationalEvent::SerializeWithCachedSizes(
       3, *events_.continuous_haptic_, output);
   }
 
+  // optional .NullSpaceIPC.BufferedHaptic buffered_haptic = 4;
+  if (has_buffered_haptic()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, *events_.buffered_haptic_, output);
+  }
+
   // optional .NullSpaceIPC.BeginAnalogAudio begin_analog_audio = 16;
   if (has_begin_analog_audio()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -4148,6 +3202,13 @@ void LocationalEvent::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         3, *events_.continuous_haptic_, false, target);
+  }
+
+  // optional .NullSpaceIPC.BufferedHaptic buffered_haptic = 4;
+  if (has_buffered_haptic()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        4, *events_.buffered_haptic_, false, target);
   }
 
   // optional .NullSpaceIPC.BeginAnalogAudio begin_analog_audio = 16;
@@ -4192,6 +3253,13 @@ int LocationalEvent::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *events_.continuous_haptic_);
+      break;
+    }
+    // optional .NullSpaceIPC.BufferedHaptic buffered_haptic = 4;
+    case kBufferedHaptic: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *events_.buffered_haptic_);
       break;
     }
     // optional .NullSpaceIPC.BeginAnalogAudio begin_analog_audio = 16;
@@ -4247,6 +3315,10 @@ void LocationalEvent::MergeFrom(const LocationalEvent& from) {
     }
     case kContinuousHaptic: {
       mutable_continuous_haptic()->::NullSpaceIPC::ContinuousHaptic::MergeFrom(from.continuous_haptic());
+      break;
+    }
+    case kBufferedHaptic: {
+      mutable_buffered_haptic()->::NullSpaceIPC::BufferedHaptic::MergeFrom(from.buffered_haptic());
       break;
     }
     case kBeginAnalogAudio: {
@@ -4440,6 +3512,54 @@ void LocationalEvent::set_allocated_continuous_haptic(::NullSpaceIPC::Continuous
     events_.continuous_haptic_ = continuous_haptic;
   }
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.LocationalEvent.continuous_haptic)
+}
+
+// optional .NullSpaceIPC.BufferedHaptic buffered_haptic = 4;
+bool LocationalEvent::has_buffered_haptic() const {
+  return events_case() == kBufferedHaptic;
+}
+void LocationalEvent::set_has_buffered_haptic() {
+  _oneof_case_[0] = kBufferedHaptic;
+}
+void LocationalEvent::clear_buffered_haptic() {
+  if (has_buffered_haptic()) {
+    delete events_.buffered_haptic_;
+    clear_has_events();
+  }
+}
+ const ::NullSpaceIPC::BufferedHaptic& LocationalEvent::buffered_haptic() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.LocationalEvent.buffered_haptic)
+  return has_buffered_haptic()
+      ? *events_.buffered_haptic_
+      : ::NullSpaceIPC::BufferedHaptic::default_instance();
+}
+::NullSpaceIPC::BufferedHaptic* LocationalEvent::mutable_buffered_haptic() {
+  if (!has_buffered_haptic()) {
+    clear_events();
+    set_has_buffered_haptic();
+    events_.buffered_haptic_ = new ::NullSpaceIPC::BufferedHaptic;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.LocationalEvent.buffered_haptic)
+  return events_.buffered_haptic_;
+}
+::NullSpaceIPC::BufferedHaptic* LocationalEvent::release_buffered_haptic() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.LocationalEvent.buffered_haptic)
+  if (has_buffered_haptic()) {
+    clear_has_events();
+    ::NullSpaceIPC::BufferedHaptic* temp = events_.buffered_haptic_;
+    events_.buffered_haptic_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void LocationalEvent::set_allocated_buffered_haptic(::NullSpaceIPC::BufferedHaptic* buffered_haptic) {
+  clear_events();
+  if (buffered_haptic) {
+    set_has_buffered_haptic();
+    events_.buffered_haptic_ = buffered_haptic;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.LocationalEvent.buffered_haptic)
 }
 
 // optional .NullSpaceIPC.BeginAnalogAudio begin_analog_audio = 16;

@@ -14,6 +14,7 @@ PluginManager::PluginManager(boost::asio::io_service& io)
 	, m_pluginEventLoop(io, boost::posix_time::millisec(16))
 	, m_pluginInfo()
 	, m_fatalErrorHandler([]() {})
+	, m_virtualDevices()
 {
 	m_pluginEventLoop.SetEvent([this]() {
 
@@ -207,8 +208,16 @@ void PluginManager::DrawDiagnostics(uint32_t id, nsvr_diagnostics_ui* ui)
 			ui->keyval("Virtual devices available", std::to_string(vdevices.size()).c_str());
 			for (const auto& device : vdevices) {
 				if (ui->button(device.name.c_str())) {
-					instantiateVirtualDevice(kvp.first, device);
+					m_virtualDevices.push_back(instantiateVirtualDevice(kvp.first, device));
 				}
+			}
+
+			if (ui->button("Remove all virtual devices")) {
+				for (const auto& device : m_virtualDevices) {
+					m_deviceContainer->RemoveDevice(device.first, device.second);
+				}
+
+				m_virtualDevices.clear();
 			}
 		}
 	}
@@ -326,7 +335,7 @@ void PluginManager::destroyAll()
 
 }
 
-void PluginManager::instantiateVirtualDevice(const std::string& plugin, const Parsing::VirtualDeviceDescriptor& device)
+std::pair<DeviceId<local>, std::string> PluginManager::instantiateVirtualDevice(const std::string& plugin, const Parsing::VirtualDeviceDescriptor& device)
 {
 	const auto& originPlugin = m_pluginInfo.at(plugin);
 
@@ -354,6 +363,8 @@ void PluginManager::instantiateVirtualDevice(const std::string& plugin, const Pa
 
 	PluginInstance* virtualHost = this->MakeVirtualPlugin();
 	virtualHost->addDeviceResources(std::move(resources));
+
+	return std::make_pair(DeviceId<local>{0}, virtualHost->GetFileName());
 
 }
 

@@ -25,7 +25,7 @@ class DriverMessenger
 public:
 	using DataCallback = std::function<void(void const* data, std::size_t length)>;
 	DriverMessenger(boost::asio::io_service& io);
-	void WriteTracking(uint32_t, NullSpace::SharedMemory::Quaternion quat);
+	void WriteTracking(uint32_t, const NullSpace::SharedMemory::Quaternion& quat);
 	void WriteDevice(const DeviceInfo& s);
 	void WriteNode(const NodeInfo& node);
 	void RemoveNode(uint64_t id);

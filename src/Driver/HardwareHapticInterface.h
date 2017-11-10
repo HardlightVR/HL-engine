@@ -8,7 +8,7 @@ struct WaveformData {
 };
 
 struct ContinuousData {
-
+	float strength;
 };
 
 struct BufferedData {

@@ -29,27 +29,11 @@ message ContinuousHaptic {
 }
 
 
-message CurveHaptic {
-	repeated uint32 regions = 1;
-	message Sample {
-		float time = 1;
-		float magnitude = 2;
-	}
-
-	repeated Sample samples = 2;
+message BufferedHaptic {
+	repeated float samples = 1;
+	float frequency = 2;
 }
 
-
-
-message RealtimeHaptic {
-	message Magnitude {
-		uint32 region = 1;
-		float strength = 2;
-	}
-	
-	repeated Magnitude magnitudes = 1;
-
-}
 
 message BeginAnalogAudio {
 
@@ -75,8 +59,10 @@ message LocationalEvent {
 	oneof events {
 		SimpleHaptic simple_haptic = 2;
 		ContinuousHaptic continuous_haptic = 3;
+		BufferedHaptic buffered_haptic = 4;
 		BeginAnalogAudio begin_analog_audio = 16;
 		EndAnalogAudio end_analog_audio = 17;
+
 	}
 }
 message HighLevelEvent {

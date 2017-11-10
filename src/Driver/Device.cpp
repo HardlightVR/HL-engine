@@ -213,8 +213,7 @@ void Device::handle(uint64_t eventId, const NullSpaceIPC::ContinuousHaptic& even
 {
 	auto onlyHaptic = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
 	for (nsvr_node_id hapticNode : onlyHaptic) {
-		//todo FILL IN DATA
-		m_haptics->Submit(eventId, hapticNode, ContinuousData{});
+		m_haptics->Submit(eventId, hapticNode, ContinuousData{event.strength()});
 	}
 	m_playback->CreateEventRecord(eventId, onlyHaptic);
 
@@ -225,7 +224,6 @@ void Device::handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic& event, c
 {
 	auto onlyHaptic = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
 	for (nsvr_node_id hapticNode : onlyHaptic) {
-		//todo FILL IN DATA
 		m_haptics->Submit(eventId, hapticNode, WaveformData{event.duration(), event.strength(), event.effect()});
 	}
 	m_playback->CreateEventRecord(eventId, onlyHaptic); 

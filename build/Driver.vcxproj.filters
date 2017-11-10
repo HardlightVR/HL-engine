@@ -171,6 +171,7 @@
     <ClInclude Include="..\src\Driver\subregion_utils.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
     <ClInclude Include="..\src\Driver\HardwareAnalogAudioInterface.h" />
+    <ClInclude Include="..\src\Driver\resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -238,5 +239,8 @@
     <ClCompile Include="..\src\Driver\subregion_utils.cpp" />
     <ClCompile Include="..\src\Driver\test_main.cpp" />
     <ClCompile Include="..\src\Driver\HardwareAnalogAudioInterface.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\Driver\Driver.rc" />
   </ItemGroup>
 </Project>

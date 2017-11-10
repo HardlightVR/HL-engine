@@ -27,7 +27,7 @@ public:
 		boost::interprocess::shared_memory_object::remove(m_name.c_str());
 	}
 
-	void Write(T data) {
+	void Write(const T& data) {
 		m_data->SetData(data);
 	}
 

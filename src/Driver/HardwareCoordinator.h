@@ -30,7 +30,6 @@ private:
 	void writeBodyRepresentation();
 
 
-	void setupDispatchTable();
 
 	std::unordered_map<NullSpaceIPC::LocationalEvent::EventsCase,
 		std::function<void(uint64_t, const NullSpaceIPC::LocationalEvent&)>> m_dispatchTable;

@@ -15,7 +15,6 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 	, m_idService()
 {
 
-	setupDispatchTable();
 
 	m_devices.OnDeviceAdded([this](Device* device) {
 	
@@ -140,25 +139,6 @@ void HardwareCoordinator::genericDispatch(uint64_t id, const NullSpaceIPC::Locat
 	else {
 		BOOST_LOG_SEV(clogger::get(), nsvr_severity_warning) << "Unknown 'where' case in event: " << event.location().where_case();
 	}
-}
-void HardwareCoordinator::setupDispatchTable() {
-	using namespace NullSpaceIPC;
-
-	//In an ideal world, we have the global bodygraph. We can query it with our global node ids and then perform haptic stuff.
-	//But really, we have a bunch of device-local bodygraphs.
-	//The events coming in might be targeting a group of regions, or a group of global nodes.
-	//If regions, we can basically pass the buck and say "hey, each device, you need to handle this". Which means that if you were ever wearing 
-	//two haptic suits at the same time.. you'd feel it on both.
-
-	//But if nodes, we need to translate those to device-local, and then pass the buck. This asymmetry is leading to kind of nasty code. 
-
-	//It is also redundant to subscribe to simpleHaptic, for example, and then have an additional switch inside of device->Deliver.
-	//Need to decide if the coordinator should be like "I don't know what this event type even is, but I'm passing it to every device"
-	//or if it should instead pass to a bunch of overloads on the device.
-
-//	m_dispatchTable[LocationalEvent::EventsCase::kSimpleHaptic] = [&](uint64_t id, const NullSpaceIPC::LocationalEvent& event) { genericDispatch(id, event); };
-
-	//m_dispatchTable[LocationalEvent::EventsCase::kContinuousHaptic] = [&](uint64_t id, const NullSpaceIPC::LocationalEvent& event) { genericDispatch(id, event); };
 }
 
 

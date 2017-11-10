@@ -312,6 +312,7 @@ IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h" />
     <ClInclude Include="..\src\plugins\openvr\stdafx.h" />
+    <ClInclude Include="..\src\plugins\openvr\resource2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\openvr\ExportedAPI.cpp" />
@@ -324,6 +325,9 @@ IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\plugins\openvr\OpenVR.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

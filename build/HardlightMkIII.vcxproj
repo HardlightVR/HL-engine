@@ -363,6 +363,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\RtpModel.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\ZoneModel.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h" />
+    <ClInclude Include="..\src\plugins\hardlight\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp" />
@@ -423,6 +424,9 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\MotorStateChanger.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\RtpModel.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\plugins\hardlight\HardlightMkIII.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

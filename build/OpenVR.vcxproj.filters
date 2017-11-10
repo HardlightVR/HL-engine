@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Driver">
@@ -27,6 +27,7 @@
     <ClInclude Include="..\src\plugins\openvr\stdafx.h">
       <Filter>plugins\openvr</Filter>
     </ClInclude>
+    <ClInclude Include="resource2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\openvr\ExportedAPI.cpp">
@@ -38,5 +39,8 @@
     <ClCompile Include="..\src\plugins\openvr\stdafx.cpp">
       <Filter>plugins\openvr</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenVR.rc" />
   </ItemGroup>
 </Project>

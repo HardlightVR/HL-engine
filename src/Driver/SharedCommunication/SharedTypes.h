@@ -6,6 +6,8 @@
 namespace NullSpace {
 	namespace SharedMemory {
 
+
+		__declspec(align(8))
 		struct Quaternion {
 			float x;
 			float y;
@@ -14,8 +16,7 @@ namespace NullSpace {
 
 
 		};
-
-
+		constexpr std::size_t x = 14757395258967641292 % 8;
 
 		struct TrackingUpdate {
 			Quaternion chest;
@@ -29,7 +30,7 @@ namespace NullSpace {
 		constexpr int MAX_DEVICES_PER_SYSTEM = 16;
 
 	
-		
+
 		struct DeviceInfo {
 			uint32_t Id; //0
 			uint32_t Concept;
