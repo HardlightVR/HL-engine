@@ -197,11 +197,10 @@ extern "C" {
 	// If you have a buffered-style API with calls similar to SubmitHapticData(void* amplitudes, int length), register this interface
 
 	typedef struct nsvr_plugin_buffered_api {
-		typedef void(*nsvr_buffered_submit)(uint64_t request_id, nsvr_node_id node_id, double* amplitudes, uint32_t count, void*);
-		typedef void(*nsvr_buffered_getsampleduration)(double* outSampleDuration, void*);
-		typedef void(*nsvr_buffered_getmaxsamples)(uint32_t* outMaxSamples, void*);
+		typedef void(*nsvr_buffered_submit)(uint64_t request_id, nsvr_node_id node_id, const double* amplitudes, uint32_t count, void*);
+		//in ms
+		typedef void(*nsvr_buffered_getsampleduration)(nsvr_node_id, double* outSampleDuration, void*);
 		nsvr_buffered_submit submit_handler;
-		nsvr_buffered_getmaxsamples getmaxsamples_handler;
 		nsvr_buffered_getsampleduration getsampleduration_handler;
 		void* client_data;
 	} nsvr_plugin_buffered_api;
@@ -228,17 +227,9 @@ extern "C" {
 	} nsvr_default_waveform;
 
 
-	typedef struct nsvr_waveform nsvr_waveform;
-
-	NSVR_CORE_RETURN(int) nsvr_waveform_getname(nsvr_waveform* req, nsvr_default_waveform* outWaveform);
-	
-	NSVR_CORE_RETURN(int) nsvr_waveform_getstrength(nsvr_waveform* req, float* outStrength);
-
-	NSVR_CORE_RETURN(int) nsvr_waveform_getrepetitions(nsvr_waveform* req, uint32_t* outRepetitions);
-
 	
 	typedef struct nsvr_plugin_waveform_api {
-		typedef void(*nsvr_waveform_activate_handler)(uint64_t request_id, nsvr_node_id node_id, nsvr_waveform* waveform, void* cd);
+		typedef void(*nsvr_waveform_activate_handler)(uint64_t request_id, nsvr_node_id node_id, nsvr_default_waveform, uint32_t reps, float strength, void* cd);
 		nsvr_waveform_activate_handler activate_handler;
 		void* client_data;
 	} nsvr_plugin_preset_waveform_api;

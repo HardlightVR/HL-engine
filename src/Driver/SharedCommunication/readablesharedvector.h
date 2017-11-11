@@ -3,7 +3,7 @@
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/interprocess/containers/vector.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
-#include <boost/interprocess/sync/interprocess_mutex.hpp>
+#include <boost/interprocess/sync/named_mutex.hpp>
 #include <boost/log/trivial.hpp>
 #include "SharedTypes.h"
 template<typename T> 
@@ -20,7 +20,7 @@ public:
 
 	using TAlloc = boost::interprocess::allocator<T, my_managed_shared_memory::segment_manager>;
 	using TVector = boost::interprocess::vector<T, TAlloc>;
-	using MutexGuard = boost::interprocess::scoped_lock<boost::interprocess::interprocess_mutex>;
+	using MutexGuard = boost::interprocess::scoped_lock<boost::interprocess::named_mutex>;
 
 	ReadableSharedVector(const std::string& memName, const std::string& vecName) :
 
@@ -28,8 +28,8 @@ public:
 		m_vecName(vecName),
 		m_segment(),
 		m_vector{ nullptr },
-		m_mutex(nullptr),
-		m_mutexName(memName + "-mutex")
+		m_mutexName(memName + "-mutex"),
+		m_mutex(boost::interprocess::open_only, m_mutexName.c_str())
 		
 	{
 		m_segment = my_managed_shared_memory(boost::interprocess::open_only, m_memName.c_str());
@@ -45,29 +45,37 @@ public:
 		assert(0 == strcmp(my_managed_shared_memory::get_instance_name(m_vector), m_vecName.c_str()));
 		assert(1 == my_managed_shared_memory::get_instance_length(m_vector));
 	
-
-		m_mutex = m_segment.find<boost::interprocess::interprocess_mutex>(m_mutexName.c_str()).first;
-		assert(m_mutex != nullptr);
 	}
 
-	std::size_t size() const {
-		MutexGuard guard(*m_mutex);
+	std::size_t Size() const {
+		MutexGuard guard(m_mutex);
 		assert(m_vector != nullptr);
 		return m_vector->size();
 	}
 
 	//todo: this needs to be synchronized somehow
 	T Get(std::size_t index) const {
-		MutexGuard guard(*m_mutex);
+		MutexGuard guard(m_mutex);
 
 
 		assert(m_vector != nullptr);
 
 		return m_vector->at(static_cast<TVector::size_type>(index));
 	}
+	boost::optional<std::size_t> Find(std::function<bool(const T& item)> predicate)  const {
+		MutexGuard guard(m_mutex);
+
+		const auto it = std::find_if(m_vector->cbegin(), m_vector->cend(), predicate);
+		if (it != m_vector->cend()) {
+			return it - m_vector->cbegin();
+		}
+		else {
+			return boost::none;
+		}
+	}
 
 	boost::optional<std::size_t> Find(const T& item) const {
-		MutexGuard guard(*m_mutex);
+		MutexGuard guard(m_mutex);
 
 		assert(m_vector != nullptr);
 
@@ -89,7 +97,7 @@ private:
 	std::string m_mutexName;
 	my_managed_shared_memory m_segment;
 	TVector* m_vector;
-	boost::interprocess::interprocess_mutex* m_mutex;
+	mutable boost::interprocess::named_mutex m_mutex;
 
 	
 

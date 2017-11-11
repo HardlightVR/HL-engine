@@ -7,6 +7,7 @@
 #include "HardwareCommands.h"
 #include <vector>
 #include <mutex>
+#include <chrono>
 class ZoneModel {
 public:
 
@@ -58,5 +59,6 @@ private:
 	void handleNewCommands();
 	void handleNewEvents();
 
+	std::chrono::time_point<std::chrono::steady_clock> m_lastSample;
 	std::mutex eventsLock;
 };

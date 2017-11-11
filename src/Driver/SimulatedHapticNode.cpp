@@ -5,8 +5,8 @@
 
 //Right now, nothing specific for click, hum, etc. Just a quarter second sample at the given strength
 Waveform::Waveform(SimulatedHapticNode::Id id, nsvr_default_waveform waveform, double strength, unsigned int repetitions)
-	: m_sampleDuration(0.01)
-	, m_samples(nsvr::waveforms::generateWaveform(static_cast<float>(strength), waveform))
+	: m_sampleDuration(20)
+	, m_samples(nsvr::waveforms::generateWaveform(static_cast<float>(strength), waveform, 10))
 	, m_elapsed(0)
 	, m_id(id)
 	, m_playbackState(PlaybackState::Playing)
@@ -17,8 +17,8 @@ Waveform::Waveform(SimulatedHapticNode::Id id, nsvr_default_waveform waveform, d
 	//}
 }
 
-Waveform::Waveform(SimulatedHapticNode::Id id, double * samples, double sampleDuration, std::size_t length)
-	: m_sampleDuration(sampleDuration)
+Waveform::Waveform(SimulatedHapticNode::Id id, const double * samples, double sampleDurationMs, std::size_t length)
+	: m_sampleDuration(sampleDurationMs)
 	, m_samples(samples, samples+length)
 	, m_elapsed(0)
 	, m_id(id)
@@ -26,10 +26,10 @@ Waveform::Waveform(SimulatedHapticNode::Id id, double * samples, double sampleDu
 {
 }
 
-void Waveform::update(double dt)
+void Waveform::update(double fractionalSeconds)
 {
 	if (m_playbackState == PlaybackState::Playing) {
-		m_elapsed += dt;
+		m_elapsed += fractionalSeconds * 1000;
 	}
 }
 
@@ -108,6 +108,7 @@ void SimulatedHapticNode::submitPlayback(Id id, PlaybackCommand command)
 	}
 	
 }
+
 
 void SimulatedHapticNode::submitHaptic(Waveform waveform)
 {

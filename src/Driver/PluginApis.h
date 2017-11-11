@@ -92,7 +92,6 @@ BETTER_ENUM(Apis, uint32_t,
 struct buffered_api : public plugin_api {
 	buffered_api(nsvr_plugin_buffered_api* api) 
 		: submit_buffer { api->submit_handler, api->client_data }
-		, submit_getmaxsamples {api->getmaxsamples_handler, api->client_data}
 		, submit_getsampleduration {api->getsampleduration_handler, api->client_data}
 	{}
 	buffered_api() = default;
@@ -100,18 +99,14 @@ struct buffered_api : public plugin_api {
 		nsvr_plugin_buffered_api::nsvr_buffered_submit,
 		uint64_t,
 		nsvr_node_id,
-		double*,
+		const double*,
 		uint32_t
 	> submit_buffer;
 
 
 	callback<
-		nsvr_plugin_buffered_api::nsvr_buffered_getmaxsamples,
-		uint32_t*
-	> submit_getmaxsamples;
-
-	callback<
 		nsvr_plugin_buffered_api::nsvr_buffered_getsampleduration,
+		nsvr_node_id,
 		double*
 	> submit_getsampleduration;
 
@@ -226,7 +221,9 @@ struct waveform_api : public plugin_api {
 		nsvr_plugin_waveform_api::nsvr_waveform_activate_handler,
 		uint64_t,
 		nsvr_node_id,
-		nsvr_waveform*
+		nsvr_default_waveform,
+		uint32_t,
+		float
 	> submit_activate;
 	static Apis getApiType() { return Apis::Waveform; }
 };

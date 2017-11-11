@@ -24,8 +24,7 @@ struct DefaultWaveform : public FakeInterface<waveform_api> {
 struct DefaultBuffered : public FakeInterface<buffered_api> {
 	void Augment(buffered_api* api) override {
 		api->submit_buffer.handler = [](auto...) {};
-		api->submit_getmaxsamples.handler = [](uint32_t* outMaxSamples, void* ud) { *outMaxSamples = 256; };
-		api->submit_getsampleduration.handler = [](double* outDuration, void* ud) { *outDuration = 0.1; };
+		api->submit_getsampleduration.handler = [](nsvr_node_id, double* outDuration, void* ud) { *outDuration = 20; };
 	}
 };
 

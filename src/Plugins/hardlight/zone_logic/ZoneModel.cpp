@@ -127,14 +127,21 @@ void ZoneModel::handleNewEvents() {
 
 CommandBuffer ZoneModel::generateCommands()
 {
-
+	using namespace std::chrono_literals;
+	//brain state: the main problem is that if you are requesting something at, say, 20hz, then you want it to play at 20hz. but
+	//if we have this artifical delay, then it 'lags' behind. We only want the delay when doing a repeated effect, not when a /new/ effect comes in
+	//so we could push the timing into the motor state changer.. any other ideas?
+	//okay, I pushed it down. Still missing one piece of the puzzle.. why isn't a single effect playing long enough? I think its the transition to idle immediately
 	if (playingEvents.empty()) {
 		return stateChanger.transitionToIdle();
 	}
-	else {
-		return stateChanger.transitionTo(playingEvents.back());
+	
+	
+	return stateChanger.transitionTo(playingEvents.back());
+	
 
-	}
+
+	
 }
 
 boost::optional<LiveBasicHapticEvent> ZoneModel::GetCurrentlyPlayingEvent()
@@ -153,7 +160,8 @@ ZoneModel::ZoneModel(Location area) :
 	stateChanger(area),
 	incomingEvents(512),
 	incomingCommands(512),
-	eventsLock()
+	eventsLock(),
+	m_lastSample(std::chrono::steady_clock::now())
 {
 
 }

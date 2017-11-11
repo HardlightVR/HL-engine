@@ -23,6 +23,7 @@ namespace NullSpaceIPC {
 	class ContinuousHaptic;
 	class BeginAnalogAudio;
 	class EndAnalogAudio;
+	class BufferedHaptic;
 
 }
 
@@ -80,6 +81,7 @@ private:
 	void handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic& event, const std::vector<nsvr_node_id>& targetNodes);
 	void handle(uint64_t event_id, const NullSpaceIPC::BeginAnalogAudio& event, const std::vector<nsvr_node_id>& targetNodes);
 	void handle(uint64_t event_id, const NullSpaceIPC::EndAnalogAudio& event, const std::vector<nsvr_node_id>& targetNodes);
+	void handle(uint64_t event_id, const NullSpaceIPC::BufferedHaptic& event, const std::vector<nsvr_node_id>& targetNodes);
 
 	std::string m_originator;
 	DeviceDescriptor m_description;

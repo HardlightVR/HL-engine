@@ -7,14 +7,14 @@
 class MotorStateChanger {
 public:
 	MotorStateChanger(Location areaId);
-	enum class MotorFirmwareState {Idle, PlayingOneshot, PlayingContinuous};
+	enum class MotorFirmwareState {Idle, PlayingSomething};
 	MotorFirmwareState GetState() const;
-	CommandBuffer transitionTo(const LiveBasicHapticEvent& event);
+	CommandBuffer transitionTo(LiveBasicHapticEvent& event);
 	CommandBuffer transitionToIdle();
 private:
 	MotorFirmwareState currentState;
 	boost::optional<LiveBasicHapticEvent> previousContinuous;
 	Location area;
-	CommandBuffer transitionToOneshot(BasicHapticEventData data);
-	CommandBuffer transitionToContinuous(BasicHapticEventData data);
+	CommandBuffer transition(const BasicHapticEventData& data);
+	std::chrono::time_point<std::chrono::steady_clock> m_lastSample;
 };

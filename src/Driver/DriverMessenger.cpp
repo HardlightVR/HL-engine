@@ -15,14 +15,13 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	static_assert(sizeof(char) == 1, "set char size to 1");
 
 	OwnedReadableSharedQueue::remove("ns-haptics-data");
-	WritableSharedObject<NullSpace::SharedMemory::TrackingUpdate>::remove("ns-tracking-data");
 	OwnedWritableSharedQueue::remove("ns-logging-data");
 	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<NullSpace::SharedMemory::SentinelObject>::remove("ns-sentinel");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>::remove("ns-node-mem");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>::remove("ns-device-mem");
-	OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>::remove("ns-tracking-2");
+	OwnedWritableSharedVector<NullSpace::SharedMemory::TaggedQuaternion>::remove("ns-tracking-mem");
 	constexpr int systemInfoSize = sizeof(NullSpace::SharedMemory::DeviceInfo);
 	constexpr int nodeInfoSize = sizeof(NullSpace::SharedMemory::NodeInfo);
 
@@ -33,8 +32,8 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	m_nodes = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>>("ns-node-mem", "ns-node-data", nodeInfoSize * averageNodesPerSystem * numberOfSystemsUpperBound );
 
 	m_devices = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*numberOfSystemsUpperBound);
-	m_tracking = std::make_unique<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>>("ns-tracking-2");
-	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-vec", regionPairSize*numberOfSystemsUpperBound*averageNodesPerSystem);
+	m_tracking = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::TaggedQuaternion>>("ns-tracking-mem", "ns-tracking-data", sizeof(NullSpace::SharedMemory::TaggedQuaternion) * 16 + 2048);
+	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-data", regionPairSize*numberOfSystemsUpperBound*averageNodesPerSystem);
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
 	m_commandStream = std::make_unique<OwnedReadableSharedQueue>("ns-command-data",/* max elements */  512, /*max element byte size*/ 512);
@@ -84,7 +83,12 @@ void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 //Precondition: The keys were initialized already using Insert on m_tracking
 void DriverMessenger::WriteTracking(uint32_t region, const NullSpace::SharedMemory::Quaternion& quat)
 {
-	m_tracking->Update(region, quat);	
+	if (auto index = m_tracking->Find([region](const auto& taggedQuat) { return taggedQuat.region == region; })) {
+		m_tracking->Update(*index, NullSpace::SharedMemory::TaggedQuaternion{ region, quat });
+	}
+	else {
+		m_tracking->Push(NullSpace::SharedMemory::TaggedQuaternion{ region, quat });
+	}
 }
 
 

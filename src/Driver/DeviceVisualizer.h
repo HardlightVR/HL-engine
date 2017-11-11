@@ -9,6 +9,7 @@ class DeviceVisualizer {
 public:
 	void provideApi(waveform_api* api);
 	void provideApi(playback_api* api);
+	void provideApi(buffered_api* buffered);
 	void simulate(double dt);
 	std::vector<RenderedNode> render();
 private:

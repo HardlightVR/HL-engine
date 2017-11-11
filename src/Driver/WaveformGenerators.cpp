@@ -28,16 +28,18 @@ void constant(std::vector<double>& samples, float strength, std::size_t numsampl
 		samples.push_back(clampedStrength);
 	}
 }
-std::vector<double> generateWaveform(float strength, nsvr_default_waveform family) {
+std::vector<double> generateWaveform(float strength, nsvr_default_waveform family, int how_many) {
 	if (nsvr_preset_family_click == family) {
 		std::vector<double> samples;
-		sinsample(samples, strength, 10);
+		sinsample(samples, strength, how_many);
 		return samples;
 	}
 	else if (nsvr_preset_family_pulse == family) {
 		std::vector<double> samples;
-		sinsample(samples, strength, 50);
-		constant(samples, 0, 5);
+		const int ten_percent = how_many * .1;
+		const int ninety_percent = how_many * .9;
+		sinsample(samples, strength, ninety_percent);
+		constant(samples, 0, ten_percent);
 
 		return samples;
 	}
@@ -47,49 +49,49 @@ std::vector<double> generateWaveform(float strength, nsvr_default_waveform famil
 		return samples;
 	}
 	else if (nsvr_preset_family_buzz == family) {
+
+		const int ten_percent = how_many * .1;
+		const int six_percent = how_many * .06;
 		std::vector<double> samples;
-		constant(samples, strength, 5);
-		constant(samples, 0, 3);
-		constant(samples, strength, 5);
-		constant(samples, 0, 3);
-		constant(samples, strength, 5);
-		constant(samples, 0, 3);
-		constant(samples, strength, 5);
-		constant(samples, 0, 3);
-		constant(samples, strength, 5);
-		constant(samples, 0, 3);
-		constant(samples, strength, 5);
-		constant(samples, 0, 3);
+		for (int i = 0; i < 6; i++) {
+			constant(samples, strength, ten_percent);
+			constant(samples, 0, six_percent);
+		}
+
 		return samples;
 	}
 	else if (nsvr_preset_family_double_click == family) {
 		std::vector<double> samples;
-		sinsample(samples, strength, 8);
-		constant(samples, 0.0f, 26);
-		sinsample(samples, strength, 8);
-		constant(samples, 0.0f, 20);
+		const int thirteen_percent = how_many * 0.13;
+		const int fortytwo_percent = how_many * 0.42;
+		const int thirtytwo_percent = how_many * 0.32;
+		sinsample(samples, strength, thirteen_percent);
+		constant(samples, 0.0f, fortytwo_percent);
+		sinsample(samples, strength, thirteen_percent);
+		constant(samples, 0.0f, thirtytwo_percent);
 
 		return samples;
 	}
 	else if (nsvr_preset_family_triple_click == family) {
 		std::vector<double> samples;
-		sinsample(samples, strength, 8);
-		constant(samples, 0.0f, 26);
-		sinsample(samples, strength, 8);
-		constant(samples, 0.0f, 20);
-		sinsample(samples, strength, 8);
-		constant(samples, 0.0f, 20);
+		const int one_third = how_many * .3;
+		const int one_quarter = one_third * 0.25;
+		const int three_quarter = one_third * 0.75;
+		for (int i = 0; i < 3; i++) {
+			sinsample(samples, strength, one_quarter);
+			constant(samples, 0.0f, three_quarter);
+		}
 		return samples;
 	}
 	else if (nsvr_preset_family_hum == family) {
 		std::vector<double> samples;
-		constant(samples, strength, 62);
+		constant(samples, strength, how_many);
 		return samples;
 	}
 
 	else {
 		std::vector<double> samples;
-		constant(samples, strength, 8);
+		constant(samples, strength, how_many);
 		return samples;
 	}
 

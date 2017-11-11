@@ -13,7 +13,7 @@ public:
 		Paused =2
 	};
 	Waveform(Id id, nsvr_default_waveform waveform, double strength, unsigned int repetitions);
-	Waveform(Id id, double* samples, double sampleDuration, std::size_t length);
+	Waveform(Id id, const double* samples, double sampleDuration, std::size_t length);
 	void update(double dt);
 	double elapsed() const;
 	double duration() const;

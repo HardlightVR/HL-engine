@@ -56,7 +56,7 @@ private:
 
 	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
-	std::unique_ptr<OwnedWritableSharedMap<uint32_t, NullSpace::SharedMemory::Quaternion>> m_tracking;
+	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::TaggedQuaternion>> m_tracking;
 
 	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>> m_bodyView;
 	std::atomic<bool> _running;

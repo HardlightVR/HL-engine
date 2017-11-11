@@ -133,8 +133,8 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
   SimpleHaptic_descriptor_ = file->message_type(3);
   static const int SimpleHaptic_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, effect_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, repetitions_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, strength_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, duration_),
   };
   SimpleHaptic_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -345,28 +345,28 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
     "\r\n\005nodes\030\001 \003(\r\"i\n\010Location\022+\n\007regions\030\001 "
     "\001(\0132\030.NullSpaceIPC.RegionListH\000\022\'\n\005nodes"
     "\030\002 \001(\0132\026.NullSpaceIPC.NodeListH\000B\007\n\005wher"
-    "e\"B\n\014SimpleHaptic\022\016\n\006effect\030\003 \001(\r\022\020\n\010str"
-    "ength\030\004 \001(\002\022\020\n\010duration\030\005 \001(\002\"$\n\020Continu"
-    "ousHaptic\022\020\n\010strength\030\001 \001(\002\"4\n\016BufferedH"
-    "aptic\022\017\n\007samples\030\001 \003(\002\022\021\n\tfrequency\030\002 \001("
-    "\002\"\022\n\020BeginAnalogAudio\"\020\n\016EndAnalogAudio\""
-    "\201\001\n\rPlaybackEvent\0224\n\007command\030\001 \001(\0162#.Nul"
-    "lSpaceIPC.PlaybackEvent.Command\":\n\007Comma"
-    "nd\022\013\n\007UNKNOWN\020\000\022\t\n\005PAUSE\020\001\022\013\n\007UNPAUSE\020\002\022"
-    "\n\n\006CANCEL\020\003\"\350\002\n\017LocationalEvent\022(\n\010locat"
-    "ion\030\001 \001(\0132\026.NullSpaceIPC.Location\0223\n\rsim"
-    "ple_haptic\030\002 \001(\0132\032.NullSpaceIPC.SimpleHa"
-    "pticH\000\022;\n\021continuous_haptic\030\003 \001(\0132\036.Null"
-    "SpaceIPC.ContinuousHapticH\000\0227\n\017buffered_"
-    "haptic\030\004 \001(\0132\034.NullSpaceIPC.BufferedHapt"
-    "icH\000\022<\n\022begin_analog_audio\030\020 \001(\0132\036.NullS"
-    "paceIPC.BeginAnalogAudioH\000\0228\n\020end_analog"
-    "_audio\030\021 \001(\0132\034.NullSpaceIPC.EndAnalogAud"
-    "ioH\000B\010\n\006events\"\237\001\n\016HighLevelEvent\022\021\n\tpar"
-    "ent_id\030\001 \001(\004\0225\n\016playback_event\030\002 \001(\0132\033.N"
-    "ullSpaceIPC.PlaybackEventH\000\0229\n\020locationa"
-    "l_event\030\003 \001(\0132\035.NullSpaceIPC.LocationalE"
-    "ventH\000B\010\n\006eventsb\006proto3", 1064);
+    "e\"E\n\014SimpleHaptic\022\016\n\006effect\030\001 \001(\r\022\023\n\013rep"
+    "etitions\030\002 \001(\r\022\020\n\010strength\030\003 \001(\002\"$\n\020Cont"
+    "inuousHaptic\022\020\n\010strength\030\001 \001(\002\"4\n\016Buffer"
+    "edHaptic\022\017\n\007samples\030\001 \003(\002\022\021\n\tfrequency\030\002"
+    " \001(\002\"\022\n\020BeginAnalogAudio\"\020\n\016EndAnalogAud"
+    "io\"\201\001\n\rPlaybackEvent\0224\n\007command\030\001 \001(\0162#."
+    "NullSpaceIPC.PlaybackEvent.Command\":\n\007Co"
+    "mmand\022\013\n\007UNKNOWN\020\000\022\t\n\005PAUSE\020\001\022\013\n\007UNPAUSE"
+    "\020\002\022\n\n\006CANCEL\020\003\"\350\002\n\017LocationalEvent\022(\n\010lo"
+    "cation\030\001 \001(\0132\026.NullSpaceIPC.Location\0223\n\r"
+    "simple_haptic\030\002 \001(\0132\032.NullSpaceIPC.Simpl"
+    "eHapticH\000\022;\n\021continuous_haptic\030\003 \001(\0132\036.N"
+    "ullSpaceIPC.ContinuousHapticH\000\0227\n\017buffer"
+    "ed_haptic\030\004 \001(\0132\034.NullSpaceIPC.BufferedH"
+    "apticH\000\022<\n\022begin_analog_audio\030\020 \001(\0132\036.Nu"
+    "llSpaceIPC.BeginAnalogAudioH\000\0228\n\020end_ana"
+    "log_audio\030\021 \001(\0132\034.NullSpaceIPC.EndAnalog"
+    "AudioH\000B\010\n\006events\"\237\001\n\016HighLevelEvent\022\021\n\t"
+    "parent_id\030\001 \001(\004\0225\n\016playback_event\030\002 \001(\0132"
+    "\033.NullSpaceIPC.PlaybackEventH\000\0229\n\020locati"
+    "onal_event\030\003 \001(\0132\035.NullSpaceIPC.Location"
+    "alEventH\000B\010\n\006eventsb\006proto3", 1067);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "HighLevelEvent.proto", &protobuf_RegisterTypes);
   RegionList::default_instance_ = new RegionList();
@@ -1368,8 +1368,8 @@ Location::WhereCase Location::where_case() const {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int SimpleHaptic::kEffectFieldNumber;
+const int SimpleHaptic::kRepetitionsFieldNumber;
 const int SimpleHaptic::kStrengthFieldNumber;
-const int SimpleHaptic::kDurationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 SimpleHaptic::SimpleHaptic()
@@ -1394,8 +1394,8 @@ void SimpleHaptic::SharedCtor() {
     _is_default_instance_ = false;
   _cached_size_ = 0;
   effect_ = 0u;
+  repetitions_ = 0u;
   strength_ = 0;
-  duration_ = 0;
 }
 
 SimpleHaptic::~SimpleHaptic() {
@@ -1451,7 +1451,7 @@ void SimpleHaptic::Clear() {
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
-  ZR_(effect_, duration_);
+  ZR_(effect_, strength_);
 
 #undef ZR_HELPER_
 #undef ZR_
@@ -1468,9 +1468,9 @@ bool SimpleHaptic::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 effect = 3;
-      case 3: {
-        if (tag == 24) {
+      // optional uint32 effect = 1;
+      case 1: {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
                  input, &effect_)));
@@ -1478,32 +1478,32 @@ bool SimpleHaptic::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(37)) goto parse_strength;
+        if (input->ExpectTag(16)) goto parse_repetitions;
         break;
       }
 
-      // optional float strength = 4;
-      case 4: {
-        if (tag == 37) {
-         parse_strength:
+      // optional uint32 repetitions = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_repetitions:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &strength_)));
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &repetitions_)));
 
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(45)) goto parse_duration;
+        if (input->ExpectTag(29)) goto parse_strength;
         break;
       }
 
-      // optional float duration = 5;
-      case 5: {
-        if (tag == 45) {
-         parse_duration:
+      // optional float strength = 3;
+      case 3: {
+        if (tag == 29) {
+         parse_strength:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &duration_)));
+                 input, &strength_)));
 
         } else {
           goto handle_unusual;
@@ -1536,19 +1536,19 @@ failure:
 void SimpleHaptic::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:NullSpaceIPC.SimpleHaptic)
-  // optional uint32 effect = 3;
+  // optional uint32 effect = 1;
   if (this->effect() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->effect(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->effect(), output);
   }
 
-  // optional float strength = 4;
+  // optional uint32 repetitions = 2;
+  if (this->repetitions() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->repetitions(), output);
+  }
+
+  // optional float strength = 3;
   if (this->strength() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->strength(), output);
-  }
-
-  // optional float duration = 5;
-  if (this->duration() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(5, this->duration(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->strength(), output);
   }
 
   // @@protoc_insertion_point(serialize_end:NullSpaceIPC.SimpleHaptic)
@@ -1557,19 +1557,19 @@ void SimpleHaptic::SerializeWithCachedSizes(
 ::google::protobuf::uint8* SimpleHaptic::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.SimpleHaptic)
-  // optional uint32 effect = 3;
+  // optional uint32 effect = 1;
   if (this->effect() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->effect(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->effect(), target);
   }
 
-  // optional float strength = 4;
+  // optional uint32 repetitions = 2;
+  if (this->repetitions() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->repetitions(), target);
+  }
+
+  // optional float strength = 3;
   if (this->strength() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->strength(), target);
-  }
-
-  // optional float duration = 5;
-  if (this->duration() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(5, this->duration(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->strength(), target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.SimpleHaptic)
@@ -1580,20 +1580,22 @@ int SimpleHaptic::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.SimpleHaptic)
   int total_size = 0;
 
-  // optional uint32 effect = 3;
+  // optional uint32 effect = 1;
   if (this->effect() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::UInt32Size(
         this->effect());
   }
 
-  // optional float strength = 4;
-  if (this->strength() != 0) {
-    total_size += 1 + 4;
+  // optional uint32 repetitions = 2;
+  if (this->repetitions() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->repetitions());
   }
 
-  // optional float duration = 5;
-  if (this->duration() != 0) {
+  // optional float strength = 3;
+  if (this->strength() != 0) {
     total_size += 1 + 4;
   }
 
@@ -1628,11 +1630,11 @@ void SimpleHaptic::MergeFrom(const SimpleHaptic& from) {
   if (from.effect() != 0) {
     set_effect(from.effect());
   }
+  if (from.repetitions() != 0) {
+    set_repetitions(from.repetitions());
+  }
   if (from.strength() != 0) {
     set_strength(from.strength());
-  }
-  if (from.duration() != 0) {
-    set_duration(from.duration());
   }
 }
 
@@ -1661,8 +1663,8 @@ void SimpleHaptic::Swap(SimpleHaptic* other) {
 }
 void SimpleHaptic::InternalSwap(SimpleHaptic* other) {
   std::swap(effect_, other->effect_);
+  std::swap(repetitions_, other->repetitions_);
   std::swap(strength_, other->strength_);
-  std::swap(duration_, other->duration_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
@@ -1678,7 +1680,7 @@ void SimpleHaptic::InternalSwap(SimpleHaptic* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // SimpleHaptic
 
-// optional uint32 effect = 3;
+// optional uint32 effect = 1;
 void SimpleHaptic::clear_effect() {
   effect_ = 0u;
 }
@@ -1692,7 +1694,21 @@ void SimpleHaptic::clear_effect() {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.effect)
 }
 
-// optional float strength = 4;
+// optional uint32 repetitions = 2;
+void SimpleHaptic::clear_repetitions() {
+  repetitions_ = 0u;
+}
+ ::google::protobuf::uint32 SimpleHaptic::repetitions() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.repetitions)
+  return repetitions_;
+}
+ void SimpleHaptic::set_repetitions(::google::protobuf::uint32 value) {
+  
+  repetitions_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.repetitions)
+}
+
+// optional float strength = 3;
 void SimpleHaptic::clear_strength() {
   strength_ = 0;
 }
@@ -1704,20 +1720,6 @@ void SimpleHaptic::clear_strength() {
   
   strength_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.strength)
-}
-
-// optional float duration = 5;
-void SimpleHaptic::clear_duration() {
-  duration_ = 0;
-}
- float SimpleHaptic::duration() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.duration)
-  return duration_;
-}
- void SimpleHaptic::set_duration(float value) {
-  
-  duration_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.duration)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

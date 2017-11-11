@@ -7,7 +7,7 @@ namespace NullSpace {
 	namespace SharedMemory {
 
 
-		__declspec(align(8))
+		//__declspec(align(8))
 		struct Quaternion {
 			float x;
 			float y;
@@ -16,7 +16,12 @@ namespace NullSpace {
 
 
 		};
-		constexpr std::size_t x = 14757395258967641292 % 8;
+
+	//	__declspec(align(8))
+		struct TaggedQuaternion {
+			uint32_t region;
+			Quaternion quat;
+		};
 
 		struct TrackingUpdate {
 			Quaternion chest;

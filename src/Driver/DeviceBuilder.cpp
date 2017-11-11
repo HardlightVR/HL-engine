@@ -77,6 +77,7 @@ std::unique_ptr<Device> DeviceBuilder::Build()
 	m_visualizer = std::make_unique<DeviceVisualizer>();
 	m_visualizer->provideApi(m_apis->GetApi<playback_api>());
 	m_visualizer->provideApi(m_apis->GetApi<waveform_api>());
+	m_visualizer->provideApi(m_apis->GetApi<buffered_api>());
 
 	//todo: provide visualizer with audio mode so we can do a sine wave or something
 	//need to provide buffered api

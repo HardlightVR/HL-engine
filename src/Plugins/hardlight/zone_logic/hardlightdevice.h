@@ -14,8 +14,8 @@ public:
 
 	CommandBuffer GenerateHardwareCommands(float dt);
 	void handle_waveform(uint64_t request_id, nsvr_node_id node_id, BasicHapticEventData data);
-	void handle_waveform(uint64_t request_id, nsvr_node_id device_id, nsvr_waveform* wave);
-	void Buffered(uint64_t request_id, nsvr_node_id node_id, double* amps, uint32_t length);
+	void handle_waveform(uint64_t request_id, nsvr_node_id device_id, nsvr_default_waveform waveform, uint32_t reps, float strength);
+	void Buffered(uint64_t request_id, nsvr_node_id node_id, const double* amps, uint32_t length);
 	void Pause(ParentId handle, nsvr_node_id id);
 	void Cancel(ParentId handle,nsvr_node_id id);
 	void Unpause(ParentId handle, nsvr_node_id id);

@@ -43,8 +43,8 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 	
 	nsvr_plugin_waveform_api waves;
 	waves.client_data = this;
-	waves.activate_handler = [](uint64_t request_id, nsvr_node_id device_id, nsvr_waveform* wave, void* ud) {
-		static_cast<OpenVRWrapper*>(ud)->triggerPreset(device_id, wave);
+	waves.activate_handler = [](uint64_t request_id, nsvr_node_id device_id, nsvr_default_waveform wave, uint32_t reps, float strength, void* ud) {
+		static_cast<OpenVRWrapper*>(ud)->triggerPreset(device_id, wave, reps, strength);
 	};
 	nsvr_register_waveform_api(core, &waves);
 
@@ -73,13 +73,11 @@ void OpenVRWrapper::Configure(nsvr_core* core)
 	nsvr_plugin_buffered_api buffered_api;
 	buffered_api.client_data = this;
 
-	buffered_api.getmaxsamples_handler = [](uint32_t* outMaxSamples, void* ud) {
-		*outMaxSamples = 200;
-	};
-	buffered_api.getsampleduration_handler = [](double* outDuration, void* ud) {
+
+	buffered_api.getsampleduration_handler = [](nsvr_node_id, double* outDuration, void* ud) {
 		*outDuration = 5;
 	};
-	buffered_api.submit_handler = [](uint64_t request_id, nsvr_node_id device_id, double* samples, uint32_t count, void* ud) {
+	buffered_api.submit_handler = [](uint64_t request_id, nsvr_node_id device_id, const double* samples, uint32_t count, void* ud) {
 		AS_TYPE(OpenVRWrapper, ud)->bufferedHaptics(device_id, samples, count);
 	};
 
@@ -145,7 +143,7 @@ void OpenVRWrapper::triggerHapticPulse(vr::TrackedDeviceIndex_t device, double s
 	}
 }
 
-void OpenVRWrapper::bufferedHaptics(uint64_t device_id, double * amps, uint32_t count)
+void OpenVRWrapper::bufferedHaptics(uint64_t device_id, const double * amps, uint32_t count)
 {
 	std::lock_guard<std::mutex> guard(sampleLock);
 	for (uint32_t i = 0; i < count; i++) {
@@ -361,17 +359,9 @@ std::vector<double> generateWaveform(double strength, nsvr_default_waveform fami
 	 }
 	
 }
-void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_waveform* req)
+void OpenVRWrapper::triggerPreset(uint64_t device, nsvr_default_waveform waveform, uint32_t repetitions, float strength)
 {
-	nsvr_default_waveform waveform;
-	nsvr_waveform_getname(req, &waveform);
-
-	float strength;
-	nsvr_waveform_getstrength(req, &strength);
-
-	std::size_t repetitions;
-	nsvr_waveform_getrepetitions(req, &repetitions);
-
+	
 
 	auto wave = generateWaveform(strength, waveform);
 	auto copy = wave;

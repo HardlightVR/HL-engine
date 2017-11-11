@@ -7,8 +7,10 @@
 #include <functional>
 #include "PluginInstance.h"
 #include "IdentificationService.h"
+#include "WaveformGenerators.h"
 int main()
 {
+
 
 
 

@@ -19,9 +19,9 @@ message Location {
 }
 
 message SimpleHaptic {
-	uint32 effect = 3;
-	float strength = 4;
-	float duration = 5;
+	uint32 effect = 1;
+	uint32 repetitions = 2;
+	float strength = 3;
 }
 
 message ContinuousHaptic {

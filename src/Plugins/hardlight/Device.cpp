@@ -55,7 +55,10 @@ Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::un
 	m_imus.AssignMapping(0x3a, Imu::Left_Upper_Arm, NODE_IMU_LEFT_UPPER_ARM);
 
 	
-
+	
+	for (int i = static_cast<int>(Location::Lower_Ab_Right); i < static_cast<int>(Location::Error); i++) {
+		m_firmware->EnableIntrigMode(static_cast<Location>(i));
+	}
 
 
 }

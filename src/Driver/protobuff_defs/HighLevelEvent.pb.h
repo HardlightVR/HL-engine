@@ -425,23 +425,23 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 effect = 3;
+  // optional uint32 effect = 1;
   void clear_effect();
-  static const int kEffectFieldNumber = 3;
+  static const int kEffectFieldNumber = 1;
   ::google::protobuf::uint32 effect() const;
   void set_effect(::google::protobuf::uint32 value);
 
-  // optional float strength = 4;
+  // optional uint32 repetitions = 2;
+  void clear_repetitions();
+  static const int kRepetitionsFieldNumber = 2;
+  ::google::protobuf::uint32 repetitions() const;
+  void set_repetitions(::google::protobuf::uint32 value);
+
+  // optional float strength = 3;
   void clear_strength();
-  static const int kStrengthFieldNumber = 4;
+  static const int kStrengthFieldNumber = 3;
   float strength() const;
   void set_strength(float value);
-
-  // optional float duration = 5;
-  void clear_duration();
-  static const int kDurationFieldNumber = 5;
-  float duration() const;
-  void set_duration(float value);
 
   // @@protoc_insertion_point(class_scope:NullSpaceIPC.SimpleHaptic)
  private:
@@ -449,8 +449,8 @@ class SimpleHaptic : public ::google::protobuf::Message /* @@protoc_insertion_po
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
   ::google::protobuf::uint32 effect_;
+  ::google::protobuf::uint32 repetitions_;
   float strength_;
-  float duration_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
   friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
@@ -1363,7 +1363,7 @@ inline Location::WhereCase Location::where_case() const {
 
 // SimpleHaptic
 
-// optional uint32 effect = 3;
+// optional uint32 effect = 1;
 inline void SimpleHaptic::clear_effect() {
   effect_ = 0u;
 }
@@ -1377,7 +1377,21 @@ inline void SimpleHaptic::set_effect(::google::protobuf::uint32 value) {
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.effect)
 }
 
-// optional float strength = 4;
+// optional uint32 repetitions = 2;
+inline void SimpleHaptic::clear_repetitions() {
+  repetitions_ = 0u;
+}
+inline ::google::protobuf::uint32 SimpleHaptic::repetitions() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.repetitions)
+  return repetitions_;
+}
+inline void SimpleHaptic::set_repetitions(::google::protobuf::uint32 value) {
+  
+  repetitions_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.repetitions)
+}
+
+// optional float strength = 3;
 inline void SimpleHaptic::clear_strength() {
   strength_ = 0;
 }
@@ -1389,20 +1403,6 @@ inline void SimpleHaptic::set_strength(float value) {
   
   strength_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.strength)
-}
-
-// optional float duration = 5;
-inline void SimpleHaptic::clear_duration() {
-  duration_ = 0;
-}
-inline float SimpleHaptic::duration() const {
-  // @@protoc_insertion_point(field_get:NullSpaceIPC.SimpleHaptic.duration)
-  return duration_;
-}
-inline void SimpleHaptic::set_duration(float value) {
-  
-  duration_ = value;
-  // @@protoc_insertion_point(field_set:NullSpaceIPC.SimpleHaptic.duration)
 }
 
 // -------------------------------------------------------------------

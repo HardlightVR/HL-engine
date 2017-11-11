@@ -5,6 +5,7 @@
 #include <boost/interprocess/allocators/allocator.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
+#include <boost/interprocess/sync/named_mutex.hpp>
 
 #include "SharedTypes.h"
 template<typename T> 
@@ -20,7 +21,8 @@ public:
 
 	using TAlloc = boost::interprocess::allocator<T, my_managed_shared_memory::segment_manager>;
 	using TVector = boost::interprocess::vector<T, TAlloc>;
-	using MutexGuard = boost::interprocess::scoped_lock<boost::interprocess::interprocess_mutex>;
+	using MutexGuard = boost::interprocess::scoped_lock<boost::interprocess::named_mutex>;
+
 	OwnedWritableSharedVector(const std::string& memName, const std::string& vecName, const std::size_t byteSize) :
 
 		m_memName(memName),
@@ -31,8 +33,8 @@ public:
 			return perm;
 		}()),
 		m_alloc(m_segment.get_segment_manager()),
-		m_mutexName(m_memName + "-mutex"),
-			m_mutex(nullptr)
+		m_mutexName(memName + "-mutex"),
+		m_mutex(boost::interprocess::open_or_create, m_mutexName.c_str())
 	{
 		
 		m_vector = m_segment.construct<TVector>(m_vecName.c_str())(m_alloc);
@@ -44,13 +46,12 @@ public:
 			BOOST_LOG_TRIVIAL(error) << "[SharedMem] Unable to construct tracking memory!";
 		}
 
-		m_mutex = m_segment.find_or_construct<boost::interprocess::interprocess_mutex>(m_mutexName.c_str())();
-		assert(m_mutex != nullptr);
+	
 	}
 
-	void Push(T item) {
+	void Push(const T& item) {
 		if (m_vector != nullptr) {
-			MutexGuard guard(*m_mutex);
+			MutexGuard guard(m_mutex);
 
 			try {
 				m_vector->push_back(item);
@@ -62,23 +63,23 @@ public:
 	}
 
 	T Get(std::size_t index) {
-		MutexGuard guard(*m_mutex);
+		MutexGuard guard(m_mutex);
 		auto element = m_vector->at(index);
 		return element;
 	}
 	void Remove(std::function<bool(const T& item)> predicate) {
-		MutexGuard guard(*m_mutex);
+		MutexGuard guard(m_mutex);
 		m_vector->erase(std::remove_if(m_vector->begin(), m_vector->end(), predicate), m_vector->end());
 	}
 
 	std::size_t size() const {
-		MutexGuard guard(*m_mutex);
+		MutexGuard guard(m_mutex);
 
 		return m_vector->size();
 	}
 
-	void Update(std::size_t index, T item) {
-		MutexGuard guard(*m_mutex);
+	void Update(std::size_t index, const T& item) {
+		MutexGuard guard(m_mutex);
 
 		if (m_vector != nullptr) {
 			(*m_vector)[index] = item;
@@ -93,7 +94,7 @@ public:
 	}
 
 	boost::optional<std::size_t> Find(std::function<bool(const T& item)> predicate)  const{
-		MutexGuard guard(*m_mutex);
+		MutexGuard guard(m_mutex);
 
 		const auto it = std::find_if(m_vector->cbegin(), m_vector->cend(), predicate);
 		if (it != m_vector->cend()) {
@@ -104,7 +105,7 @@ public:
 		}
 	}
 	boost::optional<std::size_t> Find(const T& item) const{
-		MutexGuard guard(*m_mutex);
+		MutexGuard guard(m_mutex);
 
 		const auto it = std::find(m_vector->cbegin(), m_vector->cend(), item);
 		if (it != m_vector->cend()) {
@@ -132,7 +133,7 @@ private:
 	my_managed_shared_memory m_segment;
 	TAlloc m_alloc;
 	TVector* m_vector;
-	boost::interprocess::interprocess_mutex* m_mutex;
+	mutable boost::interprocess::named_mutex m_mutex;
 	
 
 };

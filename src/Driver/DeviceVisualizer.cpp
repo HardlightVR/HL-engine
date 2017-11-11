@@ -5,17 +5,28 @@
 
 void DeviceVisualizer::provideApi(waveform_api* waveform)
 {
-	waveform->submit_activate.spy = [this](uint64_t request_id, nsvr_node_id id, nsvr_waveform* waveform) {
-		Waveform w = Waveform(request_id, waveform->waveform_id, waveform->strength, waveform->repetitions);
+	waveform->submit_activate.spy = [this](uint64_t request_id, nsvr_node_id id, nsvr_default_waveform wave, uint32_t reps, float strength) {
+		auto w = Waveform(request_id, wave, strength, reps);
 		m_nodes[id].submitHaptic(w);
 	};
 }
 
+
+void DeviceVisualizer::provideApi(buffered_api* buffered) {
+	buffered->submit_buffer.spy = [this, buffered](uint64_t request_id, nsvr_node_id id, const double* samples, uint32_t length) {
+
+		double dur = 0;
+		buffered->submit_getsampleduration(id, &dur);
+		auto w = Waveform(request_id, samples, dur, length);
+		m_nodes[id].submitHaptic(w);
+	};
+}
 void DeviceVisualizer::provideApi(playback_api* playback)
 {
 	playback->submit_cancel.spy = [this](uint64_t request_id, nsvr_node_id id) {
 		m_nodes[id].submitPlayback(request_id, SimulatedHapticNode::PlaybackCommand::Cancel);
-	};
+	}; 
+
 
 	playback->submit_pause.spy = [this](uint64_t request_id, nsvr_node_id id) {
 		m_nodes[id].submitPlayback(request_id, SimulatedHapticNode::PlaybackCommand::Pause);

@@ -12,7 +12,7 @@ class BasicHapticEventData {
 public:
 	uint32_t effect;
 	uint32_t area;
-	float duration;
+	uint32_t repetitions;
 	float strength;
 };
 
@@ -20,7 +20,7 @@ class LiveBasicHapticEvent {
 public:
 	LiveBasicHapticEvent();
 	LiveBasicHapticEvent(ParentId handle, boost::uuids::uuid uniqueId, BasicHapticEventData data);
-	const BasicHapticEventData& Data() const;
+	const BasicHapticEventData& PollOnce();
 	bool operator==(const LiveBasicHapticEvent& other) const;
 	void update(float dt);
 	bool isFinished() const;
@@ -34,4 +34,5 @@ private:
 	float currentTime;
 	bool isPlaying;
 	BasicHapticEventData eventData;
+	uint32_t m_polls;
 };

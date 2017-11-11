@@ -29,8 +29,8 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_plugin_waveform_api waveform_api;
 	waveform_api.client_data = this;
-	waveform_api.activate_handler = [](uint64_t request_id, nsvr_node_id node_id, nsvr_waveform* waveform, void* cd) {
-		AS_TYPE(HardlightDevice, cd)->handle_waveform(request_id, node_id, waveform);
+	waveform_api.activate_handler = [](uint64_t request_id, nsvr_node_id node_id, nsvr_default_waveform wave, uint32_t reps, float strength, void* cd) {
+		AS_TYPE(HardlightDevice, cd)->handle_waveform(request_id, node_id, wave, reps, strength);
 	};
 
 	nsvr_register_waveform_api(ctx, &waveform_api);
@@ -51,13 +51,11 @@ void HardlightDevice::Configure(nsvr_core* ctx)
 
 	nsvr_plugin_buffered_api buffered_api;
 	buffered_api.client_data = this;
-	buffered_api.getmaxsamples_handler = [](uint32_t* outMaxSamples, void* cd) {
-		*outMaxSamples = 512;
+	
+	buffered_api.getsampleduration_handler = [](nsvr_node_id, double* outDuration, void* cd) {
+		*outDuration = 25;
 	};
-	buffered_api.getsampleduration_handler = [](double* outDuration, void* cd) {
-		*outDuration = 0.25;
-	};
-	buffered_api.submit_handler = [](uint64_t request_id, nsvr_node_id id, double* amplitudes, uint32_t count, void* cd) {
+	buffered_api.submit_handler = [](uint64_t request_id, nsvr_node_id id, const double* amplitudes, uint32_t count, void* cd) {
 		AS_TYPE(HardlightDevice, cd)->Buffered(request_id, id, amplitudes, count);
 	};
 	nsvr_register_buffered_api(ctx, &buffered_api);
@@ -206,21 +204,12 @@ void HardlightDevice::SetupDeviceAssociations(nsvr_bodygraph* g)
 //		(*it).second->consumeLasting(std::move(data), request_id);
 //	}
 //}
-void HardlightDevice::handle_waveform(uint64_t request_id, nsvr_node_id device_id, nsvr_waveform * wave)
+void HardlightDevice::handle_waveform(uint64_t request_id, nsvr_node_id device_id, nsvr_default_waveform waveform, uint32_t reps, float strength)
 {
 	BasicHapticEventData data = { 0 };
-	nsvr_default_waveform stuff;
-	nsvr_waveform_getname(wave, &stuff);
-	data.effect = stuff;
-	nsvr_waveform_getstrength(wave, &data.strength);
-
-	float duration = 0;
-	uint32_t repetitions = 0;
-	nsvr_waveform_getrepetitions(wave, &repetitions);
-	if (repetitions > 0) {
-		duration = 0.25f * repetitions;
-	}
-	data.duration = duration;
+	data.effect = waveform;
+	data.strength = strength;
+	data.repetitions = reps;
 	handle_waveform(request_id, device_id, std::move(data));
 }
 
@@ -233,7 +222,7 @@ void HardlightDevice::handle_waveform(uint64_t request_id, nsvr_node_id node_id,
 }
 
 
-void HardlightDevice::Buffered(uint64_t request_id, nsvr_node_id node_id, double * amps, uint32_t length)
+void HardlightDevice::Buffered(uint64_t request_id, nsvr_node_id node_id, const double * amps, uint32_t length)
 {
 	auto it = std::find_if(m_drivers.begin(), m_drivers.end(), [device_id = node_id](const auto& driver) { return driver.second->GetId() == device_id; });
 	if (it != m_drivers.end()) {

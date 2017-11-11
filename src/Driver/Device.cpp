@@ -127,6 +127,9 @@ void Device::Deliver(uint64_t eventId, const NullSpaceIPC::LocationalEvent &even
 	case NullSpaceIPC::LocationalEvent::kSimpleHaptic:
 		handle(eventId, event.simple_haptic(), nodes);
 		break;
+	case NullSpaceIPC::LocationalEvent::kBufferedHaptic:
+		handle(eventId, event.buffered_haptic(), nodes);
+		break;
 	case NullSpaceIPC::LocationalEvent::kContinuousHaptic:
 		handle(eventId, event.continuous_haptic(), nodes);
 		break;
@@ -224,7 +227,7 @@ void Device::handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic& event, c
 {
 	auto onlyHaptic = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
 	for (nsvr_node_id hapticNode : onlyHaptic) {
-		m_haptics->Submit(eventId, hapticNode, WaveformData{event.duration(), event.strength(), event.effect()});
+		m_haptics->Submit(eventId, hapticNode, WaveformData{event.repetitions(), event.strength(), event.effect()});
 	}
 	m_playback->CreateEventRecord(eventId, onlyHaptic); 
 
@@ -251,6 +254,33 @@ void Device::handle(uint64_t event_id, const NullSpaceIPC::EndAnalogAudio & even
 			m_analogAudio->close(node);
 		}
 	}
+}
+
+template<typename T>
+std::vector<T> toVec(const google::protobuf::RepeatedField<T>& input) {
+	std::vector<T> out;
+	out.reserve(input.size());
+	out.insert(out.begin(), input.begin(), input.end());
+	return out;
+}
+
+template<typename To, typename From>
+std::vector<To> staticCast(const std::vector<From>& input) {
+	std::vector<To> out;
+	out.reserve(input.size());
+	for (const auto& item : input) {
+		out.push_back(static_cast<To>(item));
+	}
+	return out;
+}
+
+void Device::handle(uint64_t event_id, const NullSpaceIPC::BufferedHaptic & event, const std::vector<nsvr_node_id>& targetNodes)
+{
+	auto onlyHaptic = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
+	for (nsvr_node_id hapticNode : onlyHaptic) {
+		m_haptics->Submit(event_id, hapticNode, BufferedData{ staticCast<double>(toVec(event.samples())), event.frequency() });
+	}
+
 }
 
 

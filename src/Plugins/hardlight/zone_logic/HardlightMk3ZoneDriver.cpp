@@ -172,28 +172,3 @@ void Hardlight_Mk3_ZoneDriver::realtime(std::vector<double> samples, ParentId id
 	m_rtpModel.Put(BufferedEvent(id, m_gen(), std::move(samples)));
 }
 
-//void Hardlight_Mk3_ZoneDriver::consume(const NSVR_RealtimeEvent* realtime)
-//{
-//
-//	float volume = 0;
-//	NSVR_RealtimeEvent_GetStrength(realtime, &volume);
-//	m_rtpModel.ChangeVolume(static_cast<int>(volume * 255));
-//	transitionInto(Mode::Realtime);
-//}
-
-//void Hardlight_Mk3_ZoneDriver::controlRetained(boost::uuids::uuid handle, NSVR_PlaybackCommand command)
-//{
-//
-//	switch (command) {
-//	case NSVR_PlaybackCommand::NSVR_PlaybackCommand_Play:
-//		m_retainedModel.Play(handle);
-//		break;
-//	case NSVR_PlaybackCommand::NSVR_PlaybackCommand_Pause:
-//		m_retainedModel.Pause(handle);
-//		break;
-//	case NSVR_PlaybackCommand::NSVR_PlaybackCommand_Reset:
-//		m_retainedModel.Remove(handle);
-//	default:
-//		break;
-//	}
-//}
