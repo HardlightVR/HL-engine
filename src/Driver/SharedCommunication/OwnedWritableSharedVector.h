@@ -123,7 +123,12 @@ public:
 
 
 	static bool remove(const char* name) {
-		return boost::interprocess::shared_memory_object::remove(name);
+		std::string mutex(name);
+		mutex += "-mutex";
+		bool removed_mem = boost::interprocess::shared_memory_object::remove(name);
+	//	bool removed_mut = boost::interprocess::named_mutex::remove(mutex.c_str());
+
+		return removed_mem ;
 	}
 
 private:
