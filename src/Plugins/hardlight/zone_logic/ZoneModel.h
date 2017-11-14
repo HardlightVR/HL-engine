@@ -8,6 +8,9 @@
 #include <vector>
 #include <mutex>
 #include <chrono>
+
+class InstructionSet;
+
 class ZoneModel {
 public:
 
@@ -19,8 +22,8 @@ public:
 	void Pause(ParentId id);
 
 
-	typedef std::vector<LiveBasicHapticEvent> PlayingContainer;
-	typedef std::vector<LiveBasicHapticEvent> PausedContainer;
+	using PlayingContainer = std::vector<LiveBasicHapticEvent>;
+	using PausedContainer = std::vector<LiveBasicHapticEvent>;
 
 	const PausedContainer& PausedEvents();
 	const PlayingContainer& PlayingEvents();

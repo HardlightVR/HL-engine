@@ -3,14 +3,6 @@
 #include "Json/json.h"
 #include <cassert>
 #include "Locator.h"
-Atom::Atom()
-{
-}
-
-
-Atom::~Atom()
-{
-}
 
 std::string Atom::Id() const
 {
@@ -28,6 +20,11 @@ Effect Atom::GetEffect(float volume) const
 
 }
 
+int Atom::GetDuration() const
+{
+	return _duration;
+}
+
 void Atom::Serialize(const Json::Value & root)
 {
 }
@@ -35,7 +32,7 @@ void Atom::Serialize(const Json::Value & root)
 void Atom::Deserialize(const Json::Value & root)
 {
 	_id = root.get("id", "error").asString();
-	
+	_duration = root.get("duration", 150).asUInt();
 	auto& t = Locator::Translator();
 	for (const Json::Value& level : root["levels"]) {
 		_levels.push_back(t.ToEffect(level.asString()));

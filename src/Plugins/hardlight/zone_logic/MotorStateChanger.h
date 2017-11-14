@@ -4,6 +4,8 @@
 #include <boost/optional.hpp>
 #include "HardwareCommands.h"
 
+class InstructionSet;
+
 class MotorStateChanger {
 public:
 	MotorStateChanger(Location areaId);

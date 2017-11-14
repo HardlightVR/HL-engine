@@ -19,7 +19,7 @@ Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::un
 	m_io(io),
 	m_hwIO(std::move(device->io)),
 	m_firmware(std::make_shared<FirmwareInterface>(data_dir, m_hwIO->outgoing_queue(), m_io)),
-	m_device(),
+	m_device(*m_firmware->GetInstructions()),
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
 	m_synchronizer(device->synchronizer),
 	m_dispatcher(device->dispatcher),

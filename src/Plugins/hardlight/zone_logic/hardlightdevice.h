@@ -6,9 +6,12 @@
 #include "HardlightMk3ZoneDriver.h"
 #include <unordered_map>
 typedef struct NSVR_Core_t NSVR_Core;
+
+class InstructionSet;
+
 class HardlightDevice {
 public:
-	HardlightDevice();
+	HardlightDevice(const InstructionSet& instructions);
 	void Configure(nsvr_core* ctx);
 
 

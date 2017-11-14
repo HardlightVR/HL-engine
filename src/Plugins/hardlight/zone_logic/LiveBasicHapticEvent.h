@@ -19,7 +19,7 @@ public:
 class LiveBasicHapticEvent {
 public:
 	LiveBasicHapticEvent();
-	LiveBasicHapticEvent(ParentId handle, boost::uuids::uuid uniqueId, BasicHapticEventData data);
+	LiveBasicHapticEvent(ParentId handle, boost::uuids::uuid uniqueId, BasicHapticEventData data, std::chrono::milliseconds duration);
 	const BasicHapticEventData& PollOnce();
 	bool operator==(const LiveBasicHapticEvent& other) const;
 	void update(float dt);
@@ -28,6 +28,7 @@ public:
 	bool isOneshot() const;
 	bool isChildOf(const ParentId& handle) const;
 
+	std::chrono::milliseconds Duration() const;
 private:
 	ParentId handle;
 	boost::uuids::uuid uniqueId;
@@ -35,4 +36,6 @@ private:
 	bool isPlaying;
 	BasicHapticEventData eventData;
 	uint32_t m_polls;
+
+	std::chrono::milliseconds m_duration;
 };

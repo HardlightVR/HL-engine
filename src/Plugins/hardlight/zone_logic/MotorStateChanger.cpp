@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MotorStateChanger.h"
-
+#include "Locator.h"
+#include "InstructionSet.h"
 MotorStateChanger::MotorStateChanger(Location areaId) :
 	currentState(MotorFirmwareState::Idle),
 	previousContinuous(),
@@ -20,7 +21,9 @@ CommandBuffer MotorStateChanger::transitionTo(LiveBasicHapticEvent & event)
 	CommandBuffer commands;
 	if (event == previousContinuous) {
 		//aka, playing another repetition of an effect
-		if ((std::chrono::steady_clock::now() - m_lastSample) > 100ms) {
+
+		
+		if ((std::chrono::steady_clock::now() - m_lastSample) >= event.Duration()) {
 			m_lastSample = std::chrono::steady_clock::now();
 			const auto& data = event.PollOnce();
 			commands.push_back(PlaySingle(static_cast<Location>(data.area), data.effect, data.strength));
@@ -42,7 +45,7 @@ CommandBuffer MotorStateChanger::transitionToIdle()
 		//do nothing
 		break;
 	case MotorFirmwareState::PlayingSomething:
-		requiredCmds.push_back(Halt(area));
+	//	requiredCmds.push_back(Halt(area));
 		break;
 	}
 

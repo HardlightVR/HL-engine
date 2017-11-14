@@ -2,7 +2,7 @@
 #include "HardlightMk3ZoneDriver.h"
 #include <limits>
 #include "Locator.h"
-
+#include "InstructionSet.h"
 CommandBuffer Hardlight_Mk3_ZoneDriver::update(float dt)
 {
 	//think about if the commandbuffer vectors should really be reversed
@@ -30,13 +30,14 @@ CommandBuffer Hardlight_Mk3_ZoneDriver::update(float dt)
 
 
 
-Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area) :
+Hardlight_Mk3_ZoneDriver::Hardlight_Mk3_ZoneDriver(::Location area, const InstructionSet& instructions) :
 	m_area(area),
 	m_currentMode(Mode::Continuous),
 	m_commands(),
 	m_rtpModel(m_area),
 	m_retainedModel(m_area),
-	m_mutex()
+	m_mutex(),
+	m_instructions(instructions)
 {
 
 }
@@ -72,36 +73,7 @@ uint32_t Hardlight_Mk3_ZoneDriver::GetId()
 	return static_cast<uint32_t>(m_area);
 }
 
-//boost::optional<HapticDisplayInfo> Hardlight_Mk3_ZoneDriver::QueryCurrentlyPlaying()
-//{
-//	auto& translator = Locator::getTranslator();
-//
-//	if (m_currentMode == Mode::Retained) {
-//		auto potentialEvent = m_retainedModel.GetCurrentlyPlayingEvent();
-//		if (potentialEvent) {
-//			HapticDisplayInfo info;
-//			info.area = translator.ToArea(m_area);
-//			info.family = potentialEvent->Data().effect;
-//			info.strength = static_cast<uint16_t>(255 * potentialEvent->Data().strength);
-//			return info;
-//		}
-//	}
-//	else {
-//		HapticDisplayInfo info;
-//		info.area = translator.ToArea(m_area);
-//		info.family = 0;
-//		info.strength = m_rtpModel.GetVolume();
-//		return info;
-//	}
-//
-//	return boost::optional<HapticDisplayInfo>();
-//}
 
-//void Hardlight_Mk3_ZoneDriver::realtime(const RealtimeArgs& args)
-//{
-//	m_rtpModel.ChangeVolume(args.volume);
-//	transitionInto(Mode::Realtime);
-//}
 
 void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 {
@@ -122,27 +94,25 @@ void Hardlight_Mk3_ZoneDriver::transitionInto(Mode mode)
 	else {
 		//unknown mode..?
 	}
-	/*if (mode == Mode::Continuous) {
-		m_currentMode = Mode::Continuous;
-
-		m_commands.push_back(EnableIntrig(m_area));
-	}
-	else if (mode == Mode::Realtime) {
-		m_currentMode = Mode::Realtime;
-		m_commands.push_back(EnableRtp(m_area));
-		
-	}*/
+	
 }
 
 
 
 
 
-void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data,ParentId id) {
+void Hardlight_Mk3_ZoneDriver::consumeLasting(BasicHapticEventData data, ParentId id) {
 	data.area = static_cast<uint32_t>(m_area);
 	transitionInto(Mode::Continuous);
 
-	m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data)));
+	std::string effectString = Locator::Translator().ToString(data.effect);
+	const auto& atoms = m_instructions.Atoms();
+	const auto it = atoms.find(effectString);
+
+	if (it != atoms.end()) {
+		int duration = it->second.GetDuration();
+		m_retainedModel.Put(LiveBasicHapticEvent(id, m_gen(), std::move(data), std::chrono::milliseconds(duration)));
+	}
 }
 
 void Hardlight_Mk3_ZoneDriver::controlEffect(ParentId handle, int command)

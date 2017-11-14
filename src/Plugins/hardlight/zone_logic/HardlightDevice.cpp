@@ -7,15 +7,16 @@
 #include "IMU_ID.h"
 
 
-HardlightDevice::HardlightDevice() : m_drivers()
+HardlightDevice::HardlightDevice(const InstructionSet& instructions) : m_drivers()
 {
+
 	auto& translator = Locator::Translator();
 
 	for (int loc = (int)Location::Lower_Ab_Right; loc != (int)Location::Error; loc++) {
 
 		m_drivers.insert(std::make_pair(
 			(Location)loc, 
-			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc)))
+			std::make_unique<Hardlight_Mk3_ZoneDriver>(Location(loc), instructions))
 		);
 	}
 }

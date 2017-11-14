@@ -11,11 +11,14 @@
 
 #include "PluginAPI.h"
 
+class InstructionSet;
+
+
 class Hardlight_Mk3_ZoneDriver {
 public:
 	CommandBuffer update(float dt);
 
-	Hardlight_Mk3_ZoneDriver(Location area);
+	Hardlight_Mk3_ZoneDriver(Location area, const InstructionSet& instructions);
 
 	Location GetLocation();
 
@@ -36,4 +39,6 @@ private:
 	Mode m_currentMode;
 	std::mutex m_mutex;
 	CommandBuffer m_commands;
+
+	const InstructionSet& m_instructions;
 };

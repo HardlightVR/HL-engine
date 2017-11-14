@@ -9,23 +9,26 @@ LiveBasicHapticEvent::LiveBasicHapticEvent() :
 	currentTime(0),
 	isPlaying(false),
 	eventData(),
-	m_polls(0)
+	m_polls(0),
+	m_duration(0)
 {
 	eventData.repetitions = 1;
 }
 
-LiveBasicHapticEvent::LiveBasicHapticEvent(ParentId  handle, boost::uuids::uuid uniqueId, BasicHapticEventData data) :
+LiveBasicHapticEvent::LiveBasicHapticEvent(ParentId  handle, boost::uuids::uuid uniqueId, BasicHapticEventData data, std::chrono::milliseconds duration) :
 	handle(handle),
 	uniqueId(uniqueId),
 	currentTime(0),
 	isPlaying(true),
 	eventData(std::move(data)),
-	m_polls(0)
+	m_polls(0),
+	m_duration(duration)
 
 {
 	if (data.repetitions == 0) {
 		eventData.repetitions = 1;
 	}
+
 }
 
 const BasicHapticEventData & LiveBasicHapticEvent::PollOnce()
@@ -48,7 +51,9 @@ void LiveBasicHapticEvent::update(float dt)
 
 bool LiveBasicHapticEvent::isFinished() const
 {
-	return m_polls >= eventData.repetitions && currentTime >= 0.1f; //todo: here is where we absolutely need to use the correct time for each waveform. 
+	auto elapsedMs = static_cast<int>(1000 * currentTime); // .1 seconds elapsed = 100 ms
+
+	return m_polls > eventData.repetitions && (std::chrono::milliseconds(elapsedMs) >=m_duration); //todo: here is where we absolutely need to use the correct time for each waveform. 
 }
 
 bool LiveBasicHapticEvent::isContinuous() const
@@ -65,6 +70,11 @@ bool LiveBasicHapticEvent::isChildOf(const ParentId& handle) const
 {
 	return this->handle == handle;
 	//return this->parentId == parentId;
+}
+
+std::chrono::milliseconds LiveBasicHapticEvent::Duration() const
+{
+	return m_duration;
 }
 
 
