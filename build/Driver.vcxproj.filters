@@ -38,6 +38,7 @@
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
     <ClInclude Include="..\src\Driver\ExceptionGuard.h" />
     <ClInclude Include="..\src\Driver\FakeResources.h" />
+    <ClInclude Include="..\src\Driver\HardwareAnalogAudioInterface.h" />
     <ClInclude Include="..\src\Driver\HardwareBodygraphCreator.h" />
     <ClInclude Include="..\src\Driver\HardwareCoordinator.h" />
     <ClInclude Include="..\src\Driver\HardwareEventDispatcher.h" />
@@ -145,7 +146,6 @@
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\nsvr_region.h" />
-   
     <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
       <Filter>protobuff_defs</Filter>
     </ClInclude>
@@ -161,6 +161,7 @@
     <ClInclude Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.h">
       <Filter>protobuff_defs</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\resource1.h" />
     <ClInclude Include="..\src\Driver\runtime_include\NSDriverApi.h">
       <Filter>runtime_include</Filter>
     </ClInclude>
@@ -168,8 +169,6 @@
     <ClInclude Include="..\src\Driver\subregion.h" />
     <ClInclude Include="..\src\Driver\subregion_utils.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\HardwareAnalogAudioInterface.h" />
-    <ClInclude Include="..\src\Driver\resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -183,6 +182,7 @@
     <ClCompile Include="..\src\Driver\DriverMessenger.cpp" />
     <ClCompile Include="..\src\Driver\EnumTranslator.cpp" />
     <ClCompile Include="..\src\Driver\EventDispatcher.cpp" />
+    <ClCompile Include="..\src\Driver\HardwareAnalogAudioInterface.cpp" />
     <ClCompile Include="..\src\Driver\HardwareBodygraphCreator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareCoordinator.cpp" />
     <ClCompile Include="..\src\Driver\HardwareEventDispatcher.cpp" />
@@ -214,7 +214,6 @@
     <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\logging_initialization.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
-
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <Filter>protobuff_defs</Filter>
     </ClCompile>
@@ -234,9 +233,8 @@
     <ClCompile Include="..\src\Driver\subregion.cpp" />
     <ClCompile Include="..\src\Driver\subregion_utils.cpp" />
     <ClCompile Include="..\src\Driver\test_main.cpp" />
-    <ClCompile Include="..\src\Driver\HardwareAnalogAudioInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\src\Driver\Driver.rc" />
+    <None Include="..\src\Driver\version.rc2" />
   </ItemGroup>
 </Project>

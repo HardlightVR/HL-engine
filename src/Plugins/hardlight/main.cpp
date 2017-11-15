@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 #include "Instructions.h"

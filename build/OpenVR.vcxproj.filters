@@ -24,10 +24,12 @@
     <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h">
       <Filter>plugins\openvr</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\openvr\resource2.h">
+      <Filter>plugins\openvr</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\openvr\stdafx.h">
       <Filter>plugins\openvr</Filter>
     </ClInclude>
-    <ClInclude Include="resource2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\openvr\ExportedAPI.cpp">
@@ -41,6 +43,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="OpenVR.rc" />
+    <None Include="..\src\Plugins\openvr\version.rc2" />
   </ItemGroup>
 </Project>

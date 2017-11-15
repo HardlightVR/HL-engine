@@ -156,6 +156,9 @@
     <ClInclude Include="..\src\plugins\hardlight\logger.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\plugins\hardlight\resource.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\plugins\hardlight\serial\connection_info.h">
       <Filter>plugins\hardlight\serial</Filter>
     </ClInclude>
@@ -207,7 +210,6 @@
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\plugins\hardlight\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -344,6 +346,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\src\plugins\hardlight\HardlightMkIII.rc" />
+    <None Include="..\src\Plugins\hardlight\version.rc2" />
   </ItemGroup>
 </Project>

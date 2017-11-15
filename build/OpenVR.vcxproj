@@ -311,8 +311,8 @@ IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\plugins\openvr\OpenVRWrapper.h" />
-    <ClInclude Include="..\src\plugins\openvr\stdafx.h" />
     <ClInclude Include="..\src\plugins\openvr\resource2.h" />
+    <ClInclude Include="..\src\plugins\openvr\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\openvr\ExportedAPI.cpp" />
@@ -327,7 +327,15 @@ IF EXIST ..\src\Plugins\openvr\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\openvr\
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\src\plugins\openvr\OpenVR.rc" />
+    <ProjectReference Include="NGitVersion\NGitVersion.csproj">
+      <Project>{badb59fb-1a14-42af-b314-152c4787f437}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\Plugins\openvr\version.rc2">
+      <FileType>RC</FileType>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

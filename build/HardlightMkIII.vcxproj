@@ -346,6 +346,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\enumser.h" />
     <ClInclude Include="..\src\plugins\hardlight\hardlight_device_version.h" />
     <ClInclude Include="..\src\plugins\hardlight\logger.h" />
+    <ClInclude Include="..\src\plugins\hardlight\resource.h" />
     <ClInclude Include="..\src\plugins\hardlight\serial\connection_info.h" />
     <ClInclude Include="..\src\plugins\hardlight\serial\device_profile.h" />
     <ClInclude Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.h" />
@@ -363,7 +364,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\RtpModel.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\ZoneModel.h" />
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h" />
-    <ClInclude Include="..\src\plugins\hardlight\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp" />
@@ -395,14 +395,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\main.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug UnitTestWin32|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Win64|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="..\src\plugins\hardlight\main.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\hardware_device_recognizer.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\mark3.cpp" />
@@ -426,7 +419,15 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\src\plugins\hardlight\HardlightMkIII.rc" />
+    <ProjectReference Include="NGitVersion\NGitVersion.csproj">
+      <Project>{badb59fb-1a14-42af-b314-152c4787f437}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\Plugins\hardlight\version.rc2">
+      <FileType>RC</FileType>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

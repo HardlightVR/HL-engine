@@ -372,12 +372,12 @@
     <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\HapticEffect.pb.h" />
     <ClInclude Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.h" />
+    <ClInclude Include="..\src\Driver\resource1.h" />
     <ClInclude Include="..\src\Driver\runtime_include\NSDriverApi.h" />
     <ClInclude Include="..\src\Driver\stdafx.h" />
     <ClInclude Include="..\src\Driver\subregion.h" />
     <ClInclude Include="..\src\Driver\subregion_utils.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
-    <ClInclude Include="..\src\Driver\resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
@@ -433,7 +433,6 @@
     <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\logging_initialization.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
-   
     <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">NotUsing</PrecompiledHeader>
@@ -487,7 +486,15 @@
     <ClCompile Include="..\src\Driver\test_main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\src\Driver\Driver.rc" />
+    <ProjectReference Include="NGitVersion\NGitVersion.csproj">
+      <Project>{badb59fb-1a14-42af-b314-152c4787f437}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\Driver\version.rc2">
+      <FileType>RC</FileType>
+    </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

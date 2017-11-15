@@ -1,0 +1,17 @@
+﻿MainTemplate(m) ::= <<
+
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+[assembly:AssemblyCompany                ("<m.Company>")]
+[assembly:AssemblyProduct                ("<m.Product>")]
+[assembly:AssemblyCopyright              ("<m.Copyright>")]
+[assembly:AssemblyTrademark              ("")]
+[assembly:AssemblyCulture                ("")]
+[assembly:AssemblyConfiguration          ("<m.BuildConfig>")]
+
+[assembly:AssemblyVersion                ("<m.Major>.<m.Minor>.<m.Build>.<m.Revision>")]
+[assembly:AssemblyFileVersion            ("<m.Major>.<m.Minor>.<m.Build>.<m.Revision>")]
+[assembly:AssemblyInformationalVersion   ("<m.Major>.<m.Minor>.<m.Build>.<m.Revision>,  g<m.ShortHash>")]
+
+>>
