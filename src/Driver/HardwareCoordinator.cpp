@@ -153,6 +153,14 @@ void HardwareCoordinator::SetupSubscriptions(EventDispatcher& sdkEvents)
 	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kLocationalEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
 		genericDispatch(event.parent_id(), event.locational_event());
 	});
+
+	sdkEvents.Subscribe(NullSpaceIPC::HighLevelEvent::kDeviceEvent, [&](const NullSpaceIPC::HighLevelEvent& event) {
+		if (auto deviceId = m_idService.FromGlobalDevice(DeviceId<global>{event.device_event().device()})) {
+			if (auto device = m_devices.Get(*deviceId)) {
+				device->Deliver(event.device_event());
+			}
+		}
+	});
 	
 }
 

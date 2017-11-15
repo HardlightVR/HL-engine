@@ -141,10 +141,6 @@ void DriverMessenger::WriteBodyView(NullSpace::SharedMemory::RegionPair data)
 }
 
 
-boost::optional<std::vector<NullSpaceIPC::EffectCommand>> DriverMessenger::ReadHaptics()
-{
-	return readFromStream<NullSpaceIPC::EffectCommand, OwnedReadableSharedQueue>(*m_hapticsData.get(), 100);
-}
 
 boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> DriverMessenger::ReadEvents()
 {
@@ -153,11 +149,6 @@ boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> DriverMessenger::Read
 
 
 
-boost::optional<std::vector<NullSpaceIPC::DriverCommand>> DriverMessenger::ReadCommands()
-{
-
-	return readFromStream<NullSpaceIPC::DriverCommand, OwnedReadableSharedQueue>(*m_commandStream.get(), 100);
-}
 
 
 

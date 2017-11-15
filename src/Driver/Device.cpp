@@ -29,13 +29,25 @@ Device::Device(
 
 }
 
-void Device::SetTracking(std::unique_ptr<HardwareTracking> tracking)
+void Device::enableTracking()
 {
-	m_trackingProvider = std::move(tracking);
 	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
 	for (auto imu : imus) {
 		m_trackingProvider->BeginStreaming(NodeId<local>{imu});
 	}
+}
+
+void Device::disableTracking()
+{
+	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
+	for (auto imu : imus) {
+		m_trackingProvider->EndStreaming(NodeId<local>{imu});
+	}
+}
+
+void Device::SetTracking(std::unique_ptr<HardwareTracking> tracking)
+{
+	m_trackingProvider = std::move(tracking);
 }
 
 void Device::SetHaptics(std::unique_ptr<HardwareHapticInterface> haptics)
@@ -109,6 +121,20 @@ DeviceId<local> Device::id() const
 }
 
 
+void Device::Deliver(const NullSpaceIPC::DeviceEvent & deviceEvent)
+{
+	switch (deviceEvent.events_case()) {
+	case NullSpaceIPC::DeviceEvent::kEnableTracking:
+		enableTracking();
+		break;
+	case NullSpaceIPC::DeviceEvent::kDisableTracking:
+		disableTracking();
+		break;
+	default:
+		break;
+	}
+}
+
 void Device::Deliver(uint64_t eventId, const NullSpaceIPC::LocationalEvent & event, const std::vector<nsvr_region>& regions)
 {
 	
@@ -129,9 +155,6 @@ void Device::Deliver(uint64_t eventId, const NullSpaceIPC::LocationalEvent &even
 		break;
 	case NullSpaceIPC::LocationalEvent::kBufferedHaptic:
 		handle(eventId, event.buffered_haptic(), nodes);
-		break;
-	case NullSpaceIPC::LocationalEvent::kContinuousHaptic:
-		handle(eventId, event.continuous_haptic(), nodes);
 		break;
 	case NullSpaceIPC::LocationalEvent::kBeginAnalogAudio:
 		handle(eventId, event.begin_analog_audio(), nodes);
@@ -212,16 +235,6 @@ std::vector<nsvr_node_id> toRawNodeIds(const std::vector<NodeId<local>>& targetN
 
 
 
-void Device::handle(uint64_t eventId, const NullSpaceIPC::ContinuousHaptic& event, const std::vector<nsvr_node_id>& targetNodes)
-{
-	auto onlyHaptic = m_discoverer->FilterByType(targetNodes, nsvr_node_concept_haptic);
-	for (nsvr_node_id hapticNode : onlyHaptic) {
-		m_haptics->Submit(eventId, hapticNode, ContinuousData{event.strength()});
-	}
-	m_playback->CreateEventRecord(eventId, onlyHaptic);
-
-
-}
 
 void Device::handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic& event, const std::vector<nsvr_node_id>& targetNodes)
 {

@@ -1,5 +1,6 @@
 [{
 	"id" : "click",
+	"duration" : 100,
 	"levels":[
 		
 		
@@ -22,6 +23,7 @@
 },
 {
 	"id" : "bump",
+	"duration" : 200,
 	"levels":[
 		"Soft_Bump_30",
 		"Soft_Bump_60",
@@ -31,6 +33,7 @@
 },
 {
 	"id" : "double_click",
+	"duration" : 300,
 	"levels":[
 		"Double_Click_60",
 		"Double_Click_100"
@@ -39,6 +42,7 @@
 },
 {
 	"id" : "triple_click",
+	"duration" : 400,
 	"levels":[
 		"Triple_Click"
 	]
@@ -46,6 +50,7 @@
 },
 {
 	"id" : "fuzz",
+	"duration" : 220,
 	"levels":[
 		"Soft_Fuzz"
 	]
@@ -53,6 +58,7 @@
 },
 {
 	"id" : "sharp_tick",
+	"duration" : 80,
 	"levels":[
 		"Sharp_Tick_60",
 		"Sharp_Tick_80",
@@ -93,6 +99,7 @@
 },
 {
 	"id" : "buzz",
+	"duration" : 300,
 	"levels":[
 		"Buzz_20",
 		"Buzz_40",
@@ -122,6 +129,7 @@
 },
 {
 	"id" : "hum",
+	"duration" : 300,
 	"levels":[
 		"Smooth_Hum_10",
 		"Smooth_Hum_20",

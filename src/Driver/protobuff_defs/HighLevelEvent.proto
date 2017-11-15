@@ -65,10 +65,26 @@ message LocationalEvent {
 
 	}
 }
+
+message EnableTracking {
+
+}
+
+message DisableTracking {
+
+}
+message DeviceEvent {
+	uint32 device = 1;
+	oneof events {
+		EnableTracking enable_tracking = 16;
+		DisableTracking disable_tracking = 17;
+	}
+}
 message HighLevelEvent {
 	uint64 parent_id = 1;
 	oneof events {
 		PlaybackEvent playback_event = 2;
 		LocationalEvent locational_event = 3;
+		DeviceEvent device_event = 4;
 	}
 }

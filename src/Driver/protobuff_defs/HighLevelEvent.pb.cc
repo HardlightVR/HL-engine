@@ -63,12 +63,26 @@ struct LocationalEventOneofInstance {
   const ::NullSpaceIPC::BeginAnalogAudio* begin_analog_audio_;
   const ::NullSpaceIPC::EndAnalogAudio* end_analog_audio_;
 }* LocationalEvent_default_oneof_instance_ = NULL;
+const ::google::protobuf::Descriptor* EnableTracking_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  EnableTracking_reflection_ = NULL;
+const ::google::protobuf::Descriptor* DisableTracking_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  DisableTracking_reflection_ = NULL;
+const ::google::protobuf::Descriptor* DeviceEvent_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  DeviceEvent_reflection_ = NULL;
+struct DeviceEventOneofInstance {
+  const ::NullSpaceIPC::EnableTracking* enable_tracking_;
+  const ::NullSpaceIPC::DisableTracking* disable_tracking_;
+}* DeviceEvent_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* HighLevelEvent_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   HighLevelEvent_reflection_ = NULL;
 struct HighLevelEventOneofInstance {
   const ::NullSpaceIPC::PlaybackEvent* playback_event_;
   const ::NullSpaceIPC::LocationalEvent* locational_event_;
+  const ::NullSpaceIPC::DeviceEvent* device_event_;
 }* HighLevelEvent_default_oneof_instance_ = NULL;
 
 }  // namespace
@@ -245,11 +259,60 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(LocationalEvent),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, _is_default_instance_));
-  HighLevelEvent_descriptor_ = file->message_type(10);
-  static const int HighLevelEvent_offsets_[4] = {
+  EnableTracking_descriptor_ = file->message_type(10);
+  static const int EnableTracking_offsets_[1] = {
+  };
+  EnableTracking_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      EnableTracking_descriptor_,
+      EnableTracking::default_instance_,
+      EnableTracking_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(EnableTracking),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EnableTracking, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EnableTracking, _is_default_instance_));
+  DisableTracking_descriptor_ = file->message_type(11);
+  static const int DisableTracking_offsets_[1] = {
+  };
+  DisableTracking_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      DisableTracking_descriptor_,
+      DisableTracking::default_instance_,
+      DisableTracking_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(DisableTracking),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DisableTracking, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DisableTracking, _is_default_instance_));
+  DeviceEvent_descriptor_ = file->message_type(12);
+  static const int DeviceEvent_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, device_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(DeviceEvent_default_oneof_instance_, enable_tracking_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(DeviceEvent_default_oneof_instance_, disable_tracking_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, events_),
+  };
+  DeviceEvent_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      DeviceEvent_descriptor_,
+      DeviceEvent::default_instance_,
+      DeviceEvent_offsets_,
+      -1,
+      -1,
+      -1,
+      DeviceEvent_default_oneof_instance_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, _oneof_case_[0]),
+      sizeof(DeviceEvent),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, _is_default_instance_));
+  HighLevelEvent_descriptor_ = file->message_type(13);
+  static const int HighLevelEvent_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, parent_id_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, playback_event_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, locational_event_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, device_event_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, events_),
   };
   HighLevelEvent_reflection_ =
@@ -299,6 +362,12 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       LocationalEvent_descriptor_, &LocationalEvent::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      EnableTracking_descriptor_, &EnableTracking::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      DisableTracking_descriptor_, &DisableTracking::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      DeviceEvent_descriptor_, &DeviceEvent::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       HighLevelEvent_descriptor_, &HighLevelEvent::default_instance());
 }
 
@@ -327,6 +396,13 @@ void protobuf_ShutdownFile_HighLevelEvent_2eproto() {
   delete LocationalEvent::default_instance_;
   delete LocationalEvent_default_oneof_instance_;
   delete LocationalEvent_reflection_;
+  delete EnableTracking::default_instance_;
+  delete EnableTracking_reflection_;
+  delete DisableTracking::default_instance_;
+  delete DisableTracking_reflection_;
+  delete DeviceEvent::default_instance_;
+  delete DeviceEvent_default_oneof_instance_;
+  delete DeviceEvent_reflection_;
   delete HighLevelEvent::default_instance_;
   delete HighLevelEvent_default_oneof_instance_;
   delete HighLevelEvent_reflection_;
@@ -362,11 +438,17 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
     "apticH\000\022<\n\022begin_analog_audio\030\020 \001(\0132\036.Nu"
     "llSpaceIPC.BeginAnalogAudioH\000\0228\n\020end_ana"
     "log_audio\030\021 \001(\0132\034.NullSpaceIPC.EndAnalog"
-    "AudioH\000B\010\n\006events\"\237\001\n\016HighLevelEvent\022\021\n\t"
-    "parent_id\030\001 \001(\004\0225\n\016playback_event\030\002 \001(\0132"
-    "\033.NullSpaceIPC.PlaybackEventH\000\0229\n\020locati"
-    "onal_event\030\003 \001(\0132\035.NullSpaceIPC.Location"
-    "alEventH\000B\010\n\006eventsb\006proto3", 1067);
+    "AudioH\000B\010\n\006events\"\020\n\016EnableTracking\"\021\n\017D"
+    "isableTracking\"\233\001\n\013DeviceEvent\022\016\n\006device"
+    "\030\001 \001(\r\0227\n\017enable_tracking\030\020 \001(\0132\034.NullSp"
+    "aceIPC.EnableTrackingH\000\0229\n\020disable_track"
+    "ing\030\021 \001(\0132\035.NullSpaceIPC.DisableTracking"
+    "H\000B\010\n\006events\"\322\001\n\016HighLevelEvent\022\021\n\tparen"
+    "t_id\030\001 \001(\004\0225\n\016playback_event\030\002 \001(\0132\033.Nul"
+    "lSpaceIPC.PlaybackEventH\000\0229\n\020locational_"
+    "event\030\003 \001(\0132\035.NullSpaceIPC.LocationalEve"
+    "ntH\000\0221\n\014device_event\030\004 \001(\0132\031.NullSpaceIP"
+    "C.DeviceEventH\000B\010\n\006eventsb\006proto3", 1313);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "HighLevelEvent.proto", &protobuf_RegisterTypes);
   RegionList::default_instance_ = new RegionList();
@@ -381,6 +463,10 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   PlaybackEvent::default_instance_ = new PlaybackEvent();
   LocationalEvent::default_instance_ = new LocationalEvent();
   LocationalEvent_default_oneof_instance_ = new LocationalEventOneofInstance();
+  EnableTracking::default_instance_ = new EnableTracking();
+  DisableTracking::default_instance_ = new DisableTracking();
+  DeviceEvent::default_instance_ = new DeviceEvent();
+  DeviceEvent_default_oneof_instance_ = new DeviceEventOneofInstance();
   HighLevelEvent::default_instance_ = new HighLevelEvent();
   HighLevelEvent_default_oneof_instance_ = new HighLevelEventOneofInstance();
   RegionList::default_instance_->InitAsDefaultInstance();
@@ -393,6 +479,9 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   EndAnalogAudio::default_instance_->InitAsDefaultInstance();
   PlaybackEvent::default_instance_->InitAsDefaultInstance();
   LocationalEvent::default_instance_->InitAsDefaultInstance();
+  EnableTracking::default_instance_->InitAsDefaultInstance();
+  DisableTracking::default_instance_->InitAsDefaultInstance();
+  DeviceEvent::default_instance_->InitAsDefaultInstance();
   HighLevelEvent::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_HighLevelEvent_2eproto);
 }
@@ -3674,9 +3763,829 @@ LocationalEvent::EventsCase LocationalEvent::events_case() const {
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+EnableTracking::EnableTracking()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.EnableTracking)
+}
+
+void EnableTracking::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+EnableTracking::EnableTracking(const EnableTracking& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.EnableTracking)
+}
+
+void EnableTracking::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+}
+
+EnableTracking::~EnableTracking() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.EnableTracking)
+  SharedDtor();
+}
+
+void EnableTracking::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void EnableTracking::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* EnableTracking::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return EnableTracking_descriptor_;
+}
+
+const EnableTracking& EnableTracking::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
+  return *default_instance_;
+}
+
+EnableTracking* EnableTracking::default_instance_ = NULL;
+
+EnableTracking* EnableTracking::New(::google::protobuf::Arena* arena) const {
+  EnableTracking* n = new EnableTracking;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void EnableTracking::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.EnableTracking)
+}
+
+bool EnableTracking::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.EnableTracking)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.EnableTracking)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.EnableTracking)
+  return false;
+#undef DO_
+}
+
+void EnableTracking::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.EnableTracking)
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.EnableTracking)
+}
+
+::google::protobuf::uint8* EnableTracking::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.EnableTracking)
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.EnableTracking)
+  return target;
+}
+
+int EnableTracking::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.EnableTracking)
+  int total_size = 0;
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void EnableTracking::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.EnableTracking)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const EnableTracking* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const EnableTracking>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.EnableTracking)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.EnableTracking)
+    MergeFrom(*source);
+  }
+}
+
+void EnableTracking::MergeFrom(const EnableTracking& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.EnableTracking)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+}
+
+void EnableTracking::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.EnableTracking)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void EnableTracking::CopyFrom(const EnableTracking& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.EnableTracking)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool EnableTracking::IsInitialized() const {
+
+  return true;
+}
+
+void EnableTracking::Swap(EnableTracking* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void EnableTracking::InternalSwap(EnableTracking* other) {
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata EnableTracking::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = EnableTracking_descriptor_;
+  metadata.reflection = EnableTracking_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// EnableTracking
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+DisableTracking::DisableTracking()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.DisableTracking)
+}
+
+void DisableTracking::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+DisableTracking::DisableTracking(const DisableTracking& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.DisableTracking)
+}
+
+void DisableTracking::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+}
+
+DisableTracking::~DisableTracking() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.DisableTracking)
+  SharedDtor();
+}
+
+void DisableTracking::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void DisableTracking::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* DisableTracking::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return DisableTracking_descriptor_;
+}
+
+const DisableTracking& DisableTracking::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
+  return *default_instance_;
+}
+
+DisableTracking* DisableTracking::default_instance_ = NULL;
+
+DisableTracking* DisableTracking::New(::google::protobuf::Arena* arena) const {
+  DisableTracking* n = new DisableTracking;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void DisableTracking::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.DisableTracking)
+}
+
+bool DisableTracking::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.DisableTracking)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+  handle_unusual:
+    if (tag == 0 ||
+        ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+        ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+      goto success;
+    }
+    DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+  }
+success:
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.DisableTracking)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.DisableTracking)
+  return false;
+#undef DO_
+}
+
+void DisableTracking::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.DisableTracking)
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.DisableTracking)
+}
+
+::google::protobuf::uint8* DisableTracking::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.DisableTracking)
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.DisableTracking)
+  return target;
+}
+
+int DisableTracking::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.DisableTracking)
+  int total_size = 0;
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void DisableTracking::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.DisableTracking)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const DisableTracking* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const DisableTracking>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.DisableTracking)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.DisableTracking)
+    MergeFrom(*source);
+  }
+}
+
+void DisableTracking::MergeFrom(const DisableTracking& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.DisableTracking)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+}
+
+void DisableTracking::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.DisableTracking)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void DisableTracking::CopyFrom(const DisableTracking& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.DisableTracking)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DisableTracking::IsInitialized() const {
+
+  return true;
+}
+
+void DisableTracking::Swap(DisableTracking* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void DisableTracking::InternalSwap(DisableTracking* other) {
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata DisableTracking::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = DisableTracking_descriptor_;
+  metadata.reflection = DisableTracking_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// DisableTracking
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int DeviceEvent::kDeviceFieldNumber;
+const int DeviceEvent::kEnableTrackingFieldNumber;
+const int DeviceEvent::kDisableTrackingFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+DeviceEvent::DeviceEvent()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.DeviceEvent)
+}
+
+void DeviceEvent::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+  DeviceEvent_default_oneof_instance_->enable_tracking_ = const_cast< ::NullSpaceIPC::EnableTracking*>(&::NullSpaceIPC::EnableTracking::default_instance());
+  DeviceEvent_default_oneof_instance_->disable_tracking_ = const_cast< ::NullSpaceIPC::DisableTracking*>(&::NullSpaceIPC::DisableTracking::default_instance());
+}
+
+DeviceEvent::DeviceEvent(const DeviceEvent& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.DeviceEvent)
+}
+
+void DeviceEvent::SharedCtor() {
+    _is_default_instance_ = false;
+  _cached_size_ = 0;
+  device_ = 0u;
+  clear_has_events();
+}
+
+DeviceEvent::~DeviceEvent() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.DeviceEvent)
+  SharedDtor();
+}
+
+void DeviceEvent::SharedDtor() {
+  if (has_events()) {
+    clear_events();
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void DeviceEvent::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* DeviceEvent::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return DeviceEvent_descriptor_;
+}
+
+const DeviceEvent& DeviceEvent::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
+  return *default_instance_;
+}
+
+DeviceEvent* DeviceEvent::default_instance_ = NULL;
+
+DeviceEvent* DeviceEvent::New(::google::protobuf::Arena* arena) const {
+  DeviceEvent* n = new DeviceEvent;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void DeviceEvent::clear_events() {
+// @@protoc_insertion_point(one_of_clear_start:NullSpaceIPC.DeviceEvent)
+  switch(events_case()) {
+    case kEnableTracking: {
+      delete events_.enable_tracking_;
+      break;
+    }
+    case kDisableTracking: {
+      delete events_.disable_tracking_;
+      break;
+    }
+    case EVENTS_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = EVENTS_NOT_SET;
+}
+
+
+void DeviceEvent::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.DeviceEvent)
+  device_ = 0u;
+  clear_events();
+}
+
+bool DeviceEvent::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.DeviceEvent)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional uint32 device = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &device_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(130)) goto parse_enable_tracking;
+        break;
+      }
+
+      // optional .NullSpaceIPC.EnableTracking enable_tracking = 16;
+      case 16: {
+        if (tag == 130) {
+         parse_enable_tracking:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_enable_tracking()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(138)) goto parse_disable_tracking;
+        break;
+      }
+
+      // optional .NullSpaceIPC.DisableTracking disable_tracking = 17;
+      case 17: {
+        if (tag == 138) {
+         parse_disable_tracking:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_disable_tracking()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.DeviceEvent)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.DeviceEvent)
+  return false;
+#undef DO_
+}
+
+void DeviceEvent::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.DeviceEvent)
+  // optional uint32 device = 1;
+  if (this->device() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->device(), output);
+  }
+
+  // optional .NullSpaceIPC.EnableTracking enable_tracking = 16;
+  if (has_enable_tracking()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      16, *events_.enable_tracking_, output);
+  }
+
+  // optional .NullSpaceIPC.DisableTracking disable_tracking = 17;
+  if (has_disable_tracking()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      17, *events_.disable_tracking_, output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.DeviceEvent)
+}
+
+::google::protobuf::uint8* DeviceEvent::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.DeviceEvent)
+  // optional uint32 device = 1;
+  if (this->device() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->device(), target);
+  }
+
+  // optional .NullSpaceIPC.EnableTracking enable_tracking = 16;
+  if (has_enable_tracking()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        16, *events_.enable_tracking_, false, target);
+  }
+
+  // optional .NullSpaceIPC.DisableTracking disable_tracking = 17;
+  if (has_disable_tracking()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        17, *events_.disable_tracking_, false, target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.DeviceEvent)
+  return target;
+}
+
+int DeviceEvent::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.DeviceEvent)
+  int total_size = 0;
+
+  // optional uint32 device = 1;
+  if (this->device() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->device());
+  }
+
+  switch (events_case()) {
+    // optional .NullSpaceIPC.EnableTracking enable_tracking = 16;
+    case kEnableTracking: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *events_.enable_tracking_);
+      break;
+    }
+    // optional .NullSpaceIPC.DisableTracking disable_tracking = 17;
+    case kDisableTracking: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *events_.disable_tracking_);
+      break;
+    }
+    case EVENTS_NOT_SET: {
+      break;
+    }
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void DeviceEvent::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.DeviceEvent)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const DeviceEvent* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const DeviceEvent>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.DeviceEvent)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.DeviceEvent)
+    MergeFrom(*source);
+  }
+}
+
+void DeviceEvent::MergeFrom(const DeviceEvent& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.DeviceEvent)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  switch (from.events_case()) {
+    case kEnableTracking: {
+      mutable_enable_tracking()->::NullSpaceIPC::EnableTracking::MergeFrom(from.enable_tracking());
+      break;
+    }
+    case kDisableTracking: {
+      mutable_disable_tracking()->::NullSpaceIPC::DisableTracking::MergeFrom(from.disable_tracking());
+      break;
+    }
+    case EVENTS_NOT_SET: {
+      break;
+    }
+  }
+  if (from.device() != 0) {
+    set_device(from.device());
+  }
+}
+
+void DeviceEvent::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.DeviceEvent)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void DeviceEvent::CopyFrom(const DeviceEvent& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.DeviceEvent)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DeviceEvent::IsInitialized() const {
+
+  return true;
+}
+
+void DeviceEvent::Swap(DeviceEvent* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void DeviceEvent::InternalSwap(DeviceEvent* other) {
+  std::swap(device_, other->device_);
+  std::swap(events_, other->events_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata DeviceEvent::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = DeviceEvent_descriptor_;
+  metadata.reflection = DeviceEvent_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// DeviceEvent
+
+// optional uint32 device = 1;
+void DeviceEvent::clear_device() {
+  device_ = 0u;
+}
+ ::google::protobuf::uint32 DeviceEvent::device() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.DeviceEvent.device)
+  return device_;
+}
+ void DeviceEvent::set_device(::google::protobuf::uint32 value) {
+  
+  device_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.DeviceEvent.device)
+}
+
+// optional .NullSpaceIPC.EnableTracking enable_tracking = 16;
+bool DeviceEvent::has_enable_tracking() const {
+  return events_case() == kEnableTracking;
+}
+void DeviceEvent::set_has_enable_tracking() {
+  _oneof_case_[0] = kEnableTracking;
+}
+void DeviceEvent::clear_enable_tracking() {
+  if (has_enable_tracking()) {
+    delete events_.enable_tracking_;
+    clear_has_events();
+  }
+}
+ const ::NullSpaceIPC::EnableTracking& DeviceEvent::enable_tracking() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.DeviceEvent.enable_tracking)
+  return has_enable_tracking()
+      ? *events_.enable_tracking_
+      : ::NullSpaceIPC::EnableTracking::default_instance();
+}
+::NullSpaceIPC::EnableTracking* DeviceEvent::mutable_enable_tracking() {
+  if (!has_enable_tracking()) {
+    clear_events();
+    set_has_enable_tracking();
+    events_.enable_tracking_ = new ::NullSpaceIPC::EnableTracking;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.DeviceEvent.enable_tracking)
+  return events_.enable_tracking_;
+}
+::NullSpaceIPC::EnableTracking* DeviceEvent::release_enable_tracking() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.DeviceEvent.enable_tracking)
+  if (has_enable_tracking()) {
+    clear_has_events();
+    ::NullSpaceIPC::EnableTracking* temp = events_.enable_tracking_;
+    events_.enable_tracking_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void DeviceEvent::set_allocated_enable_tracking(::NullSpaceIPC::EnableTracking* enable_tracking) {
+  clear_events();
+  if (enable_tracking) {
+    set_has_enable_tracking();
+    events_.enable_tracking_ = enable_tracking;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.DeviceEvent.enable_tracking)
+}
+
+// optional .NullSpaceIPC.DisableTracking disable_tracking = 17;
+bool DeviceEvent::has_disable_tracking() const {
+  return events_case() == kDisableTracking;
+}
+void DeviceEvent::set_has_disable_tracking() {
+  _oneof_case_[0] = kDisableTracking;
+}
+void DeviceEvent::clear_disable_tracking() {
+  if (has_disable_tracking()) {
+    delete events_.disable_tracking_;
+    clear_has_events();
+  }
+}
+ const ::NullSpaceIPC::DisableTracking& DeviceEvent::disable_tracking() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.DeviceEvent.disable_tracking)
+  return has_disable_tracking()
+      ? *events_.disable_tracking_
+      : ::NullSpaceIPC::DisableTracking::default_instance();
+}
+::NullSpaceIPC::DisableTracking* DeviceEvent::mutable_disable_tracking() {
+  if (!has_disable_tracking()) {
+    clear_events();
+    set_has_disable_tracking();
+    events_.disable_tracking_ = new ::NullSpaceIPC::DisableTracking;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.DeviceEvent.disable_tracking)
+  return events_.disable_tracking_;
+}
+::NullSpaceIPC::DisableTracking* DeviceEvent::release_disable_tracking() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.DeviceEvent.disable_tracking)
+  if (has_disable_tracking()) {
+    clear_has_events();
+    ::NullSpaceIPC::DisableTracking* temp = events_.disable_tracking_;
+    events_.disable_tracking_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void DeviceEvent::set_allocated_disable_tracking(::NullSpaceIPC::DisableTracking* disable_tracking) {
+  clear_events();
+  if (disable_tracking) {
+    set_has_disable_tracking();
+    events_.disable_tracking_ = disable_tracking;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.DeviceEvent.disable_tracking)
+}
+
+bool DeviceEvent::has_events() const {
+  return events_case() != EVENTS_NOT_SET;
+}
+void DeviceEvent::clear_has_events() {
+  _oneof_case_[0] = EVENTS_NOT_SET;
+}
+DeviceEvent::EventsCase DeviceEvent::events_case() const {
+  return DeviceEvent::EventsCase(_oneof_case_[0]);
+}
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int HighLevelEvent::kParentIdFieldNumber;
 const int HighLevelEvent::kPlaybackEventFieldNumber;
 const int HighLevelEvent::kLocationalEventFieldNumber;
+const int HighLevelEvent::kDeviceEventFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 HighLevelEvent::HighLevelEvent()
@@ -3689,6 +4598,7 @@ void HighLevelEvent::InitAsDefaultInstance() {
   _is_default_instance_ = true;
   HighLevelEvent_default_oneof_instance_->playback_event_ = const_cast< ::NullSpaceIPC::PlaybackEvent*>(&::NullSpaceIPC::PlaybackEvent::default_instance());
   HighLevelEvent_default_oneof_instance_->locational_event_ = const_cast< ::NullSpaceIPC::LocationalEvent*>(&::NullSpaceIPC::LocationalEvent::default_instance());
+  HighLevelEvent_default_oneof_instance_->device_event_ = const_cast< ::NullSpaceIPC::DeviceEvent*>(&::NullSpaceIPC::DeviceEvent::default_instance());
 }
 
 HighLevelEvent::HighLevelEvent(const HighLevelEvent& from)
@@ -3755,6 +4665,10 @@ void HighLevelEvent::clear_events() {
       delete events_.locational_event_;
       break;
     }
+    case kDeviceEvent: {
+      delete events_.device_event_;
+      break;
+    }
     case EVENTS_NOT_SET: {
       break;
     }
@@ -3815,6 +4729,19 @@ bool HighLevelEvent::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(34)) goto parse_device_event;
+        break;
+      }
+
+      // optional .NullSpaceIPC.DeviceEvent device_event = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_device_event:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_device_event()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -3860,6 +4787,12 @@ void HighLevelEvent::SerializeWithCachedSizes(
       3, *events_.locational_event_, output);
   }
 
+  // optional .NullSpaceIPC.DeviceEvent device_event = 4;
+  if (has_device_event()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, *events_.device_event_, output);
+  }
+
   // @@protoc_insertion_point(serialize_end:NullSpaceIPC.HighLevelEvent)
 }
 
@@ -3883,6 +4816,13 @@ void HighLevelEvent::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         3, *events_.locational_event_, false, target);
+  }
+
+  // optional .NullSpaceIPC.DeviceEvent device_event = 4;
+  if (has_device_event()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        4, *events_.device_event_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.HighLevelEvent)
@@ -3913,6 +4853,13 @@ int HighLevelEvent::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *events_.locational_event_);
+      break;
+    }
+    // optional .NullSpaceIPC.DeviceEvent device_event = 4;
+    case kDeviceEvent: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *events_.device_event_);
       break;
     }
     case EVENTS_NOT_SET: {
@@ -3954,6 +4901,10 @@ void HighLevelEvent::MergeFrom(const HighLevelEvent& from) {
     }
     case kLocationalEvent: {
       mutable_locational_event()->::NullSpaceIPC::LocationalEvent::MergeFrom(from.locational_event());
+      break;
+    }
+    case kDeviceEvent: {
+      mutable_device_event()->::NullSpaceIPC::DeviceEvent::MergeFrom(from.device_event());
       break;
     }
     case EVENTS_NOT_SET: {
@@ -4115,6 +5066,54 @@ void HighLevelEvent::set_allocated_locational_event(::NullSpaceIPC::LocationalEv
     events_.locational_event_ = locational_event;
   }
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.locational_event)
+}
+
+// optional .NullSpaceIPC.DeviceEvent device_event = 4;
+bool HighLevelEvent::has_device_event() const {
+  return events_case() == kDeviceEvent;
+}
+void HighLevelEvent::set_has_device_event() {
+  _oneof_case_[0] = kDeviceEvent;
+}
+void HighLevelEvent::clear_device_event() {
+  if (has_device_event()) {
+    delete events_.device_event_;
+    clear_has_events();
+  }
+}
+ const ::NullSpaceIPC::DeviceEvent& HighLevelEvent::device_event() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.device_event)
+  return has_device_event()
+      ? *events_.device_event_
+      : ::NullSpaceIPC::DeviceEvent::default_instance();
+}
+::NullSpaceIPC::DeviceEvent* HighLevelEvent::mutable_device_event() {
+  if (!has_device_event()) {
+    clear_events();
+    set_has_device_event();
+    events_.device_event_ = new ::NullSpaceIPC::DeviceEvent;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.device_event)
+  return events_.device_event_;
+}
+::NullSpaceIPC::DeviceEvent* HighLevelEvent::release_device_event() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.device_event)
+  if (has_device_event()) {
+    clear_has_events();
+    ::NullSpaceIPC::DeviceEvent* temp = events_.device_event_;
+    events_.device_event_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void HighLevelEvent::set_allocated_device_event(::NullSpaceIPC::DeviceEvent* device_event) {
+  clear_events();
+  if (device_event) {
+    set_has_device_event();
+    events_.device_event_ = device_event;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.device_event)
 }
 
 bool HighLevelEvent::has_events() const {

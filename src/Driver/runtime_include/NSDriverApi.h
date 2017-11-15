@@ -72,6 +72,8 @@ extern "C" {
 	HVR_RETURN(int) hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui* api);
 	HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id pluginId);
 
+
+
 	typedef struct hvr_quaternion {
 		float w;
 		float x;

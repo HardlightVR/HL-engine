@@ -71,3 +71,4 @@ HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id 
 	return 1;
 }
 
+

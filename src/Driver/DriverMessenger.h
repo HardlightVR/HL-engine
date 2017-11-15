@@ -9,10 +9,7 @@
 #include "SharedCommunication\OwnedWritableSharedMap.h"
 #include "SharedCommunication\OwnedWritableSharedVector.h"
 #include "SharedCommunication\SharedTypes.h"
-#include "protobuff_defs/EffectCommand.pb.h"
-#include "protobuff_defs/DriverCommand.pb.h"
 #include "protobuff_defs/HighLevelEvent.pb.h"
-#include "protobuff_defs/DeviceEvent.pb.h"
 
 
 #include <boost/asio/deadline_timer.hpp>
@@ -31,9 +28,9 @@ public:
 	void RemoveNode(uint64_t id);
 	void RemoveDevice(uint32_t id);
 	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
-	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
+//	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
-	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();
+//	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();
 	void Disconnect();
 private:
 	std::function<void(void const* data, std::size_t length)> _process;

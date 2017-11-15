@@ -20,10 +20,10 @@ namespace NullSpaceIPC {
 	class PlaybackEvent;
 	class LocationalEvent;
 	class SimpleHaptic;
-	class ContinuousHaptic;
 	class BeginAnalogAudio;
 	class EndAnalogAudio;
 	class BufferedHaptic;
+	class DeviceEvent;
 
 }
 
@@ -39,7 +39,6 @@ public:
 	);
 	using TrackingHandler = std::function<void(nsvr_region, nsvr_quaternion*)>;
 
-
 	void SetTracking(std::unique_ptr<HardwareTracking> tracking);
 	void SetHaptics(std::unique_ptr<HardwareHapticInterface> haptics);
 	void SetPlayback(std::unique_ptr<HardwarePlaybackController> playback);
@@ -50,7 +49,7 @@ public:
 
 
 
-	
+	void Deliver(const NullSpaceIPC::DeviceEvent& deviceEvent);
 	void Deliver(uint64_t eventId, const NullSpaceIPC::LocationalEvent&, const std::vector<nsvr_region>& regions);
 	void Deliver(uint64_t eventId, const NullSpaceIPC::LocationalEvent&, const::std::vector<NodeId<local>>& nodes);
 	void Deliver(uint64_t eventId, const NullSpaceIPC::PlaybackEvent&);
@@ -66,6 +65,8 @@ public:
 	std::vector<std::pair<nsvr_region, RenderedNode>> RenderVisualizer();
 private:
 
+	void enableTracking();
+	void disableTracking();
 
 
 	void handle(uint64_t event_id, const NullSpaceIPC::PlaybackEvent& playbackEvent);
@@ -77,7 +78,6 @@ private:
 
 
 	//a temporary measure until we use NodeId<local> consistently?
-	void handle(uint64_t eventId, const NullSpaceIPC::ContinuousHaptic& event, const std::vector<nsvr_node_id>& targetNodes);
 	void handle(uint64_t eventId, const NullSpaceIPC::SimpleHaptic& event, const std::vector<nsvr_node_id>& targetNodes);
 	void handle(uint64_t event_id, const NullSpaceIPC::BeginAnalogAudio& event, const std::vector<nsvr_node_id>& targetNodes);
 	void handle(uint64_t event_id, const NullSpaceIPC::EndAnalogAudio& event, const std::vector<nsvr_node_id>& targetNodes);
