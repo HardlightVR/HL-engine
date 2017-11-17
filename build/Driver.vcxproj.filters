@@ -169,6 +169,8 @@
     <ClInclude Include="..\src\Driver\subregion.h" />
     <ClInclude Include="..\src\Driver\subregion_utils.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
+    <ClInclude Include="..\src\Driver\WinReg.h" />
+    <ClInclude Include="..\src\Driver\BoostIPCSharedMemoryDirectory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />

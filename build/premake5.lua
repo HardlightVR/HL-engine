@@ -260,7 +260,7 @@ project "HardlightMkIII"
 	nsvr_core_win32_executable_debug = "../build/bin/Debug/UnitTestWin32"
 	nsvr_core_win32_executable_release = "../build/bin/Release/UnitTestWin32"
 
-	defines {"BOOST_THREAD_USE_LIB"}
+	defines {"BOOST_THREAD_USE_LIB", "BOOST_INTERPROCESS_SHARED_DIR_FUNC"}
 
 	filter {"files:**.pb.cc or files:main.cpp"}
 		flags {'NoPCH'}
