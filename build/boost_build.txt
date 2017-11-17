@@ -1,0 +1,2 @@
+b2 stage address-model=64 architecture=x86 link=static threading=multi --build-type=complete --build-dir=build/x64 toolset=msvc-14.0 --stagedir=stage/win64
+b2 stage address-model=32 architecture=x86 link=static threading=multi --build-type=complete --build-dir=build/x86 toolset=msvc-14.0 --stagedir=stage/win32

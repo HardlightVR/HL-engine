@@ -290,7 +290,6 @@
     <ClInclude Include="..\src\Driver\BodyGraph.h" />
     <ClInclude Include="..\src\Driver\BodyGraphCreator.h" />
     <ClInclude Include="..\src\Driver\BodyRegion.h" />
-    <ClInclude Include="..\src\Driver\BoostIPCSharedMemoryDirectory.h" />
     <ClInclude Include="..\src\Driver\Device.h" />
     <ClInclude Include="..\src\Driver\DeviceBuilder.h" />
     <ClInclude Include="..\src\Driver\DeviceContainer.h" />
@@ -336,6 +335,7 @@
     <ClInclude Include="..\src\Driver\PresetWaveform.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
     <ClInclude Include="..\src\Driver\RenderedRegion.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\BoostIPCSharedMemoryDirectory.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedMap.h" />
