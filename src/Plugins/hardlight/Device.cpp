@@ -235,14 +235,6 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 
 	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->state()].c_str());
 	
-	
-	if (ui->button("TRACKING_ENABLE")) {
-		m_firmware->EnableTracking();
-	}
-	if (ui->button("TRACKING_DISABLE")) {
-		m_firmware->DisableTracking();
-	}
-
 	if (ui->button("GET_TRACK_STATUS")) {
 		m_firmware->RequestTrackingStatus();
 	}
