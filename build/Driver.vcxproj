@@ -139,8 +139,8 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BOOST_INTERPROCESS_SHARED_DIR_FUNC;NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_65_1;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -151,7 +151,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libprotobufd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Debug;D:\Libraries\boost\boost_1_61_0\stage\win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Libraries\boost\boost_1_65_1\stage\win32\lib;D:\protobuf-3.0.0\cmake\build\solution\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Debug\Win32\HardlightPlatform.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -164,7 +164,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_INTERPROCESS_SHARED_DIR_FUNC;NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -188,7 +188,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_INTERPROCESS_SHARED_DIR_FUNC;NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;DEBUG;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -210,8 +210,8 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BOOST_INTERPROCESS_SHARED_DIR_FUNC;NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_65_1;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -225,7 +225,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Release;D:\Libraries\boost\boost_1_61_0\stage\win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Release;D:\Libraries\boost\boost_1_65_1\stage\win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\Release\Win32\HardlightPlatform.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -238,7 +238,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BOOST_INTERPROCESS_SHARED_DIR_FUNC;NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -265,8 +265,8 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PreprocessorDefinitions>NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_61_0;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BOOST_INTERPROCESS_SHARED_DIR_FUNC;NS_DRIVER_EXPORTS;NSVR_BUILDING_CORE;BOOST_THREAD_USE_LIB;WIN32;_WIN32_WINNT=0x0A00;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\protobuf-3.0.0\cmake\build\solution\include;..\src\Driver\SharedCommunication;D:\Libraries\boost\boost_1_65_1;..\src\Driver\include;..\src\Driver\events_impl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -280,7 +280,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Release;D:\Libraries\boost\boost_1_61_0\stage\win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\protobuf-3.0.0\cmake\build\solution\Release;D:\Libraries\boost\boost_1_65_1\stage\win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
@@ -335,6 +335,7 @@
     <ClInclude Include="..\src\Driver\PresetWaveform.h" />
     <ClInclude Include="..\src\Driver\Renderable.h" />
     <ClInclude Include="..\src\Driver\RenderedRegion.h" />
+    <ClInclude Include="..\src\Driver\SharedCommunication\BoostIPCSharedMemoryDirectory.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\Effects.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedMap.h" />
@@ -378,6 +379,7 @@
     <ClInclude Include="..\src\Driver\subregion.h" />
     <ClInclude Include="..\src\Driver\subregion_utils.h" />
     <ClInclude Include="..\src\Driver\targetver.h" />
+    <ClInclude Include="..\src\Driver\WinReg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />

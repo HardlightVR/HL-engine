@@ -4,6 +4,7 @@
 #include "runtime_include/NSDriverApi.h"
 #include "logger.h"
 
+#include "BoostIPCSharedMemoryDirectory.h"
 
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	_running{true},
