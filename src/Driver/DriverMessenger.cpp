@@ -17,7 +17,6 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 
 	OwnedReadableSharedQueue::remove("ns-haptics-data");
 	OwnedWritableSharedQueue::remove("ns-logging-data");
-	OwnedReadableSharedQueue::remove("ns-command-data");
 	WritableSharedObject<NullSpace::SharedMemory::SentinelObject>::remove("ns-sentinel");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>::remove("ns-node-mem");
@@ -37,7 +36,6 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-data", regionPairSize*numberOfSystemsUpperBound*averageNodesPerSystem);
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
-	m_commandStream = std::make_unique<OwnedReadableSharedQueue>("ns-command-data",/* max elements */  512, /*max element byte size*/ 512);
 	static_assert(sizeof(std::time_t) == 8, "Time is wrong size");
 	
 	m_sentinel = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>> ("ns-sentinel");

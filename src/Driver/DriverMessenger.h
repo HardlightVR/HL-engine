@@ -28,9 +28,7 @@ public:
 	void RemoveNode(uint64_t id);
 	void RemoveDevice(uint32_t id);
 	void WriteBodyView(NullSpace::SharedMemory::RegionPair data);
-//	boost::optional<std::vector<NullSpaceIPC::EffectCommand>> ReadHaptics();
 	boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> ReadEvents();
-//	boost::optional<std::vector<NullSpaceIPC::DriverCommand>> ReadCommands();
 	void Disconnect();
 private:
 	std::function<void(void const* data, std::size_t length)> _process;
@@ -50,8 +48,6 @@ private:
 	std::unique_ptr<OwnedWritableSharedQueue> m_loggingStream;
 
 	std::unique_ptr<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>> m_sentinel;
-
-	std::unique_ptr<OwnedReadableSharedQueue> m_commandStream;
 
 	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::TaggedQuaternion>> m_tracking;
 
