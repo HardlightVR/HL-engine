@@ -346,6 +346,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\Plugins\hardlight\version.rc2" />
+    <ResourceCompile Include="..\src\Plugins\hardlight\version.rc2" />
   </ItemGroup>
 </Project>

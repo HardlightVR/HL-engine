@@ -43,6 +43,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\src\Plugins\openvr\version.rc2" />
+    <ResourceCompile Include="..\src\Plugins\openvr\version.rc2" />
   </ItemGroup>
 </Project>
