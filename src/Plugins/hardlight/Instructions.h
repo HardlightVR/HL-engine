@@ -47,7 +47,7 @@ BETTER_ENUM(Id, uint8_t,
 template<typename T>
 struct param {
 	uint8_t value;
-	param(uint8_t val) : value(val) {}
+	explicit param(uint8_t val) : value(val) {}
 };
 
 #define PARAM(name) struct name##_t {}; using name = param<name##_t>
@@ -115,6 +115,9 @@ INST(Id::SET_MOTOR_PLAY_RTP, set_motor_play_rtp, motor, volume);
 INST(Id::GET_TRACK_STATUS, get_track_status, sensor);
 INST(Id::SET_TRACK_ENABLE, set_track_enable);
 INST(Id::SET_TRACK_DISABLE, set_track_disable);
+INST(Id::GET_TRACK_GRAVITY, get_track_gravity, sensor);
+INST(Id::GET_TRACK_MAG, get_track_compass, sensor);
+INST(Id::GET_TRACK_DATA, get_track_data, sensor);
 
 template<typename Instruction>
 std::vector<uint8_t> Build(const Instruction & instruction)

@@ -62,7 +62,7 @@ public:
 		}
 	}
 
-	T Get(std::size_t index) {
+	T Get(std::size_t index) const {
 		MutexGuard guard(m_mutex);
 		auto element = m_vector->at(index);
 		return element;
@@ -115,6 +115,12 @@ public:
 			return boost::none;
 		}
 		
+	}
+
+	void Mutate(std::size_t index, std::function<void(T&)> mut) {
+		MutexGuard guard(m_mutex);
+
+		mut(m_vector->at(index));
 	}
 
 	~OwnedWritableSharedVector() {

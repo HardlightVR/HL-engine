@@ -118,6 +118,15 @@ int Device::Configure(nsvr_core* core)
 	tracking_api.endstreaming_handler = [](nsvr_node_id region, void* client_data) {
 		AS_TYPE(Device, client_data)->EndTracking(region);
 	};
+	tracking_api.getcompass_handler = [](nsvr_node_id region, void* client_data) {
+		AS_TYPE(Device, client_data)->RequestCompass(region);
+	};
+	tracking_api.getgravity_handler = [](nsvr_node_id region, void* client_data) {
+		AS_TYPE(Device, client_data)->RequestGravity(region);
+	};
+	tracking_api.pollonce_handler = [](nsvr_node_id region, void* client_data) {
+		AS_TYPE(Device, client_data)->RequestTracking(region);
+	};
 	tracking_api.client_data = this;
 	nsvr_register_tracking_api(core, &tracking_api);
 	
@@ -379,6 +388,21 @@ void Device::Update()
 
 	m_firmware->Execute(singleDeferredCommand);
 
+}
+
+void Device::RequestCompass(nsvr_node_id)
+{
+	m_firmware->RequestTrackingCompass();
+}
+
+void Device::RequestGravity(nsvr_node_id)
+{
+	m_firmware->RequestTrackingGravity();
+}
+
+void Device::RequestTracking(nsvr_node_id)
+{
+	m_firmware->RequestTrackingData();
 }
 
 void Device::PushDeferred(FirmwareCommand command)

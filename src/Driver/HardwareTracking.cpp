@@ -9,14 +9,8 @@ HardwareTracking::HardwareTracking(tracking_api * tracking_api)
 void HardwareTracking::BeginStreaming(NodeId<local> whichNode)
 {
 	m_streams[whichNode] = stream { 
-		[=](nsvr_quaternion* quat) {
+		[=](tracking_value quat) {
 			m_trackingQuaternionCb(whichNode, quat);
-		},
-		[=] (nsvr_vector3* compass) {
-			m_trackingCompassCb(whichNode, compass);
-		},
-		[=](nsvr_vector3* gravity) {
-			m_trackingGravityCb(whichNode, gravity);
 		}
 	};
 
@@ -28,18 +22,22 @@ void HardwareTracking::EndStreaming(NodeId<local> whichNode)
 	m_api->submit_endstreaming(whichNode.value);
 }
 
-void HardwareTracking::OnTrackingQuaternion(std::function<void(NodeId<local>, nsvr_quaternion*)> handler)
+void HardwareTracking::RequestCompass(NodeId<local> whichNode)
+{
+	m_api->submit_getcompass(whichNode.value);
+}
+
+void HardwareTracking::RequestGravity(NodeId<local> whichNode)
+{
+	m_api->submit_getgravity(whichNode.value);
+}
+
+void HardwareTracking::RequestTracking(NodeId<local> whichNode)
+{
+	m_api->submit_pollonce(whichNode.value);
+}
+
+void HardwareTracking::OnTrackingUpdate(std::function<void(NodeId<local>, tracking_value)> handler)
 {
 	m_trackingQuaternionCb = std::move(handler);
 }
-
-void HardwareTracking::OnTrackingCompass(std::function<void(NodeId<local>, nsvr_vector3*)> handler)
-{
-	m_trackingCompassCb = std::move(handler);
-}
-
-void HardwareTracking::OnTrackingGravity(std::function<void(NodeId<local>, nsvr_vector3*)> handler)
-{
-	m_trackingGravityCb = std::move(handler);
-}
-

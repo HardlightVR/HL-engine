@@ -300,6 +300,7 @@
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
+    <ClInclude Include="..\src\Driver\DriverToSharedMem.h" />
     <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
@@ -357,7 +358,6 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\shared_data.h" />
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
-    <ClInclude Include="..\src\Driver\TrackingProvider.h" />
     <ClInclude Include="..\src\Driver\TrackingStream.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />

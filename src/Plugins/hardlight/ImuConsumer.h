@@ -33,7 +33,10 @@ public:
 	std::vector<ImuInfo> GetInfo() const;
 private:
 	void consumeDataPacket(Packet Packet);
-	void ImuConsumer::consumeStatusPacket(Packet packet);
+	void consumeStatusPacket(Packet packet);
+	void consumeCompassPacket(Packet packet);
+	void consumeGravityPacket(Packet packet);
+
 	std::unordered_map<Imu, nsvr_quaternion> m_quaternions;
 	nsvr_quaternion parseQuaternion(const uint8_t* rec) const;
 	std::unordered_map<uint32_t, Mapping> m_mapping;

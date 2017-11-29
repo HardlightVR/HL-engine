@@ -22,7 +22,9 @@ class DriverMessenger
 public:
 	using DataCallback = std::function<void(void const* data, std::size_t length)>;
 	DriverMessenger(boost::asio::io_service& io);
-	void WriteTracking(uint32_t, const NullSpace::SharedMemory::Quaternion& quat);
+	void WriteQuaternion(uint32_t, const NullSpace::SharedMemory::Quaternion& quat);
+	void WriteCompass(uint32_t, const NullSpace::SharedMemory::Vector3& vec);
+	void WriteGravity(uint32_t, const NullSpace::SharedMemory::Vector3& vec);
 	void WriteDevice(const DeviceInfo& s);
 	void WriteNode(const NodeInfo& node);
 	void RemoveNode(uint64_t id);
@@ -49,7 +51,7 @@ private:
 
 	std::unique_ptr<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>> m_sentinel;
 
-	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::TaggedQuaternion>> m_tracking;
+	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::TrackingData>> m_tracking;
 
 	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>> m_bodyView;
 	std::atomic<bool> _running;

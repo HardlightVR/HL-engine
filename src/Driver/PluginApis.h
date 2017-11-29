@@ -255,7 +255,10 @@ struct bodygraph_api : public plugin_api {
 struct tracking_api : public plugin_api {
 	tracking_api(nsvr_plugin_tracking_api* api)
 		: submit_beginstreaming{ api->beginstreaming_handler, api->client_data }
-		, submit_endstreaming{ api->endstreaming_handler, api->client_data } {}
+		, submit_endstreaming{ api->endstreaming_handler, api->client_data }
+		, submit_getgravity{ api->getgravity_handler, api->client_data }
+		, submit_getcompass{ api->getcompass_handler, api->client_data }
+		, submit_pollonce{ api->pollonce_handler, api->client_data } {}
 
 	tracking_api() = default;
 	callback<
@@ -268,6 +271,21 @@ struct tracking_api : public plugin_api {
 		nsvr_plugin_tracking_api::nsvr_tracking_endstreaming,
 		nsvr_node_id
 	> submit_endstreaming;
+
+	callback<
+		nsvr_plugin_tracking_api::nsvr_tracking_getcompass,
+		nsvr_node_id
+	> submit_getcompass;
+
+	callback<
+		nsvr_plugin_tracking_api::nsvr_tracking_getgravity,
+		nsvr_node_id
+	> submit_getgravity;
+
+	callback<
+		nsvr_plugin_tracking_api::nsvr_tracking_pollonce,
+		nsvr_node_id
+	> submit_pollonce;
 
 	static Apis getApiType() { return Apis::Tracking; }
 };

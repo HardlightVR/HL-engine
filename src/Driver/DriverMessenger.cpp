@@ -3,7 +3,6 @@
 #include "DriverMessenger.h"
 #include "runtime_include/NSDriverApi.h"
 #include "logger.h"
-
 #include "BoostIPCSharedMemoryDirectory.h"
 
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
@@ -21,7 +20,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>::remove("ns-bodyview-mem");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>::remove("ns-node-mem");
 	OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>::remove("ns-device-mem");
-	OwnedWritableSharedVector<NullSpace::SharedMemory::TaggedQuaternion>::remove("ns-tracking-mem");
+	OwnedWritableSharedVector<NullSpace::SharedMemory::TrackingData>::remove("ns-tracking-mem");
 	constexpr int systemInfoSize = sizeof(NullSpace::SharedMemory::DeviceInfo);
 	constexpr int nodeInfoSize = sizeof(NullSpace::SharedMemory::NodeInfo);
 
@@ -32,7 +31,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	m_nodes = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>>("ns-node-mem", "ns-node-data", nodeInfoSize * averageNodesPerSystem * numberOfSystemsUpperBound );
 
 	m_devices = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*numberOfSystemsUpperBound);
-	m_tracking = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::TaggedQuaternion>>("ns-tracking-mem", "ns-tracking-data", sizeof(NullSpace::SharedMemory::TaggedQuaternion) * 16 + 2048);
+	m_tracking = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::TrackingData>>("ns-tracking-mem", "ns-tracking-data", sizeof(NullSpace::SharedMemory::TrackingData) * 16 + 2048);
 	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-data", regionPairSize*numberOfSystemsUpperBound*averageNodesPerSystem);
 	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
 	m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
@@ -77,16 +76,49 @@ void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 	}
 }
 
-
+struct by_region {
+	by_region(uint32_t region) : region(region) {}
+	bool operator()(const NullSpace::SharedMemory::TrackingData& quat) {
+		return quat.region == region;
+	}
+	uint32_t region;
+};
 
 //Precondition: The keys were initialized already using Insert on m_tracking
-void DriverMessenger::WriteTracking(uint32_t region, const NullSpace::SharedMemory::Quaternion& quat)
+void DriverMessenger::WriteQuaternion(uint32_t region, const NullSpace::SharedMemory::Quaternion& quat)
 {
-	if (auto index = m_tracking->Find([region](const auto& taggedQuat) { return taggedQuat.region == region; })) {
-		m_tracking->Update(*index, NullSpace::SharedMemory::TaggedQuaternion{ region, quat });
+
+	if (auto index = m_tracking->Find(by_region(region))) {
+		m_tracking->Mutate(*index, [=](NullSpace::SharedMemory::TrackingData& existing) {
+			existing.quat = quat;
+		});
 	}
 	else {
-		m_tracking->Push(NullSpace::SharedMemory::TaggedQuaternion{ region, quat });
+		m_tracking->Push(NullSpace::SharedMemory::TrackingData::withQuat(region, quat));
+	}
+}
+
+void DriverMessenger::WriteCompass(uint32_t region, const NullSpace::SharedMemory::Vector3 & vec)
+{
+	if (auto index = m_tracking->Find(by_region(region))) {
+		m_tracking->Mutate(*index, [=](NullSpace::SharedMemory::TrackingData& existing) {
+			existing.compass = vec;
+		});
+	}
+	else {
+		m_tracking->Push(NullSpace::SharedMemory::TrackingData::withCompass(region, vec));
+	}
+}
+
+void DriverMessenger::WriteGravity(uint32_t region, const NullSpace::SharedMemory::Vector3 & vec)
+{
+	if (auto index = m_tracking->Find(by_region(region))) {
+		m_tracking->Mutate(*index, [=](NullSpace::SharedMemory::TrackingData& existing) {
+			existing.gravity = vec;
+		});
+	}
+	else {
+		m_tracking->Push(NullSpace::SharedMemory::TrackingData::withGrav(region, vec));
 	}
 }
 

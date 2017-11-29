@@ -80,7 +80,7 @@ struct DefaultTracking : public FakeInterface<tracking_api> {
 			hvr_quaternion quat = { 0 };
 			m_dataProvider(id, &quat);
 			nsvr_quaternion dupe{ quat.w, quat.x, quat.y, quat.z };
-			nsvr_tracking_stream_push(m_streams[id], &dupe);
+			nsvr_tracking_stream_push_quaternion(m_streams[id], &dupe);
 		}
 	}
 	

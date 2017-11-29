@@ -185,7 +185,7 @@ void Driver::handleTracking()
 	//
 	//m_cachedTracking = update;
 
-	//m_messenger.WriteTracking(update);
+	//m_messenger.WriteQuaternion(update);
 }
 
 void Driver::ProvideRenderingApi(hvr_diagnostics_ui * api)

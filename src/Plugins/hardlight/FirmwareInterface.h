@@ -44,6 +44,11 @@ public:
 	void PlayRtp(Location location, int strength);
 	void Ping();
 
+
+	void RequestTrackingData();
+	void RequestTrackingCompass();
+	void RequestTrackingGravity();
+
 	std::size_t GetTotalBytesSent() const;
 
 	const InstructionSet* GetInstructions() const;
@@ -66,6 +71,8 @@ private:
 
 	std::mutex m_packetLock;
 	
+
+	std::vector<uint8_t> m_imuIds;
 	
 };
 

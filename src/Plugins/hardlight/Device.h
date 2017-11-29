@@ -46,6 +46,10 @@ public:
 	void Render(nsvr_diagnostics_ui* ui);
 
 	void Update();
+
+	void RequestCompass(nsvr_node_id);
+	void RequestGravity(nsvr_node_id);
+	void RequestTracking(nsvr_node_id);
 private:
 
 	void PushDeferred(FirmwareCommand command);

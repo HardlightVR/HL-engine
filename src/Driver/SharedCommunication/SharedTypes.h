@@ -7,8 +7,10 @@ namespace NullSpace {
 	namespace SharedMemory {
 
 
-		//__declspec(align(8))
 		struct Quaternion {
+			Quaternion() : x(0), y(0), z(0), w(0) {}
+			Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+			
 			float x;
 			float y;
 			float z;
@@ -17,16 +19,47 @@ namespace NullSpace {
 
 		};
 
-	//	__declspec(align(8))
-		struct TaggedQuaternion {
+
+		struct Vector3 {
+			Vector3() : x(0), y(0), z(0) {}
+			Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+		
+			float x;
+			float y;
+			float z;
+		};
+
+		struct TrackingData {
+			static TrackingData withQuat(uint32_t region, Quaternion quat) {
+				return TrackingData{ region, quat, {}, {} };
+			}
+
+			static TrackingData withCompass(uint32_t region, Vector3 compass) {
+				return TrackingData{ region, {}, compass, {} };
+			}
+
+			static TrackingData withGrav(uint32_t region, Vector3 grav) {
+				return TrackingData{ region, {}, {}, grav };
+			}
 			uint32_t region;
 			Quaternion quat;
+			Vector3 compass;
+			Vector3 gravity;
 		};
 
 		struct TrackingUpdate {
 			Quaternion chest;
 			Quaternion left_upper_arm;
 			Quaternion right_upper_arm;
+
+			Vector3 chest_compass;
+			Vector3 chest_gravity;
+
+			Vector3 left_upper_arm_compass;
+			Vector3 left_upper_arm_gravity;
+
+			Vector3 right_upper_arm_compass;
+			Vector3 right_upper_arm_gravity;
 		};
 
 		enum DeviceStatus { Unknown, Connected, Disconnected };

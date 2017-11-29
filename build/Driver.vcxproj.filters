@@ -130,7 +130,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
-    <ClInclude Include="..\src\Driver\TrackingProvider.h" />
     <ClInclude Include="..\src\Driver\TrackingStream.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
@@ -173,6 +172,7 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\BoostIPCSharedMemoryDirectory.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Driver\DriverToSharedMem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />

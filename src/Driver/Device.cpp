@@ -24,7 +24,6 @@ Device::Device(
 	m_discoverer->Discover();
 	m_bodygraph->fetchDynamically();
 
-
 	
 
 }
@@ -34,6 +33,8 @@ void Device::enableTracking()
 	auto imus = m_discoverer->GetNodesOfType(nsvr_node_concept_inertial_tracker);
 	for (auto imu : imus) {
 		m_trackingProvider->BeginStreaming(NodeId<local>{imu});
+		m_trackingProvider->RequestCompass(NodeId<local>{imu});
+		m_trackingProvider->RequestGravity(NodeId<local>{imu});
 	}
 }
 
@@ -48,6 +49,7 @@ void Device::disableTracking()
 void Device::SetTracking(std::unique_ptr<HardwareTracking> tracking)
 {
 	m_trackingProvider = std::move(tracking);
+
 }
 
 void Device::SetHaptics(std::unique_ptr<HardwareHapticInterface> haptics)
@@ -190,7 +192,7 @@ std::string Device::parentPlugin() const
 
 void Device::OnReceiveTrackingUpdate(TrackingHandler handler)
 {
-	m_trackingProvider->OnUpdate([this, callback = handler](NodeId<local> node, nsvr_quaternion* quat) {
+	m_trackingProvider->OnTrackingUpdate([this, callback = handler](NodeId<local> node, HardwareTracking::tracking_value quat) {
 		const auto& regions = m_bodygraph->GetRegionsForNode(node.value);
 		for (const auto& region : regions) {
 			callback(region, quat);

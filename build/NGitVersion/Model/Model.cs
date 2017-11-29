@@ -39,7 +39,7 @@ namespace NGitVersion.Model
 
         public string Major          { get { return "1"; } } // TODO
         public string Minor          { get { return "0"; } } // TODO
-        public string Build          { get { return "1"; } } // TODO
+        public string Build          { get { return "2"; } } // TODO
 
         public string Revision       { get { return mRevision.Value; } }
         public string ShortHash      { get { return mShortHash.Value; } }

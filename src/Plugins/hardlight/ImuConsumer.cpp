@@ -7,15 +7,19 @@ ImuConsumer::ImuConsumer(PacketDispatcher &dispatcher):
 	m_mapping()
 {
 	dispatcher.AddConsumer(inst::Id::GET_TRACK_DATA, [&](Packet p) {
-	
-			this->consumeDataPacket(p);
-		
+		this->consumeDataPacket(p);
 	});
 
 	dispatcher.AddConsumer(inst::Id::GET_TRACK_STATUS, [&](Packet p) {
-		
-			this->consumeStatusPacket(p);
-		
+		this->consumeStatusPacket(p);
+	});
+
+	dispatcher.AddConsumer(inst::Id::GET_TRACK_GRAVITY, [&](Packet p) {
+		this->consumeGravityPacket(p);
+	});
+
+	dispatcher.AddConsumer(inst::Id::GET_TRACK_MAG, [&](Packet p) {
+		this->consumeCompassPacket(p);
 	});
 
 
@@ -58,6 +62,28 @@ void ImuConsumer::consumeStatusPacket(Packet packet) {
 		iter->second.status = static_cast<HL_Unit::_enumerated>(packet[3]);
 	}
 }
+void ImuConsumer::consumeCompassPacket(Packet packet)
+{
+	auto iter = m_mapping.find(packet[11]);
+	if (iter != m_mapping.end()) {
+		if (iter->second.stream) {
+			nsvr_quaternion q = parseQuaternion(packet.data());
+			nsvr_vector3 v{ q.w, q.x, q.y };
+			nsvr_tracking_stream_push_compass(iter->second.stream, &v);
+		}
+	}
+}
+void ImuConsumer::consumeGravityPacket(Packet packet)
+{
+	auto iter = m_mapping.find(packet[11]);
+	if (iter != m_mapping.end()) {
+		if (iter->second.stream) {
+			nsvr_quaternion q = parseQuaternion(packet.data());
+			nsvr_vector3 v{ q.w, q.x, q.y };
+			nsvr_tracking_stream_push_gravity(iter->second.stream, &v);
+		}
+	}
+}
 void ImuConsumer::consumeDataPacket(Packet packet)
 {
 
@@ -66,7 +92,7 @@ void ImuConsumer::consumeDataPacket(Packet packet)
 		m_quaternions[iter->second.imu] = parseQuaternion(packet.data());
 
 		if (iter->second.stream) {
-			nsvr_tracking_stream_push(iter->second.stream, &m_quaternions.at(iter->second.imu));
+			nsvr_tracking_stream_push_quaternion(iter->second.stream, &m_quaternions.at(iter->second.imu));
 		}
 	}
 }

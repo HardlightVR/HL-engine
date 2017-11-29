@@ -37,7 +37,7 @@ public:
 		std::unique_ptr<HardwareBodygraphCreator>,
 		std::unique_ptr<HardwareNodeEnumerator>
 	);
-	using TrackingHandler = std::function<void(nsvr_region, nsvr_quaternion*)>;
+	using TrackingHandler = std::function<void(nsvr_region, HardwareTracking::tracking_value)>;
 
 	void SetTracking(std::unique_ptr<HardwareTracking> tracking);
 	void SetHaptics(std::unique_ptr<HardwareHapticInterface> haptics);

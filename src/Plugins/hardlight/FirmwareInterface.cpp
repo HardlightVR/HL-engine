@@ -15,6 +15,7 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::shared_pt
 	, m_isBatching(false)
 	, m_totalBytesSent(0)
 	, m_packetLock()
+	, m_imuIds{ 0x3c, 0x3a, 0x39 }
 
 {
 
@@ -30,8 +31,7 @@ FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::shared_pt
 
 void FirmwareInterface::RequestTrackingStatus()
 {
-	std::vector<uint8_t> sensors = { 0x3c, 0x3a, 0x39 };
-	for (auto sensor : sensors) {
+	for (auto sensor : m_imuIds) {
 		queueInstruction(inst::get_track_status(inst::sensor(sensor)));
 	}
 }
@@ -114,6 +114,28 @@ void FirmwareInterface::Ping()
 {
 	queueInstruction(inst::get_ping());
 }
+
+void FirmwareInterface::RequestTrackingData()
+{
+	for (auto imu : m_imuIds) {
+		queueInstruction(inst::get_track_data(inst::sensor(imu)));
+	}
+}
+
+void FirmwareInterface::RequestTrackingCompass()
+{
+	for (auto imu : m_imuIds) {
+		queueInstruction(inst::get_track_compass(inst::sensor(imu)));
+	}
+}
+
+void FirmwareInterface::RequestTrackingGravity()
+{
+	for (auto imu : m_imuIds) {
+		queueInstruction(inst::get_track_gravity(inst::sensor(imu)));
+	}
+}
+
 
 
 

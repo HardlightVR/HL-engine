@@ -123,7 +123,7 @@ NSVR_CORE_RETURN(nsvr_result) nsvr_tracking_stream_push_quaternion(nsvr_tracking
 	RETURN_IF_NULL(quaternion);
 
 	return ExceptionGuard([stream, quaternion]() {
-		AS_TYPE(HardwareTracking::stream, stream)->deliver(quaternion);
+		AS_TYPE(HardwareTracking::stream, stream)->deliver(*quaternion);
 		return nsvr_success;
 	});
 }
@@ -133,7 +133,7 @@ NSVR_CORE_RETURN(int) nsvr_tracking_stream_push_gravity(nsvr_tracking_stream * s
 	RETURN_IF_NULL(stream);
 	RETURN_IF_NULL(gravity);
 	return ExceptionGuard([stream, gravity]() {
-		AS_TYPE(HardwareTracking::stream, stream)->deliverGravity(gravity);
+		AS_TYPE(HardwareTracking::stream, stream)->deliver(HardwareTracking::gravity_val{ *gravity });
 		return nsvr_success;
 	});
 }
@@ -143,7 +143,7 @@ NSVR_CORE_RETURN(int) nsvr_tracking_stream_push_compass(nsvr_tracking_stream * s
 	RETURN_IF_NULL(stream);
 	RETURN_IF_NULL(compass);
 	return ExceptionGuard([stream, compass]() {
-		AS_TYPE(HardwareTracking::stream, stream)->deliverCompass(compass);
+		AS_TYPE(HardwareTracking::stream, stream)->deliver(HardwareTracking::compass_val{ *compass });
 		return nsvr_success;
 	});
 }

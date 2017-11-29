@@ -7,7 +7,28 @@
 #include "SharedTypes.h"
 #include "logger.h"
 #include "DeviceIds.h"
+#include <boost/variant/static_visitor.hpp>
+#include "DriverToSharedMem.h"
 
+class tracking_writer : public boost::static_visitor<void> {
+public:
+	tracking_writer(uint32_t region, DriverMessenger& messenger) : region(region), messenger(messenger) {}
+
+	void operator()(const HardwareTracking::compass_val& compass) {
+		messenger.WriteCompass(region, DriverToShmem::from(compass.value));
+	}
+
+	void operator()(const HardwareTracking::gravity_val& grav) {
+		messenger.WriteGravity(region, DriverToShmem::from(grav.value));
+	}
+
+	void operator()(const HardwareTracking::quaternion_val& quat) {
+		messenger.WriteQuaternion(region, DriverToShmem::from(quat));
+	}
+private:
+	DriverMessenger& messenger;
+	uint32_t region;
+};
 HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMessenger& messenger, DeviceContainer& devices )
 	: m_devices(devices)
 	, m_messenger(messenger)
@@ -40,9 +61,9 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 			m_messenger.WriteNode(info);
 		});
 
-		device->OnReceiveTrackingUpdate([this](nsvr_region region, nsvr_quaternion* quat) {
-			NullSpace::SharedMemory::Quaternion q{ quat->x, quat->y, quat->z, quat->w };
-			m_messenger.WriteTracking(region, q);
+		device->OnReceiveTrackingUpdate([this](nsvr_region region, HardwareTracking::tracking_value val) {
+			tracking_writer visitor(region, m_messenger);
+			boost::apply_visitor(visitor, val);
 		});
 
 	});
@@ -66,12 +87,6 @@ HardwareCoordinator::HardwareCoordinator(boost::asio::io_service& io, DriverMess
 
 
 
-void HardwareCoordinator::writeTracking(nsvr_node_id node_id, nsvr_quaternion * quat)
-{
-	//todo: we need to actually take the quaternion arriving from the device and translate it to a region, based on the BodyGraph
-	//todo: we need synchronization
-	m_messenger.WriteTracking(node_id, NullSpace::SharedMemory::Quaternion{ quat->x, quat->y, quat->z, quat->w });
-}
 
 void HardwareCoordinator::writeBodyRepresentation()
 {
