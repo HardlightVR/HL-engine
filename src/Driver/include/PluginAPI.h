@@ -268,18 +268,32 @@ extern "C" {
 		float z;
 	} nsvr_quaternion;
 
+	typedef struct nsvr_vector3 {
+		float x;
+		float y;
+		float z;
+	} nsvr_vector3;
 	typedef struct nsvr_plugin_tracking_api {
 		//todo: must take device id as well
 		typedef void(*nsvr_tracking_beginstreaming)(nsvr_tracking_stream* stream, nsvr_node_id node_id, void* client_data);
 		typedef void(*nsvr_tracking_endstreaming)(nsvr_node_id node_id, void* client_data);
-
+		typedef void(*nsvr_tracking_pollonce)(nsvr_node_id node_id, void* client_data);
+		typedef void(*nsvr_tracking_getgravity)(nsvr_node_id node_id, void* client_data);
+		typedef void(*nsvr_tracking_getcompass)(nsvr_node_id node_id, void* client_data);
 		nsvr_tracking_beginstreaming beginstreaming_handler;
 		nsvr_tracking_endstreaming endstreaming_handler;
+		nsvr_tracking_pollonce pollonce_handler;
+		nsvr_tracking_getgravity getgravity_handler;
+		nsvr_tracking_getcompass getcompass_handler;
 		void* client_data;
 	} nsvr_plugin_tracking_api;
 
 	NSVR_CORE_RETURN(int) nsvr_register_tracking_api(nsvr_core* core, nsvr_plugin_tracking_api* api);
-	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
+	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push_quaternion(nsvr_tracking_stream* stream, nsvr_quaternion* quaternion);
+	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push_gravity(nsvr_tracking_stream* stream, nsvr_vector3* gravity);
+	NSVR_CORE_RETURN(int) nsvr_tracking_stream_push_compass(nsvr_tracking_stream* stream, nsvr_vector3* compass);
+
+
 
 
 
