@@ -72,18 +72,16 @@ int main()
 
 	std::cout << "========= NSVREngine Version " << HVR_VERSION_STRING << " =========\n";
 	hvr_platform* context = nullptr;
-	driver_create(&context);
-	driver_start(context);
-
-
-
-
-
-
-	std::cin.get();
-	driver_stop(context);
-	driver_destroy(&context);
-	assert(context == nullptr);
+	if (driver_create(&context) < 0) {
+		std::cout << "Engine had fatal error starting; check logs [enter to close]\n";
+		std::cin.get();
+	}
+	else {
+		driver_start(context);
+		std::cin.get();
+		driver_stop(context);
+		driver_destroy(&context);
+	}
 	return 0;
 }
 

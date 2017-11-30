@@ -237,6 +237,8 @@ extern "C" {
 	NSVR_CORE_RETURN(int) nsvr_register_waveform_api(nsvr_core* core, nsvr_plugin_waveform_api* api);
 
 
+	
+
 	//////////////////////////////
 	// Haptic Playback Controls //
 	//////////////////////////////

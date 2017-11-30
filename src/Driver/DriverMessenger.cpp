@@ -28,18 +28,23 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 	
 	constexpr int numberOfSystemsUpperBound = 32;
 	constexpr int averageNodesPerSystem = 32;
-	m_nodes = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>>("ns-node-mem", "ns-node-data", nodeInfoSize * averageNodesPerSystem * numberOfSystemsUpperBound );
+	try {
+		m_nodes = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::NodeInfo>>("ns-node-mem", "ns-node-data", nodeInfoSize * averageNodesPerSystem * numberOfSystemsUpperBound);
 
-	m_devices = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*numberOfSystemsUpperBound);
-	m_tracking = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::TrackingData>>("ns-tracking-mem", "ns-tracking-data", sizeof(NullSpace::SharedMemory::TrackingData) * 16 + 2048);
-	m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-data", regionPairSize*numberOfSystemsUpperBound*averageNodesPerSystem);
-	m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
-	m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
-	static_assert(sizeof(std::time_t) == 8, "Time is wrong size");
-	
-	m_sentinel = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>> ("ns-sentinel");
+		m_devices = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::DeviceInfo>>("ns-device-mem", "ns-device-data", systemInfoSize*numberOfSystemsUpperBound);
+		m_tracking = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::TrackingData>>("ns-tracking-mem", "ns-tracking-data", sizeof(NullSpace::SharedMemory::TrackingData) * 16 + 2048 /* extra bytes for storing the overhead of a vector*/);
+		m_bodyView = std::make_unique<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>>("ns-bodyview-mem", "ns-bodyview-data", regionPairSize*numberOfSystemsUpperBound*averageNodesPerSystem);
+		m_hapticsData = std::make_unique<OwnedReadableSharedQueue>("ns-haptics-data", /*max elements*/1024, /* max element byte size*/512);
+		m_loggingStream = std::make_unique<OwnedWritableSharedQueue>("ns-logging-data", /* max elements */ 512, /*max element byte size*/ 512);
+		static_assert(sizeof(std::time_t) == 8, "Time is wrong size");
 
+		m_sentinel = std::make_unique<WritableSharedObject<NullSpace::SharedMemory::SentinelObject>>("ns-sentinel");
 
+	}
+	catch (const boost::interprocess::interprocess_exception& ex) {
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_fatal) << "Unable to initialize shared memory bridge; shutting down!";
+		throw;
+	}
 
 	
 	startSentinel();

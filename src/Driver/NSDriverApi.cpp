@@ -17,8 +17,14 @@ HVR_RETURN(int) hvr_platform_create(hvr_platform** platform)
 	
 	initialize_logging();
 
-	*platform = AS_TYPE(hvr_platform, new Driver());
-	return 1;
+	try {
+		*platform = AS_TYPE(hvr_platform, new Driver());
+		return 1;
+
+	}
+	catch (const boost::interprocess::interprocess_exception&) {
+		return -1;
+	}
 }
 
 HVR_RETURN(void) hvr_platform_destroy(hvr_platform** ptr)

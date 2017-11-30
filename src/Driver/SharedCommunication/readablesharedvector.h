@@ -53,7 +53,6 @@ public:
 		return m_vector->size();
 	}
 
-	//todo: this needs to be synchronized somehow
 	T Get(std::size_t index) const {
 		MutexGuard guard(m_mutex);
 
