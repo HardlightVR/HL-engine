@@ -50,35 +50,43 @@ public:
 	}
 
 	void Push(const T& item) {
-		if (m_vector != nullptr) {
-			MutexGuard guard(m_mutex);
+		assert(m_vector != nullptr);
+		MutexGuard guard(m_mutex);
 
-			try {
-				m_vector->push_back(item);
-			}
-			catch (const std::exception&) {
-				//probably out of memory, do nothing
-			}
+		try {
+			m_vector->push_back(item);
 		}
+		catch (const std::exception&) {
+			//probably out of memory, do nothing
+		}
+
 	}
 
 	T Get(std::size_t index) const {
+		assert(m_vector != nullptr);
+
 		MutexGuard guard(m_mutex);
 		auto element = m_vector->at(index);
 		return element;
 	}
 	void Remove(std::function<bool(const T& item)> predicate) {
+		assert(m_vector != nullptr);
+
 		MutexGuard guard(m_mutex);
 		m_vector->erase(std::remove_if(m_vector->begin(), m_vector->end(), predicate), m_vector->end());
 	}
 
 	std::size_t size() const {
+		assert(m_vector != nullptr);
+
 		MutexGuard guard(m_mutex);
 
 		return m_vector->size();
 	}
 
 	void Update(std::size_t index, const T& item) {
+		assert(m_vector != nullptr);
+
 		MutexGuard guard(m_mutex);
 
 		if (m_vector != nullptr) {
@@ -94,6 +102,8 @@ public:
 	}
 
 	boost::optional<std::size_t> Find(std::function<bool(const T& item)> predicate)  const{
+		assert(m_vector != nullptr);
+
 		MutexGuard guard(m_mutex);
 
 		const auto it = std::find_if(m_vector->cbegin(), m_vector->cend(), predicate);
@@ -105,6 +115,8 @@ public:
 		}
 	}
 	boost::optional<std::size_t> Find(const T& item) const{
+		assert(m_vector != nullptr);
+
 		MutexGuard guard(m_mutex);
 
 		const auto it = std::find(m_vector->cbegin(), m_vector->cend(), item);
@@ -118,6 +130,8 @@ public:
 	}
 
 	void Mutate(std::size_t index, std::function<void(T&)> mut) {
+		assert(m_vector != nullptr);
+
 		MutexGuard guard(m_mutex);
 
 		mut(m_vector->at(index));

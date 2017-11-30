@@ -42,7 +42,7 @@ DriverMessenger::DriverMessenger(boost::asio::io_service& io):
 
 	}
 	catch (const boost::interprocess::interprocess_exception& ex) {
-		BOOST_LOG_SEV(clogger::get(), nsvr_severity_fatal) << "Unable to initialize shared memory bridge; shutting down!";
+		BOOST_LOG_SEV(clogger::get(), nsvr_severity_fatal) << "Unable to initialize shared memory bridge; shutting down! " << ex.what();
 		throw;
 	}
 
