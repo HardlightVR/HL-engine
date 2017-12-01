@@ -36,6 +36,7 @@ public:
 		//if (!m_segment.check_sanity()) {
 		//	throw boost::interprocess::interprocess_exception("Failed to open the shared memory for tracking");
 		//}
+		//Unsure, but I believe checking sanity used to cause access violations. It may still do so. 
 		m_vector = m_segment.find<TVector>(m_vecName.c_str()).first;
 		if (m_vector == 0) {
 			throw boost::interprocess::interprocess_exception("Failed to construct ReadableSharedVector memory");
@@ -53,40 +54,37 @@ public:
 		return m_vector->size();
 	}
 
+	//requires: Size() > index
 	T Get(std::size_t index) const {
 		MutexGuard guard(m_mutex);
-
-
 		assert(m_vector != nullptr);
-
-		return m_vector->at(static_cast<TVector::size_type>(index));
+		return (*m_vector)[static_cast<TVector::size_type>(index)];
 	}
-	boost::optional<std::size_t> Find(std::function<bool(const T& item)> predicate)  const {
-		MutexGuard guard(m_mutex);
+	
 
+	std::vector<T> ToVector() const {
+		MutexGuard guard(m_mutex);
+		assert(m_vector != nullptr);
+		std::vector<T> values;
+		values.reserve(m_vector->size());
+		for (auto it = m_vector->cbegin(); it != m_vector->cend(); ++it) {
+			values.push_back(*it);
+		}
+		return values;
+	}
+
+
+	boost::optional<T> Get(std::function<bool(const T& item)> predicate) const {
+		MutexGuard guard(m_mutex);
+		assert(m_vector != nullptr);
 		const auto it = std::find_if(m_vector->cbegin(), m_vector->cend(), predicate);
 		if (it != m_vector->cend()) {
-			return it - m_vector->cbegin();
+			return *it;
 		}
-		else {
-			return boost::none;
-		}
+		
+		return boost::none;
+	
 	}
-
-	boost::optional<std::size_t> Find(const T& item) const {
-		MutexGuard guard(m_mutex);
-
-		assert(m_vector != nullptr);
-
-		std::size_t pos = std::find(m_vector->cbegin(), m_vector->cend(), item) - m_vector->cbegin();
-		if (pos < m_vector->size()) {
-			return pos;
-		}
-		else {
-			return boost::none;
-		}
-	}
-
 
 
 
