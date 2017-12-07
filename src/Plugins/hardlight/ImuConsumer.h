@@ -31,6 +31,8 @@ public:
 	void RemoveStream(nsvr_node_id id);
 
 	std::vector<ImuInfo> GetInfo() const;
+
+	void WriteImuDebug(uint32_t key, nsvr_quaternion quat);
 private:
 	void consumeDataPacket(Packet Packet);
 	void consumeStatusPacket(Packet packet);

@@ -227,6 +227,11 @@ std::string stringifyStatusBits(HL_Unit status) {
 	return ss.str();
 }
 
+
+nsvr_quaternion normalize(const nsvr_quaternion& quat) {
+	auto magnitude = sqrt((quat.w * quat.w) + (quat.x* quat.x) + (quat.y * quat.y) + (quat.z * quat.z));
+	return nsvr_quaternion{ quat.w / magnitude, quat.x / magnitude, quat.y / magnitude, quat.z / magnitude };
+}
 void Device::Render(nsvr_diagnostics_ui * ui)
 {
 	static const std::vector<std::string> syncStates = {
@@ -362,6 +367,24 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 			m_firmware->PlayEffect(Location::Chest_Left, 3, 1.0);
 		}
 	}
+
+	static int x = 0;
+	static int w = 0;
+	static int y = 0;
+	static int z = 0;
+	if (ui->slider_int("Quat w", &w, -100, 100)) {
+		m_imus.WriteImuDebug(0x3a, normalize(nsvr_quaternion{w / 100.0f, x / 100.0f, y / 100.0f, z / 100.0f }));
+	}
+	if (ui->slider_int("Quat x", &x, -100, 100)) {
+		m_imus.WriteImuDebug(0x3a, normalize(nsvr_quaternion{ w / 100.0f, x / 100.0f, y / 100.0f, z / 100.0f }));
+	}
+	if (ui->slider_int("Quat y", &y, -100, 100)) {
+		m_imus.WriteImuDebug(0x3a, normalize(nsvr_quaternion{ w / 100.0f, x / 100.0f, y / 100.0f, z / 100.0f }));
+	}
+	if (ui->slider_int("Quat z", &z, -100, 100)) {
+		m_imus.WriteImuDebug(0x3a, normalize(nsvr_quaternion{ w / 100.0f, x / 100.0f, y / 100.0f, z / 100.0f }));
+	}
+
 
 	 int queue_size = m_hwIO->outgoing_queue_size();
 	ui->slider_int("Outgoing queue", &queue_size, 0, m_hwIO->outgoing_queue_capacity());

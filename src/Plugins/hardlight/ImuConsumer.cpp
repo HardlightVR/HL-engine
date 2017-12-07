@@ -51,6 +51,11 @@ std::vector<ImuInfo> ImuConsumer::GetInfo() const
 	return mappings;
 }
 
+void ImuConsumer::WriteImuDebug(uint32_t key, nsvr_quaternion quat)
+{
+	nsvr_tracking_stream_push_quaternion(m_mapping.at(key).stream, &quat);
+}
+
 void ImuConsumer::AssignMapping(uint32_t key, Imu id, nsvr_node_id node_id)
 {
 	m_mapping[key] = Mapping(id, node_id);
@@ -92,7 +97,7 @@ void ImuConsumer::consumeDataPacket(Packet packet)
 		m_quaternions[iter->second.imu] = parseQuaternion(packet.data());
 
 		if (iter->second.stream) {
-			nsvr_tracking_stream_push_quaternion(iter->second.stream, &m_quaternions.at(iter->second.imu));
+		//	nsvr_tracking_stream_push_quaternion(iter->second.stream, &m_quaternions.at(iter->second.imu));
 		}
 	}
 }
