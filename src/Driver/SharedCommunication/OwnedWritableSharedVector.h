@@ -34,7 +34,11 @@ public:
 		}()),
 		m_alloc(m_segment.get_segment_manager()),
 		m_mutexName(memName + "-mutex"),
-		m_mutex(boost::interprocess::open_or_create, m_mutexName.c_str())
+		m_mutex(boost::interprocess::open_or_create, m_mutexName.c_str(), []() {
+			boost::interprocess::permissions perm;
+			perm.set_unrestricted();
+			return perm;
+		}())
 	{
 		
 		m_vector = m_segment.construct<TVector>(m_vecName.c_str())(m_alloc);
