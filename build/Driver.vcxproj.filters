@@ -31,7 +31,6 @@
     <ClInclude Include="..\src\Driver\Driver.h" />
     <ClInclude Include="..\src\Driver\DriverConfigParser.h" />
     <ClInclude Include="..\src\Driver\DriverMessenger.h" />
-    <ClInclude Include="..\src\Driver\Encoder.h" />
     <ClInclude Include="..\src\Driver\EnumTranslator.h" />
     <ClInclude Include="..\src\Driver\Enums.h" />
     <ClInclude Include="..\src\Driver\EventDispatcher.h" />
