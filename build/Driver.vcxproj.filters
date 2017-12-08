@@ -138,18 +138,6 @@
     <ClInclude Include="..\src\Driver\nsvr_playback_handle.h" />
     <ClInclude Include="..\src\Driver\nsvr_preset.h" />
     <ClInclude Include="..\src\Driver\nsvr_region.h" />
-    <ClInclude Include="..\src\Driver\protobuff_defs\DriverCommand.pb.h">
-      <Filter>protobuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\protobuff_defs\EffectCommand.pb.h">
-      <Filter>protobuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.h">
-      <Filter>protobuff_defs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\protobuff_defs\HapticEffect.pb.h">
-      <Filter>protobuff_defs</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.h">
       <Filter>protobuff_defs</Filter>
     </ClInclude>
@@ -210,18 +198,6 @@
     <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\logging_initialization.cpp" />
     <ClCompile Include="..\src\Driver\main.cpp" />
-    <ClCompile Include="..\src\Driver\protobuff_defs\DriverCommand.pb.cc">
-      <Filter>protobuff_defs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Driver\protobuff_defs\EffectCommand.pb.cc">
-      <Filter>protobuff_defs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Driver\protobuff_defs\ExecutionCommand.pb.cc">
-      <Filter>protobuff_defs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Driver\protobuff_defs\HapticEffect.pb.cc">
-      <Filter>protobuff_defs</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Driver\protobuff_defs\HighLevelEvent.pb.cc">
       <Filter>protobuff_defs</Filter>
     </ClCompile>
