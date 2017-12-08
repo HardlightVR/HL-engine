@@ -42,6 +42,16 @@ void ImuConsumer::RemoveStream(nsvr_node_id id) {
 	}
 }
 
+boost::optional<nsvr_quaternion> ImuConsumer::GetQuaternion(Imu imu) const {
+	auto it = m_quaternions.find(imu);
+	if (it != m_quaternions.end()) {
+		return it->second;
+	}
+
+	return boost::none;
+}
+
+
 std::vector<ImuInfo> ImuConsumer::GetInfo() const
 {
 	std::vector<ImuInfo> mappings;

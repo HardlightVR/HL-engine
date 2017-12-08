@@ -122,7 +122,6 @@
     </ClInclude>
     <ClInclude Include="..\src\Driver\SimulatedHapticNode.h" />
     <ClInclude Include="..\src\Driver\SuitVersionInfo.h" />
-    <ClInclude Include="..\src\Driver\TrackingStream.h" />
     <ClInclude Include="..\src\Driver\Version.h" />
     <ClInclude Include="..\src\Driver\WaveformGenerators.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPI.h">
@@ -192,7 +191,6 @@
       <Filter>SharedCommunication</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Driver\SimulatedHapticNode.cpp" />
-    <ClCompile Include="..\src\Driver\TrackingStream.cpp" />
     <ClCompile Include="..\src\Driver\WaveformGenerators.cpp" />
     <ClCompile Include="..\src\Driver\logger.cpp" />
     <ClCompile Include="..\src\Driver\logging_initialization.cpp" />

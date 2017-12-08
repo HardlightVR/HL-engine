@@ -30,6 +30,7 @@ public:
 	void AssignStream(nsvr_tracking_stream* stream, nsvr_node_id id);
 	void RemoveStream(nsvr_node_id id);
 
+	boost::optional<nsvr_quaternion> GetQuaternion(Imu imu) const;
 	std::vector<ImuInfo> GetInfo() const;
 
 	void WriteImuDebug(uint32_t key, nsvr_quaternion quat);

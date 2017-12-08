@@ -385,6 +385,14 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 		m_imus.WriteImuDebug(0x3a, normalize(nsvr_quaternion{ w / 100.0f, x / 100.0f, y / 100.0f, z / 100.0f }));
 	}
 
+	
+	if (auto quat = m_imus.GetQuaternion(Imu::Left_Upper_Arm)) {
+		nsvr_quaternion q = *quat;
+		std::stringstream ss;
+		ss << "w: " << q.w << " x: " << q.x << " y: " << q.y << " z: " << q.z;
+		
+		ui->keyval("IMU", ss.str().c_str());
+	}
 
 	 int queue_size = m_hwIO->outgoing_queue_size();
 	ui->slider_int("Outgoing queue", &queue_size, 0, m_hwIO->outgoing_queue_capacity());
