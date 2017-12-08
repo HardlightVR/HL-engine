@@ -44,7 +44,6 @@ Driver::Driver() :
 	m_statusPush(m_io, boost::posix_time::millisec(250)),
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
 	m_trackingPush(m_io, boost::posix_time::millisec(10)),
-	m_curveEngineUpdate(m_io, boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
 	m_eventDispatcher()
 
@@ -75,15 +74,7 @@ Driver::Driver() :
 
 bool Driver::StartThread()
 {
-	m_curveEngineUpdate.SetEvent([this]() {
-		constexpr auto fraction_of_second = (1.0f / 1000.f);
-		auto dt = 5 * fraction_of_second;
-
-		//m_curveEngine.Update(dt);
-
-	});
-
-	m_curveEngineUpdate.Start();
+	
 
 	m_hapticsPull.SetEvent([this]() { handleHaptics(); });
 	m_hapticsPull.Start();
@@ -102,7 +93,6 @@ bool Driver::Shutdown()
 {
 	BOOST_LOG_SEV(clogger::get(), nsvr_severity_info) << "Shutting down plugin host";
 
-	m_curveEngineUpdate.Stop();
 	m_statusPush.Stop();
 	m_hapticsPull.Stop();
 	m_trackingPush.Stop();

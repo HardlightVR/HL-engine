@@ -287,7 +287,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
-    <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
     <ClInclude Include="..\src\Driver\BodyGraph.h" />
     <ClInclude Include="..\src\Driver\BodyGraphCreator.h" />
     <ClInclude Include="..\src\Driver\BodyRegion.h" />
@@ -342,12 +341,10 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedReadableSharedQueue.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedMap.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h" />
-    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedTracking.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedVector.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedMap.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedObject.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedQueue.h" />
-    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedTracking.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\ScheduledEvent.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\SharedTypes.h" />
     <ClInclude Include="..\src\Driver\SharedCommunication\WritableSharedObject.h" />
@@ -383,7 +380,6 @@
     <ClInclude Include="..\src\Driver\WinReg.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\BodyGraph.cpp" />
     <ClCompile Include="..\src\Driver\Device.cpp" />
     <ClCompile Include="..\src\Driver\DeviceBuilder.cpp" />

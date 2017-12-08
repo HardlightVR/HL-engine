@@ -19,7 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Driver\AreaFlags.h" />
-    <ClInclude Include="..\src\Driver\AsyncTimeout.h" />
     <ClInclude Include="..\src\Driver\BodyGraph.h" />
     <ClInclude Include="..\src\Driver\BodyGraphCreator.h" />
     <ClInclude Include="..\src\Driver\BodyRegion.h" />
@@ -86,9 +85,6 @@
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedQueue.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedTracking.h">
-      <Filter>SharedCommunication</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\OwnedWritableSharedVector.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
@@ -99,9 +95,6 @@
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedQueue.h">
-      <Filter>SharedCommunication</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Driver\SharedCommunication\ReadableSharedTracking.h">
       <Filter>SharedCommunication</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Driver\SharedCommunication\ScheduledEvent.h">
@@ -175,7 +168,6 @@
     <ClInclude Include="..\src\Driver\DriverToSharedMem.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Driver\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\Driver\BodyGraph.cpp" />
     <ClCompile Include="..\src\Driver\Device.cpp" />
     <ClCompile Include="..\src\Driver\DeviceBuilder.cpp" />

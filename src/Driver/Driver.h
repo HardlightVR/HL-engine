@@ -37,8 +37,6 @@ private:
 	HardwareCoordinator m_coordinator;
 
 
-	ScheduledEvent m_curveEngineUpdate;
-
 	ScheduledEvent m_hapticsPull;
 	ScheduledEvent m_statusPush;
 	ScheduledEvent m_trackingPush;
