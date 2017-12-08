@@ -44,7 +44,8 @@ Driver::Driver() :
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
 	m_trackingPush(m_io, boost::posix_time::millisec(10)),
 	m_cachedTracking({}),
-	m_eventDispatcher()
+	m_eventDispatcher(),
+	m_renderingApi()
 
 
 

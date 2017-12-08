@@ -3,6 +3,7 @@
 HardwareNodeEnumerator::HardwareNodeEnumerator(device_api * api)
 	: m_api(api)
 	, m_nodes()
+	, m_id(0)
 {
 }
 

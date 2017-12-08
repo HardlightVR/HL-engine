@@ -57,12 +57,9 @@ public:
 		assert(m_vector != nullptr);
 		MutexGuard guard(m_mutex);
 
-		try {
-			m_vector->push_back(item);
-		}
-		catch (const std::exception&) {
-			//probably out of memory, do nothing
-		}
+		
+		m_vector->push_back(item);
+		
 
 	}
 

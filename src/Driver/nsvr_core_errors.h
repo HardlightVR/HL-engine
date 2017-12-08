@@ -6,7 +6,7 @@ typedef int32_t nsvr_result;
 
 
 #ifndef NSVR_SUCCESS
-#define NSVR_SUCCESS(result) (result >= 0)
+#define NSVR_SUCCESS(result) ((result) >= 0)
 #endif
 
 

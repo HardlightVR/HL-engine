@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "WaveformGenerators.h"
+#include <algorithm>
 
 namespace nsvr {
 namespace waveforms {
@@ -37,7 +38,14 @@ std::vector<double> repeated(float strength, std::size_t numSamples) {
 		samples.push_back(clampedStrength);
 	}
 	return samples;
+
+	
 }
+
+inline int percent(int how_many, double percent) {
+	return static_cast<int>(how_many * percent);
+}
+
 
 
 std::vector<double> generateWaveform(float strength, nsvr_default_waveform family, int how_many) {
@@ -46,8 +54,8 @@ std::vector<double> generateWaveform(float strength, nsvr_default_waveform famil
 	}
 	else if (nsvr_preset_family_pulse == family) {
 		std::vector<double> samples;
-		const int ten_percent = how_many * .1;
-		const int ninety_percent = how_many * .9;
+		const int ten_percent = percent(how_many,  .1);
+		const int ninety_percent = percent(how_many,  .9);
 		append(samples, sin_sample(strength, ninety_percent));
 		append(samples, repeated(0, ten_percent));
 		return samples;
@@ -57,8 +65,8 @@ std::vector<double> generateWaveform(float strength, nsvr_default_waveform famil
 	}
 	else if (nsvr_preset_family_buzz == family) {
 
-		const int ten_percent = how_many * .1;
-		const int six_percent = how_many * .06;
+		const int ten_percent = percent(how_many, .1);
+		const int six_percent = percent(how_many, .06);
 		std::vector<double> samples;
 		for (int i = 0; i < 6; i++) {
 			append(samples, repeated(strength, ten_percent));
@@ -69,9 +77,9 @@ std::vector<double> generateWaveform(float strength, nsvr_default_waveform famil
 	}
 	else if (nsvr_preset_family_double_click == family) {
 		std::vector<double> samples;
-		const int thirteen_percent = how_many * 0.13;
-		const int fortytwo_percent = how_many * 0.42;
-		const int thirtytwo_percent = how_many * 0.32;
+		const int thirteen_percent = percent(how_many, 0.13);
+		const int fortytwo_percent = percent(how_many,  0.42);
+		const int thirtytwo_percent = percent(how_many,  0.32);
 
 		append(samples, sin_sample(strength, thirteen_percent));
 		append(samples, repeated(0, fortytwo_percent));
@@ -81,9 +89,9 @@ std::vector<double> generateWaveform(float strength, nsvr_default_waveform famil
 	}
 	else if (nsvr_preset_family_triple_click == family) {
 		std::vector<double> samples;
-		const int one_third = how_many * .3;
-		const int one_quarter = one_third * 0.25;
-		const int three_quarter = one_third * 0.75;
+		const int one_third = percent(how_many, .3);
+		const int one_quarter = percent(one_third, 0.25);
+		const int three_quarter = percent(one_third, 0.75);
 		for (int i = 0; i < 3; i++) {
 			append(samples, sin_sample(strength, one_quarter));
 			append(samples, repeated(0, three_quarter));
