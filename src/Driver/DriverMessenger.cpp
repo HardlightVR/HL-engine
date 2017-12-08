@@ -6,7 +6,6 @@
 #include "BoostIPCSharedMemoryDirectory.h"
 
 DriverMessenger::DriverMessenger(boost::asio::io_service& io):
-	_running{true},
 	_process([](void const*, std::size_t) {}),
 	m_sentinelTimer(io),
 	m_sentinelInterval(1000)
@@ -191,7 +190,6 @@ boost::optional<std::vector<NullSpaceIPC::HighLevelEvent>> DriverMessenger::Read
 
 void DriverMessenger::Disconnect()
 {
-	_running.store(false);
 	m_sentinelTimer.cancel();
 }
 

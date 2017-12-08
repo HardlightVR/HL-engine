@@ -54,7 +54,6 @@ private:
 	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::TrackingData>> m_tracking;
 
 	std::unique_ptr<OwnedWritableSharedVector<NullSpace::SharedMemory::RegionPair>> m_bodyView;
-	std::atomic<bool> _running;
 
 	boost::asio::deadline_timer m_sentinelTimer;
 	boost::posix_time::milliseconds m_sentinelInterval;

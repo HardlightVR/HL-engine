@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include <functional>
-#include "protobuff_defs/DriverCommand.pb.h"
 #include "SuitVersionInfo.h"
 #include "runtime_include/NSDriverApi.h"
 #include "logger.h"
