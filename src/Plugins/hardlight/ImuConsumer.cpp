@@ -97,7 +97,7 @@ void ImuConsumer::consumeDataPacket(Packet packet)
 		m_quaternions[iter->second.imu] = parseQuaternion(packet.data());
 
 		if (iter->second.stream) {
-		//	nsvr_tracking_stream_push_quaternion(iter->second.stream, &m_quaternions.at(iter->second.imu));
+			nsvr_tracking_stream_push_quaternion(iter->second.stream, &m_quaternions.at(iter->second.imu));
 		}
 	}
 }
