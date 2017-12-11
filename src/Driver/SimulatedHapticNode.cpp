@@ -10,6 +10,7 @@ Waveform::Waveform(SimulatedHapticNode::Id id, nsvr_default_waveform waveform, d
 	, m_elapsed(0)
 	, m_id(id)
 	, m_playbackState(PlaybackState::Playing)
+	, m_waveForm(waveform)
 {
 	//auto samples = nsvr::waveforms::generateWaveform(static_cast<float>(strength), waveform);
 	//for (int i = 0; i < repetitions; i++) {
@@ -23,6 +24,7 @@ Waveform::Waveform(SimulatedHapticNode::Id id, const double * samples, double sa
 	, m_elapsed(0)
 	, m_id(id)
 	, m_playbackState(PlaybackState::Playing)
+	, m_waveForm()
 {
 }
 
@@ -43,15 +45,15 @@ double Waveform::duration() const
 	return m_sampleDuration * m_samples.size();
 }
 
-double Waveform::sample() const
+std::pair<float, boost::optional<nsvr_default_waveform>> Waveform::sample() const
 {
 	switch (m_playbackState) {
 	case PlaybackState::Paused:
-		return 0.0;
+		return std::make_pair(0.0f, m_waveForm);
 	case PlaybackState::Playing:
-		return computeAmplitude();
+		return std::make_pair(static_cast<float>(computeAmplitude()), m_waveForm);
 	default:
-		return 0.0;
+		return std::make_pair(0.0f, m_waveForm);
 	}
 }
 
@@ -130,10 +132,15 @@ void SimulatedHapticNode::update(double dt)
 
 RenderedNode::GenericData SimulatedHapticNode::render() const
 {
-	return RenderedNode::GenericData{ sample(), 0.0, 0.0, 0.0 };
+	auto data = sample();
+	float waveformTag = data.second ? static_cast<float>(*data.second) : 0.0f;
+
+	return RenderedNode::GenericData{data.first, waveformTag, 0.0, 0.0 };
 }
 
-float SimulatedHapticNode::sample() const
+std::pair<float, boost::optional<nsvr_default_waveform>> SimulatedHapticNode::sample() const
 {
-	return m_activeEffects.empty() ? 0.0f : (float) m_activeEffects.back().sample();
+	return m_activeEffects.empty()
+		? std::make_pair(0.0f, boost::none)
+		: m_activeEffects.back().sample();
 }

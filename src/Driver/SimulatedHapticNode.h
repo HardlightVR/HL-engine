@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "PluginAPI.h"
 #include "RenderedRegion.h"
+#include <boost/optional.hpp>
 const double MIN_CANCELLABLE_RESOLUTION = 0.25f;
 class Waveform {
 public:
@@ -17,7 +18,7 @@ public:
 	void update(double dt);
 	double elapsed() const;
 	double duration() const;
-	double sample() const;
+	std::pair<float, boost::optional<nsvr_default_waveform>> sample() const;
 	Id id() const;
 
 	void pause();
@@ -28,6 +29,7 @@ private:
 	Id m_id;
 	std::vector<double> m_samples;
 	PlaybackState m_playbackState;
+	boost::optional<nsvr_default_waveform> m_waveForm;
 	double computeAmplitude() const;
 };
 
@@ -46,7 +48,7 @@ public:
 	RenderedNode::GenericData render() const;
 	
 private:
-	float sample() const;
+	std::pair<float, boost::optional<nsvr_default_waveform>> sample() const;
 	std::vector<Waveform> m_activeEffects;
 
 };
