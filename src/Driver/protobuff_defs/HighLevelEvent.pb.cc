@@ -445,8 +445,8 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\024HighLevelEvent.proto\022\014NullSpaceIPC\"f\n\031"
     "ClientIdentificationEvent\022\021\n\tdll_major\030\001"
-    " \001(\r\022\021\n\tdll_minor\030\002 \001(\r\022\021\n\tdll_patch\030\003 \001"
-    "(\r\022\020\n\010app_name\030\004 \001(\t\"\035\n\nRegionList\022\017\n\007re"
+    " \001(\005\022\021\n\tdll_minor\030\002 \001(\005\022\021\n\tdll_patch\030\003 \001"
+    "(\005\022\020\n\010app_name\030\004 \001(\t\"\035\n\nRegionList\022\017\n\007re"
     "gions\030\001 \003(\r\"\031\n\010NodeList\022\r\n\005nodes\030\001 \003(\r\"i"
     "\n\010Location\022+\n\007regions\030\001 \001(\0132\030.NullSpaceI"
     "PC.RegionListH\000\022\'\n\005nodes\030\002 \001(\0132\026.NullSpa"
@@ -558,9 +558,9 @@ void ClientIdentificationEvent::SharedCtor() {
     _is_default_instance_ = false;
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  dll_major_ = 0u;
-  dll_minor_ = 0u;
-  dll_patch_ = 0u;
+  dll_major_ = 0;
+  dll_minor_ = 0;
+  dll_patch_ = 0;
   app_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -619,7 +619,7 @@ void ClientIdentificationEvent::Clear() {
 } while (0)
 
   ZR_(dll_major_, dll_minor_);
-  dll_patch_ = 0u;
+  dll_patch_ = 0;
   app_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 
 #undef ZR_HELPER_
@@ -637,11 +637,11 @@ bool ClientIdentificationEvent::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional uint32 dll_major = 1;
+      // optional int32 dll_major = 1;
       case 1: {
         if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &dll_major_)));
 
         } else {
@@ -651,12 +651,12 @@ bool ClientIdentificationEvent::MergePartialFromCodedStream(
         break;
       }
 
-      // optional uint32 dll_minor = 2;
+      // optional int32 dll_minor = 2;
       case 2: {
         if (tag == 16) {
          parse_dll_minor:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &dll_minor_)));
 
         } else {
@@ -666,12 +666,12 @@ bool ClientIdentificationEvent::MergePartialFromCodedStream(
         break;
       }
 
-      // optional uint32 dll_patch = 3;
+      // optional int32 dll_patch = 3;
       case 3: {
         if (tag == 24) {
          parse_dll_patch:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &dll_patch_)));
 
         } else {
@@ -722,19 +722,19 @@ failure:
 void ClientIdentificationEvent::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:NullSpaceIPC.ClientIdentificationEvent)
-  // optional uint32 dll_major = 1;
+  // optional int32 dll_major = 1;
   if (this->dll_major() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->dll_major(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->dll_major(), output);
   }
 
-  // optional uint32 dll_minor = 2;
+  // optional int32 dll_minor = 2;
   if (this->dll_minor() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->dll_minor(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->dll_minor(), output);
   }
 
-  // optional uint32 dll_patch = 3;
+  // optional int32 dll_patch = 3;
   if (this->dll_patch() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->dll_patch(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->dll_patch(), output);
   }
 
   // optional string app_name = 4;
@@ -753,19 +753,19 @@ void ClientIdentificationEvent::SerializeWithCachedSizes(
 ::google::protobuf::uint8* ClientIdentificationEvent::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.ClientIdentificationEvent)
-  // optional uint32 dll_major = 1;
+  // optional int32 dll_major = 1;
   if (this->dll_major() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->dll_major(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->dll_major(), target);
   }
 
-  // optional uint32 dll_minor = 2;
+  // optional int32 dll_minor = 2;
   if (this->dll_minor() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->dll_minor(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->dll_minor(), target);
   }
 
-  // optional uint32 dll_patch = 3;
+  // optional int32 dll_patch = 3;
   if (this->dll_patch() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->dll_patch(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->dll_patch(), target);
   }
 
   // optional string app_name = 4;
@@ -787,24 +787,24 @@ int ClientIdentificationEvent::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.ClientIdentificationEvent)
   int total_size = 0;
 
-  // optional uint32 dll_major = 1;
+  // optional int32 dll_major = 1;
   if (this->dll_major() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->dll_major());
   }
 
-  // optional uint32 dll_minor = 2;
+  // optional int32 dll_minor = 2;
   if (this->dll_minor() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->dll_minor());
   }
 
-  // optional uint32 dll_patch = 3;
+  // optional int32 dll_patch = 3;
   if (this->dll_patch() != 0) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+      ::google::protobuf::internal::WireFormatLite::Int32Size(
         this->dll_patch());
   }
 
@@ -901,43 +901,43 @@ void ClientIdentificationEvent::InternalSwap(ClientIdentificationEvent* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // ClientIdentificationEvent
 
-// optional uint32 dll_major = 1;
+// optional int32 dll_major = 1;
 void ClientIdentificationEvent::clear_dll_major() {
-  dll_major_ = 0u;
+  dll_major_ = 0;
 }
- ::google::protobuf::uint32 ClientIdentificationEvent::dll_major() const {
+ ::google::protobuf::int32 ClientIdentificationEvent::dll_major() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_major)
   return dll_major_;
 }
- void ClientIdentificationEvent::set_dll_major(::google::protobuf::uint32 value) {
+ void ClientIdentificationEvent::set_dll_major(::google::protobuf::int32 value) {
   
   dll_major_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_major)
 }
 
-// optional uint32 dll_minor = 2;
+// optional int32 dll_minor = 2;
 void ClientIdentificationEvent::clear_dll_minor() {
-  dll_minor_ = 0u;
+  dll_minor_ = 0;
 }
- ::google::protobuf::uint32 ClientIdentificationEvent::dll_minor() const {
+ ::google::protobuf::int32 ClientIdentificationEvent::dll_minor() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
   return dll_minor_;
 }
- void ClientIdentificationEvent::set_dll_minor(::google::protobuf::uint32 value) {
+ void ClientIdentificationEvent::set_dll_minor(::google::protobuf::int32 value) {
   
   dll_minor_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
 }
 
-// optional uint32 dll_patch = 3;
+// optional int32 dll_patch = 3;
 void ClientIdentificationEvent::clear_dll_patch() {
-  dll_patch_ = 0u;
+  dll_patch_ = 0;
 }
- ::google::protobuf::uint32 ClientIdentificationEvent::dll_patch() const {
+ ::google::protobuf::int32 ClientIdentificationEvent::dll_patch() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_patch)
   return dll_patch_;
 }
- void ClientIdentificationEvent::set_dll_patch(::google::protobuf::uint32 value) {
+ void ClientIdentificationEvent::set_dll_patch(::google::protobuf::int32 value) {
   
   dll_patch_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_patch)

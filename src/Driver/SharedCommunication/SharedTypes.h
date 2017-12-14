@@ -90,6 +90,7 @@ namespace NullSpace {
 		struct ServiceInfo {
 			int MajorVersion;
 			int MinorVersion;
+			int PatchVersion;
 
 		};
 

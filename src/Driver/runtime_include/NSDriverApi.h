@@ -10,7 +10,9 @@
 
 #define HVR_PLATFORM_API_VERSION_MAJOR 1
 #define HVR_PLATFORM_API_VERSION_MINOR 0
-#define HVR_PLATFORM_API_VERSION ((HVR_PLATFORM_API_VERSION_MAJOR << 16) | HVR_PLATFORM_API_VERSION_MINOR)
+#define HVR_PLATFORM_API_VERSION_PATCH 5
+
+#define HVR_PLATFORM_API_VERSION ((HVR_PLATFORM_API_VERSION_MAJOR << 24) | (HVR_PLATFORM_API_VERSION_MINOR << 16) | HVR_PLATFORM_API_VERSION_PATCH)
 
 #if !defined(HLVR_TOSTRING)
 #define	HLVR_TOSTRINGH(x) #x
@@ -18,7 +20,7 @@
 #endif
 
 #if !defined(HVR_VERSION_STRING)
-#define HVR_VERSION_STRING HLVR_TOSTRING(HVR_PLATFORM_API_VERSION_MAJOR.HVR_PLATFORM_API_VERSION_MINOR)
+#define HVR_VERSION_STRING HLVR_TOSTRING(HVR_PLATFORM_API_VERSION_MAJOR.HVR_PLATFORM_API_VERSION_MINOR.HVR_PLATFORM_API_VERSION_PATCH)
 #endif
 
 
@@ -36,7 +38,12 @@ extern "C" {
 	HVR_RETURN(int) hvr_platform_shutdown(hvr_platform* ptr);
 	HVR_RETURN(int) hvr_platform_startup(hvr_platform* ptr);
 	HVR_RETURN(unsigned) hvr_platform_getversion(void);
-	HVR_RETURN(bool) hvr_platform_isdllcompatible(void);
+	static bool hvr_platform_isdllcompatible(void)
+	{
+		unsigned int major = hvr_platform_getversion() >> 24;
+		return major == HVR_PLATFORM_API_VERSION_MAJOR;
+	}
+
 
 	struct hvr_diagnostics_ui {
 		typedef void(*make_keyval)(const char* key, const char* val);

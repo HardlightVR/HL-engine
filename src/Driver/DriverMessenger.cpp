@@ -72,7 +72,7 @@ void DriverMessenger::sentinelHandler(const boost::system::error_code& ec) {
 	if (!ec) {
 		m_sentinel->Write(
 			NullSpace::SharedMemory::SentinelObject{ 
-				NullSpace::SharedMemory::ServiceInfo {HVR_PLATFORM_API_VERSION_MAJOR, HVR_PLATFORM_API_VERSION_MINOR}, 
+				NullSpace::SharedMemory::ServiceInfo {HVR_PLATFORM_API_VERSION_MAJOR, HVR_PLATFORM_API_VERSION_MINOR, HVR_PLATFORM_API_VERSION_PATCH}, 
 				std::time(nullptr) 
 			}
 		);

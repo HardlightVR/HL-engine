@@ -31,9 +31,9 @@
 //	
 //}
 
-constexpr int MIN_CLIENT_VERSION_MAJOR = 0;
-constexpr int MIN_CLIENT_VERSION_MINOR = 8;
-constexpr int MIN_CLIENT_VERSION_PATCH = 1;
+constexpr int MIN_CLIENT_VERSION_MAJOR = 1;
+constexpr int MIN_CLIENT_VERSION_MINOR = 0;
+constexpr int MIN_CLIENT_VERSION_PATCH = 0;
 bool isAtLeastVersion(int major, int minor, int patch)
 {
 	if (MIN_CLIENT_VERSION_MAJOR > major) return false;

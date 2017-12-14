@@ -138,23 +138,23 @@ class ClientIdentificationEvent : public ::google::protobuf::Message /* @@protoc
 
   // accessors -------------------------------------------------------
 
-  // optional uint32 dll_major = 1;
+  // optional int32 dll_major = 1;
   void clear_dll_major();
   static const int kDllMajorFieldNumber = 1;
-  ::google::protobuf::uint32 dll_major() const;
-  void set_dll_major(::google::protobuf::uint32 value);
+  ::google::protobuf::int32 dll_major() const;
+  void set_dll_major(::google::protobuf::int32 value);
 
-  // optional uint32 dll_minor = 2;
+  // optional int32 dll_minor = 2;
   void clear_dll_minor();
   static const int kDllMinorFieldNumber = 2;
-  ::google::protobuf::uint32 dll_minor() const;
-  void set_dll_minor(::google::protobuf::uint32 value);
+  ::google::protobuf::int32 dll_minor() const;
+  void set_dll_minor(::google::protobuf::int32 value);
 
-  // optional uint32 dll_patch = 3;
+  // optional int32 dll_patch = 3;
   void clear_dll_patch();
   static const int kDllPatchFieldNumber = 3;
-  ::google::protobuf::uint32 dll_patch() const;
-  void set_dll_patch(::google::protobuf::uint32 value);
+  ::google::protobuf::int32 dll_patch() const;
+  void set_dll_patch(::google::protobuf::int32 value);
 
   // optional string app_name = 4;
   void clear_app_name();
@@ -172,10 +172,10 @@ class ClientIdentificationEvent : public ::google::protobuf::Message /* @@protoc
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  ::google::protobuf::uint32 dll_major_;
-  ::google::protobuf::uint32 dll_minor_;
+  ::google::protobuf::int32 dll_major_;
+  ::google::protobuf::int32 dll_minor_;
   ::google::protobuf::internal::ArenaStringPtr app_name_;
-  ::google::protobuf::uint32 dll_patch_;
+  ::google::protobuf::int32 dll_patch_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
   friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
@@ -1592,43 +1592,43 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // ClientIdentificationEvent
 
-// optional uint32 dll_major = 1;
+// optional int32 dll_major = 1;
 inline void ClientIdentificationEvent::clear_dll_major() {
-  dll_major_ = 0u;
+  dll_major_ = 0;
 }
-inline ::google::protobuf::uint32 ClientIdentificationEvent::dll_major() const {
+inline ::google::protobuf::int32 ClientIdentificationEvent::dll_major() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_major)
   return dll_major_;
 }
-inline void ClientIdentificationEvent::set_dll_major(::google::protobuf::uint32 value) {
+inline void ClientIdentificationEvent::set_dll_major(::google::protobuf::int32 value) {
   
   dll_major_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_major)
 }
 
-// optional uint32 dll_minor = 2;
+// optional int32 dll_minor = 2;
 inline void ClientIdentificationEvent::clear_dll_minor() {
-  dll_minor_ = 0u;
+  dll_minor_ = 0;
 }
-inline ::google::protobuf::uint32 ClientIdentificationEvent::dll_minor() const {
+inline ::google::protobuf::int32 ClientIdentificationEvent::dll_minor() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
   return dll_minor_;
 }
-inline void ClientIdentificationEvent::set_dll_minor(::google::protobuf::uint32 value) {
+inline void ClientIdentificationEvent::set_dll_minor(::google::protobuf::int32 value) {
   
   dll_minor_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
 }
 
-// optional uint32 dll_patch = 3;
+// optional int32 dll_patch = 3;
 inline void ClientIdentificationEvent::clear_dll_patch() {
-  dll_patch_ = 0u;
+  dll_patch_ = 0;
 }
-inline ::google::protobuf::uint32 ClientIdentificationEvent::dll_patch() const {
+inline ::google::protobuf::int32 ClientIdentificationEvent::dll_patch() const {
   // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_patch)
   return dll_patch_;
 }
-inline void ClientIdentificationEvent::set_dll_patch(::google::protobuf::uint32 value) {
+inline void ClientIdentificationEvent::set_dll_patch(::google::protobuf::int32 value) {
   
   dll_patch_ = value;
   // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_patch)

@@ -48,11 +48,6 @@ HVR_RETURN(unsigned int) hvr_platform_getversion(void)
 	return HVR_PLATFORM_API_VERSION;
 }
 
-HVR_RETURN(bool) hvr_platform_isdllcompatible(void)
-{
-	unsigned int major = hvr_platform_getversion() >> 16;
-	return major == HVR_PLATFORM_API_VERSION_MAJOR;
-}
 
 HVR_RETURN(int) hvr_platform_enumerateplugins(hvr_platform* platform, hvr_plugin_list * outPlugins)
 {
