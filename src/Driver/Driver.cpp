@@ -31,6 +31,18 @@
 //	
 //}
 
+constexpr int MIN_CLIENT_VERSION_MAJOR = 0;
+constexpr int MIN_CLIENT_VERSION_MINOR = 8;
+constexpr int MIN_CLIENT_VERSION_PATCH = 1;
+bool isAtLeastVersion(int major, int minor, int patch)
+{
+	if (MIN_CLIENT_VERSION_MAJOR > major) return false;
+	if (MIN_CLIENT_VERSION_MAJOR < major) return true;
+	if (MIN_CLIENT_VERSION_MINOR > minor) return false;
+	if (MIN_CLIENT_VERSION_MINOR < minor) return true;
+	if (MIN_CLIENT_VERSION_PATCH > patch) return false;
+	return true;
+}
 Driver::Driver() :
 	m_ioService(),
 	m_io(m_ioService.GetIOService()),
@@ -42,7 +54,6 @@ Driver::Driver() :
 
 	m_statusPush(m_io, boost::posix_time::millisec(250)),
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
-	m_trackingPush(m_io, boost::posix_time::millisec(10)),
 	m_cachedTracking({}),
 	m_eventDispatcher(),
 	m_renderingApi()
@@ -65,6 +76,14 @@ Driver::Driver() :
 	m_coordinator.SetupSubscriptions(m_eventDispatcher);
 
 
+	m_eventDispatcher.Subscribe(NullSpaceIPC::HighLevelEvent::EventsCase::kClientIdEvent, [](const auto& event) {
+		auto ce = event.client_id_event();
+		LOG_INFO() << "Client connected; Hardlight.dll version " << ce.dll_major() << "." << ce.dll_minor() << "." << ce.dll_patch();
+		if (!isAtLeastVersion(ce.dll_major(), ce.dll_minor(), ce.dll_patch())) {
+			LOG_WARN() << "--> Client is PROBABLY NOT COMPATIBLE with this runtime";
+		}
+	
+	});
 
 
 	
@@ -84,8 +103,6 @@ bool Driver::StartThread()
 
 	
 
-	m_trackingPush.SetEvent([this]() {handleTracking(); });
-	m_trackingPush.Start();
 	return true;
 }
 
@@ -95,7 +112,6 @@ bool Driver::Shutdown()
 
 	m_statusPush.Stop();
 	m_hapticsPull.Stop();
-	m_trackingPush.Stop();
 	m_messenger.Disconnect();
 	m_ioService.Shutdown();
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -155,28 +171,6 @@ void DoForEachBit(std::function<void(Location l)> fn, uint32_t bits) {
 
 }
 
-
-void Driver::handleTracking()
-{
-	NullSpace::SharedMemory::TrackingUpdate update = m_cachedTracking;
-
-	
-	//if (auto quat = m_imus.GetOrientation(Imu::Chest)) {
-	//	update.chest = *quat;
-	//}
-
-	//if (auto quat = m_imus.GetOrientation(Imu::Left_Upper_Arm)) {
-	//	update.left_upper_arm = *quat;
-	//}
-
-	//if (auto quat = m_imus.GetOrientation(Imu::Right_Upper_Arm)) {
-	//	update.right_upper_arm = *quat;
-	//}
-	//
-	//m_cachedTracking = update;
-
-	//m_messenger.WriteQuaternion(update);
-}
 
 void Driver::ProvideRenderingApi(hvr_diagnostics_ui * api)
 {

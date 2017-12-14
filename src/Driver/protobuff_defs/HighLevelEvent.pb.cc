@@ -21,6 +21,9 @@ namespace NullSpaceIPC {
 
 namespace {
 
+const ::google::protobuf::Descriptor* ClientIdentificationEvent_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  ClientIdentificationEvent_reflection_ = NULL;
 const ::google::protobuf::Descriptor* RegionList_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   RegionList_reflection_ = NULL;
@@ -83,6 +86,7 @@ struct HighLevelEventOneofInstance {
   const ::NullSpaceIPC::PlaybackEvent* playback_event_;
   const ::NullSpaceIPC::LocationalEvent* locational_event_;
   const ::NullSpaceIPC::DeviceEvent* device_event_;
+  const ::NullSpaceIPC::ClientIdentificationEvent* client_id_event_;
 }* HighLevelEvent_default_oneof_instance_ = NULL;
 
 }  // namespace
@@ -95,7 +99,25 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
     ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
       "HighLevelEvent.proto");
   GOOGLE_CHECK(file != NULL);
-  RegionList_descriptor_ = file->message_type(0);
+  ClientIdentificationEvent_descriptor_ = file->message_type(0);
+  static const int ClientIdentificationEvent_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClientIdentificationEvent, dll_major_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClientIdentificationEvent, dll_minor_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClientIdentificationEvent, dll_patch_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClientIdentificationEvent, app_name_),
+  };
+  ClientIdentificationEvent_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      ClientIdentificationEvent_descriptor_,
+      ClientIdentificationEvent::default_instance_,
+      ClientIdentificationEvent_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(ClientIdentificationEvent),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClientIdentificationEvent, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClientIdentificationEvent, _is_default_instance_));
+  RegionList_descriptor_ = file->message_type(1);
   static const int RegionList_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RegionList, regions_),
   };
@@ -110,7 +132,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(RegionList),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RegionList, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RegionList, _is_default_instance_));
-  NodeList_descriptor_ = file->message_type(1);
+  NodeList_descriptor_ = file->message_type(2);
   static const int NodeList_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeList, nodes_),
   };
@@ -125,7 +147,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(NodeList),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeList, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NodeList, _is_default_instance_));
-  Location_descriptor_ = file->message_type(2);
+  Location_descriptor_ = file->message_type(3);
   static const int Location_offsets_[3] = {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Location_default_oneof_instance_, regions_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Location_default_oneof_instance_, nodes_),
@@ -144,7 +166,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(Location),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Location, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Location, _is_default_instance_));
-  SimpleHaptic_descriptor_ = file->message_type(3);
+  SimpleHaptic_descriptor_ = file->message_type(4);
   static const int SimpleHaptic_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, effect_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, repetitions_),
@@ -161,7 +183,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(SimpleHaptic),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SimpleHaptic, _is_default_instance_));
-  ContinuousHaptic_descriptor_ = file->message_type(4);
+  ContinuousHaptic_descriptor_ = file->message_type(5);
   static const int ContinuousHaptic_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ContinuousHaptic, strength_),
   };
@@ -176,7 +198,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(ContinuousHaptic),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ContinuousHaptic, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ContinuousHaptic, _is_default_instance_));
-  BufferedHaptic_descriptor_ = file->message_type(5);
+  BufferedHaptic_descriptor_ = file->message_type(6);
   static const int BufferedHaptic_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, samples_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, frequency_),
@@ -192,7 +214,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(BufferedHaptic),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BufferedHaptic, _is_default_instance_));
-  BeginAnalogAudio_descriptor_ = file->message_type(6);
+  BeginAnalogAudio_descriptor_ = file->message_type(7);
   static const int BeginAnalogAudio_offsets_[1] = {
   };
   BeginAnalogAudio_reflection_ =
@@ -206,7 +228,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(BeginAnalogAudio),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BeginAnalogAudio, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BeginAnalogAudio, _is_default_instance_));
-  EndAnalogAudio_descriptor_ = file->message_type(7);
+  EndAnalogAudio_descriptor_ = file->message_type(8);
   static const int EndAnalogAudio_offsets_[1] = {
   };
   EndAnalogAudio_reflection_ =
@@ -220,7 +242,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(EndAnalogAudio),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EndAnalogAudio, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EndAnalogAudio, _is_default_instance_));
-  PlaybackEvent_descriptor_ = file->message_type(8);
+  PlaybackEvent_descriptor_ = file->message_type(9);
   static const int PlaybackEvent_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, command_),
   };
@@ -236,7 +258,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PlaybackEvent, _is_default_instance_));
   PlaybackEvent_Command_descriptor_ = PlaybackEvent_descriptor_->enum_type(0);
-  LocationalEvent_descriptor_ = file->message_type(9);
+  LocationalEvent_descriptor_ = file->message_type(10);
   static const int LocationalEvent_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, location_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(LocationalEvent_default_oneof_instance_, simple_haptic_),
@@ -259,7 +281,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(LocationalEvent),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LocationalEvent, _is_default_instance_));
-  EnableTracking_descriptor_ = file->message_type(10);
+  EnableTracking_descriptor_ = file->message_type(11);
   static const int EnableTracking_offsets_[1] = {
   };
   EnableTracking_reflection_ =
@@ -273,7 +295,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(EnableTracking),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EnableTracking, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EnableTracking, _is_default_instance_));
-  DisableTracking_descriptor_ = file->message_type(11);
+  DisableTracking_descriptor_ = file->message_type(12);
   static const int DisableTracking_offsets_[1] = {
   };
   DisableTracking_reflection_ =
@@ -287,7 +309,7 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(DisableTracking),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DisableTracking, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DisableTracking, _is_default_instance_));
-  DeviceEvent_descriptor_ = file->message_type(12);
+  DeviceEvent_descriptor_ = file->message_type(13);
   static const int DeviceEvent_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, device_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(DeviceEvent_default_oneof_instance_, enable_tracking_),
@@ -307,12 +329,13 @@ void protobuf_AssignDesc_HighLevelEvent_2eproto() {
       sizeof(DeviceEvent),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeviceEvent, _is_default_instance_));
-  HighLevelEvent_descriptor_ = file->message_type(13);
-  static const int HighLevelEvent_offsets_[5] = {
+  HighLevelEvent_descriptor_ = file->message_type(14);
+  static const int HighLevelEvent_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, parent_id_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, playback_event_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, locational_event_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, device_event_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(HighLevelEvent_default_oneof_instance_, client_id_event_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(HighLevelEvent, events_),
   };
   HighLevelEvent_reflection_ =
@@ -341,6 +364,8 @@ inline void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      ClientIdentificationEvent_descriptor_, &ClientIdentificationEvent::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       RegionList_descriptor_, &RegionList::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -374,6 +399,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
 }  // namespace
 
 void protobuf_ShutdownFile_HighLevelEvent_2eproto() {
+  delete ClientIdentificationEvent::default_instance_;
+  delete ClientIdentificationEvent_reflection_;
   delete RegionList::default_instance_;
   delete RegionList_reflection_;
   delete NodeList::default_instance_;
@@ -416,41 +443,47 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\024HighLevelEvent.proto\022\014NullSpaceIPC\"\035\n\n"
-    "RegionList\022\017\n\007regions\030\001 \003(\r\"\031\n\010NodeList\022"
-    "\r\n\005nodes\030\001 \003(\r\"i\n\010Location\022+\n\007regions\030\001 "
-    "\001(\0132\030.NullSpaceIPC.RegionListH\000\022\'\n\005nodes"
-    "\030\002 \001(\0132\026.NullSpaceIPC.NodeListH\000B\007\n\005wher"
-    "e\"E\n\014SimpleHaptic\022\016\n\006effect\030\001 \001(\r\022\023\n\013rep"
-    "etitions\030\002 \001(\r\022\020\n\010strength\030\003 \001(\002\"$\n\020Cont"
-    "inuousHaptic\022\020\n\010strength\030\001 \001(\002\"4\n\016Buffer"
-    "edHaptic\022\017\n\007samples\030\001 \003(\002\022\021\n\tfrequency\030\002"
-    " \001(\002\"\022\n\020BeginAnalogAudio\"\020\n\016EndAnalogAud"
-    "io\"\201\001\n\rPlaybackEvent\0224\n\007command\030\001 \001(\0162#."
-    "NullSpaceIPC.PlaybackEvent.Command\":\n\007Co"
-    "mmand\022\013\n\007UNKNOWN\020\000\022\t\n\005PAUSE\020\001\022\013\n\007UNPAUSE"
-    "\020\002\022\n\n\006CANCEL\020\003\"\350\002\n\017LocationalEvent\022(\n\010lo"
-    "cation\030\001 \001(\0132\026.NullSpaceIPC.Location\0223\n\r"
-    "simple_haptic\030\002 \001(\0132\032.NullSpaceIPC.Simpl"
-    "eHapticH\000\022;\n\021continuous_haptic\030\003 \001(\0132\036.N"
-    "ullSpaceIPC.ContinuousHapticH\000\0227\n\017buffer"
-    "ed_haptic\030\004 \001(\0132\034.NullSpaceIPC.BufferedH"
-    "apticH\000\022<\n\022begin_analog_audio\030\020 \001(\0132\036.Nu"
-    "llSpaceIPC.BeginAnalogAudioH\000\0228\n\020end_ana"
-    "log_audio\030\021 \001(\0132\034.NullSpaceIPC.EndAnalog"
-    "AudioH\000B\010\n\006events\"\020\n\016EnableTracking\"\021\n\017D"
-    "isableTracking\"\233\001\n\013DeviceEvent\022\016\n\006device"
-    "\030\001 \001(\r\0227\n\017enable_tracking\030\020 \001(\0132\034.NullSp"
-    "aceIPC.EnableTrackingH\000\0229\n\020disable_track"
-    "ing\030\021 \001(\0132\035.NullSpaceIPC.DisableTracking"
-    "H\000B\010\n\006events\"\322\001\n\016HighLevelEvent\022\021\n\tparen"
-    "t_id\030\001 \001(\004\0225\n\016playback_event\030\002 \001(\0132\033.Nul"
-    "lSpaceIPC.PlaybackEventH\000\0229\n\020locational_"
-    "event\030\003 \001(\0132\035.NullSpaceIPC.LocationalEve"
-    "ntH\000\0221\n\014device_event\030\004 \001(\0132\031.NullSpaceIP"
-    "C.DeviceEventH\000B\010\n\006eventsb\006proto3", 1313);
+    "\n\024HighLevelEvent.proto\022\014NullSpaceIPC\"f\n\031"
+    "ClientIdentificationEvent\022\021\n\tdll_major\030\001"
+    " \001(\r\022\021\n\tdll_minor\030\002 \001(\r\022\021\n\tdll_patch\030\003 \001"
+    "(\r\022\020\n\010app_name\030\004 \001(\t\"\035\n\nRegionList\022\017\n\007re"
+    "gions\030\001 \003(\r\"\031\n\010NodeList\022\r\n\005nodes\030\001 \003(\r\"i"
+    "\n\010Location\022+\n\007regions\030\001 \001(\0132\030.NullSpaceI"
+    "PC.RegionListH\000\022\'\n\005nodes\030\002 \001(\0132\026.NullSpa"
+    "ceIPC.NodeListH\000B\007\n\005where\"E\n\014SimpleHapti"
+    "c\022\016\n\006effect\030\001 \001(\r\022\023\n\013repetitions\030\002 \001(\r\022\020"
+    "\n\010strength\030\003 \001(\002\"$\n\020ContinuousHaptic\022\020\n\010"
+    "strength\030\001 \001(\002\"4\n\016BufferedHaptic\022\017\n\007samp"
+    "les\030\001 \003(\002\022\021\n\tfrequency\030\002 \001(\002\"\022\n\020BeginAna"
+    "logAudio\"\020\n\016EndAnalogAudio\"\201\001\n\rPlaybackE"
+    "vent\0224\n\007command\030\001 \001(\0162#.NullSpaceIPC.Pla"
+    "ybackEvent.Command\":\n\007Command\022\013\n\007UNKNOWN"
+    "\020\000\022\t\n\005PAUSE\020\001\022\013\n\007UNPAUSE\020\002\022\n\n\006CANCEL\020\003\"\350"
+    "\002\n\017LocationalEvent\022(\n\010location\030\001 \001(\0132\026.N"
+    "ullSpaceIPC.Location\0223\n\rsimple_haptic\030\002 "
+    "\001(\0132\032.NullSpaceIPC.SimpleHapticH\000\022;\n\021con"
+    "tinuous_haptic\030\003 \001(\0132\036.NullSpaceIPC.Cont"
+    "inuousHapticH\000\0227\n\017buffered_haptic\030\004 \001(\0132"
+    "\034.NullSpaceIPC.BufferedHapticH\000\022<\n\022begin"
+    "_analog_audio\030\020 \001(\0132\036.NullSpaceIPC.Begin"
+    "AnalogAudioH\000\0228\n\020end_analog_audio\030\021 \001(\0132"
+    "\034.NullSpaceIPC.EndAnalogAudioH\000B\010\n\006event"
+    "s\"\020\n\016EnableTracking\"\021\n\017DisableTracking\"\233"
+    "\001\n\013DeviceEvent\022\016\n\006device\030\001 \001(\r\0227\n\017enable"
+    "_tracking\030\020 \001(\0132\034.NullSpaceIPC.EnableTra"
+    "ckingH\000\0229\n\020disable_tracking\030\021 \001(\0132\035.Null"
+    "SpaceIPC.DisableTrackingH\000B\010\n\006events\"\226\002\n"
+    "\016HighLevelEvent\022\021\n\tparent_id\030\001 \001(\004\0225\n\016pl"
+    "ayback_event\030\002 \001(\0132\033.NullSpaceIPC.Playba"
+    "ckEventH\000\0229\n\020locational_event\030\003 \001(\0132\035.Nu"
+    "llSpaceIPC.LocationalEventH\000\0221\n\014device_e"
+    "vent\030\004 \001(\0132\031.NullSpaceIPC.DeviceEventH\000\022"
+    "B\n\017client_id_event\030\020 \001(\0132\'.NullSpaceIPC."
+    "ClientIdentificationEventH\000B\010\n\006eventsb\006p"
+    "roto3", 1485);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "HighLevelEvent.proto", &protobuf_RegisterTypes);
+  ClientIdentificationEvent::default_instance_ = new ClientIdentificationEvent();
   RegionList::default_instance_ = new RegionList();
   NodeList::default_instance_ = new NodeList();
   Location::default_instance_ = new Location();
@@ -469,6 +502,7 @@ void protobuf_AddDesc_HighLevelEvent_2eproto() {
   DeviceEvent_default_oneof_instance_ = new DeviceEventOneofInstance();
   HighLevelEvent::default_instance_ = new HighLevelEvent();
   HighLevelEvent_default_oneof_instance_ = new HighLevelEventOneofInstance();
+  ClientIdentificationEvent::default_instance_->InitAsDefaultInstance();
   RegionList::default_instance_->InitAsDefaultInstance();
   NodeList::default_instance_->InitAsDefaultInstance();
   Location::default_instance_->InitAsDefaultInstance();
@@ -492,6 +526,468 @@ struct StaticDescriptorInitializer_HighLevelEvent_2eproto {
     protobuf_AddDesc_HighLevelEvent_2eproto();
   }
 } static_descriptor_initializer_HighLevelEvent_2eproto_;
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ClientIdentificationEvent::kDllMajorFieldNumber;
+const int ClientIdentificationEvent::kDllMinorFieldNumber;
+const int ClientIdentificationEvent::kDllPatchFieldNumber;
+const int ClientIdentificationEvent::kAppNameFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ClientIdentificationEvent::ClientIdentificationEvent()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:NullSpaceIPC.ClientIdentificationEvent)
+}
+
+void ClientIdentificationEvent::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+ClientIdentificationEvent::ClientIdentificationEvent(const ClientIdentificationEvent& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:NullSpaceIPC.ClientIdentificationEvent)
+}
+
+void ClientIdentificationEvent::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  dll_major_ = 0u;
+  dll_minor_ = 0u;
+  dll_patch_ = 0u;
+  app_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+ClientIdentificationEvent::~ClientIdentificationEvent() {
+  // @@protoc_insertion_point(destructor:NullSpaceIPC.ClientIdentificationEvent)
+  SharedDtor();
+}
+
+void ClientIdentificationEvent::SharedDtor() {
+  app_name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void ClientIdentificationEvent::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* ClientIdentificationEvent::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ClientIdentificationEvent_descriptor_;
+}
+
+const ClientIdentificationEvent& ClientIdentificationEvent::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_HighLevelEvent_2eproto();
+  return *default_instance_;
+}
+
+ClientIdentificationEvent* ClientIdentificationEvent::default_instance_ = NULL;
+
+ClientIdentificationEvent* ClientIdentificationEvent::New(::google::protobuf::Arena* arena) const {
+  ClientIdentificationEvent* n = new ClientIdentificationEvent;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ClientIdentificationEvent::Clear() {
+// @@protoc_insertion_point(message_clear_start:NullSpaceIPC.ClientIdentificationEvent)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(ClientIdentificationEvent, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<ClientIdentificationEvent*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(dll_major_, dll_minor_);
+  dll_patch_ = 0u;
+  app_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+
+#undef ZR_HELPER_
+#undef ZR_
+
+}
+
+bool ClientIdentificationEvent::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:NullSpaceIPC.ClientIdentificationEvent)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional uint32 dll_major = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &dll_major_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_dll_minor;
+        break;
+      }
+
+      // optional uint32 dll_minor = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_dll_minor:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &dll_minor_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_dll_patch;
+        break;
+      }
+
+      // optional uint32 dll_patch = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_dll_patch:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &dll_patch_)));
+
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_app_name;
+        break;
+      }
+
+      // optional string app_name = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_app_name:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_app_name()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->app_name().data(), this->app_name().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "NullSpaceIPC.ClientIdentificationEvent.app_name"));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:NullSpaceIPC.ClientIdentificationEvent)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:NullSpaceIPC.ClientIdentificationEvent)
+  return false;
+#undef DO_
+}
+
+void ClientIdentificationEvent::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:NullSpaceIPC.ClientIdentificationEvent)
+  // optional uint32 dll_major = 1;
+  if (this->dll_major() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->dll_major(), output);
+  }
+
+  // optional uint32 dll_minor = 2;
+  if (this->dll_minor() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->dll_minor(), output);
+  }
+
+  // optional uint32 dll_patch = 3;
+  if (this->dll_patch() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->dll_patch(), output);
+  }
+
+  // optional string app_name = 4;
+  if (this->app_name().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->app_name().data(), this->app_name().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "NullSpaceIPC.ClientIdentificationEvent.app_name");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      4, this->app_name(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:NullSpaceIPC.ClientIdentificationEvent)
+}
+
+::google::protobuf::uint8* ClientIdentificationEvent::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:NullSpaceIPC.ClientIdentificationEvent)
+  // optional uint32 dll_major = 1;
+  if (this->dll_major() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->dll_major(), target);
+  }
+
+  // optional uint32 dll_minor = 2;
+  if (this->dll_minor() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->dll_minor(), target);
+  }
+
+  // optional uint32 dll_patch = 3;
+  if (this->dll_patch() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->dll_patch(), target);
+  }
+
+  // optional string app_name = 4;
+  if (this->app_name().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->app_name().data(), this->app_name().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "NullSpaceIPC.ClientIdentificationEvent.app_name");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->app_name(), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.ClientIdentificationEvent)
+  return target;
+}
+
+int ClientIdentificationEvent::ByteSize() const {
+// @@protoc_insertion_point(message_byte_size_start:NullSpaceIPC.ClientIdentificationEvent)
+  int total_size = 0;
+
+  // optional uint32 dll_major = 1;
+  if (this->dll_major() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->dll_major());
+  }
+
+  // optional uint32 dll_minor = 2;
+  if (this->dll_minor() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->dll_minor());
+  }
+
+  // optional uint32 dll_patch = 3;
+  if (this->dll_patch() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->dll_patch());
+  }
+
+  // optional string app_name = 4;
+  if (this->app_name().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->app_name());
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ClientIdentificationEvent::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:NullSpaceIPC.ClientIdentificationEvent)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  const ClientIdentificationEvent* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const ClientIdentificationEvent>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:NullSpaceIPC.ClientIdentificationEvent)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:NullSpaceIPC.ClientIdentificationEvent)
+    MergeFrom(*source);
+  }
+}
+
+void ClientIdentificationEvent::MergeFrom(const ClientIdentificationEvent& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:NullSpaceIPC.ClientIdentificationEvent)
+  if (GOOGLE_PREDICT_FALSE(&from == this)) {
+    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
+  }
+  if (from.dll_major() != 0) {
+    set_dll_major(from.dll_major());
+  }
+  if (from.dll_minor() != 0) {
+    set_dll_minor(from.dll_minor());
+  }
+  if (from.dll_patch() != 0) {
+    set_dll_patch(from.dll_patch());
+  }
+  if (from.app_name().size() > 0) {
+
+    app_name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.app_name_);
+  }
+}
+
+void ClientIdentificationEvent::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:NullSpaceIPC.ClientIdentificationEvent)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ClientIdentificationEvent::CopyFrom(const ClientIdentificationEvent& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:NullSpaceIPC.ClientIdentificationEvent)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ClientIdentificationEvent::IsInitialized() const {
+
+  return true;
+}
+
+void ClientIdentificationEvent::Swap(ClientIdentificationEvent* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ClientIdentificationEvent::InternalSwap(ClientIdentificationEvent* other) {
+  std::swap(dll_major_, other->dll_major_);
+  std::swap(dll_minor_, other->dll_minor_);
+  std::swap(dll_patch_, other->dll_patch_);
+  app_name_.Swap(&other->app_name_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata ClientIdentificationEvent::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = ClientIdentificationEvent_descriptor_;
+  metadata.reflection = ClientIdentificationEvent_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ClientIdentificationEvent
+
+// optional uint32 dll_major = 1;
+void ClientIdentificationEvent::clear_dll_major() {
+  dll_major_ = 0u;
+}
+ ::google::protobuf::uint32 ClientIdentificationEvent::dll_major() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_major)
+  return dll_major_;
+}
+ void ClientIdentificationEvent::set_dll_major(::google::protobuf::uint32 value) {
+  
+  dll_major_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_major)
+}
+
+// optional uint32 dll_minor = 2;
+void ClientIdentificationEvent::clear_dll_minor() {
+  dll_minor_ = 0u;
+}
+ ::google::protobuf::uint32 ClientIdentificationEvent::dll_minor() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
+  return dll_minor_;
+}
+ void ClientIdentificationEvent::set_dll_minor(::google::protobuf::uint32 value) {
+  
+  dll_minor_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
+}
+
+// optional uint32 dll_patch = 3;
+void ClientIdentificationEvent::clear_dll_patch() {
+  dll_patch_ = 0u;
+}
+ ::google::protobuf::uint32 ClientIdentificationEvent::dll_patch() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_patch)
+  return dll_patch_;
+}
+ void ClientIdentificationEvent::set_dll_patch(::google::protobuf::uint32 value) {
+  
+  dll_patch_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_patch)
+}
+
+// optional string app_name = 4;
+void ClientIdentificationEvent::clear_app_name() {
+  app_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& ClientIdentificationEvent::app_name() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.app_name)
+  return app_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ClientIdentificationEvent::set_app_name(const ::std::string& value) {
+  
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+ void ClientIdentificationEvent::set_app_name(const char* value) {
+  
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+ void ClientIdentificationEvent::set_app_name(const char* value, size_t size) {
+  
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+ ::std::string* ClientIdentificationEvent::mutable_app_name() {
+  
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.ClientIdentificationEvent.app_name)
+  return app_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* ClientIdentificationEvent::release_app_name() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.ClientIdentificationEvent.app_name)
+  
+  return app_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ClientIdentificationEvent::set_allocated_app_name(::std::string* app_name) {
+  if (app_name != NULL) {
+    
+  } else {
+    
+  }
+  app_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), app_name);
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -4586,6 +5082,7 @@ const int HighLevelEvent::kParentIdFieldNumber;
 const int HighLevelEvent::kPlaybackEventFieldNumber;
 const int HighLevelEvent::kLocationalEventFieldNumber;
 const int HighLevelEvent::kDeviceEventFieldNumber;
+const int HighLevelEvent::kClientIdEventFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 HighLevelEvent::HighLevelEvent()
@@ -4599,6 +5096,7 @@ void HighLevelEvent::InitAsDefaultInstance() {
   HighLevelEvent_default_oneof_instance_->playback_event_ = const_cast< ::NullSpaceIPC::PlaybackEvent*>(&::NullSpaceIPC::PlaybackEvent::default_instance());
   HighLevelEvent_default_oneof_instance_->locational_event_ = const_cast< ::NullSpaceIPC::LocationalEvent*>(&::NullSpaceIPC::LocationalEvent::default_instance());
   HighLevelEvent_default_oneof_instance_->device_event_ = const_cast< ::NullSpaceIPC::DeviceEvent*>(&::NullSpaceIPC::DeviceEvent::default_instance());
+  HighLevelEvent_default_oneof_instance_->client_id_event_ = const_cast< ::NullSpaceIPC::ClientIdentificationEvent*>(&::NullSpaceIPC::ClientIdentificationEvent::default_instance());
 }
 
 HighLevelEvent::HighLevelEvent(const HighLevelEvent& from)
@@ -4669,6 +5167,10 @@ void HighLevelEvent::clear_events() {
       delete events_.device_event_;
       break;
     }
+    case kClientIdEvent: {
+      delete events_.client_id_event_;
+      break;
+    }
     case EVENTS_NOT_SET: {
       break;
     }
@@ -4689,7 +5191,7 @@ bool HighLevelEvent::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:NullSpaceIPC.HighLevelEvent)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(16383);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -4739,6 +5241,19 @@ bool HighLevelEvent::MergePartialFromCodedStream(
          parse_device_event:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
                input, mutable_device_event()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(130)) goto parse_client_id_event;
+        break;
+      }
+
+      // optional .NullSpaceIPC.ClientIdentificationEvent client_id_event = 16;
+      case 16: {
+        if (tag == 130) {
+         parse_client_id_event:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_client_id_event()));
         } else {
           goto handle_unusual;
         }
@@ -4793,6 +5308,12 @@ void HighLevelEvent::SerializeWithCachedSizes(
       4, *events_.device_event_, output);
   }
 
+  // optional .NullSpaceIPC.ClientIdentificationEvent client_id_event = 16;
+  if (has_client_id_event()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      16, *events_.client_id_event_, output);
+  }
+
   // @@protoc_insertion_point(serialize_end:NullSpaceIPC.HighLevelEvent)
 }
 
@@ -4823,6 +5344,13 @@ void HighLevelEvent::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
         4, *events_.device_event_, false, target);
+  }
+
+  // optional .NullSpaceIPC.ClientIdentificationEvent client_id_event = 16;
+  if (has_client_id_event()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageNoVirtualToArray(
+        16, *events_.client_id_event_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:NullSpaceIPC.HighLevelEvent)
@@ -4860,6 +5388,13 @@ int HighLevelEvent::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *events_.device_event_);
+      break;
+    }
+    // optional .NullSpaceIPC.ClientIdentificationEvent client_id_event = 16;
+    case kClientIdEvent: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *events_.client_id_event_);
       break;
     }
     case EVENTS_NOT_SET: {
@@ -4905,6 +5440,10 @@ void HighLevelEvent::MergeFrom(const HighLevelEvent& from) {
     }
     case kDeviceEvent: {
       mutable_device_event()->::NullSpaceIPC::DeviceEvent::MergeFrom(from.device_event());
+      break;
+    }
+    case kClientIdEvent: {
+      mutable_client_id_event()->::NullSpaceIPC::ClientIdentificationEvent::MergeFrom(from.client_id_event());
       break;
     }
     case EVENTS_NOT_SET: {
@@ -5114,6 +5653,54 @@ void HighLevelEvent::set_allocated_device_event(::NullSpaceIPC::DeviceEvent* dev
     events_.device_event_ = device_event;
   }
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.device_event)
+}
+
+// optional .NullSpaceIPC.ClientIdentificationEvent client_id_event = 16;
+bool HighLevelEvent::has_client_id_event() const {
+  return events_case() == kClientIdEvent;
+}
+void HighLevelEvent::set_has_client_id_event() {
+  _oneof_case_[0] = kClientIdEvent;
+}
+void HighLevelEvent::clear_client_id_event() {
+  if (has_client_id_event()) {
+    delete events_.client_id_event_;
+    clear_has_events();
+  }
+}
+ const ::NullSpaceIPC::ClientIdentificationEvent& HighLevelEvent::client_id_event() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.client_id_event)
+  return has_client_id_event()
+      ? *events_.client_id_event_
+      : ::NullSpaceIPC::ClientIdentificationEvent::default_instance();
+}
+::NullSpaceIPC::ClientIdentificationEvent* HighLevelEvent::mutable_client_id_event() {
+  if (!has_client_id_event()) {
+    clear_events();
+    set_has_client_id_event();
+    events_.client_id_event_ = new ::NullSpaceIPC::ClientIdentificationEvent;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.client_id_event)
+  return events_.client_id_event_;
+}
+::NullSpaceIPC::ClientIdentificationEvent* HighLevelEvent::release_client_id_event() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.client_id_event)
+  if (has_client_id_event()) {
+    clear_has_events();
+    ::NullSpaceIPC::ClientIdentificationEvent* temp = events_.client_id_event_;
+    events_.client_id_event_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void HighLevelEvent::set_allocated_client_id_event(::NullSpaceIPC::ClientIdentificationEvent* client_id_event) {
+  clear_events();
+  if (client_id_event) {
+    set_has_client_id_event();
+    events_.client_id_event_ = client_id_event;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.client_id_event)
 }
 
 bool HighLevelEvent::has_events() const {

@@ -39,14 +39,12 @@ private:
 
 	ScheduledEvent m_hapticsPull;
 	ScheduledEvent m_statusPush;
-	ScheduledEvent m_trackingPush;
 
 	void handleHaptics();
 	void handleStatus();
 
 	NullSpace::SharedMemory::TrackingUpdate m_cachedTracking;
 
-	void handleTracking();
 
 	hvr_diagnostics_ui m_renderingApi;
 

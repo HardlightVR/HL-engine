@@ -2,7 +2,12 @@ syntax = "proto3";
 
 package NullSpaceIPC;
 
-
+message ClientIdentificationEvent {
+	uint32 dll_major = 1;
+	uint32 dll_minor = 2;
+	uint32 dll_patch = 3;
+	string app_name = 4;
+}
 message RegionList {
 	repeated uint32 regions = 1;
 }
@@ -86,5 +91,6 @@ message HighLevelEvent {
 		PlaybackEvent playback_event = 2;
 		LocationalEvent locational_event = 3;
 		DeviceEvent device_event = 4;
+		ClientIdentificationEvent client_id_event = 16;
 	}
 }

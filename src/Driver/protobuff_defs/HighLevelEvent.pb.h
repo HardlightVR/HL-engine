@@ -39,6 +39,7 @@ void protobuf_ShutdownFile_HighLevelEvent_2eproto();
 
 class BeginAnalogAudio;
 class BufferedHaptic;
+class ClientIdentificationEvent;
 class ContinuousHaptic;
 class DeviceEvent;
 class DisableTracking;
@@ -76,6 +77,114 @@ inline bool PlaybackEvent_Command_Parse(
     PlaybackEvent_Command_descriptor(), name, value);
 }
 // ===================================================================
+
+class ClientIdentificationEvent : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.ClientIdentificationEvent) */ {
+ public:
+  ClientIdentificationEvent();
+  virtual ~ClientIdentificationEvent();
+
+  ClientIdentificationEvent(const ClientIdentificationEvent& from);
+
+  inline ClientIdentificationEvent& operator=(const ClientIdentificationEvent& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ClientIdentificationEvent& default_instance();
+
+  void Swap(ClientIdentificationEvent* other);
+
+  // implements Message ----------------------------------------------
+
+  inline ClientIdentificationEvent* New() const { return New(NULL); }
+
+  ClientIdentificationEvent* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const ClientIdentificationEvent& from);
+  void MergeFrom(const ClientIdentificationEvent& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
+    return InternalSerializeWithCachedSizesToArray(false, output);
+  }
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(ClientIdentificationEvent* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional uint32 dll_major = 1;
+  void clear_dll_major();
+  static const int kDllMajorFieldNumber = 1;
+  ::google::protobuf::uint32 dll_major() const;
+  void set_dll_major(::google::protobuf::uint32 value);
+
+  // optional uint32 dll_minor = 2;
+  void clear_dll_minor();
+  static const int kDllMinorFieldNumber = 2;
+  ::google::protobuf::uint32 dll_minor() const;
+  void set_dll_minor(::google::protobuf::uint32 value);
+
+  // optional uint32 dll_patch = 3;
+  void clear_dll_patch();
+  static const int kDllPatchFieldNumber = 3;
+  ::google::protobuf::uint32 dll_patch() const;
+  void set_dll_patch(::google::protobuf::uint32 value);
+
+  // optional string app_name = 4;
+  void clear_app_name();
+  static const int kAppNameFieldNumber = 4;
+  const ::std::string& app_name() const;
+  void set_app_name(const ::std::string& value);
+  void set_app_name(const char* value);
+  void set_app_name(const char* value, size_t size);
+  ::std::string* mutable_app_name();
+  ::std::string* release_app_name();
+  void set_allocated_app_name(::std::string* app_name);
+
+  // @@protoc_insertion_point(class_scope:NullSpaceIPC.ClientIdentificationEvent)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::uint32 dll_major_;
+  ::google::protobuf::uint32 dll_minor_;
+  ::google::protobuf::internal::ArenaStringPtr app_name_;
+  ::google::protobuf::uint32 dll_patch_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_HighLevelEvent_2eproto();
+  friend void protobuf_AssignDesc_HighLevelEvent_2eproto();
+  friend void protobuf_ShutdownFile_HighLevelEvent_2eproto();
+
+  void InitAsDefaultInstance();
+  static ClientIdentificationEvent* default_instance_;
+};
+// -------------------------------------------------------------------
 
 class RegionList : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:NullSpaceIPC.RegionList) */ {
  public:
@@ -1352,6 +1461,7 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
     kPlaybackEvent = 2,
     kLocationalEvent = 3,
     kDeviceEvent = 4,
+    kClientIdEvent = 16,
     EVENTS_NOT_SET = 0,
   };
 
@@ -1433,12 +1543,22 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
   ::NullSpaceIPC::DeviceEvent* release_device_event();
   void set_allocated_device_event(::NullSpaceIPC::DeviceEvent* device_event);
 
+  // optional .NullSpaceIPC.ClientIdentificationEvent client_id_event = 16;
+  bool has_client_id_event() const;
+  void clear_client_id_event();
+  static const int kClientIdEventFieldNumber = 16;
+  const ::NullSpaceIPC::ClientIdentificationEvent& client_id_event() const;
+  ::NullSpaceIPC::ClientIdentificationEvent* mutable_client_id_event();
+  ::NullSpaceIPC::ClientIdentificationEvent* release_client_id_event();
+  void set_allocated_client_id_event(::NullSpaceIPC::ClientIdentificationEvent* client_id_event);
+
   EventsCase events_case() const;
   // @@protoc_insertion_point(class_scope:NullSpaceIPC.HighLevelEvent)
  private:
   inline void set_has_playback_event();
   inline void set_has_locational_event();
   inline void set_has_device_event();
+  inline void set_has_client_id_event();
 
   inline bool has_events() const;
   void clear_events();
@@ -1452,6 +1572,7 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
     ::NullSpaceIPC::PlaybackEvent* playback_event_;
     ::NullSpaceIPC::LocationalEvent* locational_event_;
     ::NullSpaceIPC::DeviceEvent* device_event_;
+    ::NullSpaceIPC::ClientIdentificationEvent* client_id_event_;
   } events_;
   mutable int _cached_size_;
   ::google::protobuf::uint32 _oneof_case_[1];
@@ -1469,6 +1590,96 @@ class HighLevelEvent : public ::google::protobuf::Message /* @@protoc_insertion_
 // ===================================================================
 
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
+// ClientIdentificationEvent
+
+// optional uint32 dll_major = 1;
+inline void ClientIdentificationEvent::clear_dll_major() {
+  dll_major_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientIdentificationEvent::dll_major() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_major)
+  return dll_major_;
+}
+inline void ClientIdentificationEvent::set_dll_major(::google::protobuf::uint32 value) {
+  
+  dll_major_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_major)
+}
+
+// optional uint32 dll_minor = 2;
+inline void ClientIdentificationEvent::clear_dll_minor() {
+  dll_minor_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientIdentificationEvent::dll_minor() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
+  return dll_minor_;
+}
+inline void ClientIdentificationEvent::set_dll_minor(::google::protobuf::uint32 value) {
+  
+  dll_minor_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_minor)
+}
+
+// optional uint32 dll_patch = 3;
+inline void ClientIdentificationEvent::clear_dll_patch() {
+  dll_patch_ = 0u;
+}
+inline ::google::protobuf::uint32 ClientIdentificationEvent::dll_patch() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.dll_patch)
+  return dll_patch_;
+}
+inline void ClientIdentificationEvent::set_dll_patch(::google::protobuf::uint32 value) {
+  
+  dll_patch_ = value;
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.dll_patch)
+}
+
+// optional string app_name = 4;
+inline void ClientIdentificationEvent::clear_app_name() {
+  app_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& ClientIdentificationEvent::app_name() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.ClientIdentificationEvent.app_name)
+  return app_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ClientIdentificationEvent::set_app_name(const ::std::string& value) {
+  
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+inline void ClientIdentificationEvent::set_app_name(const char* value) {
+  
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+inline void ClientIdentificationEvent::set_app_name(const char* value, size_t size) {
+  
+  app_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+inline ::std::string* ClientIdentificationEvent::mutable_app_name() {
+  
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.ClientIdentificationEvent.app_name)
+  return app_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* ClientIdentificationEvent::release_app_name() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.ClientIdentificationEvent.app_name)
+  
+  return app_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ClientIdentificationEvent::set_allocated_app_name(::std::string* app_name) {
+  if (app_name != NULL) {
+    
+  } else {
+    
+  }
+  app_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), app_name);
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.ClientIdentificationEvent.app_name)
+}
+
+// -------------------------------------------------------------------
+
 // RegionList
 
 // repeated uint32 regions = 1;
@@ -2366,6 +2577,54 @@ inline void HighLevelEvent::set_allocated_device_event(::NullSpaceIPC::DeviceEve
   // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.device_event)
 }
 
+// optional .NullSpaceIPC.ClientIdentificationEvent client_id_event = 16;
+inline bool HighLevelEvent::has_client_id_event() const {
+  return events_case() == kClientIdEvent;
+}
+inline void HighLevelEvent::set_has_client_id_event() {
+  _oneof_case_[0] = kClientIdEvent;
+}
+inline void HighLevelEvent::clear_client_id_event() {
+  if (has_client_id_event()) {
+    delete events_.client_id_event_;
+    clear_has_events();
+  }
+}
+inline  const ::NullSpaceIPC::ClientIdentificationEvent& HighLevelEvent::client_id_event() const {
+  // @@protoc_insertion_point(field_get:NullSpaceIPC.HighLevelEvent.client_id_event)
+  return has_client_id_event()
+      ? *events_.client_id_event_
+      : ::NullSpaceIPC::ClientIdentificationEvent::default_instance();
+}
+inline ::NullSpaceIPC::ClientIdentificationEvent* HighLevelEvent::mutable_client_id_event() {
+  if (!has_client_id_event()) {
+    clear_events();
+    set_has_client_id_event();
+    events_.client_id_event_ = new ::NullSpaceIPC::ClientIdentificationEvent;
+  }
+  // @@protoc_insertion_point(field_mutable:NullSpaceIPC.HighLevelEvent.client_id_event)
+  return events_.client_id_event_;
+}
+inline ::NullSpaceIPC::ClientIdentificationEvent* HighLevelEvent::release_client_id_event() {
+  // @@protoc_insertion_point(field_release:NullSpaceIPC.HighLevelEvent.client_id_event)
+  if (has_client_id_event()) {
+    clear_has_events();
+    ::NullSpaceIPC::ClientIdentificationEvent* temp = events_.client_id_event_;
+    events_.client_id_event_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void HighLevelEvent::set_allocated_client_id_event(::NullSpaceIPC::ClientIdentificationEvent* client_id_event) {
+  clear_events();
+  if (client_id_event) {
+    set_has_client_id_event();
+    events_.client_id_event_ = client_id_event;
+  }
+  // @@protoc_insertion_point(field_set_allocated:NullSpaceIPC.HighLevelEvent.client_id_event)
+}
+
 inline bool HighLevelEvent::has_events() const {
   return events_case() != EVENTS_NOT_SET;
 }
@@ -2376,6 +2635,8 @@ inline HighLevelEvent::EventsCase HighLevelEvent::events_case() const {
   return HighLevelEvent::EventsCase(_oneof_case_[0]);
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
