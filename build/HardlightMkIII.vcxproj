@@ -339,7 +339,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h" />
     <ClInclude Include="..\src\plugins\hardlight\ReaderAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
-    <ClInclude Include="..\src\plugins\hardlight\SerialPort.h" />
     <ClInclude Include="..\src\plugins\hardlight\SuitPacket.h" />
     <ClInclude Include="..\src\plugins\hardlight\WriterAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\better_enum.h" />
@@ -392,7 +391,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ReaderAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\SerialPort.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\SuitPacket.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
