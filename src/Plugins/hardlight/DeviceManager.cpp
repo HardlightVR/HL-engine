@@ -73,7 +73,7 @@ void DeviceManager::handle_recognize(connection_info info)
 	//begins synchronizing incoming packets from the device
 	device->synchronizer->start();
 
-	//in order for a device to move from "potential" to "actual", we need it to return its version
+	//in order for a device to move from "potentially found" to "actually present", we need it to return its version
 	device->dispatcher->AddConsumer(inst::Id::GET_VERSION, [this, portName = info.port_name](auto packet) {
 		handle_connect(portName, packet);
 	});

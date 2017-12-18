@@ -7,6 +7,7 @@
 
 
 //I guess fundamentally, it's not a mark3 profile, but a mark3-compatible instruction set..
+//Because we are not detecing that a "mark3" is connected, simply that the device responds to these mark3 commands. 
 class mark3 : public device_profile {
 public:
 	mark3();
