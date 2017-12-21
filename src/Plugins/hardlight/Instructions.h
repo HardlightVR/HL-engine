@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Instructions_Detail.h"
 
 #include <cstdint>
 #include <vector>
@@ -9,8 +10,10 @@
 #include "better_enum.h"
 
 
+//When adding new instructions, first begin by consulting the Firmware Wiki.
 namespace inst {
 
+//Add the name of the instruction here, along with its hex ID
 
 BETTER_ENUM(Id, uint8_t,
 	GET_VERSION = 0x01,
@@ -44,13 +47,9 @@ BETTER_ENUM(Id, uint8_t,
 	GET_TRACK_MAG = 0x37,
 	GET_TRACK_UUID = 0x38
 );
-template<typename T>
-struct param {
-	uint8_t value;
-	explicit param(uint8_t val) : value(val) {}
-};
 
-#define PARAM(name) struct name##_t {}; using name = param<name##_t>
+
+//Declare any new param types. These are here to provide type-safety.
 
 PARAM(effect);
 PARAM(red);
@@ -68,37 +67,10 @@ PARAM(audio_mindrv);
 PARAM(audio_maxdrv);
 
 
+//Declare your instruction and the parameters that it takes
 
-
-
-
-template<std::size_t i = 0, typename ...Tp>
-inline typename std::enable_if<i == sizeof...(Tp), void>::type
-	for_each(const std::tuple<Tp...>&, uint8_t* data) {}
-
-template<std::size_t i = 0, typename ...Tp>
-inline typename std::enable_if<i < sizeof...(Tp), void>::type
-	for_each(const std::tuple<Tp...>& t, uint8_t* data) {
-	data[i] = std::get<i>(t).value;
-	for_each<i + 1, Tp...>(t, data);
-}
-
-
-template<std::size_t instruction_id, typename...Args>
-struct instruction {
-	std::tuple<Args...> args;
-	uint8_t id = instruction_id;
-	instruction(Args... args) : args(std::forward<Args>(args)...) {
-		static_assert(std::tuple_size<std::tuple<Args...>>::value <= 9, "cannot have more than 9 arguments");
-
-	}
-	void serialize(uint8_t* inputBuffer) const {
-		for_each(args, inputBuffer);
-	}
-};
-
-#define INST(id, name, ...) using name = instruction<id, __VA_ARGS__>
-
+//For we want to implement GET_VERSION.
+//So, we pass in the hex ID declared above (Id::GET_VERSION), and a name (get_version), followed by 0 parameters.
 INST(Id::GET_VERSION, get_version);
 INST(Id::GET_PING, get_ping);
 INST(Id::GET_UUID, get_uuid);
@@ -123,22 +95,29 @@ template<typename Instruction>
 std::vector<uint8_t> Build(const Instruction & instruction)
 {
 
-	constexpr uint8_t packetLength = 16;
+	constexpr uint8_t PACKET_LENGTH = 16;
 
-	std::vector<uint8_t> packet(packetLength, 0);
+	constexpr uint8_t PACKET_HEADER_0 = 0x24;
+	constexpr uint8_t PACKET_HEADER_1 = 0x02;
 
-	packet[0] = 0x24;
-	packet[1] = 0x02;
+	constexpr uint8_t PACKET_FOOTER_0 = 0xFF;
+	constexpr uint8_t PACKET_FOOTER_1 = 0x0D;
+	constexpr uint8_t PACKET_FOOTER_2 = 0x0A;
+
+	std::vector<uint8_t> packet(PACKET_LENGTH, 0);
+
+	packet[0] = PACKET_HEADER_0;
+	packet[1] = PACKET_HEADER_1;
 	packet[2] = instruction.id;
-	packet[3] = static_cast<uint8_t>(packetLength);
+	packet[3] = static_cast<uint8_t>(PACKET_LENGTH);
 
 	instruction.serialize(packet.data() + 4);
 
 
 
-	packet[packetLength - 3] = 0xFF;
-	packet[packetLength - 2] = 0x0D;
-	packet[packetLength - 1] = 0x0A;
+	packet[PACKET_LENGTH - 3] = PACKET_FOOTER_0;
+	packet[PACKET_LENGTH - 2] = PACKET_FOOTER_1;
+	packet[PACKET_LENGTH - 1] = PACKET_FOOTER_2;
 
 	return packet;
 }

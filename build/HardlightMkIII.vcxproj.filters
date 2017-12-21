@@ -201,6 +201,7 @@
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Plugins\hardlight\Instructions_Detail.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">

@@ -327,6 +327,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Instruction.h" />
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instructions.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\Instructions_Detail.h" />
     <ClInclude Include="..\src\plugins\hardlight\IoService.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\json-forwards.h" />
