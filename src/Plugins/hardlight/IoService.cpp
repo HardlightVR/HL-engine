@@ -64,7 +64,6 @@ void IoService::start() {
 	_ioLoop = std::thread([&]() {
 		//Keep running as long as we haven't signaled to quit, but this is only checked after .run returns.
 		//.run will block until it is stopped
-		auto& log = Locator::Logger();
 		while (!_shouldQuit.load()) {
 			try {
 				m_work = std::make_unique<boost::asio::io_service::work>(m_io);

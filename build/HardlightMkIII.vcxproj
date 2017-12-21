@@ -333,7 +333,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\Json\json.h" />
     <ClInclude Include="..\src\plugins\hardlight\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\Locator.h" />
-    <ClInclude Include="..\src\plugins\hardlight\NullLogger.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketDispatcher.h" />
     <ClInclude Include="..\src\plugins\hardlight\PacketVersion.h" />
     <ClInclude Include="..\src\plugins\hardlight\PluginDummy.h" />
@@ -384,7 +383,6 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\IoService.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Json\jsoncpp.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Locator.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\NullLogger.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp" />
