@@ -282,6 +282,10 @@ bool PluginManager::configurePlugin(PluginInstance* plugin)
 	return true;
 }
 
+PluginInstance* PluginManager::GetHardlightPlugin() {
+	return m_plugins["HardlightPlugin"].get();
+}
+
 bool PluginManager::LoadPlugin(const std::string& searchDirectory, const std::string& dllName)
 {
 

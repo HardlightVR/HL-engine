@@ -10,7 +10,7 @@
 
 #define HVR_PLATFORM_API_VERSION_MAJOR 1
 #define HVR_PLATFORM_API_VERSION_MINOR 0
-#define HVR_PLATFORM_API_VERSION_PATCH 5
+#define HVR_PLATFORM_API_VERSION_PATCH 6
 
 #define HVR_PLATFORM_API_VERSION ((HVR_PLATFORM_API_VERSION_MAJOR << 24) | (HVR_PLATFORM_API_VERSION_MINOR << 16) | HVR_PLATFORM_API_VERSION_PATCH)
 
@@ -78,6 +78,19 @@ extern "C" {
 	HVR_RETURN(int) hvr_platform_getplugininfo(hvr_platform* platform, hvr_plugin_id id, hvr_plugin_info* outInfo);
 	HVR_RETURN(int) hvr_platform_setupdiagnostics(hvr_platform* ptr, hvr_diagnostics_ui* api);
 	HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id pluginId);
+
+	typedef enum hvr_suitstate {
+		hvr_suitstate_error = -1,
+		hvr_suitstate_unknown = 0,
+		hvr_suitstate_ok = 1,
+		hvr_suitstate_unplugged = 2,
+		hvr_suitstate_detected = 3,
+		hvr_suitstate_checking = 4,
+	} hvr_suitstate;
+
+
+	
+	HVR_RETURN(int) hvr_platform_getcurrentsuitstate(hvr_platform* ptr, hvr_suitstate* outState);
 
 
 

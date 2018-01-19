@@ -8,6 +8,8 @@
 
 #include "mark3.h"
 
+#include "Doctor.h"
+
 std::set<std::string> getPortNames() {
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::UsingQueryDosDevice(ports);
@@ -22,8 +24,9 @@ std::set<std::string> getPortNames() {
 
 //precondition: m_profiles is not empty
 //Not meant to be used with no profiles
-hardware_device_recognizer::hardware_device_recognizer(boost::asio::io_service& io)
+hardware_device_recognizer::hardware_device_recognizer(boost::asio::io_service& io, Doctor* doctor)
 	: m_io(io)
+	, m_doctor(doctor)
 	, m_manager()
 	, m_recognizedPorts()
 	, m_scanTimeout(boost::posix_time::millisec(1000))
@@ -61,6 +64,11 @@ void hardware_device_recognizer::on_recognize(recognized_event handler)
 void hardware_device_recognizer::on_unrecognize(unrecognized_event handler)
 {
 	m_onUnrecognize =handler;
+}
+
+size_t hardware_device_recognizer::get_num_potential_devices() const
+{
+	return m_manager.get_num_connections();
 }
 
 

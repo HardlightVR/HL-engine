@@ -13,12 +13,14 @@
 #include "device_profile.h"
 
 #include "logger.h"
+
+class Doctor;
 class hardware_device_recognizer {
 public:
 	using recognized_event = std::function<void(connection_info)>;
 	using unrecognized_event = std::function<void(connection_info)>;
 
-	hardware_device_recognizer(boost::asio::io_service& io);
+	hardware_device_recognizer(boost::asio::io_service& io, Doctor* doctor);
 	
 	void start();
 	void stop();
@@ -29,6 +31,8 @@ public:
 	//This event can only have one consumer
 	void on_unrecognize(unrecognized_event handler);
 
+	size_t get_num_potential_devices() const;
+
 private:
 	void do_port_scan();
 	void handle_recognize(connection_info info);
@@ -37,7 +41,8 @@ private:
 	void schedule_port_scan();
 
 	boost::asio::io_service& m_io;
-	
+	Doctor* m_doctor;
+
 	serial_connection_manager m_manager;
 	std::set<std::string> m_recognizedPorts;
 

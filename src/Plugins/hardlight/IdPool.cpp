@@ -14,7 +14,6 @@ IdPool::IdPool()
 
 }
 
-//thread safe
 std::size_t IdPool::Request()
 {
 	std::lock_guard<std::mutex> guard(m_lock);
@@ -29,10 +28,8 @@ std::size_t IdPool::Request()
 	return id;
 }
 
-//thread safe
 void IdPool::Release(std::size_t val)
 {
 	std::lock_guard<std::mutex> guard(m_lock);
-
 	m_pool.push_back(val);
 }

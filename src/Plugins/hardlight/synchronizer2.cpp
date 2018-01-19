@@ -58,6 +58,11 @@ std::size_t synchronizer2::total_bytes_read() const
 	return m_totalBytesRead;
 }
 
+boost::asio::io_service & synchronizer2::get_io_service()
+{
+	return m_syncTimer.get_io_service();
+}
+
 void synchronizer2::transition_state()
 {
 	switch (m_state)

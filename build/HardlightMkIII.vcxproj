@@ -306,10 +306,12 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\Driver\include\PluginAPI.h" />
     <ClInclude Include="..\src\Driver\include\PluginAPIWrapper.h" />
     <ClInclude Include="..\src\plugins\hardlight\AreaFlags.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\AsyncPacketRequest.h" />
     <ClInclude Include="..\src\plugins\hardlight\AsyncTimeout.h" />
     <ClInclude Include="..\src\plugins\hardlight\Atom.h" />
     <ClInclude Include="..\src\plugins\hardlight\Device.h" />
     <ClInclude Include="..\src\plugins\hardlight\DeviceManager.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\Doctor.h" />
     <ClInclude Include="..\src\plugins\hardlight\Effects.h" />
     <ClInclude Include="..\src\plugins\hardlight\EnumTranslator.h" />
     <ClInclude Include="..\src\plugins\hardlight\Enums.h" />
@@ -365,10 +367,12 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\zone_logic\hardlightdevice.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Plugins\hardlight\AsyncPacketRequest.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Atom.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Device.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\DeviceManager.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\Doctor.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\EnumTranslator.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\FirmwareInterface.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\Handshaker.cpp" />

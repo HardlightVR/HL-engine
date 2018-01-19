@@ -50,6 +50,10 @@ public:
 		std::string DllPath;
 	};
 	void SetDeviceContainer(DeviceContainer* devices);
+
+
+	///hack for hardware verification
+	PluginInstance* GetHardlightPlugin();
 private:
 
 	std::function<void()> m_fatalErrorHandler;

@@ -56,7 +56,8 @@ Driver::Driver() :
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
 	m_eventDispatcher(),
-	m_renderingApi()
+	m_renderingApi(),
+	m_currentSuitState(hvr_suitstate_unknown)
 
 
 
@@ -145,6 +146,14 @@ int Driver::GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo) {
 	else {
 		return 0;
 	}
+}
+
+void Driver::GetCurrentSuitState(hvr_suitstate * outState)
+{
+	
+	
+	m_pluginManager.GetHardlightPlugin()->apis().GetApi<verification_api>()->submit_getcurrentdevicestate(reinterpret_cast<int*>(outState));
+
 }
 
 

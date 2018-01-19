@@ -62,6 +62,11 @@ std::unique_ptr<boost::asio::serial_port> serial_connection_manager::make_port()
 	return std::make_unique<boost::asio::serial_port>(*m_io);
 }
 
+size_t serial_connection_manager::get_num_connections() const
+{
+	return m_connections.size();
+}
+
 void serial_connection_manager::on_connect(connection_event slot)
 {
 	m_onConnect = slot;

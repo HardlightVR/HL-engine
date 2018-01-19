@@ -372,10 +372,18 @@ extern "C" {
 	typedef struct nsvr_plugin_diagnostics_api {
 		typedef void(*nsvr_diagnostics_updatemenu)(nsvr_diagnostics_ui* menu, void* cd);
 		nsvr_diagnostics_updatemenu updatemenu_handler;
+
 		void* client_data;
 	} nsvr_plugin_diagnostics_api;
 
 	NSVR_CORE_RETURN(int) nsvr_register_diagnostics_api(nsvr_core* core, nsvr_plugin_diagnostics_api* api);
+
+	typedef struct nsvr_plugin_verification_api {
+		typedef void(*nsvr_verification_getcurrentdevicestate)(int* outState, void* cd);
+		nsvr_verification_getcurrentdevicestate getcurrentdevicestate_handler;
+		void* client_data;
+	} nsvr_plugin_verification_api;
+	NSVR_CORE_RETURN(int) nsvr_register_verification_api(nsvr_core* core, nsvr_plugin_verification_api* api);
 
 
 	typedef struct nsvr_plugin_analogaudio_api {

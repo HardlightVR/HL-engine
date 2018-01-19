@@ -18,6 +18,8 @@ public:
 	void raise_connect(serial_connection_ptr s);
 	std::unique_ptr<boost::asio::serial_port> make_port();
 
+	size_t get_num_connections() const;
+
 	//This event can only have one consumer
 	void on_connect(connection_event);
 private:

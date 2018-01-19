@@ -202,6 +202,10 @@
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Plugins\hardlight\Instructions_Detail.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\Doctor.h">
+      <Filter>plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Plugins\hardlight\AsyncPacketRequest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -327,6 +331,10 @@
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\ZoneModel.cpp">
       <Filter>plugins\hardlight\zone_logic</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Plugins\hardlight\Doctor.cpp">
+      <Filter>plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Plugins\hardlight\AsyncPacketRequest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\Plugins\hardlight\version.rc2" />
