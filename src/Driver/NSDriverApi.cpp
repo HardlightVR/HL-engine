@@ -72,7 +72,7 @@ HVR_RETURN(int) hvr_platform_updatediagnostics(hvr_platform* ptr, hvr_plugin_id 
 	return 1;
 }
 
-HVR_RETURN(int) hvr_platform_getcurrentsuitstate(hvr_platform * ptr, hvr_suitstate * outState)
+HVR_RETURN(int) hvr_platform_getcurrentsuitstate(hvr_platform * ptr, int * outState)
 {
 	AS_TYPE(Driver, ptr)->GetCurrentSuitState(outState);
 	return 1;

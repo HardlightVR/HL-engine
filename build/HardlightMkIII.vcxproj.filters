@@ -206,6 +206,10 @@
       <Filter>plugins</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Plugins\hardlight\AsyncPacketRequest.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\RetrySender.h">
+      <Filter>plugins\hardlight</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Plugins\hardlight\MotorDiagnosis.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -335,6 +339,8 @@
       <Filter>plugins</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Plugins\hardlight\AsyncPacketRequest.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\RetrySender.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\MotorDiagnosis.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\Plugins\hardlight\version.rc2" />

@@ -2,11 +2,21 @@
 #include "PluginAPI.h"
 #include <unordered_map>
 #include <mutex>
+#include <vector>
+#include "RetrySender.h"
+#include "MotorDiagnosis.h"
+class PacketDispatcher;
 class Doctor {
 public:
+	Doctor(boost::asio::io_service& io);
+	using motor_id = uint8_t;
 	enum class Status {
-		BadMotors = -1,
-		BadImus = -2,
+		BadMotors = -100,
+		SomeMotorsDidntRespond = -101,
+		LeftDriverBoardUnplugged = -102, //16 and 23
+		RightDriverBoardUnplugged = -103,
+		BadImus = -200,
+		GenericError = -1,
 		Unknown = 0,	//don't know anything about this device
 		OkDiagnostics = 1,			//this device is verified ok
 		Unplugged = 2,	//this device was known but is now unplugged
@@ -14,17 +24,25 @@ public:
 
 	};
 
-	std::vector<nsvr_device_id> get_devices() const;
-//	std::vector<nsvr_device_id> get_potential_devices() const;
-//	std::vector<nsvr_device_id> get_verified_devices() const;
 
-	Status get_device_status(nsvr_device_id id) const;
+	Status query_patient() const;
 
 
-	//Diagnostics updates interface
-	void notify_device_status(nsvr_device_id id, Status status);
+	void release_patient();
+	void accept_patient(nsvr_device_id id, PacketDispatcher* dispatcher, boost::lockfree::spsc_queue<uint8_t>* device_outgoing_data);
 
 private:
-	std::unordered_map<nsvr_device_id, Status> m_devices;
-	mutable std::mutex m_lock;
+	boost::asio::io_service& m_io;
+	boost::optional<nsvr_device_id> m_currentPatient;
+
+	
+	std::unordered_map<motor_id, std::unique_ptr<RetrySender>> m_motorSenders;
+	MotorDiagnosis m_motorDiagnosis;
+
+	void cancel_all_senders();
+	void Doctor::reinitialize_senders(boost::lockfree::spsc_queue<uint8_t>* device_outgoing_data);
+
+	bool all_finished() const;
+	bool all_succeeded() const;
+
 };

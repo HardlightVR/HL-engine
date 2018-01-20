@@ -21,7 +21,7 @@ DeviceManager::DeviceManager(std::string path)
 	: m_ioService()
 	, m_path(path)
 	, m_deviceIds()
-	, m_doctor()
+	, m_doctor(m_ioService.GetIOService())
 	, m_recognizer(m_ioService.GetIOService(), &m_doctor)
 	, m_requestVersionTimeout(boost::posix_time::millisec(200))
 	, m_requestVersionTimer(m_ioService.GetIOService())
@@ -106,7 +106,7 @@ void DeviceManager::handle_unrecognize(connection_info info)
 	auto it = std::find_if(m_deviceIds.begin(), m_deviceIds.end(), [port = info.port_name](const auto& kvp) { return kvp.second == port; });
 
 	if (it != m_deviceIds.end()) {
-		m_doctor.notify_device_status(it->first, Doctor::Status::Unplugged);
+		m_doctor.release_patient();
 
 		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, it->first);
 		m_idPool.Release(it->first);
@@ -123,38 +123,33 @@ void DeviceManager::handle_unrecognize(connection_info info)
 
 void DeviceManager::GetCurrentDeviceState(int * outState)
 {
-	auto devices = m_doctor.get_devices();
+	
 
-	if (devices.empty()) {
-		*outState = 2; //Unplugged
-		return;
-	}
+	auto status = m_doctor.query_patient();
+	*outState = static_cast<int>(status);
 
-	auto status = m_doctor.get_device_status(devices[0]);
+	//if (status == Doctor::Status::OkDiagnostics) {
+	//	*outState = 1; //Ok
+	//	return;
+	//}
 
+	//if (status == Doctor::Status::CheckingDiagnostics) {
+	//	*outState = 4; //Checking
+	//	return;
+	//}
 
-	if (status == Doctor::Status::OkDiagnostics) {
-		*outState = 1; //Ok
-		return;
-	}
+	//if (status == Doctor::Status::Unplugged) {
+	//	*outState = 2;
+	//	return;
+	//}
 
-	if (status == Doctor::Status::CheckingDiagnostics) {
-		*outState = 4; //Checking
-		return;
-	}
-
-	if (status == Doctor::Status::Unplugged) {
-		*outState = 2;
-		return;
-	}
-
-	if (status < Doctor::Status::Unknown) {
-		*outState = static_cast<int>(status); // error
-		return;
-	}
+	//if (status < Doctor::Status::Unknown) {
+	//	*outState = static_cast<int>(status); // error
+	//	return;
+	//}
 
 
-	*outState = 0; // unknown
+	//*outState = 0; // unknown
 	
 }
 
@@ -178,13 +173,9 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
 		potential->dispatcher->ClearConsumers();
 
-		std::make_shared<diagnostics>(
-			doctor, 
-			version, 
-			potential->io.get(), 
-			potential->dispatcher)
-		->begin();
+		//put diagnostics code here
 
+		m_doctor.accept_patient(id, potential->dispatcher.get(), potential->io->outgoing_queue().get());
 
 
 		auto real = std::make_unique<Device>(m_ioService.GetIOService(), m_path, std::move(potential), version);
@@ -197,7 +188,6 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 	}
 
 	
-	m_doctor.notify_device_status(id, Doctor::Status::CheckingDiagnostics);
 
 
 	nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, id);
