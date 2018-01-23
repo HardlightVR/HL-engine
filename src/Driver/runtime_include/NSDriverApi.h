@@ -81,7 +81,7 @@ extern "C" {
 
 
 	
-	HVR_RETURN(int) hvr_platform_getcurrentsuitstate(hvr_platform* ptr, int* outState);
+	HVR_RETURN(int) hvr_platform_getcurrentsuitstate(hvr_platform* ptr, int* outState, uint64_t* outError);
 
 
 

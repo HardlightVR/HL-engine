@@ -128,11 +128,11 @@ int Driver::GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo) {
 	}
 }
 
-void Driver::GetCurrentSuitState(int * outState)
+void Driver::GetCurrentSuitState(int * outStatus, uint64_t* outError)
 {
 	
 	
-	m_pluginManager.GetHardlightPlugin()->apis().GetApi<verification_api>()->submit_getcurrentdevicestate(reinterpret_cast<int*>(outState));
+	m_pluginManager.GetHardlightPlugin()->apis().GetApi<verification_api>()->submit_getcurrentdevicestate(outStatus, outError);
 
 }
 

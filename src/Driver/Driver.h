@@ -22,7 +22,7 @@ public:
 	int EnumeratePlugins(hvr_plugin_list * outPlugins);
 
 	int GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo);
-	void GetCurrentSuitState(int* outState);
+	void GetCurrentSuitState(int* outState, uint64_t* outError);
 private:
 	IoService m_ioService;
 	boost::asio::io_service& m_io;

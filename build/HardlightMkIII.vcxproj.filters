@@ -209,7 +209,9 @@
     <ClInclude Include="..\src\Plugins\hardlight\RetrySender.h">
       <Filter>plugins\hardlight</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Plugins\hardlight\MotorDiagnosis.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\HardwareDiagnostic.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\MotorDiagnostic.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\ImuDiagnostic.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -340,7 +342,8 @@
     </ClCompile>
     <ClCompile Include="..\src\Plugins\hardlight\AsyncPacketRequest.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\RetrySender.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\MotorDiagnosis.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\MotorDiagnostic.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\ImuDiagnostic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\Plugins\hardlight\version.rc2" />

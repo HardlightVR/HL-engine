@@ -121,36 +121,33 @@ void DeviceManager::handle_unrecognize(connection_info info)
 }
 
 
-void DeviceManager::GetCurrentDeviceState(int * outState)
+
+class doctor_report_visitor : public boost::static_visitor<void> {
+public:
+	doctor_report_visitor() : status(0), error(0) {}
+	void operator()(Doctor::Status status) {
+		error = 0;
+		this->status = static_cast<int>(status);
+	}
+
+	void operator()(HardwareFailures failure) {
+		status = 0;
+		error = static_cast<uint64_t>(failure);
+	}
+
+	void query(int* outstatus, uint64_t* outerror) {
+		*outstatus = this->status;
+		*outerror = this->error;
+	}
+private:
+	int status;
+	uint64_t error;
+};
+void DeviceManager::GetCurrentDeviceState(int * status, uint64_t* error)
 {
-	
-
-	auto status = m_doctor.query_patient();
-	*outState = static_cast<int>(status);
-
-	//if (status == Doctor::Status::OkDiagnostics) {
-	//	*outState = 1; //Ok
-	//	return;
-	//}
-
-	//if (status == Doctor::Status::CheckingDiagnostics) {
-	//	*outState = 4; //Checking
-	//	return;
-	//}
-
-	//if (status == Doctor::Status::Unplugged) {
-	//	*outState = 2;
-	//	return;
-	//}
-
-	//if (status < Doctor::Status::Unknown) {
-	//	*outState = static_cast<int>(status); // error
-	//	return;
-	//}
-
-
-	//*outState = 0; // unknown
-	
+	doctor_report_visitor results{};
+	boost::apply_visitor(results, m_doctor.query_patient());
+	results.query(status, error);
 }
 
 void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
@@ -257,8 +254,8 @@ int DeviceManager::configure(nsvr_core * core)
 
 	nsvr_plugin_verification_api verification_api;
 	verification_api.client_data = this;
-	verification_api.getcurrentdevicestate_handler = [](int* outState, void* cd) {
-		AS_TYPE(DeviceManager, cd)->GetCurrentDeviceState(outState);
+	verification_api.getcurrentdevicestate_handler = [](int* outStatus, uint64_t* outError, void* cd) {
+		AS_TYPE(DeviceManager, cd)->GetCurrentDeviceState(outStatus, outError);
 	};
 	nsvr_register_verification_api(core, &verification_api);
 	return 1;

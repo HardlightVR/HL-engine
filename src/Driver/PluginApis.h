@@ -317,7 +317,8 @@ struct verification_api : public plugin_api {
 	verification_api(nsvr_plugin_verification_api* api) :
 		submit_getcurrentdevicestate{ api->getcurrentdevicestate_handler, api->client_data } {}
 	callback<nsvr_plugin_verification_api::nsvr_verification_getcurrentdevicestate,
-		int*
+		int*,
+		uint64_t*
 	> submit_getcurrentdevicestate;
 
 	static Apis getApiType() { return Apis::Verification; }

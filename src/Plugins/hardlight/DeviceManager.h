@@ -53,7 +53,7 @@ public:
 
 
 	//hack for hardware verification app
-	void GetCurrentDeviceState(int* outState);
+	void GetCurrentDeviceState(int* status, uint64_t* error);
 private:
 	
 	void handle_connect(std::string portName, Packet packet);
