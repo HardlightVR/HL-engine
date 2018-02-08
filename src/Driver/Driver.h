@@ -22,6 +22,7 @@ public:
 	int EnumeratePlugins(hvr_plugin_list * outPlugins);
 
 	int GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo);
+	void GetCurrentSuitState(int* outState, uint64_t* outError);
 private:
 	IoService m_ioService;
 	boost::asio::io_service& m_io;
@@ -47,6 +48,9 @@ private:
 
 
 	hvr_diagnostics_ui m_renderingApi;
+
+	//todo: this is a hack for manufacturing verification of suits
+	int m_currentSuitState;
 
 public:
 	void ProvideRenderingApi(hvr_diagnostics_ui * api);

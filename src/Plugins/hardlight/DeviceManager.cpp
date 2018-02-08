@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Device.h "
 #include "hardlight_device_version.h"
+#include "AsyncPacketRequest.h"
 static std::array<uint8_t, 16> version_packet = { 0x24,0x02,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 static std::array<uint8_t, 16> uuid_packet = { 0x24,0x02,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 
@@ -20,7 +21,8 @@ DeviceManager::DeviceManager(std::string path)
 	: m_ioService()
 	, m_path(path)
 	, m_deviceIds()
-	, m_recognizer(m_ioService.GetIOService())
+	, m_doctor(m_ioService.GetIOService())
+	, m_recognizer(m_ioService.GetIOService(), &m_doctor)
 	, m_requestVersionTimeout(boost::posix_time::millisec(200))
 	, m_requestVersionTimer(m_ioService.GetIOService())
 	, m_idPool()
@@ -104,6 +106,8 @@ void DeviceManager::handle_unrecognize(connection_info info)
 	auto it = std::find_if(m_deviceIds.begin(), m_deviceIds.end(), [port = info.port_name](const auto& kvp) { return kvp.second == port; });
 
 	if (it != m_deviceIds.end()) {
+		m_doctor.release_patient();
+
 		nsvr_device_event_raise(m_core, nsvr_device_event_device_disconnected, it->first);
 		m_idPool.Release(it->first);
 
@@ -117,8 +121,39 @@ void DeviceManager::handle_unrecognize(connection_info info)
 }
 
 
+
+class doctor_report_visitor : public boost::static_visitor<void> {
+public:
+	doctor_report_visitor() : status(0), error(0) {}
+	void operator()(Doctor::Status status) {
+		error = 0;
+		this->status = static_cast<int>(status);
+	}
+
+	void operator()(HardwareFailures failure) {
+		status = 0;
+		error = static_cast<uint64_t>(failure);
+	}
+
+	void query(int* outstatus, uint64_t* outerror) {
+		*outstatus = this->status;
+		*outerror = this->error;
+	}
+private:
+	int status;
+	uint64_t error;
+};
+void DeviceManager::GetCurrentDeviceState(int * status, uint64_t* error)
+{
+	doctor_report_visitor results{};
+	boost::apply_visitor(results, m_doctor.query_patient());
+	results.query(status, error);
+}
+
 void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 
+	auto id = m_idPool.Request();
+	m_deviceIds[id] = portName;
 	{
 		std::lock_guard<std::mutex> guard(m_deviceLock);
 
@@ -127,22 +162,30 @@ void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
 		}
 
 		auto version = parse_version(versionPacket);
-
+		
 		auto potential = std::move(m_potentials.at(portName));
 
 		m_potentials.erase(portName);
+		
 
 		potential->dispatcher->ClearConsumers();
+
+		//put diagnostics code here
+
+		m_doctor.accept_patient(id, potential->dispatcher.get(), potential->io->outgoing_queue().get());
+
 
 		auto real = std::make_unique<Device>(m_ioService.GetIOService(), m_path, std::move(potential), version);
 		real->Configure(m_core);
 
 
 		m_devices.insert(std::make_pair(portName, std::move(real)));
+
+
 	}
 
-	auto id = m_idPool.Request();
-	m_deviceIds[id] = portName;
+	
+
 
 	nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, id);
 
@@ -155,7 +198,6 @@ void DeviceManager::device_update()
 
 	float util_ratio = 0.0;
 	for (auto& kvp : m_devices) {
-		//kvp
 		kvp.second->Update();
 		util_ratio = std::max(util_ratio, kvp.second->GetIoUtilizationRatio());
 	}
@@ -166,6 +208,7 @@ void DeviceManager::device_update()
 	m_devicePollTimer.async_wait([this](auto ec) { if (ec) { return; }
 		device_update();
 	});
+
 }
 
 
@@ -175,6 +218,8 @@ DeviceManager::~DeviceManager()
 	m_recognizer.stop();
 	m_devicePollTimer.cancel();
 }
+
+
 
 int DeviceManager::configure(nsvr_core * core)
 {
@@ -205,6 +250,14 @@ int DeviceManager::configure(nsvr_core * core)
 
 	nsvr_register_diagnostics_api(core, &diagnostics_api);
 
+
+
+	nsvr_plugin_verification_api verification_api;
+	verification_api.client_data = this;
+	verification_api.getcurrentdevicestate_handler = [](int* outStatus, uint64_t* outError, void* cd) {
+		AS_TYPE(DeviceManager, cd)->GetCurrentDeviceState(outStatus, outError);
+	};
+	nsvr_register_verification_api(core, &verification_api);
 	return 1;
 }
 

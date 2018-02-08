@@ -84,7 +84,8 @@ BETTER_ENUM(Apis, uint32_t,
 	Waveform,
 	Updateloop,
 	Diagnostics,
-	AnalogAudio
+	AnalogAudio,
+	Verification
 );
 
 
@@ -312,6 +313,16 @@ struct diagnostics_api : public plugin_api {
 	static Apis getApiType() { return Apis::Diagnostics; }
 };
 
+struct verification_api : public plugin_api {
+	verification_api(nsvr_plugin_verification_api* api) :
+		submit_getcurrentdevicestate{ api->getcurrentdevicestate_handler, api->client_data } {}
+	callback<nsvr_plugin_verification_api::nsvr_verification_getcurrentdevicestate,
+		int*,
+		uint64_t*
+	> submit_getcurrentdevicestate;
+
+	static Apis getApiType() { return Apis::Verification; }
+};
 // Represents the capabilities of a particular plugin, e.g. a plugin supports
 // the buffered api, the preset api, and the playback api.
 // A plugin may register these apis indirectly using Register, 

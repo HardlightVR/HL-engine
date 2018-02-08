@@ -255,3 +255,5 @@ REGISTER_API(diagnostics_api)
 
 
 REGISTER_API(analogaudio_api)
+
+REGISTER_API(verification_api);

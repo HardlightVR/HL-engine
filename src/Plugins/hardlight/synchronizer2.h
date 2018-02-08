@@ -20,7 +20,6 @@ public:
 	State state() const;
 
 	using PacketEvent = boost::signals2::signal<void(Packet)>;
-	~synchronizer2() { std::cout << "DESTROYING SYNC\n"; }
 	synchronizer2(boost::asio::io_service& io, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> data);
 	void start();
 	void stop();
@@ -28,6 +27,8 @@ public:
 	void on_packet(PacketEvent::slot_type slot);
 
 	std::size_t	total_bytes_read() const;
+
+	boost::asio::io_service& get_io_service();
 
 private:
 	void transition_state();

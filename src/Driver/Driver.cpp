@@ -10,26 +10,6 @@
 #include "IoService.h"
 #include "DeviceBuilder.h"
 
-//Belongs in the hardlight plugin now
-//void extractDrvData(const packet& packet) {
-//	//as status register:
-//	uint8_t whichDrv = packet.raw[4];
-//	uint8_t whichReg = packet.raw[5];
-//	uint8_t data = packet.raw[3];
-//
-//	bool over_current = data & 0x01;
-//	bool over_temperature = data & 0x02;
-//	
-//	bool mode = data & (0x07);
-//
-//	bool standby = data & 0b00100000;
-//
-//
-//
-//	BOOST_LOG_TRIVIAL(info) << "[DriverMain] DRVDIAG " << int(whichDrv) << "," <<int(over_current) << "," << int(over_temperature);
-//
-//	
-//}
 
 constexpr int MIN_CLIENT_VERSION_MAJOR = 1;
 constexpr int MIN_CLIENT_VERSION_MINOR = 0;
@@ -56,7 +36,8 @@ Driver::Driver() :
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
 	m_eventDispatcher(),
-	m_renderingApi()
+	m_renderingApi(),
+	m_currentSuitState(0)
 
 
 
@@ -145,6 +126,14 @@ int Driver::GetPluginInfo(hvr_plugin_id id, hvr_plugin_info* outInfo) {
 	else {
 		return 0;
 	}
+}
+
+void Driver::GetCurrentSuitState(int * outStatus, uint64_t* outError)
+{
+	
+	
+	m_pluginManager.GetHardlightPlugin()->apis().GetApi<verification_api>()->submit_getcurrentdevicestate(outStatus, outError);
+
 }
 
 
