@@ -18,7 +18,7 @@ class Doctor;
 class hardware_device_recognizer {
 public:
 	using recognized_event = std::function<void(connection_info)>;
-	using unrecognized_event = std::function<void(connection_info)>;
+	using unrecognized_event = std::function<void(std::string)>;
 
 	hardware_device_recognizer(boost::asio::io_service& io, Doctor* doctor);
 	

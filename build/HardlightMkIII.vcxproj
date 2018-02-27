@@ -332,6 +332,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\InstructionSet.h" />
     <ClInclude Include="..\src\plugins\hardlight\Instructions.h" />
     <ClInclude Include="..\src\Plugins\hardlight\Instructions_Detail.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\IOInterface.h" />
     <ClInclude Include="..\src\plugins\hardlight\IoService.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\JsonKeyValueConfig.h" />
     <ClInclude Include="..\src\plugins\hardlight\Json\json-forwards.h" />
@@ -345,6 +346,11 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClInclude Include="..\src\plugins\hardlight\ReaderAdapter.h" />
     <ClInclude Include="..\src\Plugins\hardlight\RetrySender.h" />
     <ClInclude Include="..\src\plugins\hardlight\ScheduledEvent.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\SerialPortIO.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\SerialPortReader.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\SerialPortWriter.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\SocketReader.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\WifiIO.h" />
     <ClInclude Include="..\src\plugins\hardlight\WriterAdapter.h" />
     <ClInclude Include="..\src\plugins\hardlight\better_enum.h" />
     <ClInclude Include="..\src\plugins\hardlight\catch.hpp" />
@@ -397,10 +403,11 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\PacketDispatcher.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginAPI.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\ReaderAdapter.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\RetrySender.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp" />
-    <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\SerialPortIO.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\SerialPortReader.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\SerialPortWriter.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\main.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\device_profile.cpp" />
@@ -408,6 +415,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
     <ClCompile Include="..\src\plugins\hardlight\serial\mark3.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\serial_connection.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\serial\serial_connection_manager.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\SocketReader.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Win64|Win32'">Create</PrecompiledHeader>
@@ -417,6 +425,7 @@ IF EXIST ..\src\Plugins\hardlight\*.json\ (xcopy /Q /E /Y /I ..\src\Plugins\hard
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release UnitTestWin32|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\synchronizer2.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\WifiIO.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\BufferedEvent.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightDevice.cpp" />
     <ClCompile Include="..\src\plugins\hardlight\zone_logic\HardlightMk3ZoneDriver.cpp" />

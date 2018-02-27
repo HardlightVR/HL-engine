@@ -14,17 +14,27 @@
 #include <mutex>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-
+#include <boost/asio/ip/tcp.hpp>
+#include "SerialPortIO.h"
+#include "WifiIO.h"
 class Device;
 
 struct PotentialDevice {
+	std::string id;
 	std::unique_ptr<HardwareIO> io;
 	std::shared_ptr<PacketDispatcher> dispatcher;
 	std::shared_ptr<synchronizer2> synchronizer;
 
 	PotentialDevice(std::unique_ptr<boost::asio::serial_port> port) {
 		boost::asio::io_service& io_service = port->get_io_service();
-		io = std::make_unique<HardwareIO>(std::move(port));
+		io = std::make_unique<SerialPortIO> (std::move(port));
+		dispatcher = std::make_shared<PacketDispatcher>();
+		synchronizer = std::make_shared<synchronizer2>(io_service, io->incoming_queue());
+	}
+
+	PotentialDevice(std::unique_ptr<boost::asio::ip::tcp::socket> wifi, boost::asio::ip::tcp::resolver::iterator it, std::string password) {
+		boost::asio::io_service& io_service = wifi->get_io_service();
+		io = std::make_unique<WifiIO>(std::move(wifi), it, password);
 		dispatcher = std::make_shared<PacketDispatcher>();
 		synchronizer = std::make_shared<synchronizer2>(io_service, io->incoming_queue());
 	}
@@ -59,7 +69,7 @@ private:
 	void handle_connect(std::string portName, Packet packet);
 	void device_update();
 	void handle_recognize(connection_info info);
-	void handle_unrecognize(connection_info info);
+	void handle_unrecognize(std::string interface_name);
 
 	nsvr_core* m_core;
 	IoService m_ioService;
