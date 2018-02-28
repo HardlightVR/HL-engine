@@ -4,11 +4,11 @@
 
 constexpr size_t MAX_TRIES = 3;
 
-RetrySender::RetrySender(boost::asio::io_service& io, std::vector<uint8_t> packetToSend, boost::lockfree::spsc_queue<uint8_t>* outgoing_queue)
+RetrySender::RetrySender(boost::asio::io_service& io, std::vector<uint8_t> packetToSend, HardwareIO* out)
 	: m_delay(boost::posix_time::milliseconds(400))
 	, m_timer(io)
 	, m_packet(packetToSend)
-	, m_outgoing(outgoing_queue)
+	, m_outgoing(out)
 	, m_currentTry(0)
 	, m_status(RetryStatus::Unknown)
 
@@ -39,7 +39,7 @@ RetryStatus RetrySender::get_status() const
 void RetrySender::do_write() {
 	m_currentTry++;
 
-	m_outgoing->push(m_packet.data(), m_packet.size());
+	m_outgoing->QueuePacket(m_packet.data(), m_packet.size());
 
 	if (m_currentTry < MAX_TRIES) {
 		m_timer.expires_from_now(m_delay);

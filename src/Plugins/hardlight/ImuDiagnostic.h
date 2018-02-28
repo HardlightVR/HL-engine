@@ -9,7 +9,7 @@ class ImuDiagnostic : public HardwareDiagnostic {
 public:
 	ImuDiagnostic(boost::asio::io_service& io, std::vector<uint8_t> imus);
 	// Inherited via HardwareDiagnostic
-	virtual void run(IncomingData * in, OutgoingData * out) override;
+	virtual void run(HardwareIO* io) override;
 	virtual void cancel() override;
 	virtual TestProgress get_progress() const override;
 	virtual HardwareFailures get_results() const override;

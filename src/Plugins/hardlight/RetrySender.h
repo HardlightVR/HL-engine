@@ -4,7 +4,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/lockfree/spsc_queue.hpp>
 #include <boost/asio/deadline_timer.hpp>
-
+#include "HardwareIO.h"
 
 enum class RetryStatus {
 	Unknown = 0,
@@ -14,7 +14,7 @@ enum class RetryStatus {
 };
 class RetrySender {
 public:
-	RetrySender(boost::asio::io_service& io, std::vector<uint8_t> packetToSend, boost::lockfree::spsc_queue<uint8_t>* outgoing_queue);
+	RetrySender(boost::asio::io_service& io, std::vector<uint8_t> packetToSend, HardwareIO* out);
 
 	void begin();
 	void end();
@@ -24,7 +24,7 @@ private:
 	boost::posix_time::time_duration m_delay;
 	boost::asio::deadline_timer m_timer;
 	std::vector<uint8_t>  m_packet;
-	boost::lockfree::spsc_queue<uint8_t>* m_outgoing;
+	HardwareIO* m_outgoing;
 	size_t m_currentTry;
 	RetryStatus m_status;
 	void do_write();

@@ -14,7 +14,6 @@
 #include "HL_Firmware_Defines.h"
 
 class synchronizer2;
-struct PotentialDevice;
 class BoostSerialAdapter;
 class Heartbeat;
 class Synchronizer;
@@ -28,7 +27,7 @@ struct MotorStatus {
 };
 class Device {
 public:
-	Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version);
+	Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<HardwareIO> device, hardlight_device_version version);
 	~Device();
 
 	float GetIoUtilizationRatio() const;
@@ -67,10 +66,6 @@ private:
 	std::shared_ptr<FirmwareInterface> m_firmware;
 	HardlightDevice m_device;
 	std::shared_ptr<Heartbeat> m_monitor;
-
-	std::shared_ptr<synchronizer2> m_synchronizer;
-
-	std::shared_ptr<PacketDispatcher> m_dispatcher;
 
 
 	bool m_running;

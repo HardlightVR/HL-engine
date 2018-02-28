@@ -109,9 +109,9 @@ void hardware_device_recognizer::do_port_scan()
 {
 	std::set<std::string> portNames = getPortNames();
 
-	remove_unrecognized_devices(portNames);
+	//remove_unrecognized_devices(portNames);
 
-	for (auto portName : portNames) {
+	/*for (auto portName : portNames) {
 
 		if (device_already_recognized(portName)) {
 			continue;
@@ -122,11 +122,12 @@ void hardware_device_recognizer::do_port_scan()
 			(*m_currentProfile)->set_options(*port);
 			m_manager.start(std::make_shared<serial_connection>(std::move(port), portName, (*m_currentProfile).get(), m_manager));
 		}
-	}
+	}*/
 	
 	static bool done = false;
 	if (!done) {
-		handle_recognize(wifi_connection{ "192.168.4.1", "23", "xs9/izbh" });
+		std::string pass = std::string("xs9/izbh") + (char)0x0d;
+		handle_recognize(wifi_connection{ "192.168.4.1", "23", pass });
 		done = true;
 	}
 
@@ -160,16 +161,7 @@ void hardware_device_recognizer::schedule_port_scan()
 }
 
 
-class get_interface_name : public boost::static_visitor<std::string> {
-public:
-	std::string operator()(wired_connection conn) const
-	{
-		return conn.port_name;
-	}
-	std::string operator()(wifi_connection conn) const {
-		return conn.host_name + conn.port_number;
-	}
-};
+
 void hardware_device_recognizer::handle_recognize(connection_info info)
 {
 	m_recognizedPorts.insert(boost::apply_visitor(get_interface_name(), info));

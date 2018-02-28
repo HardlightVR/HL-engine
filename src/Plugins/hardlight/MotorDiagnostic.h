@@ -12,7 +12,7 @@ class MotorDiagnostic : public HardwareDiagnostic {
 public:
 	MotorDiagnostic(boost::asio::io_service& io, std::vector<uint8_t> listOfMotors);
 	// Inherited via HardwareDiagnostic
-	void run(IncomingData * in, OutgoingData * out) override;
+	void run(HardwareIO* io) override;
 	HardwareFailures get_results() const override;
 	TestProgress get_progress() const override;
 	void cancel() override;

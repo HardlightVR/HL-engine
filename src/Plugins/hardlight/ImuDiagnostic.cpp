@@ -7,9 +7,9 @@ ImuDiagnostic::ImuDiagnostic(boost::asio::io_service & io, std::vector<uint8_t> 
 {
 }
 
-void ImuDiagnostic::run(IncomingData * in, OutgoingData * out)
+void ImuDiagnostic::run(HardwareIO* io)
 {
-	in->AddConsumer(inst::Id::GET_TRACK_STATUS, [this](Packet packet) {
+	io->OnPacket(inst::Id::GET_TRACK_STATUS, [this](Packet packet) {
 		uint8_t sensor = packet[4];
 		m_statusBits[sensor] = static_cast<HL_Unit::_enumerated>(packet[3]);
 
@@ -23,7 +23,7 @@ void ImuDiagnostic::run(IncomingData * in, OutgoingData * out)
 
 	for (uint8_t sensor : m_imus) {
 		auto packet = inst::Build(inst::get_track_status(inst::sensor(sensor)));
-		m_senders.insert(std::make_pair(sensor, std::make_unique<RetrySender>(m_io, packet, out)));
+		m_senders.insert(std::make_pair(sensor, std::make_unique<RetrySender>(m_io, packet, io)));
 		m_senders.at(sensor)->begin();
 	}
 }

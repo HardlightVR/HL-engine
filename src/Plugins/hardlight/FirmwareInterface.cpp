@@ -8,7 +8,7 @@
 #include "IMU_ID.h"
 constexpr unsigned int BATCH_SIZE = 16;
 
-FirmwareInterface::FirmwareInterface(const std::string& data_dir, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::io_service& io)
+FirmwareInterface::FirmwareInterface(const std::string& data_dir, HardwareIO& outgoing, boost::asio::io_service& io)
 	: m_instructionSet(std::make_shared<InstructionSet>(data_dir))
 	, m_outgoing(outgoing)
 	, m_packetVersion(PacketVersion::MarkIII)

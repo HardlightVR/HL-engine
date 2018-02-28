@@ -4,6 +4,26 @@
 #include "Device.h "
 #include "hardlight_device_version.h"
 #include "AsyncPacketRequest.h"
+#include "Writer.h"
+#include "WifiConnector.h"
+
+using SerialIO = IoBase<
+	boost::asio::serial_port,
+	SerialPortReader, //todo: make Reader generic 
+	Writer<boost::asio::serial_port>,
+	wired_connection,
+	SerialPortConnector
+>;
+
+using WifiIO = IoBase<
+	boost::asio::ip::tcp::socket,
+	SocketReader, //todo: make Reader generic 
+	Writer<boost::asio::ip::tcp::socket>,
+	wifi_connection,
+	WifiConnector
+>;
+
+
 static std::array<uint8_t, 16> version_packet = { 0x24,0x02,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 static std::array<uint8_t, 16> uuid_packet = { 0x24,0x02,0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };
 
@@ -51,76 +71,42 @@ DeviceManager::DeviceManager(std::string path)
 
 	m_devicePollTimer.expires_from_now(m_devicePollTimeout);
 	m_devicePollTimer.async_wait([this](auto ec) { if (ec) { return; } 
-		device_update();
+		update();
 	});
 }
 
-class connection_handler : public boost::static_visitor<std::unique_ptr<PotentialDevice>> {
+class create_io_object : public boost::static_visitor<std::unique_ptr<HardwareIO>> {
 public:
-	connection_handler(boost::asio::io_service& io) : m_io(io){
+	create_io_object(boost::asio::io_service& io) : m_io(io){
 
 	}
-	std::unique_ptr<PotentialDevice> operator()(wired_connection conn) const {
+	std::unique_ptr<HardwareIO> operator()(wired_connection conn) const {
+		
 		auto port = std::make_unique<boost::asio::serial_port>(m_io);
 
-		boost::system::error_code ec;
-		port->open(conn.port_name, ec);
-		if (!port->is_open()) {
-			core_log(nsvr_severity_error, "DeviceManager", "Unable to re-open the previously detected port " + conn.port_name);
-			return {};
-		}
-
-		return std::make_unique<PotentialDevice>(std::move(port));
+		return std::make_unique<SerialIO>(std::move(port), conn);
 	}
-	std::unique_ptr<PotentialDevice> operator()(wifi_connection conn) const {
+	std::unique_ptr<HardwareIO> operator()(wifi_connection conn) const {
 
 		using tcp = boost::asio::ip::tcp;
-		tcp::resolver resolver(m_io);
-		tcp::resolver::query query(conn.host_name, conn.port_number);
-		tcp::resolver::iterator iterator = resolver.resolve(query);
 
 		auto socket = std::make_unique<tcp::socket>(m_io);
 
-		return std::make_unique<PotentialDevice>(std::move(socket), iterator, conn.password);
+		return std::make_unique<WifiIO>(std::move(socket), conn);
 	}
 private:
 	boost::asio::io_service& m_io;
 };
+
 void DeviceManager::handle_recognize(connection_info info)
 {
-	auto device = boost::apply_visitor(connection_handler(m_ioService.GetIOService()), info);
+	auto device = boost::apply_visitor(create_io_object(m_ioService.GetIOService()), info);
 	if (!device) {
 		return;
 	}
-	
-	//begins reading and writing to port
-	device->io->start();
 
-	//begins synchronizing incoming packets from the device
-	device->synchronizer->start();
-
-	//in order for a device to move from "potentially found" to "actually present", we need it to return its version
-	device->dispatcher->AddConsumer(inst::Id::GET_VERSION, [this, id = device->id](auto packet) {
-		handle_connect(id, packet);
-	});
-
-	//some suits, or a zombie suit, may end up streaming tracking data on connect. We should tell the user to reset the suit if this happens.
-	device->dispatcher->AddConsumer(inst::Id::GET_TRACK_DATA, [this, id = device->id](auto packet) {
-		core_log(nsvr_severity_warning, "DeviceManager", "It seems that a device might be connected on interface "+ id + ", but can't confirm. Please power cycle the device.");
-	});
-
-
-	device->synchronizer->on_packet([weakDispatch = std::weak_ptr<PacketDispatcher>(device->dispatcher)](auto packet) {
-		if (auto dispatcher = weakDispatch.lock()) {
-			dispatcher->Dispatch(std::move(packet));
-		}
-	});
-
-	requestSuitVersion(*device->io->outgoing_queue());
-	requestSuitVersion(*device->io->outgoing_queue());
-	requestUuid(*device->io->outgoing_queue());
-
-	m_potentials.insert(std::make_pair(device->id, std::move(device)));
+	auto device_name = boost::apply_visitor(get_interface_name(), info);
+	m_potentials[device_name] = std::move(device);
 }
 
 void DeviceManager::handle_unrecognize(std::string interface_name)
@@ -174,64 +160,82 @@ void DeviceManager::GetCurrentDeviceState(int * status, uint64_t* error)
 	results.query(status, error);
 }
 
-void DeviceManager::handle_connect(std::string portName, Packet versionPacket) {
+void DeviceManager::create_device(const std::string& deviceName) {
 
+	//Establish a mapping between numeric device ID and the device name (derived from port, or host)
 	auto id = m_idPool.Request();
-	m_deviceIds[id] = portName;
-	{
-		std::lock_guard<std::mutex> guard(m_deviceLock);
+	m_deviceIds[id] = deviceName;
 
-		if (m_potentials.find(portName) == m_potentials.end()) {
-			return;
-		}
+	std::unique_ptr<HardwareIO> potential = std::move(m_potentials.at(deviceName));
+	m_doctor.accept_patient(id, potential.get());
 
-		auto version = parse_version(versionPacket);
-		
-		auto potential = std::move(m_potentials.at(portName));
+	auto fullDevice = std::make_unique<Device>(
+		m_ioService.GetIOService(), 
+		m_path, 
+		std::move(potential), 
+		hardlight_device_version{0,0,0,0}
+	);
 
-		m_potentials.erase(portName);
-		
+	fullDevice->Configure(m_core);
 
-		potential->dispatcher->ClearConsumers();
+	m_devices[deviceName] = std::move(fullDevice);
 
-		//put diagnostics code here
-
-		m_doctor.accept_patient(id, potential->dispatcher.get(), potential->io->outgoing_queue().get());
-
-
-		auto real = std::make_unique<Device>(m_ioService.GetIOService(), m_path, std::move(potential), version);
-		real->Configure(m_core);
-
-
-		m_devices.insert(std::make_pair(portName, std::move(real)));
-
-
-	}
-
-	
-
-
-	nsvr_device_event_raise(m_core, nsvr_device_event_device_connected, id);
-
-
+	m_ioService.GetIOService().post([core = m_core, device_id = id]() {
+		nsvr_device_event_raise(core, nsvr_device_event_device_connected, device_id);
+	});
 }
 
-void DeviceManager::device_update()
-{
-	std::lock_guard<std::mutex> guard(m_deviceLock);
 
-	float util_ratio = 0.0;
+void DeviceManager::update_each_device() {
 	for (auto& kvp : m_devices) {
 		kvp.second->Update();
+	}
+}
+
+std::vector<std::string> DeviceManager::get_newly_connected_devices() const {
+	std::vector<std::string> ready;
+	for (const auto& kvp : m_potentials) {
+		if (kvp.second->ready()) {
+			ready.push_back(kvp.first);
+		}
+	}
+	return ready;
+}
+
+float DeviceManager::compute_device_io_utilization() const {
+	float util_ratio = 0.0;
+	for (auto& kvp : m_devices) {
 		util_ratio = std::max(util_ratio, kvp.second->GetIoUtilizationRatio());
 	}
+	return util_ratio;
+}
 
+
+void DeviceManager::schedule_update() {
+	m_devicePollTimer.expires_from_now(m_devicePollTimeout);
+	m_devicePollTimer.async_wait([this](auto ec) { 
+		if (ec) { return; }
+		update();
+	});
+}
+void DeviceManager::update()
+{
+	std::lock_guard<std::mutex> guard(m_deviceLock);
+	
+	update_each_device();
+
+	auto util_ratio = compute_device_io_utilization();
 	m_devicePollTimeout = boost::posix_time::millisec((45 * std::pow(util_ratio, 2.71f)) + 10);
 
-	m_devicePollTimer.expires_from_now(m_devicePollTimeout);
-	m_devicePollTimer.async_wait([this](auto ec) { if (ec) { return; }
-		device_update();
-	});
+
+	auto newlyConnectedDevices = get_newly_connected_devices();
+	for (const auto& device : newlyConnectedDevices) {
+		create_device(device);
+		m_potentials.erase(device);
+	}
+
+
+	schedule_update();
 
 }
 

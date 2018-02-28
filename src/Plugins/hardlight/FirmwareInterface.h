@@ -6,6 +6,7 @@
 #include "zone_logic/HardwareCommands.h"
 #include "PacketVersion.h"
 #include <mutex>
+#include "HardwareIO.h"
 
 #include "InstructionSet.h"
 namespace nsvr {
@@ -21,7 +22,7 @@ public:
 	
 
 	
-	FirmwareInterface(const std::string& data_dir, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> outgoing, boost::asio::io_service& io);
+	FirmwareInterface(const std::string& data_dir, HardwareIO& outgoing, boost::asio::io_service& io);
 
 	
 
@@ -58,7 +59,7 @@ private:
 	std::shared_ptr<InstructionSet> m_instructionSet;
 
 
-	std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> m_outgoing;
+	HardwareIO& m_outgoing;
 
 	PacketVersion m_packetVersion;
 
@@ -80,15 +81,6 @@ template<typename Instruction>
 inline void FirmwareInterface::queueInstruction(const Instruction & inst)
 {
 	auto packet = inst::Build(inst);
-	std::lock_guard<std::mutex> guard(m_packetLock);
-
-	if (m_outgoing->write_available() >= packet.size()) {
-		int x = m_outgoing->push(packet.data(), packet.size());
-		assert(x == packet.size());
-	}
-	else {
-		//drop packet
-	}
-	
+	m_outgoing.QueuePacket(packet.data(), packet.size());
 
 }

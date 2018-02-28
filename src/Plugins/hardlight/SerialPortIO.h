@@ -1,21 +1,12 @@
 #pragma once
+#include <boost/asio/serial_port.hpp>
+#include "serial/connection_info.h"
+class SerialPortConnector {
 
-#include "HardwareIO.h"
-
-
-class SerialPortIO : public HardwareIO {
 public:
-	SerialPortIO(std::unique_ptr<boost::asio::serial_port> port);
+	SerialPortConnector(boost::asio::serial_port&, wired_connection args);
+	void try_connect(std::function<void(bool ec)> on_connect);
 private:
-	void do_interface_cleanup() override;
-	void do_interface_creation() override;
-
-	ReaderAdapter * get_reader() const override;
-	WriterAdapter * get_writer() const override;
-
-	std::unique_ptr<boost::asio::serial_port> m_port;
-
-	std::shared_ptr<ReaderAdapter> m_reader;
-	std::shared_ptr<WriterAdapter> m_writer;
-
+	boost::asio::serial_port& port;
+	wired_connection args;
 };

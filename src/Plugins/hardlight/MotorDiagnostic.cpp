@@ -7,9 +7,9 @@ MotorDiagnostic::MotorDiagnostic(boost::asio::io_service& io, std::vector<uint8_
 {
 }
 
-void MotorDiagnostic::run(IncomingData * in, OutgoingData * out)
+void MotorDiagnostic::run(HardwareIO* io)
 {
-	in->AddConsumer(inst::Id::GET_MOTOR_STATUS, [this](Packet packet) {
+	io->OnPacket(inst::Id::GET_MOTOR_STATUS, [this](Packet packet) {
 		uint8_t motorId = packet[4];
 		m_statusBits[motorId] = static_cast<HL_Unit::_enumerated>(packet[3]);
 
@@ -23,7 +23,7 @@ void MotorDiagnostic::run(IncomingData * in, OutgoingData * out)
 
 	for (uint8_t motorId : m_motors) {
 		auto packet = inst::Build(inst::get_motor_status(inst::motor(motorId)));
-		m_motorSenders.insert(std::make_pair(motorId, std::make_unique<RetrySender>(m_io, packet, out)));
+		m_motorSenders.insert(std::make_pair(motorId, std::make_unique<RetrySender>(m_io, packet,io)));
 		m_motorSenders.at(motorId)->begin();
 	}
 
