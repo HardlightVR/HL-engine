@@ -8,21 +8,27 @@
 #include "WifiConnector.h"
 #include "JsonKeyValueConfig.h"
 
-using SerialIO = IoBase<
-	boost::asio::serial_port,
-	SerialPortReader, //todo: make Reader generic 
-	Writer<boost::asio::serial_port, 64>,
-	wired_connection,
-	SerialPortConnector
->;
 
-using WifiIO = IoBase<
-	boost::asio::ip::tcp::socket,
-	SocketReader, //todo: make Reader generic 
-	Writer<boost::asio::ip::tcp::socket, 64>,
-	wifi_connection,
-	WifiConnector
->;
+struct serial_traits {
+	using io_t = boost::asio::serial_port;
+	using connection_t = wired_connection;
+	using connector_t = SerialPortConnector;
+	const static size_t reader_packet_size = 256;
+	const static size_t writer_packet_size = 64;
+};
+
+struct socket_traits {
+	using io_t = boost::asio::ip::tcp::socket;
+	using connection_t = wifi_connection;
+	using connector_t = WifiConnector;
+	const static size_t reader_packet_size = 256;
+	const static size_t writer_packet_size = 64;
+};
+
+using SerialIO = IoBase<serial_traits>;
+
+using WifiIO = IoBase<socket_traits>;
+
 
 
 static std::array<uint8_t, 16> version_packet = { 0x24,0x02,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x0D,0x0A };

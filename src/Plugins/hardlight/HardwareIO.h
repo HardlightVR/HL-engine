@@ -12,7 +12,8 @@
 #include "suit_packet.h"
 #include <boost/asio/ip/tcp.hpp>
 #include "synchronizer2.h"
-#include "SocketReader.h"
+#include "Reader.h"
+#include "Writer.h"
 #include "PacketDispatcher.h"
 
 #include "hardlight_device_version.h"
@@ -35,28 +36,23 @@ public:
 };
 
 
-template<typename IoObject, typename ConnectionArgs>
-class DefaultConnector {
-public:
-	DefaultConnector(IoObject&, ConnectionArgs) {}
-	void try_connect(std::function<void(bool)>) {}
-
-};
-
-struct DefaultConnectionArgs {};
 
 
 template<
-	typename IoObject,
-	typename Reader,
-	typename Writer,
-	typename ConnectionArgs = DefaultConnectionArgs,
-	typename Connector = DefaultConnector<IoObject, ConnectionArgs>
+	typename IoTraits
 > 
 
 class IoBase : public HardwareIO {
 public:
-	IoBase(std::unique_ptr<IoObject> io, ConnectionArgs args)
+
+	using io_t			= typename IoTraits::io_t;
+	using connector_t	= typename IoTraits::connector_t;
+	using connection_t	= typename IoTraits::connection_t;
+
+	using Writer = Writer<io_t, IoTraits::writer_packet_size>;
+	using Reader = Reader<io_t, IoTraits::reader_packet_size>;
+
+	IoBase(std::unique_ptr<io_t> io, connection_t args)
 	: incoming(4096)
 	, outgoing(4096*3)
 	, ioObject(std::move(io))
@@ -98,15 +94,15 @@ public:
 		});
 	}
 
-	inline hardlight_device_version GetVersion() const override {
+	hardlight_device_version GetVersion() const override {
 		return version;
 	}
 
-	inline float GetUtilizationRatio() const override {
+	float GetUtilizationRatio() const override {
 		return outgoing.read_available() / (float)(4096 * 3);
 
 	}
-	inline bool ready()  {
+	bool ready()  {
 		auto version = inst::Build(inst::get_version());
 
 		this->QueuePacket(version.data(), version.size());
@@ -118,14 +114,14 @@ private:
 	PacketQueue incoming;
 	PacketQueue outgoing;
 
-	std::unique_ptr<IoObject> ioObject;
+	std::unique_ptr<io_t> ioObject;
 
 	Reader reader;
 	Writer writer;
 
-	ConnectionArgs args;
+	connection_t args;
 
-	Connector connector;
+	connector_t connector;
 
 	bool connection_ready;
 	

@@ -217,9 +217,9 @@
     </ClInclude>
     <ClInclude Include="..\src\Plugins\hardlight\SerialPortIO.h" />
     <ClInclude Include="..\src\Plugins\hardlight\SerialPortReader.h" />
-    <ClInclude Include="..\src\Plugins\hardlight\SocketReader.h" />
     <ClInclude Include="..\src\Plugins\hardlight\Writer.h" />
     <ClInclude Include="..\src\Plugins\hardlight\WifiConnector.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\Reader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -348,8 +348,6 @@
     <ClCompile Include="..\src\Plugins\hardlight\ImuDiagnostic.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\SerialPortIO.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\SerialPortReader.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\SocketReader.cpp" />
-    <ClCompile Include="..\src\Plugins\hardlight\Writer.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\WifiConnector.cpp" />
   </ItemGroup>
   <ItemGroup>
