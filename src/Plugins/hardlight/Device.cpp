@@ -12,6 +12,7 @@
 #include "synchronizer2.h"
 #include "Instructions.h"
 #include "zone_logic/HardwareCommands.h"
+#include "hardlight_device_version.h"
 nsvr_core* global_core = nullptr;
 //note: can make firmware unique
 Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<HardwareIO> device, hardlight_device_version version) :
@@ -95,11 +96,8 @@ struct bodygraph_region {
 
 float Device::GetIoUtilizationRatio() const
 {
-	//todo: fix
-	return 0;
-	//return (float) m_hwIO->outgoing_queue_size() / (float) m_hwIO->outgoing_queue_capacity();
+	return m_hwIO->GetUtilizationRatio();
 }
-
 int Device::Configure(nsvr_core* core)
 {
 

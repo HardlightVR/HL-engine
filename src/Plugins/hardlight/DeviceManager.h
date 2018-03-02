@@ -73,6 +73,7 @@ private:
 	boost::posix_time::millisec m_devicePollTimeout;
 	boost::asio::deadline_timer m_devicePollTimer;
 
+
 	IdPool m_idPool;
 
 	std::mutex m_deviceLock;

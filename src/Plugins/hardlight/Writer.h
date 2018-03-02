@@ -75,9 +75,16 @@ inline void Writer<IoObject>::do_write()
 
 	const auto actual_popped = m_outgoing.pop(m_tempBuffer.data(), amount_to_write);
 	assert(actual_popped <= m_tempBuffer.size());
+
+	if (actual_popped == 16) {
+	}
 	boost::asio::async_write(m_port, boost::asio::buffer(m_tempBuffer.data(), actual_popped), [this, actual_popped](auto ec, std::size_t bytes_transferred) {
 
 		if (!ec) {
+			if (bytes_transferred > 0) {
+				//std::cout << "Wrote with success\n";
+			}
+
 			/*if (actual_popped > 0) {
 			std::stringstream ss;
 			for (int i = 0; i < actual_popped; i++) {
@@ -89,6 +96,9 @@ inline void Writer<IoObject>::do_write()
 
 			m_timer.expires_from_now(m_delay);
 			m_timer.async_wait([this](auto ec) { if (ec) { return; } if (m_stopped) { return; } do_write(); });
+		}
+		else {
+			std::cout << "Failed to write!\n";
 		}
 	});
 }

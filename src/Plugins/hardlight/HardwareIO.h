@@ -15,16 +15,18 @@
 #include "SocketReader.h"
 #include "PacketDispatcher.h"
 
-
+#include "hardlight_device_version.h"
 class HardwareIO {
 public:
 	virtual ~HardwareIO () {}
 
-	virtual bool ready() const = 0;
+	virtual bool ready() = 0;
 
 	//possibly do locking + overflow check in here?
 	virtual void QueuePacket(uint8_t* data, size_t length) = 0;
 	virtual void OnPacket(inst::Id, boost::signals2::signal<void(Packet)>::slot_type handler) = 0;
+	virtual float GetUtilizationRatio() const = 0;
+	virtual hardlight_device_version GetVersion() const = 0;
 
 	//todo make pure virtual
 	synchronizer2::State get_synchronization_state() const { 
@@ -73,16 +75,41 @@ public:
 
 		connector.try_connect([this](bool success) {
 		
-			connection_ready = success;
+			
 			if (success) {
 				reader.start();
 				writer.start();
 				synchronizer.start();
+				std::vector<uint8_t> ping = { 0x24, 0x02, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x0d, 0x0a };
+
+				std::vector<uint8_t> click = { 0x24, 0x02, 0x13, 0x01, 0x15, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x0d, 0x0a };
+			
+				this->OnPacket(inst::Id::GET_VERSION, [this](const Packet& version_packet) {
+					version = parse_version(version_packet);
+					connection_ready = true;
+				});
+
+				//auto version = inst::Build(inst::get_version());
+
+			//	this->QueuePacket(version.data(), version.size());
+
 			}
+			
 		});
 	}
 
-	inline bool ready() const {
+	inline hardlight_device_version GetVersion() const override {
+		return version;
+	}
+
+	inline float GetUtilizationRatio() const override {
+		return outgoing.read_available() / (float)(4096 * 3);
+
+	}
+	inline bool ready()  {
+		auto version = inst::Build(inst::get_version());
+
+		this->QueuePacket(version.data(), version.size());
 		return connection_ready;
 	}
 
@@ -106,7 +133,7 @@ private:
 	PacketDispatcher dispatcher;
 	synchronizer2 synchronizer;
 
-
+	hardlight_device_version version;
 	
 
 	// Inherited via HardwareIO

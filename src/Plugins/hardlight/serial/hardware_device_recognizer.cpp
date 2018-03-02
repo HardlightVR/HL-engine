@@ -10,7 +10,7 @@
 
 #include "Doctor.h"
 
-std::set<std::string> getPortNames() {
+std::set<std::string> hardware_device_recognizer::get_interfaces() {
 	
 	CEnumerateSerial::CPortsArray ports;
 	CEnumerateSerial::UsingQueryDosDevice(ports);
@@ -19,6 +19,10 @@ std::set<std::string> getPortNames() {
 	for (unsigned int port : ports) {
 		portNames.insert("COM" + std::to_string(port));
 	}
+
+
+	portNames.insert(m_permRecognizedInterfaces.begin(), m_permRecognizedInterfaces.end());
+
 	return portNames;
 }
 
@@ -67,6 +71,15 @@ void hardware_device_recognizer::on_unrecognize(unrecognized_event handler)
 	m_onUnrecognize =handler;
 }
 
+void hardware_device_recognizer::recognize(wifi_connection conn)
+{
+	
+	m_permRecognizedInterfaces.insert(conn.host_name); //to keep it from being removed (unrecognized) immediately
+
+	std::string pass = conn.password + (char)0x0d;
+	m_onRecognize(wifi_connection{ conn.host_name, conn.port_number, pass });
+}
+
 size_t hardware_device_recognizer::get_num_potential_devices() const
 {
 	return m_manager.get_num_connections();
@@ -94,6 +107,7 @@ void hardware_device_recognizer::remove_unrecognized_devices(const std::set<std:
 	std::set_difference(m_recognizedPorts.begin(), m_recognizedPorts.end(), newPorts.begin(), newPorts.end(), std::back_inserter(toBeRemoved));
 
 	for (auto portName : toBeRemoved) {
+		
 		m_recognizedPorts.erase(portName);
 		m_onUnrecognize(portName);
 	}
@@ -107,30 +121,30 @@ bool hardware_device_recognizer::device_already_recognized(const std::string& po
 
 void hardware_device_recognizer::do_port_scan()
 {
-	std::set<std::string> portNames = getPortNames();
+	std::set<std::string> interfaces = get_interfaces();
 
-	//remove_unrecognized_devices(portNames);
+	remove_unrecognized_devices(interfaces);
 
-	/*for (auto portName : portNames) {
+	for (auto iface : interfaces) {
 
-		if (device_already_recognized(portName)) {
+		if (device_already_recognized(iface)) {
 			continue;
 		}
 
-		auto port = m_manager.make_port();
-		if (open_port(*port, portName)) {
-			(*m_currentProfile)->set_options(*port);
-			m_manager.start(std::make_shared<serial_connection>(std::move(port), portName, (*m_currentProfile).get(), m_manager));
-		}
-	}*/
-	
-	static bool done = false;
-	if (!done) {
-		std::string pass = std::string("xs9/izbh") + (char)0x0d;
-		handle_recognize(wifi_connection{ "192.168.4.1", "23", pass });
-		done = true;
-	}
+		//ideally each interface name would have associated data, like if it is a port or a wifi connection. This way
+		//I wouldn't be doing what is essentially a hack.. testing to see if it is probably an IP address.
 
+
+		if (iface.find("192") == std::string::npos) {
+			auto port = m_manager.make_port();
+			if (open_port(*port, iface)) {
+				(*m_currentProfile)->set_options(*port);
+				m_manager.start(std::make_shared<serial_connection>(std::move(port), iface, (*m_currentProfile).get(), m_manager));
+			}
+		}
+	}
+	
+	
 	schedule_port_scan();
 }
 

@@ -35,14 +35,20 @@ void SocketReader::read_complete(const boost::system::error_code & error, size_t
 {
 	if (!error)
 	{ // read completed, so process the data
-	  
+	//	std::cout << "Read with success\n";
 
-		m_incoming.push(m_readMsg, bytes_transferred);
-		std::fill(std::begin(m_readMsg), std::end(m_readMsg), 0);
+		if (m_incoming.write_available() >= bytes_transferred) {
+			m_incoming.push(m_readMsg, bytes_transferred);
+			std::fill(std::begin(m_readMsg), std::end(m_readMsg), 0);
+
+		}
 
 
 		//cout << "\n";
 		read_start(); // start waiting for another asynchronous read again
+	}
+	else {
+		std::cout << "Errored on read!";
 	}
 	
 }

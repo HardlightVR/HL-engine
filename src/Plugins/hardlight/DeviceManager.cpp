@@ -6,6 +6,7 @@
 #include "AsyncPacketRequest.h"
 #include "Writer.h"
 #include "WifiConnector.h"
+#include "JsonKeyValueConfig.h"
 
 using SerialIO = IoBase<
 	boost::asio::serial_port,
@@ -37,6 +38,26 @@ void requestUuid(boost::lockfree::spsc_queue<uint8_t>& output)
 	output.push(uuid_packet.data(), uuid_packet.size());
 }
 
+bool validateWifiConfig(const std::unordered_map<std::string, std::string>& wifiConfig) {
+	bool valid = true;
+	
+	if (wifiConfig.find("host") == wifiConfig.end()) {
+		core_log(nsvr_severity_warning, "DeviceManager", "Could not load Wifi configuration: 'host' must be present");
+		valid = false;
+	}
+	if (wifiConfig.find("port") == wifiConfig.end()) {
+		core_log(nsvr_severity_warning, "DeviceManager", "Could not load Wifi configuration: 'port' must be present");
+		valid = false;
+	}
+	if (wifiConfig.find("password") == wifiConfig.end()) {
+		core_log(nsvr_severity_warning, "DeviceManager", "Could not load Wifi configuration: 'password' must be present");
+		valid = false;
+	}
+
+	return valid;
+
+}
+
 DeviceManager::DeviceManager(std::string path)
 	: m_ioService()
 	, m_path(path)
@@ -51,6 +72,7 @@ DeviceManager::DeviceManager(std::string path)
 	, m_deviceLock()
 {
 	
+
 
 	m_recognizer.on_recognize([this](connection_info info) {
 		//dispatch the event on our own IO service's thread (it came from the serial_connection_manager's thread)
@@ -73,6 +95,30 @@ DeviceManager::DeviceManager(std::string path)
 	m_devicePollTimer.async_wait([this](auto ec) { if (ec) { return; } 
 		update();
 	});
+
+
+
+	//Not a good place to do this loading and validating at all, but we are trying to get v1 of wifi out!
+	//Load the configuration object from disk. If it is loaded, then immediately try to connect to it.
+	//Else, we would be looking for serial port connections as normal.
+	try {
+		std::unordered_map<std::string, std::string> wifiConfig =
+			nsvr::tools::json::parseDictFromDict<std::string, std::string>(m_path + "/Wifi.json",
+				[](const Json::Value& key) {
+			return key.asString();
+		},
+				[](const Json::Value& value) {
+			return value.asString();
+		}
+		);
+
+		if (validateWifiConfig(wifiConfig)) {
+			m_recognizer.recognize(wifi_connection{ wifiConfig["host"], wifiConfig["port"], wifiConfig["password"] });
+		}
+	}
+	catch (...) {
+		core_log(nsvr_severity_warning, "DeviceManager", "Could not load Wifi configuration. Harmless if you aren't using Wifi.");
+	}
 }
 
 class create_io_object : public boost::static_visitor<std::unique_ptr<HardwareIO>> {
@@ -167,13 +213,13 @@ void DeviceManager::create_device(const std::string& deviceName) {
 	m_deviceIds[id] = deviceName;
 
 	std::unique_ptr<HardwareIO> potential = std::move(m_potentials.at(deviceName));
-	m_doctor.accept_patient(id, potential.get());
+	//m_doctor.accept_patient(id, potential.get());
 
 	auto fullDevice = std::make_unique<Device>(
 		m_ioService.GetIOService(), 
 		m_path, 
 		std::move(potential), 
-		hardlight_device_version{0,0,0,0}
+		potential->GetVersion()
 	);
 
 	fullDevice->Configure(m_core);
@@ -225,7 +271,7 @@ void DeviceManager::update()
 	update_each_device();
 
 	auto util_ratio = compute_device_io_utilization();
-	m_devicePollTimeout = boost::posix_time::millisec((45 * std::pow(util_ratio, 2.71f)) + 10);
+	m_devicePollTimeout = boost::posix_time::millisec((60 * std::pow(util_ratio, 2.71f)) + 10);
 
 
 	auto newlyConnectedDevices = get_newly_connected_devices();
