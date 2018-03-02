@@ -11,7 +11,7 @@
 using SerialIO = IoBase<
 	boost::asio::serial_port,
 	SerialPortReader, //todo: make Reader generic 
-	Writer<boost::asio::serial_port>,
+	Writer<boost::asio::serial_port, 64>,
 	wired_connection,
 	SerialPortConnector
 >;
@@ -19,7 +19,7 @@ using SerialIO = IoBase<
 using WifiIO = IoBase<
 	boost::asio::ip::tcp::socket,
 	SocketReader, //todo: make Reader generic 
-	Writer<boost::asio::ip::tcp::socket>,
+	Writer<boost::asio::ip::tcp::socket, 64>,
 	wifi_connection,
 	WifiConnector
 >;
