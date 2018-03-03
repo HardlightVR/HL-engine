@@ -247,7 +247,7 @@ void DeviceManager::update_each_device() {
 std::vector<std::string> DeviceManager::get_newly_connected_devices() const {
 	std::vector<std::string> ready;
 	for (const auto& kvp : m_potentials) {
-		if (kvp.second->ready()) {
+		if (kvp.second->Ready()) {
 			ready.push_back(kvp.first);
 		}
 	}

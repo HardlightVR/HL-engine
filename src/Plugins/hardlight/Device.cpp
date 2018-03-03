@@ -244,7 +244,7 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 	ui->keyval("Firmware minor", std::to_string(m_version.firmware_b).c_str());
 
 
-	ui->keyval("Synchronizer state", syncStates[(int)m_hwIO->get_synchronization_state()].c_str());
+	ui->keyval("Synchronizer state", syncStates[(int)m_hwIO->GetSynchronizationState()].c_str());
 	
 	if (ui->button("GET_TRACK_STATUS")) {
 		m_firmware->RequestTrackingStatus();
