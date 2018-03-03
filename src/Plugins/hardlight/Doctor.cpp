@@ -47,13 +47,13 @@ void Doctor::release_patient()
 
 }
 
-void Doctor::accept_patient(nsvr_device_id id, PacketDispatcher* dispatcher, boost::lockfree::spsc_queue<uint8_t>* device_outgoing_data)
+void Doctor::accept_patient(nsvr_device_id id, HardwareIO* io)
 {
 	release_patient();
 
 	m_patient = id;
 
-	restart_tests(dispatcher, device_outgoing_data);
+	restart_tests(io);
 
 }
 
@@ -64,10 +64,10 @@ void Doctor::cancel_all_tests() {
 	}
 }
 
-void Doctor::restart_tests(PacketDispatcher* dispatcher, boost::lockfree::spsc_queue<uint8_t>* device_outgoing_data) {
+void Doctor::restart_tests(HardwareIO* io) {
 
 	for (auto& diag : m_tests) {
-		diag->run(dispatcher, device_outgoing_data);
+		diag->run(io);
 	}
 }
 

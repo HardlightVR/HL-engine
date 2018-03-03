@@ -1,24 +1,24 @@
 #include "stdafx.h"
 #include "ImuConsumer.h"
 #include "Enums.h"
-#include "PacketDispatcher.h"
-ImuConsumer::ImuConsumer(PacketDispatcher &dispatcher):
+
+ImuConsumer::ImuConsumer(HardwareIO& dispatcher):
 	m_quaternions(),
 	m_mapping()
 {
-	dispatcher.AddConsumer(inst::Id::GET_TRACK_DATA, [&](Packet p) {
+	dispatcher.OnPacket(inst::Id::GET_TRACK_DATA, [&](Packet p) {
 		this->consumeDataPacket(p);
 	});
 
-	dispatcher.AddConsumer(inst::Id::GET_TRACK_STATUS, [&](Packet p) {
+	dispatcher.OnPacket(inst::Id::GET_TRACK_STATUS, [&](Packet p) {
 		this->consumeStatusPacket(p);
 	});
 
-	dispatcher.AddConsumer(inst::Id::GET_TRACK_GRAVITY, [&](Packet p) {
+	dispatcher.OnPacket(inst::Id::GET_TRACK_GRAVITY, [&](Packet p) {
 		this->consumeGravityPacket(p);
 	});
 
-	dispatcher.AddConsumer(inst::Id::GET_TRACK_MAG, [&](Packet p) {
+	dispatcher.OnPacket(inst::Id::GET_TRACK_MAG, [&](Packet p) {
 		this->consumeCompassPacket(p);
 	});
 

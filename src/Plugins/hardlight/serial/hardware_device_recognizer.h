@@ -18,7 +18,7 @@ class Doctor;
 class hardware_device_recognizer {
 public:
 	using recognized_event = std::function<void(connection_info)>;
-	using unrecognized_event = std::function<void(connection_info)>;
+	using unrecognized_event = std::function<void(std::string)>;
 
 	hardware_device_recognizer(boost::asio::io_service& io, Doctor* doctor);
 	
@@ -31,6 +31,10 @@ public:
 	//This event can only have one consumer
 	void on_unrecognize(unrecognized_event handler);
 
+	//should take the boost::variant type, connection_info. But not necessary right now for this API;
+	//we only want to manually trigger a recognization with Wifi.
+	void recognize(wifi_connection);
+
 	size_t get_num_potential_devices() const;
 
 private:
@@ -39,6 +43,7 @@ private:
 	void remove_unrecognized_devices(const std::set<std::string>& newPorts);
 	bool device_already_recognized(const std::string& portName) const;
 	void schedule_port_scan();
+	std::set<std::string> get_interfaces();
 
 	boost::asio::io_service& m_io;
 	Doctor* m_doctor;
@@ -57,5 +62,7 @@ private:
 
 	recognized_event m_onRecognize;
 	unrecognized_event m_onUnrecognize;
+
+	std::set<std::string> m_permRecognizedInterfaces;
 
 };

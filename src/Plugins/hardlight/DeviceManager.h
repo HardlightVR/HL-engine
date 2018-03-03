@@ -14,21 +14,11 @@
 #include <mutex>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include "SerialPortIO.h"
 
 class Device;
 
-struct PotentialDevice {
-	std::unique_ptr<HardwareIO> io;
-	std::shared_ptr<PacketDispatcher> dispatcher;
-	std::shared_ptr<synchronizer2> synchronizer;
-
-	PotentialDevice(std::unique_ptr<boost::asio::serial_port> port) {
-		boost::asio::io_service& io_service = port->get_io_service();
-		io = std::make_unique<HardwareIO>(std::move(port));
-		dispatcher = std::make_shared<PacketDispatcher>();
-		synchronizer = std::make_shared<synchronizer2>(io_service, io->incoming_queue());
-	}
-};
 
 //hack enum for hardware verification app 
 enum class SuitState {
@@ -56,10 +46,14 @@ public:
 	void GetCurrentDeviceState(int* status, uint64_t* error);
 private:
 	
-	void handle_connect(std::string portName, Packet packet);
-	void device_update();
+	void create_device(const std::string& deviceName);
+	void update();
 	void handle_recognize(connection_info info);
-	void handle_unrecognize(connection_info info);
+	void handle_unrecognize(std::string interface_name);
+	void update_each_device();
+	float compute_device_io_utilization() const;
+	std::vector<std::string> get_newly_connected_devices() const;
+	void schedule_update();
 
 	nsvr_core* m_core;
 	IoService m_ioService;
@@ -71,13 +65,14 @@ private:
 
 	std::unordered_map<std::size_t, std::string> m_deviceIds;
 	std::unordered_map<std::string, std::unique_ptr<Device>> m_devices;
-	std::unordered_map<std::string, std::unique_ptr<PotentialDevice>> m_potentials;
+	std::unordered_map<std::string, std::unique_ptr<HardwareIO>> m_potentials;
 
 	boost::posix_time::milliseconds m_requestVersionTimeout;
 	boost::asio::deadline_timer m_requestVersionTimer;
 
 	boost::posix_time::millisec m_devicePollTimeout;
 	boost::asio::deadline_timer m_devicePollTimer;
+
 
 	IdPool m_idPool;
 

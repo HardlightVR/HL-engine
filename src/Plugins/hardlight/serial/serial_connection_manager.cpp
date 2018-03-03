@@ -38,7 +38,7 @@ void serial_connection_manager::reset_io() {
 void serial_connection_manager::raise_connect(serial_connection_ptr s) {
 	m_connections.erase(s);
 	s->stop();
-	m_onConnect({ s->port_name() });
+	m_onConnect(wired_connection{ s->port_name() });
 }
 
 void serial_connection_manager::stop(serial_connection_ptr s)

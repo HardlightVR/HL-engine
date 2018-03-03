@@ -4,9 +4,9 @@
 #include "suit_packet.h"
 #include "PluginAPI.h"
 #include "HL_Firmware_Defines.h"
+#include "HardwareIO.h"
 
 enum class Imu;
-class PacketDispatcher;
 
 struct Mapping {
 	Imu imu;
@@ -25,7 +25,7 @@ struct ImuInfo {
 class ImuConsumer 
 {
 public:
-	ImuConsumer(PacketDispatcher&);
+	ImuConsumer(HardwareIO& hw);
 	void AssignMapping(uint32_t key, Imu id, nsvr_node_id node_id);
 	void AssignStream(nsvr_tracking_stream* stream, nsvr_node_id id);
 	void RemoveStream(nsvr_node_id id);

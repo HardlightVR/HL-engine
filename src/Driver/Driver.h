@@ -39,10 +39,8 @@ private:
 
 
 	ScheduledEvent m_hapticsPull;
-	ScheduledEvent m_statusPush;
 
 	void handleHaptics();
-	void handleStatus();
 
 	NullSpace::SharedMemory::TrackingUpdate m_cachedTracking;
 

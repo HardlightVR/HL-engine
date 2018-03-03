@@ -12,19 +12,18 @@
 #include "synchronizer2.h"
 #include "Instructions.h"
 #include "zone_logic/HardwareCommands.h"
+#include "hardlight_device_version.h"
 nsvr_core* global_core = nullptr;
 //note: can make firmware unique
-Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<PotentialDevice> device, hardlight_device_version version) :
+Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::unique_ptr<HardwareIO> device, hardlight_device_version version) :
 	m_core{ nullptr },
 	m_io(io),
-	m_hwIO(std::move(device->io)),
-	m_firmware(std::make_shared<FirmwareInterface>(data_dir, m_hwIO->outgoing_queue(), m_io)),
+	m_hwIO(std::move(device)),
+	m_firmware(std::make_shared<FirmwareInterface>(data_dir, *m_hwIO, m_io)),
 	m_device(*m_firmware->GetInstructions()),
 	m_monitor(std::make_shared<Heartbeat>(m_io, m_firmware)),
-	m_synchronizer(device->synchronizer),
-	m_dispatcher(device->dispatcher),
 	m_running(),
-	m_imus(*m_dispatcher),
+	m_imus(*m_hwIO),
 	m_version(version),
 	m_motors(),
 	m_deferredCommands(512)
@@ -33,13 +32,11 @@ Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::un
 	
 
 
-	
-	
 
-	m_dispatcher->AddConsumer(inst::Id::GET_PING, [this](const auto&) { m_monitor->ReceiveResponse(); });
-	m_dispatcher->AddConsumer(inst::Id::GET_TRACK_DATA, [this](const auto&) { m_monitor->ReceiveResponse(); });
+	m_hwIO->OnPacket(inst::Id::GET_PING, [this](const auto&) { m_monitor->ReceiveResponse(); });
+	m_hwIO->OnPacket(inst::Id::GET_TRACK_DATA, [this](const auto&) { m_monitor->ReceiveResponse(); });
 	
-	m_dispatcher->AddConsumer(inst::Id::GET_MOTOR_STATUS, [this](const Packet& packet) {
+	m_hwIO->OnPacket(inst::Id::GET_MOTOR_STATUS, [this](const Packet& packet) {
 		auto status = packet[3];
 		auto motor = packet[4];
 		m_motors[motor] = MotorStatus(motor, static_cast<HL_Unit::_enumerated>(status));
@@ -66,9 +63,10 @@ Device::Device(boost::asio::io_service& io, const std::string& data_dir, std::un
 Device::~Device()
 {
 	std::cout << "DESTROYING HARDLIGHT DEVICE\n";
-	m_dispatcher->ClearConsumers();
-	m_synchronizer->stop();
-	m_hwIO->stop();
+	//todo: FIX 
+	//m_dispatcher->ClearConsumers();
+//	m_synchronizer->stop();
+//	m_hwIO->stop();
 
 }
 
@@ -98,9 +96,8 @@ struct bodygraph_region {
 
 float Device::GetIoUtilizationRatio() const
 {
-	return (float) m_hwIO->outgoing_queue_size() / (float) m_hwIO->outgoing_queue_capacity();
+	return m_hwIO->GetUtilizationRatio();
 }
-
 int Device::Configure(nsvr_core* core)
 {
 
@@ -247,7 +244,7 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 	ui->keyval("Firmware minor", std::to_string(m_version.firmware_b).c_str());
 
 
-	ui->keyval("Synchronizer state", syncStates[(int)m_synchronizer->state()].c_str());
+	ui->keyval("Synchronizer state", syncStates[(int)m_hwIO->GetSynchronizationState()].c_str());
 	
 	if (ui->button("GET_TRACK_STATUS")) {
 		m_firmware->RequestTrackingStatus();
@@ -394,11 +391,11 @@ void Device::Render(nsvr_diagnostics_ui * ui)
 		ui->keyval("IMU", ss.str().c_str());
 	}
 
-	 int queue_size = m_hwIO->outgoing_queue_size();
+	/* int queue_size = m_hwIO->outgoing_queue_size();
 	ui->slider_int("Outgoing queue", &queue_size, 0, m_hwIO->outgoing_queue_capacity());
 
 	ui->keyval("Total bytes sent", std::to_string(m_hwIO->bytes_written()).c_str());
-	ui->keyval("Total bytes rec'd", std::to_string(m_hwIO->bytes_read()).c_str());
+	ui->keyval("Total bytes rec'd", std::to_string(m_hwIO->bytes_read()).c_str());*/
 	
 }
 

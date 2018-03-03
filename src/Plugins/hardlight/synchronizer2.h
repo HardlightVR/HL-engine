@@ -9,7 +9,7 @@
 #include <boost/signals2.hpp>
 
 class PacketDispatcher;
-class synchronizer2 : public std::enable_shared_from_this<synchronizer2>  {
+class synchronizer2   {
 public:
 	enum class State {
 		Synchronized,
@@ -20,7 +20,7 @@ public:
 	State state() const;
 
 	using PacketEvent = boost::signals2::signal<void(Packet)>;
-	synchronizer2(boost::asio::io_service& io, std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> data);
+	synchronizer2(boost::asio::io_service& io, boost::lockfree::spsc_queue<uint8_t>& data);
 	void start();
 	void stop();
 
@@ -42,7 +42,7 @@ private:
 
 	PacketEvent m_dispatcher;
 
-	std::shared_ptr<boost::lockfree::spsc_queue<uint8_t>> m_data;
+	boost::lockfree::spsc_queue<uint8_t>& m_data;
 
 	const std::size_t m_badSyncLimit;
 

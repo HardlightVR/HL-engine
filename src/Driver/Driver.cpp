@@ -32,7 +32,7 @@ Driver::Driver() :
 	m_devices(),
 	m_coordinator(m_io, m_messenger, m_devices),
 
-	m_statusPush(m_io, boost::posix_time::millisec(250)),
+
 	m_hapticsPull(m_io, boost::posix_time::millisec(5)),
 	m_cachedTracking({}),
 	m_eventDispatcher(),
@@ -79,9 +79,6 @@ bool Driver::StartThread()
 	m_hapticsPull.SetEvent([this]() { handleHaptics(); });
 	m_hapticsPull.Start();
 
-	m_statusPush.SetEvent([this]() { handleStatus(); });
-	m_statusPush.Start();
-
 	
 
 	return true;
@@ -91,7 +88,6 @@ bool Driver::Shutdown()
 {
 	BOOST_LOG_SEV(clogger::get(), nsvr_severity_info) << "Shutting down plugin host";
 
-	m_statusPush.Stop();
 	m_hapticsPull.Stop();
 	m_messenger.Disconnect();
 	m_ioService.Shutdown();
@@ -150,10 +146,6 @@ void Driver::handleHaptics()
 	
 }
 
-void Driver::handleStatus()
-{
-	//m_messenger.WriteSystems(m_hardware.PollDevice());
-}
 
 void DoForEachBit(std::function<void(Location l)> fn, uint32_t bits) {
 	for (uint32_t bit = 1; bits >= bit; bit *= 2) if (bits & bit) fn(Location(bit));

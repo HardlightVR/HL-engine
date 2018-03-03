@@ -212,6 +212,14 @@
     <ClInclude Include="..\src\Plugins\hardlight\HardwareDiagnostic.h" />
     <ClInclude Include="..\src\Plugins\hardlight\MotorDiagnostic.h" />
     <ClInclude Include="..\src\Plugins\hardlight\ImuDiagnostic.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\IOInterface.h">
+      <Filter>plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Plugins\hardlight\SerialPortIO.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\SerialPortReader.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\Writer.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\WifiConnector.h" />
+    <ClInclude Include="..\src\Plugins\hardlight\Reader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\plugins\hardlight\AsyncTimeout.cpp">
@@ -280,13 +288,7 @@
     <ClCompile Include="..\src\plugins\hardlight\PluginDummy.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\ReaderAdapter.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\ScheduledEvent.cpp">
-      <Filter>plugins\hardlight</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\plugins\hardlight\WriterAdapter.cpp">
       <Filter>plugins\hardlight</Filter>
     </ClCompile>
     <ClCompile Include="..\src\plugins\hardlight\enumser.cpp">
@@ -344,6 +346,9 @@
     <ClCompile Include="..\src\Plugins\hardlight\RetrySender.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\MotorDiagnostic.cpp" />
     <ClCompile Include="..\src\Plugins\hardlight\ImuDiagnostic.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\SerialPortIO.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\SerialPortReader.cpp" />
+    <ClCompile Include="..\src\Plugins\hardlight\WifiConnector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\Plugins\hardlight\version.rc2" />

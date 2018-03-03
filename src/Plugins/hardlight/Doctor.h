@@ -6,7 +6,7 @@
 #include "RetrySender.h"
 #include "MotorDiagnosis.h"
 #include "HardwareDiagnostic.h"
-
+#include "HardwareIO.h"
 
 class PacketDispatcher;
 
@@ -41,7 +41,7 @@ public:
 
 
 	void release_patient();
-	void accept_patient(nsvr_device_id id, PacketDispatcher* dispatcher, boost::lockfree::spsc_queue<uint8_t>* device_outgoing_data);
+	void accept_patient(nsvr_device_id id, HardwareIO* io);
 
 private:
 	boost::asio::io_service& m_io;
@@ -51,7 +51,7 @@ private:
 
 
 	void cancel_all_tests();
-	void Doctor::restart_tests(PacketDispatcher* dispatcher, boost::lockfree::spsc_queue<uint8_t>* device_outgoing_data);
+	void Doctor::restart_tests(HardwareIO* io);
 
 	bool all_finished() const;
 	bool all_succeeded() const;
